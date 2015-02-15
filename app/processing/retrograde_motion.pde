@@ -27,6 +27,13 @@ function getBackgroundColor() {
   return rgbToHex($('#retrograde-parent').css('background-color'));
 }
 
+color fadeColor(color c, float amt, boolean limit) {
+  int newAlpha = alpha(c) * amt;
+  if (limit && newAlpha < 60)
+    newAlpha = 60;
+  return color(red(c), green(c), blue(c), newAlpha);
+}
+
 class Vec2D {
   float x, y;
 
@@ -89,16 +96,16 @@ class Planet {
   float pathAngleRadians;
   Vec2D pos;
 
-  Planet(String name, float radius, float ellipseA, float ellipseE) {
+  Planet(String name, float radius, float ellipseA, float ellipseE, float startDegrees) {
     this.name = name;
-    this.radius = map(radius, 0, SCALE_FACTOR, 0, width / 2);
+    this.radius = map(radius, 0, SCALE_FACTOR, 0, width / 2) * SCALE_PLANETS;
     this.ellipseA = map(ellipseA * AU, 0, SCALE_FACTOR, 0, width / 2);
     this.ellipseE = ellipseE;
     ellipseB = (float) (this.ellipseA * Math.sqrt(1 - ellipseE * ellipseE));
     ellipseCenter = this.ellipseA * ellipseE;
     orbitSpeed= (ellipseA == 0) ? 0 : 1.0 / ellipseA;
 
-    pathAngleRadians = radians(45);
+    pathAngleRadians = radians(startDegrees);
 
     pos = new Vec2D(0, 0);
   }
@@ -110,9 +117,13 @@ class Planet {
 
   void draw(Vec2D pos, color fillColor) {
     noStroke();
-    fill(fillColor);
     translate(pos.x, pos.y);
-    ellipse(0, 0, radius * 3000, radius * 3000);
+    color fadedColor = fillColor;
+    for (int i = 1; i < 3; i++) {
+      fill(fadedColor);
+      ellipse(0, 0, radius + i, radius + i);
+      fadedColor = fadeColor(fillColor, .6f, false);
+    }
     translate(-pos.x, -pos.y);
   }
 
@@ -124,25 +135,27 @@ class Planet {
   }
 };
 
+final float SIM_SPEED = .015;  // controls the speed of all things
+final float SCALE_FACTOR = 2500000000f;  // scale of whole sketch in km
+final float SCALE_SUN = 0.017f; // da Sun is big...
+final float SCALE_PLANETS = 3200f; // da planets are small...
 final int AU = 149598000; // Astronomical Unit, in km
-final int SCALE_FACTOR = 2500000000;  // for scale factor, use roughtly the distance of farthest planet
-final int FRAME_SAVE_FREQUENCY = 30;
-final float SIM_SPEED = .02;  // controls the speed of all things
+
+final int FRAME_SAVE_FREQUENCY = (int) (2000f * SIM_SPEED);
+final int MAX_SAVED_STATES = 10;
+final int APPROACHING_DIST = 40;
 final color BACKGROUND_COLOR = color(85, 170, 216);
 final color FOREGROUND_COLOR = color(221, 250, 252);
 final color PARENT_COLOR = unhex(getBackgroundColor());
 Planet sun, earth, mars;
 
 SavedState currState = new SavedState();
-SavedState[] pastStates = new SavedState[5];
+SavedState[] pastStates = new SavedState[MAX_SAVED_STATES];
 
 void setup() {
   doResize();
   textAlign(CENTER, CENTER);
   ellipseMode(RADIUS);
-
-  float sunScale = 0.02f; // da Sun is big...
-
 
   /** http://wiki.answers.com/Q/What_is_the_distance_of_all_planets_from_the_sun#ixzz1LwdqB0Qt
     Sun:
@@ -164,43 +177,34 @@ void setup() {
       Path Angle: 5.65 degrees
   ****************************/
 
-  sun = new Planet('Sun', 700000f * sunScale, 0, 0);
-  earth = new Planet('Earth', 6400f, 1, -0.017);
-  mars = new Planet('Mars', 3400f, 1.881, -0.093);
+  sun = new Planet('Sun', 700000f * SCALE_SUN, 0, 0, 0);
+  earth = new Planet('Earth', 6400f, 1, -0.017, 0);
+  earth.orbitSpeed *= 1.2; // make orbit speed difference more dramatic
+  mars = new Planet('Mars', 3400f, 1.881, -0.093, 250);
 
-  currState = new SavedState(earth.pos, mars.pos, FOREGROUND_COLOR);
+  currState = new SavedState(earth.pos, mars.pos);
 }
 
 class SavedState {
   Vec2D earthPos, marsPos;
-  color c, earthC, marsC;
+  color lineColor = FOREGROUND_COLOR;
+  color earthColor = color(121, 244, 82);
+  color marsColor = color(236, 118, 82);
 
-  SavedState(Vec2D earthPos, Vec2D marsPos, color c) {
+  SavedState(Vec2D earthPos, Vec2D marsPos) {
     this.earthPos = earthPos;
     this.marsPos = marsPos;
-    this.c = c;
-    earthC = color(10, 245, 10);
-    marsC = color(245, 10, 10);
   }
 
-  void dim() {
-    c = dim(c);
-    earthC = dim(earthC);
-    marsC = dim(marsC);
-  }
-
-  color dim(color c) {
-    return color(red(c), green(c), blue(c), alpha(c) - 4);
-  }
-
-  void tick() {
-    earth.tick();
-    mars.tick();
+  void fade(float amt) {
+    lineColor = fadeColor(lineColor, amt, true);
+    earthColor = fadeColor(earthColor, amt, true);
+    marsColor = fadeColor(marsColor, amt, true);
   }
 
   void drawPlanets() {
-    earth.draw(earthPos, earthC);
-    mars.draw(marsPos, marsC);
+    earth.draw(earthPos, earthColor);
+    mars.draw(marsPos, marsColor);
   }
 
   void drawOrbits() {
@@ -208,13 +212,15 @@ class SavedState {
     mars.drawOrbit();
   }
 
-  void drawLineOfSight() {
-    strokeWeight(2);
-    Vec2D l = marsPos.sub(earthPos).scaleInPlace(50);
-    stroke(c);
+  void drawLineOfSight(int weight) {
+    strokeWeight(weight);
+    Vec2D l = marsPos.sub(earthPos).scaleInPlace(width / 2);
+    stroke(lineColor);
     line(earthPos.x, earthPos.y, l.x, l.y);
   }
 };
+
+boolean approaching = false;
 
 void draw() {
   background(PARENT_COLOR);
@@ -223,26 +229,34 @@ void draw() {
   translate(width / 2, height / 2);
   fill(BACKGROUND_COLOR);
   ellipse(0, 0, width / 2, height / 2);
-  sun.draw(sun.pos, FOREGROUND_COLOR);
+  sun.draw(sun.pos, color(254, 210, 73));
+  earth.tick();
+  mars.tick();
 
-  currState.tick();
   currState.drawOrbits();
-//  currState.drawLineOfSight();
+  currState.drawLineOfSight(1);
   currState.drawPlanets();
-
-  SavedState savedState = new SavedState(earth.pos.copy(), mars.pos.copy(), FOREGROUND_COLOR);
 
   for (SavedState pastState : pastStates) {
     if (null != pastState) {
-      pastState.dim();
-      pastState.drawLineOfSight();
+      pastState.drawLineOfSight(3);
       pastState.drawPlanets();
+      pastState.fade(.97f);
     }
   }
   popMatrix();
 
-  if (frameCount % FRAME_SAVE_FREQUENCY == 0 &&
-        earth.pos.sub(mars.pos).magnitude() < 50) {
+  if (earth.pos.sub(mars.pos).magnitude() < APPROACHING_DIST) {
+    if (!approaching) {
+      pastStates = new SavedState[MAX_SAVED_STATES];
+      approaching = true;
+    }
+  } else {
+    approaching = false;
+  }
+
+  if (approaching && frameCount % FRAME_SAVE_FREQUENCY == 0) {
+    SavedState savedState = new SavedState(earth.pos.copy(), mars.pos.copy());
     int index = (frameCount / FRAME_SAVE_FREQUENCY) % pastStates.length;
     pastStates[index] = savedState;
   }

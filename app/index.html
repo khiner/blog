@@ -47,11 +47,11 @@
       <!-- Main component for a primary marketing message or call to action -->
       <div id='retrograde-parent' class="jumbotron">
         <h1>Apparent retrograde motion</h1>
-        <p>Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies within its system, as observed from a particular vantage point. </p>
+        <h2 class='lead'>Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies within its system, as observed from a particular vantage point. </br><small>Earth's orbit speed relative to mars is slightly exaggerated to enhance the effect</small>
+        </h2>
+
         <canvas id="pjs"></canvas>
       </div>
-    <script type="application/processing" data-processing-target="pjs" src="processing/retrograde_motion.pde">
-    </script>
     </div> <!-- /container -->
 
 
@@ -61,5 +61,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="dist/processing-1.4.8.min.js"></script>
+    <script type="application/processing" data-processing-target="pjs" src="processing/retrograde_motion.pde"></script>
   </body>
 </html>
