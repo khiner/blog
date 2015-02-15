@@ -12,6 +12,21 @@ function doResize() {
 }
 $(window).resize(doResize);
 
+// convert CSS background color to something Processing can use
+// based on http://stackoverflow.com/questions/1740700/how-to-get-hex-color-value-rather-than-rgb-value
+function hex(rgbValue) {
+  return ('0' + parseInt(rgbValue).toString(16)).slice(-2);
+}
+
+function rgbToHex(rgb) {
+  var rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+  return (rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+}
+
+function getBackgroundColor() {
+  return rgbToHex($('#retrograde-parent').css('background-color'));
+}
+
 class Vec2D {
   float x, y;
 
@@ -115,7 +130,7 @@ final int FRAME_SAVE_FREQUENCY = 30;
 final float SIM_SPEED = .02;  // controls the speed of all things
 final color BACKGROUND_COLOR = color(85, 170, 216);
 final color FOREGROUND_COLOR = color(221, 250, 252);
-
+final color PARENT_COLOR = unhex(getBackgroundColor());
 Planet sun, earth, mars;
 
 SavedState currState = new SavedState();
@@ -202,7 +217,7 @@ class SavedState {
 };
 
 void draw() {
-  background(0, 0, 0);
+  background(PARENT_COLOR);
 
   pushMatrix();
   translate(width / 2, height / 2);
