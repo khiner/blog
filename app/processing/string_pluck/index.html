@@ -11,11 +11,12 @@
     <title>Static Top Navbar Example for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="styles/main.css" rel="stylesheet">
+    <link href="../../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../styles/main.css" rel="stylesheet">
   </head>
 
   <body>
+  	<!-- TODO DRY with grunt bake & templates -->
     <nav class="navbar navbar-default navbar-static-top">
       <div class="container">
         <div class="navbar-header">
@@ -31,15 +32,15 @@
           <ul class="nav navbar-nav">
             <li class='dropdown'><a href="#processing" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Processing<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-              	<li><a href="/processing/retrograde_motion">Retrograde motion</a></li>
-              	<li><a href="/processing/string_pluck">String pluck</a></li>
+                <li><a href="/processing/retrograde_motion">Retrograde motion</a></li>
+                <li><a href="/processing/string_pluck">String pluck</a></li>
               </ul>
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class='dropdown'><a href="#contact" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Contact<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-              	<li><a href="#">Email: karl.hiner@gmail.com</a></li>
+                <li><a href="#">Email: karl.hiner@gmail.com</a></li>
               </ul>
             </li>
           </ul>
@@ -50,10 +51,10 @@
     <div class="container">
       <!-- Main component for a primary marketing message or call to action -->
       <div id='pjs-parent' class="jumbotron">
-        <h1>Apparent retrograde motion</h1>
-        <h2 class='lead'>Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies within its system, as observed from a particular vantage point. </br><small>Earth's orbit speed relative to mars is slightly exaggerated to enhance the effect</small>
-        </h2>
-
+        <h1>String pluck</h1>
+        <h2 class='lead'>Pluck the string by holding the mouse down and releasing.
+          <small>The equation for this simulation is due to:
+            http://www.oberlin.edu/faculty/brichard/Apples/StringsPage.html</small></h2>
         <canvas id="pjs"></canvas>
       </div>
     </div> <!-- /container -->
@@ -62,8 +63,8 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="dist/processing-1.4.8.min.js"></script>
-    <script type="application/processing" data-processing-target="pjs" src="processing/retrograde_motion/retrograde_motion.pde"></script>
+    <script src="../../components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../../dist/processing-1.4.8.min.js"></script>
+    <script type="application/processing" data-processing-target="pjs" src="string_pluck.pde"></script>
   </body>
 </html>

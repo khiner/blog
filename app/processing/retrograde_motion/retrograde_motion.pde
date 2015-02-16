@@ -4,7 +4,7 @@
 
 // https://shoffing.wordpress.com/2013/02/22/automatically-scaling-a-processing-js-sketch-to-fit-the-browser-window/comment-page-1/#comment-149
 function doResize() {
-  var setupWidth = $('#retrograde-parent').width();
+  var setupWidth = $('#pjs-parent').width();
 
   var setupHeight = setupWidth;
   $('#pjs').height(setupHeight);
@@ -25,7 +25,7 @@ function rgbToHex(rgb) {
 }
 
 function getBackgroundColor() {
-  return rgbToHex($('#retrograde-parent').css('background-color'));
+  return rgbToHex($('#pjs-parent').css('background-color'));
 }
 
 color fadeColor(color c, float amt, boolean limit) {

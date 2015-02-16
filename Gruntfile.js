@@ -32,7 +32,7 @@ module.exports = function (grunt) {
                     'app/*.html',
                     'app/styles/{,*/}*.css',
                     'app/scripts/{,*/}*.js',
-                    'app/scripts/{,*/}*.pde',
+                    'app/processing/{,*/}*.pde',
                     'app/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
             }
