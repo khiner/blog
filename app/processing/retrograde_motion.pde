@@ -143,12 +143,12 @@ class Planet {
   }
 };
 
-final float SIM_SPEED = .015;  // controls the speed of all things
+final float AU = 149598000f; // Astronomical Unit, in km
 final float SCALE_FACTOR = 2500000000f;  // scale of whole sketch in km
 final float SCALE_SUN = 0.017f; // da Sun is big...
 final float SCALE_PLANETS = 3200f; // da planets are small...
-final float AU = 149598000f; // Astronomical Unit, in km
-final float APPROACHING_DIST_SQUARED = 40f * 40f;
+final float SIM_SPEED = .015;  // controls the speed of all things
+final float APPROACHING_DIST_SQUARED = 1.4f;
 
 final int FRAME_SAVE_FREQUENCY = (int) (2000f * SIM_SPEED);
 final int MAX_SAVED_STATES = 10;
@@ -256,7 +256,7 @@ void draw() {
   }
   popMatrix();
 
-  if (earth.pos.distanceToSquared(mars.pos) < APPROACHING_DIST_SQUARED) {
+  if (earth.pos.distanceToSquared(mars.pos) < APPROACHING_DIST_SQUARED * width) {
     if (!approaching) {
       pastStates = new SavedState[MAX_SAVED_STATES];
       approaching = true;
