@@ -9,6 +9,7 @@ function doResize() {
   var setupHeight = setupWidth;
   $('#pjs').height(setupHeight);
   size(setupWidth, setupHeight);
+  onSizeChange();
 }
 $(window).resize(doResize);
 
@@ -81,6 +82,10 @@ class Vec2D {
     return sqrt(magnitudeSquared());
   }
 
+  float distanceTo(Vec2D other) {
+    return other.sub(this).magnitude();
+  }
+
   float distanceToSquared(Vec2D other) {
     return other.sub(this).magnitudeSquared();
   }
@@ -95,8 +100,8 @@ class Vec2D {
 
 class Planet {
   String name;
-  float radius;
-  float ellipseA;
+  float radiusUnscaled, radius;
+  float ellipseAUnscaled, ellipseA;
   float ellipseE;
   float ellipseB;
   float ellipseCenter;
@@ -106,16 +111,24 @@ class Planet {
 
   Planet(String name, float radius, float ellipseA, float ellipseE, float startDegrees) {
     this.name = name;
-    this.radius = map(radius, 0, SCALE_FACTOR, 0, width / 2) * SCALE_PLANETS;
-    this.ellipseA = map(ellipseA * AU, 0, SCALE_FACTOR, 0, width / 2);
+
+    this.radiusUnscaled = radius;
+    this.ellipseAUnscaled = ellipseA;
     this.ellipseE = ellipseE;
-    ellipseB = (float) (this.ellipseA * Math.sqrt(1 - ellipseE * ellipseE));
-    ellipseCenter = this.ellipseA * ellipseE;
-    orbitSpeed= (ellipseA == 0) ? 0 : 1.0 / ellipseA;
 
     pathAngleRadians = radians(startDegrees);
 
     pos = new Vec2D(0, 0);
+
+    onSizeChange();
+  }
+
+  void onSizeChange() {
+    radius = map(radiusUnscaled, 0, SCALE_FACTOR, 0, width / 2) * SCALE_PLANETS;
+    ellipseA = map(ellipseAUnscaled * AU, 0, SCALE_FACTOR, 0, width / 2);
+    ellipseB = (float) (ellipseA * Math.sqrt(1 - ellipseE * ellipseE));
+    ellipseCenter = ellipseA * ellipseE;
+    orbitSpeed = (ellipseA == 0) ? 0 : (width / 500f) / ellipseA;
   }
 
   void tick() {
@@ -147,10 +160,10 @@ final float AU = 149598000f; // Astronomical Unit, in km
 final float SCALE_FACTOR = 2500000000f;  // scale of whole sketch in km
 final float SCALE_SUN = 0.017f; // da Sun is big...
 final float SCALE_PLANETS = 3200f; // da planets are small...
-final float SIM_SPEED = .015;  // controls the speed of all things
-final float APPROACHING_DIST_SQUARED = 1.4f;
+final float SIM_SPEED = .30;  // controls the speed of all things
+final float APPROACHING_DIST = 0.04f;
 
-final int FRAME_SAVE_FREQUENCY = (int) (2000f * SIM_SPEED);
+final int FRAME_SAVE_FREQUENCY = 30;
 final int MAX_SAVED_STATES = 10;
 
 final color BACKGROUND_COLOR = color(85, 170, 216);
@@ -161,6 +174,15 @@ Planet sun, earth, mars;
 
 SavedState currState = new SavedState();
 SavedState[] pastStates = new SavedState[MAX_SAVED_STATES];
+
+void onSizeChange() {
+  if (sun != null && earth != null && mars != null) {
+    sun.onSizeChange();
+    earth.onSizeChange();
+    earth.orbitSpeed *= 1.2; // make orbit speed difference more dramatic
+    mars.onSizeChange();
+  }
+}
 
 void setup() {
   doResize();
@@ -189,9 +211,8 @@ void setup() {
 
   sun = new Planet('Sun', 700000f * SCALE_SUN, 0, 0, 0);
   earth = new Planet('Earth', 6400f, 1, -0.017, 0);
-  earth.orbitSpeed *= 1.2; // make orbit speed difference more dramatic
   mars = new Planet('Mars', 3400f, 1.881, -0.093, 250);
-
+  onSizeChange();
   currState = new SavedState(earth.pos, mars.pos);
 }
 
@@ -256,7 +277,7 @@ void draw() {
   }
   popMatrix();
 
-  if (earth.pos.distanceToSquared(mars.pos) < APPROACHING_DIST_SQUARED * width) {
+  if (earth.pos.distanceTo(mars.pos) < APPROACHING_DIST * width) {
     if (!approaching) {
       pastStates = new SavedState[MAX_SAVED_STATES];
       approaching = true;
