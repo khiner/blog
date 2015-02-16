@@ -73,8 +73,16 @@ class Vec2D {
     return x + y;
   }
 
+  float magnitudeSquared() {
+    return x * x + y * y;
+  }
+
   float magnitude() {
-    return sqrt((x * x) + (y * y));
+    return sqrt(magnitudeSquared());
+  }
+
+  float distanceToSquared(Vec2D other) {
+    return other.sub(this).magnitudeSquared();
   }
 
   float radians(Vec2D other) {
@@ -139,14 +147,16 @@ final float SIM_SPEED = .015;  // controls the speed of all things
 final float SCALE_FACTOR = 2500000000f;  // scale of whole sketch in km
 final float SCALE_SUN = 0.017f; // da Sun is big...
 final float SCALE_PLANETS = 3200f; // da planets are small...
-final int AU = 149598000; // Astronomical Unit, in km
+final float AU = 149598000f; // Astronomical Unit, in km
+final float APPROACHING_DIST_SQUARED = 40f * 40f;
 
 final int FRAME_SAVE_FREQUENCY = (int) (2000f * SIM_SPEED);
 final int MAX_SAVED_STATES = 10;
-final int APPROACHING_DIST = 40;
+
 final color BACKGROUND_COLOR = color(85, 170, 216);
 final color FOREGROUND_COLOR = color(221, 250, 252);
 final color PARENT_COLOR = unhex(getBackgroundColor());
+
 Planet sun, earth, mars;
 
 SavedState currState = new SavedState();
@@ -246,7 +256,7 @@ void draw() {
   }
   popMatrix();
 
-  if (earth.pos.sub(mars.pos).magnitude() < APPROACHING_DIST) {
+  if (earth.pos.distanceToSquared(mars.pos) < APPROACHING_DIST_SQUARED) {
     if (!approaching) {
       pastStates = new SavedState[MAX_SAVED_STATES];
       approaching = true;
