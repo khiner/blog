@@ -4,10 +4,10 @@
 
 // https://shoffing.wordpress.com/2013/02/22/automatically-scaling-a-processing-js-sketch-to-fit-the-browser-window/comment-page-1/#comment-149
 function doResize() {
-  var setupWidth = $('#pjs-parent').width();
+  var setupWidth = $('#string-pluck-parent').width();
 
   var setupHeight = setupWidth / 4;
-  $('#pjs').height(setupHeight);
+  $('#string-pluck-canvas').height(setupHeight);
   size(setupWidth, setupHeight, P2D);
   onSizeChange();
 }
@@ -25,7 +25,7 @@ function rgbToHex(rgb) {
 }
 
 function getBackgroundColor() {
-  return rgbToHex($('#pjs-parent').css('background-color'));
+  return rgbToHex($('#string-pluck-parent').css('background-color'));
 }
 
 
@@ -38,6 +38,8 @@ function getBackgroundColor() {
  
 final float PI_SQUARED = PI*PI;
 final color PARENT_COLOR = unhex(getBackgroundColor());
+final color BACKGROUND_COLOR = color(85, 170, 216);
+final color FOREGROUND_COLOR = color(221, 250, 252);
 
 boolean plucked = false;
 int t = 0;          // time since pluck
@@ -63,12 +65,15 @@ void setup() {
   doResize();
   strokeWeight(3);
   smooth();
-  noFill();
 }
  
 void draw() {
   background(PARENT_COLOR);
-  stroke(color(85, 170, 216));
+  noStroke();
+  fill(BACKGROUND_COLOR);
+  rect(0, 0, width, height, width / 20);
+  stroke(FOREGROUND_COLOR);
+
   if (plucked) {
     t++;
     amp /= damp;

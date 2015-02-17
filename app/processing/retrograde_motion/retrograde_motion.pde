@@ -4,10 +4,10 @@
 
 // https://shoffing.wordpress.com/2013/02/22/automatically-scaling-a-processing-js-sketch-to-fit-the-browser-window/comment-page-1/#comment-149
 function doResize() {
-  var setupWidth = $('#pjs-parent').width();
+  var setupWidth = $('#retrograde-motion-parent').width();
 
   var setupHeight = setupWidth;
-  $('#pjs').height(setupHeight);
+  $('#retrograde-motion-canvas').height(setupHeight);
   size(setupWidth, setupHeight);
   onSizeChange();
 }
@@ -25,7 +25,7 @@ function rgbToHex(rgb) {
 }
 
 function getBackgroundColor() {
-  return rgbToHex($('#pjs-parent').css('background-color'));
+  return rgbToHex($('#retrograde-motion-parent').css('background-color'));
 }
 
 color fadeColor(color c, float amt, boolean limit) {

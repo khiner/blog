@@ -26,7 +26,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Karl Hiner's Portfolio</a>
+          <a class="navbar-brand" href="/">Karl Hiner</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -49,15 +49,14 @@
     </nav>
 
     <div class="container">
-      <!-- Main component for a primary marketing message or call to action -->
-      <div id='pjs-parent' class="jumbotron">
+      <div id='retrograde-motion-parent' class="jumbotron">
         <h1>Apparent retrograde motion</h1>
-        <h2 class='lead'>Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies within its system, as observed from a particular vantage point. </br><small>Earth's orbit speed relative to mars is slightly exaggerated to enhance the effect</small>
+        <h2 class='lead'>Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies within its system, as observed from a particular vantage point.  </br>
+          <small>Earth's orbit speed relative to mars is slightly exaggerated to enhance the effect</small>
         </h2>
-
-        <canvas id="pjs"></canvas>
+        <canvas id="retrograde-motion-canvas"></canvas>
       </div>
-    </div> <!-- /container -->
+    </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -65,6 +64,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="../../components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="../../dist/processing-1.4.8.min.js"></script>
-    <script type="application/processing" data-processing-target="pjs" src="retrograde_motion.pde"></script>
+    <script type="application/processing" data-processing-target="retrograde-motion-canvas" src="retrograde_motion.pde"></script>
   </body>
 </html>
