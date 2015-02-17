@@ -30,6 +30,7 @@
               <ul class="dropdown-menu" role="menu">
               	<li><a href="/processing/retrograde_motion">Retrograde motion</a></li>
               	<li><a href="/processing/string_pluck">String pluck</a></li>
+                <li><a href="/processing/snow_globe">Snow globe</a></li>
               </ul>
             </li>
           </ul>
@@ -46,8 +47,8 @@
 
     <div class="container">
       <!-- Main component for a primary marketing message or call to action -->
-      <div id='retrograde-motion-parent' class="jumbotron">
-        <h1>Apparent retrograde motion</h1>
+      <div id='retrograde-motion-parent' class="well">
+        <h1>Apparent Retrograde Motion</h1>
         <h2 class='lead'>Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies within its system, as observed from a particular vantage point. </br><small>Earth's orbit speed relative to mars is slightly exaggerated to enhance the effect</small>
         </h2>
 
@@ -56,8 +57,8 @@
     </div> <!-- /container -->
 
     <div class="container">
-      <div id='string-pluck-parent' class="jumbotron">
-        <h1>String pluck</h1>
+      <div id='string-pluck-parent' class="well">
+        <h1>String Pluck</h1>
         <h2 class='lead'>Pluck the string by holding the mouse down and releasing.
           </br>
           <small>
@@ -65,6 +66,27 @@
           </small>
         </h2>
         <canvas id="string-pluck-canvas"></canvas>
+      </div>
+    </div>
+
+    <div class='container'>
+      <div id='snow-globe-parent' class='well'>
+        <h1>Snow Globe</h1>
+        <h2 class='lead'>Some fun with edge detection.  This very simple effect, when used on images like cityscapes, looks like a blizzard.
+          </br>
+        </h2>
+        <p>This uses the Canny edge detection method.
+          Canny is much more verbose and complex than some others like the Sobel method,
+          but has better results, especially on noisy images, and performs at about the same speed.
+        </p>
+        <ul>
+          <li>Click on the image to start the effect.</li>
+          <li>Hold down the mouse to drop snow.</li>
+          <li>Use the UP and DOWN keys to make it snow more or less.</li>
+          <li>Use the SPACE key to toggle between the original image and back.</li>
+        </ul>
+        <small>This implementation of Canny Edge Detection is stripped down and adapted from Tom Gibara's implementation <a href='http://www.tomgibara.com/computer-vision/CannyEdgeDetector.java'>here</a>.</small>
+        <canvas id='snow-globe-canvas'></canvas>
       </div>
     </div>
 
@@ -76,5 +98,6 @@
     <script src="dist/processing-1.4.8.min.js"></script>
     <script type="application/processing" data-processing-target="retrograde-motion-canvas" src="processing/retrograde_motion/retrograde_motion.pde"></script>
     <script type="application/processing" data-processing-target="string-pluck-canvas" src="processing/string_pluck/string_pluck.pde"></script>
+    <script type="application/processing" data-processing-target="snow-globe-canvas" src="processing/snow_globe/snow_globe.pde"></script>
   </body>
 </html>

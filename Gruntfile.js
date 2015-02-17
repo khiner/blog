@@ -33,7 +33,7 @@ module.exports = function (grunt) {
                     'app/styles/{,*/}*.css',
                     'app/scripts/{,*/}*.js',
                     'app/processing/{,*/}*.pde',
-                    'app/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+                    'app/assets/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
             }
         },

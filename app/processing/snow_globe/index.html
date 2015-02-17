@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Karl Hiner - Processing</title>
+    <title>Karl Hiner - String Pluck</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="author" content="Karl Hiner">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap core CSS -->
-    <link href="../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../styles/main.css" rel="stylesheet">
+    <link href="../../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../styles/main.css" rel="stylesheet">
   </head>
 
   <body>
+  	<!-- TODO DRY with grunt bake & templates -->
     <nav class="navbar navbar-default navbar-static-top">
       <div class="container">
         <div class="navbar-header">
@@ -28,7 +29,7 @@
           <ul class="nav navbar-nav">
             <li class='dropdown'><a href="#processing" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Processing<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-              	<li><a href="/processing/retrograde_motion">Retrograde motion</a></li>
+                <li><a href="/processing/retrograde_motion">Retrograde motion</a></li>
                 <li><a href="/processing/string_pluck">String pluck</a></li>
                 <li><a href="/processing/snow_globe">Snow globe</a></li>
               </ul>
@@ -37,7 +38,7 @@
           <ul class="nav navbar-nav navbar-right">
             <li class='dropdown'><a href="#contact" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Contact<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-              	<li><a href="#">Email: karl.hiner@gmail.com</a></li>
+                <li><a href="#">Email: karl.hiner@gmail.com</a></li>
               </ul>
             </li>
           </ul>
@@ -45,31 +46,6 @@
       </div>
     </nav>
 
-    <div class="container">
-      <div id='retrograde-motion-parent' class="well">
-        <h1>Apparent Retrograde Motion</h1>
-        <h2 class='lead'>Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies within its system, as observed from a particular vantage point.  </br>
-          <small>Earth's orbit speed relative to mars is slightly exaggerated to enhance the effect</small>
-        </h2>
-        <canvas id="retrograde-motion-canvas"></canvas>
-      </div>
-    </div>
-
-
-    <div class="container">
-      <div id='string-pluck-parent' class="well">
-        <h1>String Pluck</h1>
-        <h2 class='lead'>Pluck the string by holding the mouse down and releasing.
-          </br>
-          <small>
-            <a href='http://www.oberlin.edu/faculty/brichard/Apples/StringsPage.html'>The equation for this simulation</a>
-          </small>
-        </h2>
-        <canvas id="string-pluck-canvas"></canvas>
-      </div>
-    </div>
-
-    <div class='container'>
     <div class='container'>
       <div id='snow-globe-parent' class='well'>
         <h1>Snow Globe</h1>
@@ -95,10 +71,8 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="../components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="../dist/processing-1.4.8.min.js"></script>
-    <script type="application/processing" data-processing-target="retrograde-motion-canvas" src="retrograde_motion/retrograde_motion.pde"></script>
-    <script type="application/processing" data-processing-target="string-pluck-canvas" src="string_pluck/string_pluck.pde"></script>
-    <script type="application/processing" data-processing-target="snow-globe-canvas" src="snow_globe/snow_globe.pde"></script>
+    <script src="../../components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../../dist/processing-1.4.8.min.js"></script>
+    <script type="application/processing" data-processing-target="snow-globe-canvas" src="snow_globe.pde"></script>
   </body>
 </html>
