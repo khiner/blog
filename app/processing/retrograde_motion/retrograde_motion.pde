@@ -157,11 +157,11 @@ class Planet {
 };
 
 final float AU = 149598000f; // Astronomical Unit, in km
-final float SCALE_FACTOR = 2500000000f;  // scale of whole sketch in km
+final float SCALE_FACTOR = 2000000000f;  // scale of whole sketch in km
 final float SCALE_SUN = 0.017f; // da Sun is big...
 final float SCALE_PLANETS = 3200f; // da planets are small...
 final float SIM_SPEED = .30;  // controls the speed of all things
-final float APPROACHING_DIST = 0.04f;
+final float APPROACHING_DIST = 0.065f;
 
 final int FRAME_SAVE_FREQUENCY = 30;
 final int MAX_SAVED_STATES = 10;
