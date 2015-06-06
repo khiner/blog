@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap core CSS -->
-    <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/styles/main.css" rel="stylesheet">
+    <link href="../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../styles/main.css" rel="stylesheet">
   </head>
 
   <body>
@@ -65,6 +65,13 @@
         $('.main_contents').load(practiceType + '.html');
         if (practiceTypeIndex < practiceTypes.length - 1) {
           setTimeout(function() { loadPracticePage(practiceTypeIndex + 1) }, practiceTimeMillis);
+        }
+      }
+
+      function displayKey(keyIndex) {
+        $('#key').text(keys[keyIndex]);
+        if (keyIndex < keys.length - 1) {
+          setTimeout(function() { displayKey(keyIndex + 1) }, practiceTimeMillis / keys.length);
         }
       }
 

@@ -1,12 +1,5 @@
 <h1>Five-finger pattern</h1>
 <h2 id='key'></h2>
 <script>
-  function displayKey(keyIndex) {
-    $('#key').text(keys[keyIndex]);
-    if (keyIndex < keys.length - 1) {
-      setTimeout(function() { displayKey(keyIndex + 1) }, practiceTimeMillis / keys.length);
-    }
-  }
-
   displayKey(0);
 </script>
