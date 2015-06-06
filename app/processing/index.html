@@ -13,38 +13,7 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-static-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/">Karl Hiner</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class='dropdown'><a href="#processing" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Processing<span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-              	<li><a href="/processing/retrograde_motion">Retrograde motion</a></li>
-                <li><a href="/processing/string_pluck">String pluck</a></li>
-                <li><a href="/processing/snow_globe">Snow globe</a></li>
-              </ul>
-            </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li class='dropdown'><a href="#contact" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Contact<span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-              	<li><a href="#">Email: karl.hiner@gmail.com</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
+    <div id="main_nav"></div>
     <div class="container">
       <div id='retrograde-motion-parent' class="well">
         <h1>Apparent Retrograde Motion</h1>
@@ -100,5 +69,8 @@
     <script type="application/processing" data-processing-target="retrograde-motion-canvas" src="retrograde_motion/retrograde_motion.pde"></script>
     <script type="application/processing" data-processing-target="string-pluck-canvas" src="string_pluck/string_pluck.pde"></script>
     <script type="application/processing" data-processing-target="snow-globe-canvas" src="snow_globe/snow_globe.pde"></script>
+    <script type="text/javascript">
+      $(document).ready(function() { $('#main_nav').load('../../main_nav.html'); });
+    </script>
   </body>
 </html>
