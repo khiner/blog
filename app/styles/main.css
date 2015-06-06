@@ -4,3 +4,12 @@ body {
 canvas:focus {
   outline: none;
 }
+.vertical-list {
+  display: inline-block;
+}
+.list-child {
+  display: inline-block;
+}
+.list-child.time-dropdown-group {
+  padding-left: 5em;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Karl Hiner - Practice piano</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Karl Hiner">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../styles/main.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="main_nav"></div>
+    <div class="container">
+      <div class="practice-list-parent">
+        <ul class="vertical-list">
+          <li class="list-group-item">
+            <div class="list-child">5-finger pattern</div>
+            <div class="list-child time-dropdown-group"></div>
+          </li>
+          <li class="list-group-item">
+            <div class="list-child">Scales</div>
+            <div class="list-child time-dropdown-group"></div>
+          </li>
+          <li class="list-group-item">
+            <div class="list-child">Chords</div>
+            <div class="list-child time-dropdown-group"></div>
+          </li>
+          <li class="list-group-item">
+            <div class="list-child">Ear training</div>
+            <div class="list-child time-dropdown-group"></div>
+          </li>
+          <li class="list-group-item">
+            <div class="list-child">Sight reading</div>
+            <div class="list-child time-dropdown-group"></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="../../components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() { $('#main_nav').load('../../main_nav.html'); });
+      $(document).ready(function() { $('.time-dropdown-group').load('time_dropdown_group.html'); });
+    </script>
+  </body>
+</html>
