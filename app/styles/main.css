@@ -13,3 +13,6 @@ canvas:focus {
 .list-child.time-dropdown-group {
   padding-left: 5em;
 }
+#key {
+  font-size: 300px;
+}

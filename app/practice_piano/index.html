@@ -47,18 +47,24 @@
       $(document).ready(function() { $('#main_nav').load('../../main_nav.html'); });
       $(document).ready(function() { $('.time-dropdown-group').load('time_dropdown_group.html'); });
 
+      var keys = [
+        'C', 'G', 'D', 'A', 'E', 'B', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'
+      ];
+
       var practiceTimes = {};
       var practiceTypes = [];
+      var practiceTimeMillis;
 
       function minutesToMillis(minutes) {
         return minutes * 60 * 1000;
       }
 
       function loadPracticePage(practiceTypeIndex) {
-        $('.main_contents').load(practiceTypes[practiceTypeIndex] + '.html');
+        var practiceType = practiceTypes[practiceTypeIndex];
+        practiceTimeMillis = practiceTimes[practiceType];
+        $('.main_contents').load(practiceType + '.html');
         if (practiceTypeIndex < practiceTypes.length - 1) {
-          var timeout = practiceTimes[practiceTypes[practiceTypeIndex]];
-          setTimeout(function() { loadPracticePage(practiceTypeIndex + 1) }, timeout);
+          setTimeout(function() { loadPracticePage(practiceTypeIndex + 1) }, practiceTimeMillis);
         }
       }
 
