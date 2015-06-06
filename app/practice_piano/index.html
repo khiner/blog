@@ -46,18 +46,31 @@
     <script type="text/javascript">
       $(document).ready(function() { $('#main_nav').load('../../main_nav.html'); });
       $(document).ready(function() { $('.time-dropdown-group').load('time_dropdown_group.html'); });
+
       var practiceTimes = {};
       var practiceTypes = [];
+
+      function minutesToMillis(minutes) {
+        return minutes * 60 * 1000;
+      }
+
+      function loadPracticePage(practiceTypeIndex) {
+        $('.main_contents').load(practiceTypes[practiceTypeIndex] + '.html');
+        if (practiceTypeIndex < practiceTypes.length - 1) {
+          var timeout = practiceTimes[practiceTypes[practiceTypeIndex]];
+          setTimeout(function() { loadPracticePage(practiceTypeIndex + 1) }, timeout);
+        }
+      }
+
       $('.start').on('click', function() {
         $('.list-group-item').each(function() {
           var practiceType = $(this).attr('id');
           var timeMinutes = +$(this).find('.time-value').text();
-          practiceTimes[practiceType] = timeMinutes;
+          practiceTimes[practiceType] = minutesToMillis(timeMinutes);
           practiceTypes.push(practiceType);
         });
 
-        var currentPracticeTypeIndex = 0;
-        $('.main_contents').load(practiceTypes[0] + '.html');
+        loadPracticePage(0);
       });
     </script>
   </body>
