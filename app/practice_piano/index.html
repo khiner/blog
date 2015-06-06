@@ -8,44 +8,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap core CSS -->
-    <link href="../../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../styles/main.css" rel="stylesheet">
+    <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/styles/main.css" rel="stylesheet">
   </head>
 
   <body>
     <div id="main_nav"></div>
-    <div class="container">
+    <div class="container main_contents">
       <div class="practice-list-parent">
         <ul class="vertical-list">
-          <li class="list-group-item">
-            <div class="list-child">5-finger pattern</div>
+          <li id='five_finger' class="list-group-item">
+            <div class="list-child practice-type">Five-finger pattern</div>
             <div class="list-child time-dropdown-group"></div>
           </li>
-          <li class="list-group-item">
-            <div class="list-child">Scales</div>
+          <li id='scales' class="list-group-item">
+            <div class="list-child practice-type">Scales</div>
             <div class="list-child time-dropdown-group"></div>
           </li>
-          <li class="list-group-item">
-            <div class="list-child">Chords</div>
+          <li id='chords' class="list-group-item">
+            <div class="list-child practice-type">Chords</div>
             <div class="list-child time-dropdown-group"></div>
           </li>
-          <li class="list-group-item">
-            <div class="list-child">Ear training</div>
+          <li id='ear_training' class="list-group-item">
+            <div class="list-child practice-type">Ear training</div>
             <div class="list-child time-dropdown-group"></div>
           </li>
-          <li class="list-group-item">
-            <div class="list-child">Sight reading</div>
+          <li id='sight_reading' class="list-group-item">
+            <div class="list-child practice-type">Sight reading</div>
             <div class="list-child time-dropdown-group"></div>
           </li>
         </ul>
       </div>
+      <button class="start btn btn-default btn-lg" type="button">Start</button>
     </div>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="../../components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function() { $('#main_nav').load('../../main_nav.html'); });
       $(document).ready(function() { $('.time-dropdown-group').load('time_dropdown_group.html'); });
+      var practiceTimes = {};
+      var practiceTypes = [];
+      $('.start').on('click', function() {
+        $('.list-group-item').each(function() {
+          var practiceType = $(this).attr('id');
+          var timeMinutes = +$(this).find('.time-value').text();
+          practiceTimes[practiceType] = timeMinutes;
+          practiceTypes.push(practiceType);
+        });
+
+        var currentPracticeTypeIndex = 0;
+        $('.main_contents').load(practiceTypes[0] + '.html');
+      });
     </script>
   </body>
 </html>
