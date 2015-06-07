@@ -51,6 +51,11 @@
         'C', 'G', 'D', 'A', 'E', 'B', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'
       ];
 
+      var audioForKeys = {};
+      keys.forEach(function(key) {
+        audioForKeys[key] = new Audio('audio/' + key + '.mp3');
+      });
+
       var practiceTimes = {};
       var practiceTypes = [];
       var practiceTimeMillis;
@@ -69,7 +74,9 @@
       }
 
       function displayKey(keyIndex) {
-        $('#key').text(keys[keyIndex]);
+        var key = keys[keyIndex];
+        audioForKeys[key].play();
+        $('#key').text(key);
         if (keyIndex < keys.length - 1) {
           setTimeout(function() { displayKey(keyIndex + 1) }, practiceTimeMillis / keys.length);
         }
