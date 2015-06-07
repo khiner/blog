@@ -17,3 +17,7 @@ canvas:focus {
 #chord {
   font-size: 300px;
 }
+.start {
+  width: 100%;
+  height: 100%;
+}

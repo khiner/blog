@@ -17,32 +17,36 @@
     <div class="container main_contents">
       <div class="practice-list-parent">
         <ul class="vertical-list">
-          <li id='five_finger' class="list-group-item">
+          <li id='five_finger' class="list-group-item practice-type-group">
             <div class="list-child practice-type">Five-finger pattern</div>
             <div class="list-child time-dropdown-group"></div>
           </li>
-          <li id='scales' class="list-group-item">
+          <li id='scales' class="list-group-item practice-type-group">
             <div class="list-child practice-type">Scales</div>
             <div class="list-child time-dropdown-group"></div>
           </li>
-          <li id='chords' class="list-group-item">
+          <li id='chords' class="list-group-item practice-type-group">
             <div class="list-child practice-type">Chords</div>
             <div class="list-child time-dropdown-group"></div>
           </li>
-          <li id='ear_training' class="list-group-item">
+          <li id='ear_training' class="list-group-item practice-type-group">
             <div class="list-child practice-type">Ear training</div>
             <div class="list-child time-dropdown-group"></div>
           </li>
-          <li id='sight_reading' class="list-group-item">
+          <li id='sight_reading' class="list-group-item practice-type-group">
             <div class="list-child practice-type">Sight reading</div>
             <div class="list-child time-dropdown-group"></div>
           </li>
+          <li class="list-group-item">
+            <button class="start btn btn-default btn-lg" type="button">Start</button>
+          </li>
         </ul>
       </div>
-      <button class="start btn btn-default btn-lg" type="button">Start</button>
+
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="/components/bootstrap/dist/js/bootstrap.min.js"></script>
+
     <script type="text/javascript">
       $(document).ready(function() { $('#main_nav').load('../../main_nav.html'); });
       $(document).ready(function() { $('.time-dropdown-group').load('time_dropdown_group.html'); });
@@ -105,7 +109,7 @@
       }
 
       $('.start').on('click', function() {
-        $('.list-group-item').each(function() {
+        $('.practice-type-group').each(function() {
           var practiceType = $(this).attr('id');
           var timeMinutes = +$(this).find('.time-value').text();
           practiceTimes[practiceType] = minutesToMillis(timeMinutes);
