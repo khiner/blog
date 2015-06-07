@@ -51,6 +51,10 @@
         'C', 'G', 'D', 'A', 'E', 'B', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'
       ];
 
+      var triadTypes = [
+        'maj', 'min', 'aug', 'dim'
+      ]
+
       var audioForKeys = {};
       keys.forEach(function(key) {
         audioForKeys[key] = new Audio('audio/' + key + '.mp3');
@@ -59,27 +63,45 @@
       var practiceTimes = {};
       var practiceTypes = [];
       var practiceTimeMillis;
+      var currKeyIndex;
+      var interval = null;
 
       function minutesToMillis(minutes) {
         return minutes * 60 * 1000;
       }
 
+      function sample(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
       function loadPracticePage(practiceTypeIndex) {
         var practiceType = practiceTypes[practiceTypeIndex];
         practiceTimeMillis = practiceTimes[practiceType];
+        currKeyIndex = 0;
+
+        if (interval != null) {
+          clearInterval(interval);
+        }
         $('.main_contents').load(practiceType + '.html');
         if (practiceTypeIndex < practiceTypes.length - 1) {
           setTimeout(function() { loadPracticePage(practiceTypeIndex + 1) }, practiceTimeMillis);
         }
       }
 
-      function displayKey(keyIndex) {
-        var key = keys[keyIndex];
+      function displayNextKey() {
+        if (currKeyIndex >= keys.length)
+          return;
+
+        var key = keys[currKeyIndex++];
         audioForKeys[key].play();
         $('#key').text(key);
-        if (keyIndex < keys.length - 1) {
-          setTimeout(function() { displayKey(keyIndex + 1) }, practiceTimeMillis / keys.length);
-        }
+      }
+
+      function displayNextChord() {
+        var key = sample(keys);
+        var triadType = sample(triadTypes);
+        audioForKeys[key].play();
+        $('#chord').text(key + triadType);
       }
 
       $('.start').on('click', function() {
