@@ -11,6 +11,9 @@ canvas:focus {
 .list-child.time-dropdown-group {
   text-align: right;
 }
+.list-child.practice-type {
+  font-weight: bold;
+}
 #key,
 #chord {
   font-size: 300px;
@@ -18,4 +21,6 @@ canvas:focus {
 .start {
   width: 100%;
   height: 100%;
+  font-size: 1.1em;
+  font-weight: bold;
 }
