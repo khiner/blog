@@ -6,6 +6,7 @@ canvas:focus {
 }
 .list-child {
   display: inline-block;
+  line-height: 2.5em;
 }
 .list-child.time-dropdown-group {
   text-align: right;
