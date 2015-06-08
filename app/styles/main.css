@@ -7,12 +7,18 @@ canvas:focus {
 .list-child {
   display: inline-block;
   line-height: 2.5em;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 .list-child.time-dropdown-group {
   text-align: right;
 }
 .list-child.practice-type {
   font-weight: bold;
+}
+.list-child.units {
+  padding-left: 0px;
+  padding-right: 0px;
 }
 #key,
 #chord {
