@@ -54,6 +54,11 @@ float hoopCenterX = 0;
 float hoopCenterY = 0;
 float hoopWidth;
 float hoopHeight;
+float ballCenterX = 0;
+float ballCenterY = 0;
+float ballRadius = 0;
+float ballVelocity = 0;
+float gravity = 0.2;
 
 void onSizeChange() {
   stringHeight = height * .75;
@@ -61,6 +66,9 @@ void onSizeChange() {
   hoopHeight = hoopWidth / 3;
   hoopCenterX = width / 4;
   hoopCenterY = height / 4;
+  ballRadius = hoopWidth / 6;
+  ballCenterX = width / 2;
+  ballCenterY = width / 2;
   precomputeHarmonics();
 }
 
@@ -91,6 +99,8 @@ void draw() {
   float w = PI * (c / width);
   float yScale = (1.5 * amp * width * width) / (PI_SQUARED * d * (width - d));
 
+  float stringY = 0;
+
   beginShape();
   if (plucked) {
     int segmentWidth = width / 75;
@@ -101,6 +111,10 @@ void draw() {
       }
 
       float y = yScale * sum + stringHeight;
+      if (x > ballCenterX - segmentWidth / 2 || x < ballCenterX + segmentWidth / 2) {
+        stringY = y;
+      }
+
       vertex(x, y);
     }
   }
@@ -108,10 +122,18 @@ void draw() {
     vertex(0, stringHeight);
     vertex(d, stringHeight + amp);
     vertex(width, stringHeight);
+    stringY = d / 2;
   }
   endShape();
 
   ellipse(hoopCenterX, hoopCenterY, hoopWidth, hoopHeight);
+  ellipse(ballCenterX, ballCenterY, ballRadius * 2, ballRadius * 2);
+
+  float nextBallCenterY = ballCenterY + ballVelocity;
+  if (nextBallCenterY + ballRadius < stringY) {
+    ballCenterY = nextBallCenterY;
+    ballVelocity = ballVelocity + gravity;
+  }
 }
  
 void mousePressed() {
