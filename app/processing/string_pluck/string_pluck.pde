@@ -6,7 +6,7 @@
 function doResize() {
   var setupWidth = $('#string-pluck-parent').width();
 
-  var setupHeight = setupWidth / 4;
+  var setupHeight = setupWidth;
   $('#string-pluck-canvas').height(setupHeight);
   size(setupWidth, setupHeight, P2D);
   onSizeChange();
@@ -49,8 +49,18 @@ float amp = 0;      // amplitude
 float d;            // x position of pluck
 float damp = 1.1;   // damping constant
 float[] precomputedHarmonics = new float[harmonics];
+float stringHeight;
+float hoopCenterX = 0;
+float hoopCenterY = 0;
+float hoopWidth;
+float hoopHeight;
 
 void onSizeChange() {
+  stringHeight = height * .75;
+  hoopWidth = width / 5;
+  hoopHeight = hoopWidth / 3;
+  hoopCenterX = width / 4;
+  hoopCenterY = height / 4;
   precomputeHarmonics();
 }
 
@@ -90,28 +100,30 @@ void draw() {
         sum += precomputedHarmonics[m - 1] * cos(w * m * t) * sin((PI * m * x) / width);
       }
 
-      float y = yScale * sum + height / 2;
+      float y = yScale * sum + stringHeight;
       vertex(x, y);
     }
   }
   else {
-    vertex(0, height / 2);
-    vertex(d, height / 2 + amp);
-    vertex(width, height / 2);
+    vertex(0, stringHeight);
+    vertex(d, stringHeight + amp);
+    vertex(width, stringHeight);
   }
   endShape();
+
+  ellipse(hoopCenterX, hoopCenterY, hoopWidth, hoopHeight);
 }
  
 void mousePressed() {
   plucked = false;
   t = 0;
-  amp = mouseY - height / 2;
+  amp = mouseY - stringHeight;
   d = mouseX;
 }
  
 void mouseDragged() {
   d = mouseX;
-  amp = mouseY - height / 2;
+  amp = mouseY - stringHeight;
 }
  
 void mouseReleased() {
