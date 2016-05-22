@@ -48,12 +48,13 @@ float c = 100;      // speed
 float amp = 0;      // amplitude
 float d;            // x position of pluck
 float damp = 1.1;   // damping constant
-float[] precomputedHarmonics = new float[harmonics];
 float stringHeight;
 Actor hoop = new Actor();
 Actor ball = new Actor();
 float gravity = 0.2;
 int numStringSegments = 100;
+float[] precomputedHarmonics = new float[harmonics];
+float[] stringYPositions = new float[numStringSegments];
 
 void onSizeChange() {
   stringHeight = height * .75;
@@ -65,7 +66,7 @@ void onSizeChange() {
 }
 
 void precomputeHarmonics() {
-    for (int i = 0; i < precomputedHarmonics.length; i++) {
+  for (int i = 0; i < precomputedHarmonics.length; i++) {
     int m = i + 1;
     precomputedHarmonics[i] = (1.0 / (m * m)) * sin((PI_SQUARED * m * d) / width);
   }
@@ -92,22 +93,18 @@ void draw() {
   float yScale = (1.5 * amp * width * width) / (PI_SQUARED * d * (width - d));
 
   beginShape();
-  if (plucked) {
-    for (int x = 0; x < width; x += width / numStringSegments) {
+  for (int stringSegment = 0; stringSegment < numStringSegments; stringSegment++) {
+    float x = stringSegment * width / (float) numStringSegments;
+    if (plucked) {
       float sum = 0;
       for (int m = 1; m <= harmonics; m++) {
         sum += precomputedHarmonics[m - 1] * cos(w * m * t) * sin((PI * m * x) / width);
       }
-      float y = yScale * sum + stringHeight;
-
-      vertex(x, y);
+      stringYPositions[stringSegment] = yScale * sum + stringHeight;
+    } else {
+      stringYPositions[stringSegment] = x < d ? stringHeight + x * amp / d : stringHeight + (width - x) * amp / (width - d);
     }
-  }
-  else {
-    vertex(0, stringHeight);
-    vertex(d, stringHeight + amp);
-    vertex(width, stringHeight);
-    stringY = stringHeight + amp;
+    vertex(x, stringYPositions[stringSegment]);
   }
   endShape();
 
@@ -115,10 +112,10 @@ void draw() {
   hoop.drawAsEllipse();
 
   float nextBallVectorY = ball.getYPosition() + ball.getYVelocity();
-  if (nextBallVectorY + ball.getHeight() / 2 < stringY) {
+  //if (nextBallVectorY + ball.getHeight() / 2 < stringY) {
     ball.setYPosition(nextBallVectorY);
     ball.incrementYVelocity(gravity);
-  }
+  //}
 }
  
 void mousePressed() {
