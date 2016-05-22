@@ -53,6 +53,7 @@ float stringHeight;
 Actor hoop = new Actor();
 Actor ball = new Actor();
 float gravity = 0.2;
+int numStringSegments = 100;
 
 void onSizeChange() {
   stringHeight = height * .75;
@@ -90,21 +91,14 @@ void draw() {
   float w = PI * (c / width);
   float yScale = (1.5 * amp * width * width) / (PI_SQUARED * d * (width - d));
 
-  float stringY = 0;
-
   beginShape();
   if (plucked) {
-    int segmentWidth = width / 75;
-    for (int x = 0; x < width; x += segmentWidth) {
+    for (int x = 0; x < width; x += width / numStringSegments) {
       float sum = 0;
       for (int m = 1; m <= harmonics; m++) {
         sum += precomputedHarmonics[m - 1] * cos(w * m * t) * sin((PI * m * x) / width);
       }
-
       float y = yScale * sum + stringHeight;
-      if (x > ball.getXPosition() - segmentWidth / 2 || x < ball.getXPosition() + segmentWidth / 2) {
-        stringY = y;
-      }
 
       vertex(x, y);
     }
