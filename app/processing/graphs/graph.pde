@@ -8,7 +8,10 @@ function doResize() {
   onSizeChange();
   stroke(0);
   fill(0);
+  halfWidth = width / 2;
+  halfHeight = height / 2;
 }
+
 $(window).resize(doResize);
 
 // convert CSS background color to something Processing can use
@@ -27,9 +30,10 @@ function getBackgroundColor() {
 }
 
 Network network;
+float halfWidth, halfHeight;
 
 void setup() {
-  network = new Network(9 * 9);
+  network = new Network(13 * 13);
   doResize();
 }
 
@@ -103,7 +107,7 @@ class Network {
       for (int j = 0; j < numElements; j++) {
         if (weights[i][j] > 0) {
           for (int d = 0; d < dimensions; d++) {
-            velocities[i][d] += -(weights[i][j] - (positions[j][d] - positions[i][d])) * k;
+            velocities[i][d] += (positions[j][d] - positions[i][d] - weights[i][j]) * k;
           }
         }
 
@@ -122,7 +126,7 @@ class Network {
   }
 
   void draw() {
-    translate(-viewCenter[0] + width / 2, -viewCenter[1] + height / 2);
+    translate(halfWidth - viewCenter[0], halfHeight - viewCenter[1]);
     for (int i = 0; i < numElements; i++) {
       ellipse(positions[i][0], positions[i][1], 10, 10);
       for (int j = i; j < numElements; j++) {
