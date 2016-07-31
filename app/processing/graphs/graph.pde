@@ -1,13 +1,12 @@
 // https://shoffing.wordpress.com/2013/02/22/automatically-scaling-a-processing-js-sketch-to-fit-the-browser-window/comment-page-1/#comment-149
 function doResize() {
   var setupWidth = $('#graphs-parent').width();
-
   var setupHeight = setupWidth;
   $('#graphs-canvas').height(setupHeight);
   size(setupWidth, setupHeight);
-  onSizeChange();
   halfWidth = width / 2;
   halfHeight = height / 2;
+  network.onSizeChange();
 }
 
 $(window).resize(doResize);
@@ -30,12 +29,12 @@ function getBackgroundColor() {
 Network network;
 float halfWidth, halfHeight;
 float backgroundColor = unhex(getBackgroundColor());
+
+PImage img = loadImage("/assets/mario.jpg");
 float[] imagePixels;
-PImage img;
 
 void setup() {
-  network = new Network(21);
-  img = loadImage("/assets/cityscape.jpg");
+  network = new Network(5);
   doResize();
 }
 
@@ -45,9 +44,9 @@ void draw() {
   network.draw();
 
   if (imagePixels == null && img.loaded) {
-    img.resize(network.dim, network.dim);
     img.loadPixels();
-    imagePixels = img.pixels;
+    imagePixels = copyFloatArray(img.pixels);
+    network.onSizeChange();
   }
 }
 
@@ -57,10 +56,12 @@ void mousePressed() {
 void mouseReleased() {
 }
 
-void onSizeChange() {
-  network.onSizeChange();
+float[] copyFloatArray(float[] floatArray) {
+  float[] floatArrayCopy = new float[floatArray.length];
+  for (int i = 0; i < floatArray.length; i++)
+    floatArrayCopy[i] = floatArray[i];
+  return floatArrayCopy;
 }
-
 
 class Network {
   int dimensions = 2;
@@ -79,7 +80,7 @@ class Network {
     this.weights = new float[numElements][numElements];
     this.positions = new float[numElements][dimensions];
     this.velocities = new float[numElements][dimensions];
-    this.viewCenter = positions[(int) (numElements / 2.0)];
+    this.viewCenter = positions[floor(numElements / 2.0)];
 
     for (int row = 0; row < dim; row++) {
       for (int col = 0; col < dim; col++) {
@@ -133,6 +134,16 @@ class Network {
 
   void draw() {
     translate(halfWidth - viewCenter[0], halfHeight - viewCenter[1]);
+    float w = img.width / dim, h = img.height / dim;
+
+    if (imagePixels != null) {
+      for (int col = 0; col < dim - 1; col++) {
+        for (int row = 0; row < dim - 1; row++) {
+          int i = row * dim + col;
+          image(img.get(col * w, row * h, w, h), positions[i][0], positions[i][1], positions[i + 1][0] - positions[i][0] + 1, positions[i + dim][1] - positions[i][1] + 1);
+        }
+      }
+    }
 
     for (int i = 0; i < numElements; i++) {
       stroke(0);
@@ -142,7 +153,7 @@ class Network {
         }
       }
 
-      fill(imagePixels != null ? imagePixels[i] : 0);
+      fill(0);
       noStroke();
       ellipse(positions[i][0], positions[i][1], 10, 10);
     }
