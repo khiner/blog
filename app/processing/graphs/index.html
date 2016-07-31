@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	<title>Karl Hiner - Graph</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Karl Hiner">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap core CSS -->
+    <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="/styles/main.css" rel="stylesheet"> -->
+  </head>
+
+  <body>
+    <div id="main_nav"></div>
+    <div class="container">
+      <div id='graphs-parent' class="well">
+        <h1>Graphs</h1>
+        <h2 class='lead'>
+          Messing around with simple 2D graphs
+        </h2>
+        <canvas id="graphs-canvas"></canvas>
+      </div>
+    </div>
+
+    <script src="/components/jquery/dist/jquery.min.js"></script>
+    <script src="/components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/dist/processing-1.4.8.min.js"></script>
+    <script type="application/processing" data-processing-target="graphs-canvas" src="graph.pde"></script>
+    <script type="text/javascript">
+      $(document).ready(function() { $('#main_nav').load('../../main_nav.html'); });
+    </script>
+  </body>
+</html>
