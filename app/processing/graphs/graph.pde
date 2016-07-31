@@ -6,8 +6,6 @@ function doResize() {
   $('#graphs-canvas').height(setupHeight);
   size(setupWidth, setupHeight);
   onSizeChange();
-  stroke(0);
-  fill(0);
   halfWidth = width / 2;
   halfHeight = height / 2;
 }
@@ -31,16 +29,26 @@ function getBackgroundColor() {
 
 Network network;
 float halfWidth, halfHeight;
+float backgroundColor = unhex(getBackgroundColor());
+float[] imagePixels;
+PImage img;
 
 void setup() {
-  network = new Network(13 * 13);
+  network = new Network(21);
+  img = loadImage("/assets/cityscape.jpg");
   doResize();
 }
 
 void draw() {
-  background(unhex(getBackgroundColor()));
+  background(backgroundColor);
   network.step();
   network.draw();
+
+  if (imagePixels == null && img.loaded) {
+    img.resize(network.dim, network.dim);
+    img.loadPixels();
+    imagePixels = img.pixels;
+  }
 }
 
 void mousePressed() {
@@ -55,26 +63,24 @@ void onSizeChange() {
 
 
 class Network {
-  float dimensions = 2;
+  int dimensions = 2;
   float k = 0.00006f;
   float randomOffset = 0;
   float[] viewCenter = new float[] {0, 0};
 
-  float dim;
-  float numElements;
+  int dim, numElements;
   float[][] weights;
   float[][] positions;
   float[][] velocities;
 
-
-  Network(int numElements) {
-    this.numElements = numElements;
+  Network(int dim) {
+    this.dim = dim;
+    this.numElements = dim * dim;
     this.weights = new float[numElements][numElements];
     this.positions = new float[numElements][dimensions];
     this.velocities = new float[numElements][dimensions];
     this.viewCenter = positions[(int) (numElements / 2.0)];
 
-    this.dim = (int) sqrt(numElements);
     for (int row = 0; row < dim; row++) {
       for (int col = 0; col < dim; col++) {
         if (row > 0)
@@ -127,13 +133,18 @@ class Network {
 
   void draw() {
     translate(halfWidth - viewCenter[0], halfHeight - viewCenter[1]);
+
     for (int i = 0; i < numElements; i++) {
-      ellipse(positions[i][0], positions[i][1], 10, 10);
+      stroke(0);
       for (int j = i; j < numElements; j++) {
         if (weights[i][j] > 0) {
           line(positions[i][0], positions[i][1], positions[j][0], positions[j][1]);
         }
       }
+
+      fill(imagePixels != null ? imagePixels[i] : 0);
+      noStroke();
+      ellipse(positions[i][0], positions[i][1], 10, 10);
     }
   }
 }
