@@ -24,19 +24,59 @@ function getBackgroundColor() {
   return rgbToHex($('#graphs-parent').css('background-color'));
 }
 
+// video stuff
+var video = $('#videoOutput').get(0);
+var getUserMedia = function(t, onsuccess, onerror) {
+  if (navigator.getUserMedia) {
+    return navigator.getUserMedia(t, onsuccess, onerror);
+  } else if (navigator.webkitGetUserMedia) {
+    return navigator.webkitGetUserMedia(t, onsuccess, onerror);
+  } else if (navigator.mozGetUserMedia) {
+    return navigator.mozGetUserMedia(t, onsuccess, onerror);
+  } else if (navigator.msGetUserMedia) {
+    return navigator.msGetUserMedia(t, onsuccess, onerror);
+  } else {
+    onerror(new Error("No getUserMedia implementation found."));
+  }
+};
+
+var URL = window.URL || window.webkitURL;
+var createObjectURL = URL.createObjectURL || webkitURL.createObjectURL;
+if (!createObjectURL) {
+  throw new Error("URL.createObjectURL not found.");
+}
+
+getUserMedia({audio:false, video:true},
+  function(stream) {
+    var url = createObjectURL(stream);
+    video.src = url;
+  },
+  function(error) {
+    alert("Couldn’t access webcam.");
+  }
+);
+
+
 Network network;
 
 void setup() {
-  network = new Network(9 * 9);
+  network = new Network(5 * 5);
   doResize();
   stroke(0);
   fill(0);
+  smooth();
 }
 
 void draw() {
   background(unhex(getBackgroundColor()));
   network.step();
   network.draw();
+
+  pushMatrix();
+  translate(width,0);
+  scale(-1,1);//mirror the video
+  externals.context.drawImage(video, 0, 0, width, height); //video is defined inside getUserMedia.js
+  popMatrix();
 }
 
 void mousePressed() {
