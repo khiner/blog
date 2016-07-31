@@ -6,6 +6,8 @@ function doResize() {
   $('#graphs-canvas').height(setupHeight);
   size(setupWidth, setupHeight);
   onSizeChange();
+  stroke(0);
+  fill(0);
 }
 $(window).resize(doResize);
 
@@ -29,8 +31,6 @@ Network network;
 void setup() {
   network = new Network(9 * 9);
   doResize();
-  stroke(0);
-  fill(0);
 }
 
 void draw() {
@@ -52,39 +52,35 @@ void onSizeChange() {
 
 class Network {
   float dimensions = 2;
+  float k = 0.00006f;
+  float randomOffset = 0;
+  float[] viewCenter = new float[] {0, 0};
+
   float dim;
   float numElements;
   float[][] weights;
   float[][] positions;
   float[][] velocities;
 
-  float k = 0.00006f;
-
-  float randomOffset = 0;
-
-  float[] viewCenter = new float[] {0, 0};
 
   Network(int numElements) {
     this.numElements = numElements;
     this.weights = new float[numElements][numElements];
     this.positions = new float[numElements][dimensions];
     this.velocities = new float[numElements][dimensions];
+    this.viewCenter = positions[(int) (numElements / 2.0)];
 
     this.dim = (int) sqrt(numElements);
     for (int row = 0; row < dim; row++) {
       for (int col = 0; col < dim; col++) {
-        if (row > 0) {
-          setWeight(row, col, row - 1, col, 0.1);
-        }
-        if (row < dim - 1) {
-          setWeight(row, col, row + 1, col, 0.1);
-        }
-        if (col > 0) {
-          setWeight(row, col, row, col - 1, 0.1);
-        }
-        if (col < dim - 1) {
-          setWeight(row, col, row, col + 1, 0.1);
-        }
+        if (row > 0)
+          setWeight(row, col, row - 1, col, 1);
+        if (row < dim - 1)
+          setWeight(row, col, row + 1, col, 1);
+        if (col > 0)
+          setWeight(row, col, row, col - 1, 1);
+        if (col < dim - 1)
+          setWeight(row, col, row, col + 1, 1);
       }
     }
   }
@@ -106,31 +102,27 @@ class Network {
     for (int i = 0; i < numElements; i++) {
       for (int j = 0; j < numElements; j++) {
         if (weights[i][j] > 0) {
-          float forceX = -(weights[i][j] - (positions[j][0] - positions[i][0])) * k;
-          float forceY = -(weights[i][j] - (positions[j][1] - positions[i][1])) * k;
-
-          velocities[i][0] += forceX;
-          velocities[i][1] += forceY;
+          for (int d = 0; d < dimensions; d++) {
+            velocities[i][d] += -(weights[i][j] - (positions[j][d] - positions[i][d])) * k;
+          }
         }
 
-        //positions[i][0] += velocities[i][0];
-        //positions[i][1] += velocities[i][1];
+//        positions[i][0] += velocities[i][0];
+//        positions[i][1] += velocities[i][1];
       }
     }
 
     for (int i = 0; i < numElements; i++) {
       for (int j = 0; j < numElements; j++) {
-        positions[i][0] += velocities[i][0];
-        positions[i][1] += velocities[i][1];
+        for (int d = 0; d < dimensions; d++) {
+          positions[i][d] += velocities[i][d];
+        }
       }
     }
-
-    viewCenter[0] = positions[(int) (numElements / 2.0)][0] - width / 2;
-    viewCenter[1] = positions[(int) (numElements / 2.0)][1] - height / 2;
   }
 
   void draw() {
-    translate(-viewCenter[0], -viewCenter[1]);
+    translate(-viewCenter[0] + width / 2, -viewCenter[1] + height / 2);
     for (int i = 0; i < numElements; i++) {
       ellipse(positions[i][0], positions[i][1], 10, 10);
       for (int j = i; j < numElements; j++) {
