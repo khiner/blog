@@ -32,10 +32,17 @@ function updateMatrixTable() {
     var newRow = tableRef.insertRow(tableRef.rows.length);
     for (var col = 0; col < network.numElements; col++) {
       var newCell = newRow.insertCell(newRow.length);
-      var newText  = document.createTextNode(network.weights[row][col]);
-      newCell.appendChild(newText);
+      var input = document.createElement("input");
+      input.id = "" + row + "-" + col;
+      input.value = network.weights[row][col];
+      newCell.appendChild(input);
     }
   }
+
+  $(':input').bind('change', function() {
+    var rowAndColumn = $(this).get(0).id.split("-");
+    network.weights[parseInt(rowAndColumn[0])][parseInt(rowAndColumn[1])] = parseInt($(this).val());
+  });
 }
 
 Network network;
