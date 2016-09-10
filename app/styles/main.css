@@ -12,8 +12,8 @@ body {
   font-style: normal;
   border-color: #b6b6b6;
 }
-.main-content h1, h2, p {
-  margin: 0 0 28px;
+.main-content h1, h2, p, img, iframe {
+  margin-bottom: 28px !important;
 }
 .main-content a {
   color: #121212;
@@ -22,24 +22,24 @@ body {
 .main-content a:hover {
   color: #595959;
 }
-.main-content img {
+.main-content img, iframe {
   display: block;
   margin: auto;
 }
-pre {
+.main-content pre {
   margin: 28px 0;
 }
-code {
+.main-content code {
   font-family: monospace,monospace;
   font-size: 100%;
   background-color: inherit;
   color: inherit;
 }
-blockquote {
+.main-content blockquote {
   font-style: italic;
   border-left: inherit;
 }
-h1, h2 {
+.main-content h1, h2 {
   color: #212121;
   font-weight: 700;
 }
