@@ -1,6 +1,6 @@
 // https://shoffing.wordpress.com/2013/02/22/automatically-scaling-a-processing-js-sketch-to-fit-the-browser-window/comment-page-1/#comment-149
 function doResize() {
-  var setupWidth = 3 * $('#graphs-parent').width() / 4;
+  var setupWidth = $('#graphs-parent').width() / 2;
   var setupHeight = setupWidth;
   $('#graphs-canvas').height(setupHeight);
   size(setupWidth, setupHeight);

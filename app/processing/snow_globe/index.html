@@ -9,28 +9,30 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- <link href="/styles/main.css" rel="stylesheet"> -->
+    <link href="../../styles/main.css" rel="stylesheet">
   </head>
 
   <body>
     <div id="main_nav"></div>
     <div class='container'>
       <div id='snow-globe-parent' class='well'>
-        <h1>Snow Globe</h1>
-        <h2 class='lead'>Some fun with edge detection.  This very simple effect, when used on images like cityscapes, looks like a blizzard.
-          </br>
-        </h2>
-        <p>This uses the Canny edge detection method.
-          Canny is much more verbose and complex than some others like the Sobel method,
-          but has better results, especially on noisy images, and performs at about the same speed.
-        </p>
-        <ul>
-          <li>Click on the image to start the effect.</li>
-          <li>Hold down the mouse to drop snow.</li>
-          <li>Use the UP and DOWN keys to make it snow more or less.</li>
-          <li>Use the SPACE key to toggle between the original image and back.</li>
-        </ul>
-        <small>This implementation of Canny Edge Detection is stripped down and adapted from Tom Gibara's implementation <a href='http://www.tomgibara.com/computer-vision/CannyEdgeDetector.java'>here</a>.</small>
+        <div class="main-content">
+          <h1>Snow Globe</h1>
+          <h2 class='lead'>Some fun with edge detection.  This very simple effect, when used on images like cityscapes,   looks like a blizzard.
+            </br>
+          </h2>
+          <p>This uses the Canny edge detection method.
+            Canny is much more verbose and complex than some others like the Sobel method,
+            but has better results, especially on noisy images, and performs at about the same speed.
+          </p>
+          <ul>
+            <li>Click on the image to start the effect.</li>
+            <li>Hold down the mouse to drop snow.</li>
+            <li>Use the UP and DOWN keys to make it snow more or less.</li>
+            <li>Use the SPACE key to toggle between the original image and back.</li>
+          </ul>
+          <small>This implementation of Canny Edge Detection is stripped down and adapted from Tom Gibara's   implementation <a href='http://www.tomgibara.com/computer-vision/CannyEdgeDetector.java'>here</a>.</small>
+        </div>
         <canvas id='snow-globe-canvas'></canvas>
       </div>
     </div>

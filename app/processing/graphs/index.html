@@ -9,20 +9,22 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../styles/main.css" rel="stylesheet">
     <link href="styles/main.css" rel="stylesheet">
   </head>
 
   <body>
     <div id="main_nav"></div>
     <div class="container">
-      <div id='graphs-parent' class="well">
-        <h1>Graphs</h1>
-        <h2 class='lead'>
-          Messing around with simple 2D graphs
-        </h2>
+      <div id="graphs-parent" class="well">
+        <h1>Force-directed graphs</h1>
+        <div class="main-content"
+          <p>Change the magnitude of force at each node by changing the values in the force matrix.<br>
+          A zero indicates no connection.</p>
+          <a id="toggle_force_matrix">Hide force matrix</a>
+        </div>
         <table id="matrix">
-          <tbody>
-          </tbody>
+          <tbody></tbody>
         </table>
         <canvas id="graphs-canvas"></canvas>
       </div>
@@ -34,6 +36,16 @@
     <script type="application/processing" data-processing-target="graphs-canvas" src="graph.pde"></script>
     <script type="text/javascript">
       $(document).ready(function() { $('#main_nav').load('../../main_nav.html'); });
+
+      $('#toggle_force_matrix').click(function() {
+        if ($("#matrix").is(":visible")) {
+          $("#matrix").hide();
+          $(this).text("Show force matrix");
+        } else {
+          $("#matrix").show();
+          $(this).text("Hide force matrix");
+        }
+      });
     </script>
   </body>
 </html>

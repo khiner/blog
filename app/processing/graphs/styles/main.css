@@ -1,7 +1,7 @@
 table {
+  margin-bottom: 1em;
   table-layout: fixed;
 }
-
 input {
   width: 20px;
   height: 20px;
