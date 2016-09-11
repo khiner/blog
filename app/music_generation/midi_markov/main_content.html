@@ -18,7 +18,7 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}</pre>
 <p>By delegating these decisions to pseudo-randomness, I actually found myself listening more closely than when I have control over every parameter. In the process of listening (on the edge of my seat) for the next change, would get absorbed with the microrhythms created by shifting beat frequencies and would find my focus moving between different aspects of the sound. It reminds me a bit of <a href="https://soundcloud.com/editionsmego/thomas-brinkmann-agent-orange">Thomas Brinkmann</a> in the way draws attention to various aspects of a single sound - in this case, the buzzing tones of the sustain-portion of a particular grand piano model.</p>
 <h2>Markov chains</h2>
 <p>Markov chains are simple generative tools often used in generating new sentences from existing ones, <a href="https://twitter.com/jamieabrew/status/695060640931549184?lang=en">like these recipes:</a></p>
-<img src="/assets/markov_recipe.jpg">
+<img src="assets/markov_recipe.jpg">
 <p><a href="https://golang.org/doc/codewalk/markov/">Here is a good example of how Markov chains are used on natural language.</a> You simply start with a word, find all the words that follow it in the text, and choose randomly from that selection, including duplicates, so that you're more likely to choose words that follow it more often. You continue on that way until you want to stop, or until you add the last word in the text (if that word doesn't occur anywhere else so that nothing can follow it).</p>
 <p>With text input, there are many choices to make that can each change the outcome, make it more or less structured, varied, etc. You could include punctuation with the words or not, require capitalization matches or not, use multiple consecutive words as keys, always end when you reach the last word, always start with the first word, etc.</p>
 <h2>...with music</h2>
@@ -28,7 +28,7 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}</pre>
 </div>
 <p>The same is true with musical notes. In my implementation, there are options to specify many of these choices, like <a href="https://github.com/khiner/midi_markov#match-length-option">how many notes must be matched in a row</a>, ..., but the general idea is always the same - the equivalent of the <em>word</em> is a set of notes that begin simultaneously, such as a single note or a chord. <a href="https://github.com/khiner/midi_markov#match-length-option">Optionally</a>, you can tell the program to change that definition to "a set of notes that begin simultaneously <em>and</em> have the same duration" (or <em>delta </em>in MIDI parlance).</p><p>As an example, consider this passage from Beethoven's 5th:
 <br>
-<img src="/assets/beethovens_5th.png">
+<img src="assets/beethovens_5th.png">
 <br>
 This would be what its Markov map would look like if <code>match-length</code> were set to 1:</p>
 <pre>G =&gt; (G, G, E) # since a single G is followed by two Gs and one E in the sequence
