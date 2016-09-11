@@ -1,0 +1,34 @@
+A heuristic-based approach to melody generation
+
+AUGUST 21, 2016
+My piano teacher had just finished a rough draft of a composition section in his book. In it, he laid out some common compositional techniques, such as step-and-skip, rhythmic repetition, inversions and sequences.
+
+I thought it would be fun to use these methods to generate compositions from scales or existing pieces, encoding the techniques as transformation heuristics.
+
+As opposed to a more black-box approach to the problem, such as RNNs or other deep learning techniques, I figured this approach would be easier to do quickly, and more rewarding in the short term.  Since the transformations would be codified creative processes, they could be improved incrementally and potentially later used in a deep-learning context as heuristics for reducing the search space to melodies that are likely to be more natural and human.
+
+Here are the heuristics:
+
+Unity vs Contrast:
+
+Unity is achieved through repetition - of a melody, a rhythm, phrase or passage.  Unity gives the human brain patterns to track and to help the listener navigate through a piece and feel that it's a cohesive whole.  Some unity is needed at every scale, from single passages to the shape of the entire piece.
+
+Contrast is the opposite of unity - it's about movement, change and even randomness - the element of surprise that keeps the listener interested and attentive.
+
+Great compositions find a healthy balance between unity and contrast.
+
+(draft) Algorithm, first pass:
+
+Define unity and contrast as real-valued measures from 0 to 1 where the input is a sequence of notes.
+Repeat until desired melody length is reached:
+Randomly select a note and duration from two octaves of a single scale.  If first note: append to the sequence.  Else, measure unity and contrast across the melody and re-select the note and duration until unity and contrast measure values are within desired thresholds and append to sequence.
+Listen to the result! ([70, 70, 78, 78, 70, 70, 87, 87, 87, 87, 87, 84, 84, 84, 92, 92, 92, 92, 94, 92, 63, 63, 84, 84, 84, 84, 84, 84, 90, 90, 87, 87, 87, 87, 87, 72, 87, 87, 87, 87, 75, 75, 66, 66, 66, 66, 68, 68, 68, 68, 80, 80, 92, 92, 65, 75, 75, 75, 75, 75, 65, 65, 65, 65] - generate_v1)
+There are a few problems to this approach, but mainly it is very short-sighted, so it's good at repetition in the short-scale, but bad at repetition over the phrase or song scale.
+
+Another approach I tried is to start with total randomness and then do a simple random mutation on one note until the unity measure score increases, giving higher wait to longer repeating patterns.  The issue with this approach, however, is that the space is (num_possible_notes*length_of_subsequence), so longer sequences have exponentially less probability of repeating.
+
+It would be interesting to use this approach but with a less literal approach to the unity measure that takes into account both repeating notes and sequences, but also repeating intervalic patterns, reversed passages, etc.  In other words, a more nuanced way of measuring randomness in a melodic context that more closely matches perceived randomness.  This would be an interesting problem, but I got restless and wanted to make music!
+
+Next approach: Cheat!
+
+Rather than using a reward function to hill-climb toward pleasant amounts of unity, I wanted to take a more hands on, pattern-based approach to sculpt a tasteful amount of repetition.
