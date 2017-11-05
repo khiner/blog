@@ -1,10 +1,5 @@
 #!/bin/bash
 tar -czf app.tar.gz app
-ftp -n ftp://karlerbd:$PORTFOLIO_PASSWORD@server144.web-hosting.com <<End-Of-Session
-lcd /Users/khiner/web/bootstrap/portfolio
-cd /public_html
-prompt n
-put app.tar.gz app.tar.gz
-exit
-End-Of-Session
+scp -P 21098 app.tar.gz karlerbd@server144.web-hosting.com:public_html/
+ssh -p 21098 karlerbd@server144.web-hosting.com "cd public_html && tar -xvzf app.tar.gz && rsync -a app/ ./ && rm -r app/ app.tar.gz"
 rm app.tar.gz
