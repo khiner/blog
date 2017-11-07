@@ -29,5 +29,9 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-open": "^0.2.3",
     "matchdep": "^0.3.0"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "webpack": "^3.8.1"
   }
 }
