@@ -3,3 +3,4 @@ app/components
 node_modules
 deploy_steps.txt
 notebooks/**/*.ipynb_checkpoints
+notebooks/**/__pycache__
