@@ -31,6 +31,12 @@ class Ship():
         """Draw the ship at its current location."""
         self.screen.blit(self.image, self.rect)
 
+    def width(self):
+        return self.rect.width
+
+    def height(self):
+        return self.rect.height
+
     def move_right(self):
         self.moving_right = True
 
@@ -42,3 +48,7 @@ class Ship():
 
     def stop_moving_right(self):
         self.moving_right = False
+
+    def center(self):
+        """Center the ship on the screen."""
+        self.centerx = self.screen_rect.centerx
