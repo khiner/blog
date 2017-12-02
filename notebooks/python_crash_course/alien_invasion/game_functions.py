@@ -14,7 +14,7 @@ def check_keydown_events(event, aliens, ship, bullets, sb, screen, settings, sta
     elif event.key == pygame.K_SPACE:
         fire_bullet(bullets, ship, screen, settings)
     elif event.key == pygame.K_q:
-        sys.exit()
+        quit(stats)
     elif event.key == pygame.K_p:
         start_game(aliens, ship, bullets, sb, screen, settings, stats)
 
@@ -28,7 +28,7 @@ def check_events(aliens, ship, bullets, sb, play_button, screen, settings, stats
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            sys.exit()
+            quit(stats)
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(event, aliens, ship, bullets, sb, screen, settings, stats)
         elif event.type == pygame.KEYUP:
@@ -185,3 +185,8 @@ def ship_hit(ship, aliens, bullets, sb, screen, settings, stats):
     else:
         stats.game_active = False
         pygame.mouse.set_visible(True)
+
+def quit(stats):
+    with open('high_score.txt', 'w') as high_score_file:
+        high_score_file.write(str(stats.high_score) + '\n')
+    sys.exit()
