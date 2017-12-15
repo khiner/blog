@@ -26,25 +26,6 @@ function getBackgroundColor() {
   return rgbToHex($('#graphs-parent').css('background-color'));
 }
 
-function updateMatrixTable() {
-  var tableRef = $('#matrix tbody').get(0);
-  for (var row = 0; row < network.numElements; row++) {
-    var newRow = tableRef.insertRow(tableRef.rows.length);
-    for (var col = 0; col < network.numElements; col++) {
-      var newCell = newRow.insertCell(newRow.length);
-      var input = document.createElement("input");
-      input.id = "" + row + "-" + col;
-      input.value = network.weights[row][col];
-      newCell.appendChild(input);
-    }
-  }
-
-  $(':input').bind('change', function() {
-    var rowAndColumn = $(this).get(0).id.split("-");
-    network.weights[parseInt(rowAndColumn[0])][parseInt(rowAndColumn[1])] = parseInt($(this).val());
-  });
-}
-
 Network network;
 Toggle imageToggle, edgesToggle, verticesToggle;
 Toggle[] toggles;
@@ -58,7 +39,6 @@ float[] imagePixels;
 void setup() {
   network = new Network(5);
   doResize();
-  updateMatrixTable();
   float toggleDim = height / 40, toggleOffset = 5;;
   imageToggle = new Toggle(width - 200, 0, toggleDim, toggleDim, "Image").enabled(true);
   edgesToggle = new Toggle(width - 200, toggleDim + toggleOffset, toggleDim, toggleDim, "Edges").enabled(true);

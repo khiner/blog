@@ -18,14 +18,6 @@
     <div class="container">
       <div id="graphs-parent" class="well">
         <h1>Force-directed graphs</h1>
-        <div class="main-content"
-          <p>Change the magnitude of force at each node by changing the values in the force matrix.<br>
-          A zero indicates no connection.</p>
-          <a id="toggle_force_matrix">Hide force matrix</a>
-        </div>
-        <table id="matrix">
-          <tbody></tbody>
-        </table>
         <canvas id="graphs-canvas"></canvas>
       </div>
     </div>
@@ -36,16 +28,21 @@
     <script type="application/processing" data-processing-target="graphs-canvas" src="graph.pde"></script>
     <script type="text/javascript">
       $(document).ready(function() { $('#main_nav').load('../../main_nav.html'); });
-
-      $('#toggle_force_matrix').click(function() {
-        if ($("#matrix").is(":visible")) {
-          $("#matrix").hide();
-          $(this).text("Show force matrix");
-        } else {
-          $("#matrix").show();
-          $(this).text("Hide force matrix");
-        }
-      });
     </script>
+
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function () {
+          //this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = 'ForceDirectedGraph';
+        };
+        (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = 'https://karlhiner.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
   </body>
 </html>
