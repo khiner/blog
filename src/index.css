@@ -1,0 +1,56 @@
+@import url("./fonts/proxima-nova.css");
+
+body {
+  font-family: "Proxima Nova";
+  font-weight: 400;
+}
+
+.main-content {
+  color: #424242;
+  font-size: 16px;
+  line-height: 1.7em;
+  letter-spacing: 0px;
+  font-style: normal;
+  border-color: #b6b6b6;
+}
+.main-content h1, h2, p, img, iframe {
+  margin-bottom: 28px !important;
+}
+.main-content a {
+  color: #121212;
+  text-decoration: underline;
+}
+.main-content a:hover {
+  color: #595959;
+}
+.main-content img, iframe {
+  display: block;
+  margin: auto;
+}
+.main-content pre {
+  margin: 28px 0;
+}
+.main-content code {
+  font-family: monospace,monospace;
+  font-size: 100%;
+  background-color: inherit;
+  color: inherit;
+}
+.main-content blockquote {
+  font-style: italic;
+  border-left: inherit;
+}
+.main-content h1, h2 {
+  color: #212121;
+  font-weight: 700;
+}
+.main-content h1 {
+  font-size: 27px;
+  text-align: center;
+}
+.main-content h2 {
+  font-size: 21.6px;
+}
+.main-content .well {
+  background-image: none;
+}
