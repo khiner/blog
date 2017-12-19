@@ -6,4 +6,5 @@ You can find the most recent version of the guide [here](https://github.com/face
 ## Linting and automatic styling
 
 I followed the guide [here](https://hackernoon.com/configure-eslint-prettier-and-flow-in-vs-code-for-react-development-c9d95db07213)
-for a nice default eslint setup using [AirBnb's eslint rules](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb#eslint-config-airbnb-1) and [prettier](https://prettier.io/).
+for a nice default eslint setup using [AirBnb's eslint rules](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb#eslint-config-airbnb-1) and [prettier](https://prettier.io/), and made modifications to Prettier settings
+in [package.json](package.json).
