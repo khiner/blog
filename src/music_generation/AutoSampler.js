@@ -6,8 +6,9 @@ export default class AutoSampler extends Component {
     return (
       <Article title='AutoSampler for Max4Live' disqusId='AutoSampler' url='https://karlhiner.com/music_generation/auto_sampler'>
         <p><a href='https://github.com/khiner/AutoSampler'>AutoSampler</a> is an intelligent Max4Live instrument that plays audio segments found in your library based on live MIDI. Here's what it looks like in action! (A simple sine tone is playing in addition to the instrument so you can hear what notes are being played.)</p>
-        <iframe title='AutoSampler Demo' src='https://www.youtube.com/embed/IgO__9XJ2Cg?wmode=opaque&amp;enablejsapi=1' height='480' width='640' scrolling='no' frameborder='0'></iframe>
-
+        <div className='videoWrapper'>
+          <iframe title='AutoSampler Demo' src='https://www.youtube.com/embed/IgO__9XJ2Cg?wmode=opaque&amp;enablejsapi=1' scrolling='no' frameBorder='0'></iframe>
+        </div>
         <p>I love sample-based music but one of the problems I often run into is getting stuck in habits, using the same sources for the same job over and over again. Need a breakbeat? I know where to get that. Need some smooth female vocal samples to cut up? Default to that acappella album I downloaded 8 years ago. I have a huge song library in my iTunes folder, but when I'm looking for a specific sound, I don't have the time to go loop hunting all day long for a sample that's just right. So I end up going back to the tried-and-true comforts again and again.</p>
 
         <p>My dream instrument would take high-level input from me ("I want a layered kick drum, a textured ambient loop and a vocal sample that works with this melody...") and give me back things that work well together, giving me fresh inspiration and choices to get me started, allowing me to sculpt them further into a finished product.</p>

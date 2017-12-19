@@ -81,7 +81,6 @@ export default function sketch(p) {
         Path Angle: 5.65 degrees
     ****************************/
 
-    console.log('setup')
     sun = new Planet(p, 'Sun', 700000.0 * SCALE_SUN, 0, 0, 0);
     earth = new Planet(p, 'Earth', 6400.0, 1, -0.017, 0);
     mars = new Planet(p, 'Mars', 3400.0, 1.881, -0.093, 250);
