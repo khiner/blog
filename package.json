@@ -17,6 +17,27 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier-eslint --write \"src/**/*.js\""
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.3",
+    "eslint": "^4.13.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.5.1",
+    "prettier-eslint": "^8.4.0",
+    "prettier-eslint-cli": "^4.6.1"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "bracketSpacing": true,
+    "semi": false,
+    "useTabs": false,
+    "jsxBracketSameLine": true
   }
 }

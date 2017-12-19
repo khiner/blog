@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import MainNav from './MainNav';
-import MainContent from './MainContent';
+import React, { Component } from 'react'
+import MainNav from './MainNav'
+import MainContent from './MainContent'
 
 class App extends Component {
   render() {
@@ -9,8 +9,8 @@ class App extends Component {
         <MainNav />
         <MainContent />
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App

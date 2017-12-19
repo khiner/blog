@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import React, { Component } from 'react'
+import { Route } from 'react-router-dom'
 
 import RetrogradeMotion from './processing/RetrogradeMotion'
 import StringPluck from './processing/StringPluck'
@@ -14,19 +14,27 @@ import JupyterNotebooks from './audio_dsp/JupyterNotebooks'
 
 class MainContent extends Component {
   render() {
-    return <div>
-      <Route path="/processing/retrograde_motion" component={ RetrogradeMotion }/>
-      <Route path="/processing/string_pluck" component={ StringPluck }/>
-      <Route path="/processing/snow_globe" component={ SnowGlobe }/>
-      <Route path="/processing/force_graph" component={ ForceGraph }/>
-      <Route path="/processing/bubble_wrap" component={ BubbleWrap }/>
+    return (
+      <div>
+        <Route
+          path="/processing/retrograde_motion"
+          component={RetrogradeMotion}
+        />
+        <Route path="/processing/string_pluck" component={StringPluck} />
+        <Route path="/processing/snow_globe" component={SnowGlobe} />
+        <Route path="/processing/force_graph" component={ForceGraph} />
+        <Route path="/processing/bubble_wrap" component={BubbleWrap} />
 
-      <Route path="/music_generation/auto_sampler" component={ AutoSampler }/>
-      <Route path="/music_generation/midi_markov" component={ MidiMarkov }/>
+        <Route path="/music_generation/auto_sampler" component={AutoSampler} />
+        <Route path="/music_generation/midi_markov" component={MidiMarkov} />
 
-      <Route path="/audio_dsp/jupyter_notebooks" component={ JupyterNotebooks }/>
-    </div>
+        <Route
+          path="/audio_dsp/jupyter_notebooks"
+          component={JupyterNotebooks}
+        />
+      </div>
+    )
   }
 }
 
-export default MainContent;
+export default MainContent
