@@ -19,19 +19,23 @@ export default class SummaryList extends Component {
   panel(entry) {
     return (
       <Panel key={entry.path} header={this.header(entry)}>
-        {entry.description}
+        <div className="main-content">{entry.description}</div>
       </Panel>
     )
   }
 
   render() {
     return (
-      <ul>
-        {entries
-          .filter(entry => !entry.excludeFromFrontPage)
-          .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
-          .map(entry => this.panel(entry))}
-      </ul>
+      <div>
+        <div className="col-md-2" />
+        <div className="col-xs-12 col-md-8">
+          {entries
+            .filter(entry => !entry.excludeFromFrontPage)
+            .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+            .map(entry => this.panel(entry))}
+        </div>
+        <div className="col-md-2" />
+      </div>
     )
   }
 }
