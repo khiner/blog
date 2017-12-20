@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import P5Wrapper from './P5Wrapper'
 
 import ShowcaseWell from '../ShowcaseWell'
-import force_graph_sketch from './force_graph_sketch'
+import force_graph_sketch from './sketches/force_graph'
 
 export default class ForceGraph extends Component {
   render() {

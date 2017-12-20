@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import P5Wrapper from './P5Wrapper'
 
 import ShowcaseWell from '../ShowcaseWell'
-import retrograde_motion_sketch from './retrograde_motion_sketch'
+import retrograde_motion_sketch from './sketches/retrograde_motion'
 
 export default class RetrogradeMotion extends Component {
   render() {

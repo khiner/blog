@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import P5Wrapper from './P5Wrapper'
 
 import ShowcaseWell from '../ShowcaseWell'
-import bubble_wrap_sketch from './bubble_wrap_sketch'
+import bubble_wrap_sketch from './sketches/bubble_wrap'
 
 export default class BubbleWrap extends Component {
   render() {

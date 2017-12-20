@@ -1,28 +1,13 @@
-// https://shoffing.wordpress.com/2013/02/22/automatically-scaling-a-processing-js-sketch-to-fit-the-browser-window/comment-page-1/#comment-149
-import image_asset from './assets/mario.jpg'
+import image_asset from '../assets/mario.jpg'
 
-function getBackgroundColor() {
-  const parentStyle = window.getComputedStyle(
-    document.getElementById('force-graph-parent')
-  )
-  return parentStyle.backgroundColor
-}
-
-function copyArray(array) {
-  const arrayCopy = []
-  for (let i = 0; i < array.length; i++) {
-    arrayCopy[i] = array[i]
-  }
-  return arrayCopy
-}
+import { getBackgroundColor, copyArray } from './utils'
 
 export default function sketch(p) {
   let setupFinished = false
+  let parentColor = 100
 
   var halfWidth, halfHeight
-  var img
-  var imagePixels
-  let parentColor = 100
+  var image, imagePixels
 
   var network
   var imageToggle, edgesToggle, verticesToggle, pauseToggle
@@ -43,11 +28,11 @@ export default function sketch(p) {
   }
 
   p.preload = function() {
-    img = p.loadImage(image_asset)
+    image = p.loadImage(image_asset)
   }
 
   p.setup = function() {
-    parentColor = p.color(getBackgroundColor())
+    parentColor = p.color(getBackgroundColor('force-graph-parent'))
     network = new Network(5)
 
     const cnv = p.createCanvas(600, 400)
@@ -117,9 +102,9 @@ export default function sketch(p) {
       toggle.draw()
     })
 
-    if (imagePixels == null && img) {
-      img.loadPixels()
-      imagePixels = copyArray(img.pixels)
+    if (imagePixels == null && image) {
+      image.loadPixels()
+      imagePixels = copyArray(image.pixels)
       network.onSizeChange()
     }
   }
@@ -214,12 +199,12 @@ export default function sketch(p) {
       )
 
       if (imageToggle.enabled) {
-        let w = img.width / this.dim,
-          h = img.height / this.dim
+        let w = image.width / this.dim,
+          h = image.height / this.dim
         if (imagePixels != null) {
           for (let col = 0; col < this.dim - 1; col++) {
             for (let row = 0; row < this.dim - 1; row++) {
-              const imageSection = img.get(col * w, row * h, w, h)
+              const imageSection = image.get(col * w, row * h, w, h)
               const i = row * this.dim + col
               p.image(
                 imageSection,

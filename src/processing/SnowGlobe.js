@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import P5Wrapper from './P5Wrapper'
 
 import ShowcaseWell from '../ShowcaseWell'
-import snow_globe_sketch from './snow_globe_sketch'
+import snow_globe_sketch from './sketches/snow_globe'
 
 export default class SnowGlobe extends Component {
   render() {

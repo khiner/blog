@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import P5Wrapper from './P5Wrapper'
 
 import ShowcaseWell from '../ShowcaseWell'
-import string_pluck_sketch from './string_pluck_sketch'
+import string_pluck_sketch from './sketches/string_pluck'
 
 export default class StringPluck extends Component {
   render() {

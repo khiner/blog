@@ -1,19 +1,11 @@
-// https://shoffing.wordpress.com/2013/02/22/automatically-scaling-a-processing-js-sketch-to-fit-the-browser-window/comment-page-1/#comment-149
-
-function getBackgroundColor() {
-  const parentStyle = window.getComputedStyle(
-    document.getElementById('string-pluck-parent')
-  )
-  return parentStyle.backgroundColor
-}
+import { getBackgroundColor } from './utils'
 
 export default function sketch(p) {
-  var cnv
   const PI_SQUARED = Math.PI * Math.PI
-  var parentColor = 100
-  const BACKGROUND_COLOR = 'rgb(85, 170, 216)'
-  const FOREGROUND_COLOR = 'rgb(221, 250, 252)'
+  const BACKGROUND_COLOR_STR = 'rgb(85, 170, 216)'
+  const FOREGROUND_COLOR_STR = 'rgb(221, 250, 252)'
 
+  let parentColor = 100
   let plucked = false
   let t = 0 // time since pluck
   let harmonics = 8 // harmonics - each harmonic requires more computation
@@ -52,9 +44,9 @@ export default function sketch(p) {
   }
 
   p.setup = function() {
-    parentColor = p.color(getBackgroundColor())
-    cnv = p.createCanvas(600, 400)
-    cnv.mousePressed(function() {
+    parentColor = p.color(getBackgroundColor('string-pluck-parent'))
+    const canvas = p.createCanvas(600, 400)
+    canvas.mousePressed(function() {
       plucked = false
       t = 0
       amp = p.mouseY - p.height / 2
@@ -62,14 +54,14 @@ export default function sketch(p) {
       isMouseDragging = true
     })
 
-    cnv.mouseMoved(function() {
+    canvas.mouseMoved(function() {
       if (isMouseDragging) {
         d = p.mouseX
         amp = p.mouseY - p.height / 2
       }
     })
 
-    cnv.mouseReleased(function() {
+    canvas.mouseReleased(function() {
       precomputeHarmonics()
       plucked = true
       isMouseDragging = false
@@ -84,9 +76,9 @@ export default function sketch(p) {
   p.draw = function() {
     p.background(parentColor)
     p.noStroke()
-    p.fill(BACKGROUND_COLOR)
+    p.fill(BACKGROUND_COLOR_STR)
     p.rect(0, 0, p.width, p.height, p.width / 20.0)
-    p.stroke(FOREGROUND_COLOR)
+    p.stroke(FOREGROUND_COLOR_STR)
 
     if (plucked) {
       t++

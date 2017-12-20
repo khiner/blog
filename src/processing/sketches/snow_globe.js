@@ -1,18 +1,14 @@
 import jsfeat from 'jsfeat'
-import cityscape_image from './assets/cityscape.jpg'
+import image_asset from '../assets/cityscape.jpg'
 
 export default function sketch(p) {
-  var cnv
-  var img
-  var edges
-  var myPixels
-  let snowRate = 6
-  var imageRatio
-
   const BACKGROUND_COLOR_STR = 'rgb(85, 170, 216)'
   const FOREGROUND_COLOR_STR = 'rgb(221, 250, 252)'
-  var BACKGROUND_COLOR, FOREGROUND_COLOR
 
+  var cnv, image, edges, pixels, imageRatio
+  var backgroundColor, foregroundColor
+
+  let snowRate = 6
   let imageSelectId = 0 // 0 == original image, 1 == snow, 2 == edge detect
   let isMouseDragging = false
 
@@ -30,31 +26,31 @@ export default function sketch(p) {
   }
 
   p.preload = function() {
-    img = p.loadImage(cityscape_image)
+    image = p.loadImage(image_asset)
   }
 
   function onSizeChange() {
-    img.resize(p.width, p.height)
-    img.loadPixels()
+    image.resize(p.width, p.height)
+    image.loadPixels()
     const buffer = new jsfeat.matrix_t(p.width, p.height, jsfeat.U8C1_t)
 
     var blurSize = 3
     var lowThreshold = 20
     var highThreshold = 50
-    jsfeat.imgproc.grayscale(img.pixels, p.width, p.height, buffer)
+    jsfeat.imgproc.grayscale(image.pixels, p.width, p.height, buffer)
     jsfeat.imgproc.gaussian_blur(buffer, buffer, blurSize, 0)
     jsfeat.imgproc.canny(buffer, buffer, lowThreshold, highThreshold)
     edges = jsfeatToP5(buffer)
-    myPixels = []
+    pixels = []
     for (let i = 0; i < p.width * p.height; i++) {
-      myPixels.push(BACKGROUND_COLOR)
+      pixels.push(backgroundColor)
     }
   }
 
   p.setup = function() {
-    BACKGROUND_COLOR = p.color(BACKGROUND_COLOR_STR)
-    FOREGROUND_COLOR = p.color(FOREGROUND_COLOR_STR)
-    imageRatio = img.height / img.width
+    backgroundColor = p.color(BACKGROUND_COLOR_STR)
+    foregroundColor = p.color(FOREGROUND_COLOR_STR)
+    imageRatio = image.height / image.width
     cnv = p.createCanvas(600, 400)
     cnv.mouseClicked(function() {
       if (imageSelectId !== 1) {
@@ -76,21 +72,21 @@ export default function sketch(p) {
   p.myCustomRedrawAccordingToNewPropsHandler = function(props) {}
 
   p.draw = function() {
-    if (img && imageSelectId === 0) {
-      p.image(img, 0, 0)
+    if (image && imageSelectId === 0) {
+      p.image(image, 0, 0)
     } else if (imageSelectId === 1) {
-      p.background(BACKGROUND_COLOR)
+      p.background(backgroundColor)
       snow()
       if (isMouseDragging) {
         mouseSnow()
       }
-      if (myPixels) {
+      if (pixels) {
         shake()
         p.loadPixels()
 
         for (let i = 0; i < p.width; i++) {
           for (let j = 0; j < p.height; j++) {
-            p.set(i, j, myPixels[j * p.width + i])
+            p.set(i, j, pixels[j * p.width + i])
           }
         }
         p.updatePixels()
@@ -108,10 +104,10 @@ export default function sketch(p) {
 
   // Drop snow from the top of the frame
   function snow() {
-    if (myPixels) {
+    if (pixels) {
       for (let i = 0; i < snowRate; i++) {
         const index = parseInt(p.random(0, p.width), 10)
-        myPixels[index] = FOREGROUND_COLOR
+        pixels[index] = foregroundColor
       }
     }
   }
@@ -127,14 +123,14 @@ export default function sketch(p) {
     ) {
       let clickedPix = p.mouseX + p.mouseY * p.width
       for (let i = clickedPix - 1; i <= clickedPix + 1; i++) {
-        myPixels[i] = FOREGROUND_COLOR
+        pixels[i] = foregroundColor
       }
     }
   }
 
   // Move those white pixels!
   function shake() {
-    if (!myPixels) {
+    if (!pixels) {
       return
     }
 
@@ -143,7 +139,7 @@ export default function sketch(p) {
         let pixel = y * p.width + x
         // once an edge is colored white, it is locked, so ignore these pixels, and all empty ones
         if (
-          myPixels[pixel] === BACKGROUND_COLOR ||
+          pixels[pixel] === backgroundColor ||
           edges.pixels[pixel * 4] === 255
         )
           continue
@@ -158,9 +154,9 @@ export default function sketch(p) {
 
         let newPixel = newY * p.width + newX
         // if the new space is empty, move the white pixel to a new location
-        if (myPixels[newPixel] === BACKGROUND_COLOR) {
-          myPixels[newPixel] = FOREGROUND_COLOR
-          myPixels[pixel] = BACKGROUND_COLOR
+        if (pixels[newPixel] === backgroundColor) {
+          pixels[newPixel] = foregroundColor
+          pixels[pixel] = backgroundColor
         }
       }
     }
