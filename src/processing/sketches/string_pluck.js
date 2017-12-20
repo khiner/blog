@@ -16,7 +16,7 @@ export default function sketch(p) {
   let precomputedHarmonics = []
   let isMouseDragging = false // XXX change to use p.mousePressed
 
-  p.windowResized = windowResized(p, 'string-pluck-parent', 0.25, onSizeChange)
+  p.windowResized = windowResized(p, 'string-pluck-parent', 0.5, onSizeChange)
 
   function onSizeChange() {
     precomputeHarmonics()
