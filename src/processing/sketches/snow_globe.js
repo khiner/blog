@@ -6,9 +6,10 @@ import image_asset from '../assets/cityscape.jpg'
 export default function sketch(p) {
   const BACKGROUND_COLOR_STR = 'rgb(85, 170, 216)'
   const FOREGROUND_COLOR_STR = 'rgb(221, 250, 252)'
+  const DENSITY = p.pixelDensity()
 
   var cnv, image, edges, pixelMask
-  var backgroundColor, foregroundColor
+  var backgroundColor, foregroundColor, foregroundColorArray
 
   let snowRate = 6
   let imageSelectId = 0 // 0 == original image, 1 == snow, 2 == edge detect
@@ -39,6 +40,12 @@ export default function sketch(p) {
   p.setup = function() {
     backgroundColor = p.color(BACKGROUND_COLOR_STR)
     foregroundColor = p.color(FOREGROUND_COLOR_STR)
+    foregroundColorArray = [
+      p.red(foregroundColor),
+      p.green(foregroundColor),
+      p.blue(foregroundColor),
+      255,
+    ]
     p.windowResized = windowResized(
       p,
       'snow-globe-parent',
@@ -77,11 +84,21 @@ export default function sketch(p) {
       if (pixelMask) {
         shake()
         p.loadPixels()
-
-        for (let i = 0; i < p.width; i++) {
-          for (let j = 0; j < p.height; j++) {
-            if (pixelMask[j * p.width + i]) {
-              p.set(i, j, foregroundColor)
+        var idx
+        for (let x = 0; x < p.width; x++) {
+          for (let y = 0; y < p.height; y++) {
+            if (pixelMask[y * p.width + x]) {
+              for (let i = 0; i < DENSITY; i++) {
+                for (let j = 0; j < DENSITY; j++) {
+                  idx =
+                    4 *
+                    ((y * DENSITY + j) * p.width * DENSITY + (x * DENSITY + i))
+                  p.pixels[idx] = foregroundColorArray[0]
+                  p.pixels[idx + 1] = foregroundColorArray[1]
+                  p.pixels[idx + 2] = foregroundColorArray[2]
+                  p.pixels[idx + 3] = foregroundColorArray[3]
+                }
+              }
             }
           }
         }
