@@ -7,7 +7,7 @@ export default function sketch(p) {
   const BACKGROUND_COLOR_STR = 'rgb(85, 170, 216)'
   const FOREGROUND_COLOR_STR = 'rgb(221, 250, 252)'
 
-  var cnv, image, edges, pixels, imageRatio
+  var cnv, image, edges, pixelMask
   var backgroundColor, foregroundColor
 
   let snowRate = 6
@@ -30,16 +30,15 @@ export default function sketch(p) {
     jsfeat.imgproc.gaussian_blur(buffer, buffer, blurSize, 0)
     jsfeat.imgproc.canny(buffer, buffer, lowThreshold, highThreshold)
     edges = jsfeatToP5(buffer)
-    pixels = []
+    pixelMask = []
     for (let i = 0; i < p.width * p.height; i++) {
-      pixels.push(backgroundColor)
+      pixelMask.push(false)
     }
   }
 
   p.setup = function() {
     backgroundColor = p.color(BACKGROUND_COLOR_STR)
     foregroundColor = p.color(FOREGROUND_COLOR_STR)
-    imageRatio = image.height / image.width
     p.windowResized = windowResized(
       p,
       'snow-globe-parent',
@@ -75,13 +74,15 @@ export default function sketch(p) {
       if (isMouseDragging) {
         mouseSnow()
       }
-      if (pixels) {
+      if (pixelMask) {
         shake()
         p.loadPixels()
 
         for (let i = 0; i < p.width; i++) {
           for (let j = 0; j < p.height; j++) {
-            p.set(i, j, pixels[j * p.width + i])
+            if (pixelMask[j * p.width + i]) {
+              p.set(i, j, foregroundColor)
+            }
           }
         }
         p.updatePixels()
@@ -99,10 +100,10 @@ export default function sketch(p) {
 
   // Drop snow from the top of the frame
   function snow() {
-    if (pixels) {
+    if (pixelMask) {
       for (let i = 0; i < snowRate; i++) {
         const index = parseInt(p.random(0, p.width), 10)
-        pixels[index] = foregroundColor
+        pixelMask[index] = true
       }
     }
   }
@@ -118,14 +119,14 @@ export default function sketch(p) {
     ) {
       let clickedPix = p.mouseX + p.mouseY * p.width
       for (let i = clickedPix - 1; i <= clickedPix + 1; i++) {
-        pixels[i] = foregroundColor
+        pixelMask[i] = true
       }
     }
   }
 
   // Move those white pixels!
   function shake() {
-    if (!pixels) {
+    if (!pixelMask) {
       return
     }
 
@@ -133,11 +134,9 @@ export default function sketch(p) {
       for (let y = 0; y < p.height; y++) {
         let pixel = y * p.width + x
         // once an edge is colored white, it is locked, so ignore these pixels, and all empty ones
-        if (
-          pixels[pixel] === backgroundColor ||
-          edges.pixels[pixel * 4] === 255
-        )
+        if (!pixelMask[pixel] || edges.pixels[pixel * 4] === 255) {
           continue
+        }
 
         let newY = y + parseInt(p.random(0, 2), 10)
         let newX = x + parseInt(p.random(-2, 2), 10)
@@ -149,9 +148,9 @@ export default function sketch(p) {
 
         let newPixel = newY * p.width + newX
         // if the new space is empty, move the white pixel to a new location
-        if (pixels[newPixel] === backgroundColor) {
-          pixels[newPixel] = foregroundColor
-          pixels[pixel] = backgroundColor
+        if (!pixelMask[newPixel]) {
+          pixelMask[newPixel] = true
+          pixelMask[pixel] = false
         }
       }
     }
