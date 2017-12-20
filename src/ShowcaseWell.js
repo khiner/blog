@@ -1,4 +1,6 @@
 import React from 'react'
+import Helmet from 'react-helmet'
+
 import { Well } from 'react-bootstrap'
 
 import DiscussionEmbed from './DiscussionEmbed'
@@ -13,6 +15,7 @@ export default function ShowcaseWell(props) {
 
   return (
     <div className="container">
+      <Helmet title={`Karl Hiner - ${props.title}`} />
       <div className="main-content">
         <Well id={props.wellId}>
           <div>

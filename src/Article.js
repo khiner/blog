@@ -1,4 +1,5 @@
 import React from 'react'
+import Helmet from 'react-helmet'
 
 import DiscussionEmbed from './DiscussionEmbed'
 
@@ -12,6 +13,7 @@ export default function Article(props) {
 
   return (
     <div className="container">
+      <Helmet title={`Karl Hiner - ${props.title}`} />
       <div className="col-md-2" />
       <div className="main-content col-xs-12 col-md-8">
         <h1>{props.title}</h1>
