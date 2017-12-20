@@ -1,6 +1,6 @@
 import image_asset from '../assets/mario.jpg'
 
-import { getBackgroundColor, copyArray, windowResized } from './utils'
+import { getBackgroundColor, windowResized } from './utils'
 
 export default function sketch(p) {
   const DIMENSIONS = 2
@@ -11,7 +11,6 @@ export default function sketch(p) {
   let parentColor = 100
 
   var halfWidth, halfHeight
-  var image
   const imageSections = []
 
   var network
@@ -27,7 +26,7 @@ export default function sketch(p) {
   }
 
   p.preload = function() {
-    image = p.loadImage(image_asset, function(img) {
+    p.loadImage(image_asset, function(img) {
       img.loadPixels()
 
       let w = img.width / AXIS_SECTIONS
@@ -199,8 +198,6 @@ export default function sketch(p) {
       )
 
       if (imageToggle.enabled) {
-        let w = image.width / AXIS_SECTIONS
-        let h = image.height / AXIS_SECTIONS
         let i = 0
         for (let row = 0; row < AXIS_SECTIONS - 1; row++) {
           for (let col = 0; col < AXIS_SECTIONS - 1; col++) {

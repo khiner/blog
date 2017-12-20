@@ -3,14 +3,6 @@ export function getBackgroundColor(parentId) {
   return parentStyle.backgroundColor
 }
 
-export function copyArray(array) {
-  const arrayCopy = []
-  for (let i = 0; i < array.length; i++) {
-    arrayCopy[i] = array[i]
-  }
-  return arrayCopy
-}
-
 export function windowResized(p, parentId, heightRatio, onSizeChange) {
   return function() {
     const parentStyle = window.getComputedStyle(
@@ -20,7 +12,7 @@ export function windowResized(p, parentId, heightRatio, onSizeChange) {
       parseFloat(parentStyle.width) -
       parseFloat(parentStyle.paddingLeft) -
       parseFloat(parentStyle.paddingRight)
-    const setupHeight = parseInt(setupWidth * heightRatio)
+    const setupHeight = parseInt(setupWidth * heightRatio, 10)
     p.resizeCanvas(setupWidth, setupHeight)
     if (onSizeChange) {
       onSizeChange()
