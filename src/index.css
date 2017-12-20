@@ -17,13 +17,18 @@ body {
 .main-content h2, p, img, iframe {
   margin-bottom: 28px !important;
 }
-.main-content a {
+a {
   color: #121212;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+.main-content a {
   text-decoration: underline;
 }
-.main-content a:hover {
-  color: #595959;
-}
+
 .main-content img, iframe {
   display: block;
   margin: auto;
@@ -55,6 +60,23 @@ body {
 .main-content .well {
   background-image: none;
 }
+
+.panel-heading {
+  background-image: none !important;
+}
+
+.panel-heading h1 {
+  font-size: 27px;
+  margin: 5px 0px;
+}
+
+.panel-heading h2.date {
+  margin: 10px 0px;
+  font-size: 16px;
+  font-weight: 100;
+  font-style: italic;
+}
+
 .main-content h2.date {
   font-size: 16px;
   font-weight: 100;

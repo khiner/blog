@@ -1,37 +1,55 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 
-import RetrogradeMotion from './processing/RetrogradeMotion'
-import StringPluck from './processing/StringPluck'
-import SnowGlobe from './processing/SnowGlobe'
-import ForceGraph from './processing/ForceGraph'
-import BubbleWrap from './processing/BubbleWrap'
-
-import AutoSampler from './music_generation/AutoSampler'
-import MidiMarkov from './music_generation/MidiMarkov'
-
-import JupyterNotebooks from './audio_dsp/JupyterNotebooks'
+import SummaryList from './SummaryList'
+import Article from './Article'
+import ShowcaseWell from './ShowcaseWell'
+import entries from './entries'
+import { stripSlashes } from './utils'
 
 class MainContent extends Component {
+  generateComponent(entry) {
+    return props => {
+      if (entry.type && entry.type.toLowerCase() === 'showcase') {
+        return (
+          <ShowcaseWell
+            title={entry.title}
+            date={entry.date}
+            url={entry.url}
+            wellId={entry.wellId}
+            disqusId={entry.disqusId}>
+            {entry.content}
+          </ShowcaseWell>
+        )
+      } else {
+        return (
+          <Article
+            title={entry.title}
+            date={entry.date}
+            url={entry.url}
+            disqusId={entry.disqusId}>
+            {entry.content}
+          </Article>
+        )
+      }
+    }
+  }
+
+  generateRoute(entry) {
+    return (
+      <Route
+        key={entry.path}
+        path={`/${stripSlashes(entry.path)}`}
+        render={this.generateComponent(entry)}
+      />
+    )
+  }
+
   render() {
     return (
       <div>
-        <Route
-          path="/processing/retrograde_motion"
-          component={RetrogradeMotion}
-        />
-        <Route path="/processing/string_pluck" component={StringPluck} />
-        <Route path="/processing/snow_globe" component={SnowGlobe} />
-        <Route path="/processing/force_graph" component={ForceGraph} />
-        <Route path="/processing/bubble_wrap" component={BubbleWrap} />
-
-        <Route path="/music_generation/auto_sampler" component={AutoSampler} />
-        <Route path="/music_generation/midi_markov" component={MidiMarkov} />
-
-        <Route
-          path="/audio_dsp/jupyter_notebooks"
-          component={JupyterNotebooks}
-        />
+        <Route exact path="/" component={SummaryList} />
+        {entries.map(entry => this.generateRoute(entry))}
       </div>
     )
   }

@@ -21,7 +21,9 @@ export default function Article(props) {
         {props.children}
       </div>
       <div className="col-md-2" />
-      <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
+      {disqusConfig.identifier && (
+        <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
+      )}
     </div>
   )
 }

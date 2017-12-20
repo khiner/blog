@@ -1,9 +1,64 @@
 import React, { Component } from 'react'
-import { MenuItem, Nav, Navbar, NavDropdown } from 'react-bootstrap'
+import { MenuItem, Nav, NavItem, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 
+import { snakeCaseToTitle, stripSlashes } from './utils'
+import entries from './entries'
+
 class MainNav extends Component {
+  findAllUniqueTopLevelPathSegments() {
+    return [
+      ...new Set(
+        entries
+          .map(entry => stripSlashes(entry.path))
+          .filter(path => path.split('/').length > 1)
+          .map(path => path.split('/')[0])
+      ),
+    ]
+  }
+
+  findAllNonNestedEntries() {
+    return entries.filter(
+      entry => stripSlashes(entry.path).split('/').length === 1
+    )
+  }
+
+  findEntriesMatchingTopLevelPathSegment(topLevelPathSegment) {
+    return entries.filter(entry =>
+      stripSlashes(entry.path).startsWith(topLevelPathSegment)
+    )
+  }
+
+  generateLink(entry) {
+    return (
+      <LinkContainer key={entry.path} to={`/${stripSlashes(entry.path)}/`}>
+        <MenuItem>{entry.title}</MenuItem>
+      </LinkContainer>
+    )
+  }
+
+  generateNavItem(entry) {
+    return (
+      <LinkContainer key={entry.path} to={`/${stripSlashes(entry.path)}/`}>
+        <NavItem>{entry.title}</NavItem>
+      </LinkContainer>
+    )
+  }
+
+  generateNavDropdown(topLevelPathSegment) {
+    return (
+      <NavDropdown
+        key={topLevelPathSegment}
+        id={topLevelPathSegment}
+        title={snakeCaseToTitle(topLevelPathSegment)}>
+        {this.findEntriesMatchingTopLevelPathSegment(topLevelPathSegment).map(
+          entry => this.generateLink(entry)
+        )}
+      </NavDropdown>
+    )
+  }
+
   render() {
     return (
       <Navbar default staticTop collapseOnSelect>
@@ -15,36 +70,14 @@ class MainNav extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <NavDropdown title="Processing" id="processing">
-              <LinkContainer to="/processing/retrograde_motion/">
-                <MenuItem>Retrograde motion</MenuItem>
-              </LinkContainer>
-              <LinkContainer to="/processing/string_pluck/">
-                <MenuItem>String pluck</MenuItem>
-              </LinkContainer>
-              <LinkContainer to="/processing/snow_globe/">
-                <MenuItem>Snow globe</MenuItem>
-              </LinkContainer>
-              <LinkContainer to="/processing/force_graph/">
-                <MenuItem>Force-directed graphs</MenuItem>
-              </LinkContainer>
-              <LinkContainer to="/processing/bubble_wrap/">
-                <MenuItem>Bubble Wrap</MenuItem>
-              </LinkContainer>
-            </NavDropdown>
-            <NavDropdown title="Music generation" id="music_generation">
-              <LinkContainer to="/music_generation/midi_markov/">
-                <MenuItem>MIDI Markov</MenuItem>
-              </LinkContainer>
-              <LinkContainer to="/music_generation/auto_sampler/">
-                <MenuItem>AutoSampler</MenuItem>
-              </LinkContainer>
-            </NavDropdown>
-            <NavDropdown title="Audio DSP" id="audio_dsp">
-              <LinkContainer to="/audio_dsp/jupyter_notebooks/">
-                <MenuItem>Jupyter notebooks</MenuItem>
-              </LinkContainer>
-            </NavDropdown>
+            {this.findAllUniqueTopLevelPathSegments().map(
+              topLevelPathSegment => {
+                return this.generateNavDropdown(topLevelPathSegment)
+              }
+            )}
+            {this.findAllNonNestedEntries().map(entry => {
+              return this.generateNavItem(entry)
+            })}
           </Nav>
           <Nav pullRight>
             <NavDropdown title="Contact" id="contact">

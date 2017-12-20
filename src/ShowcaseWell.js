@@ -25,7 +25,9 @@ export default function ShowcaseWell(props) {
           </div>
         </Well>
       </div>
-      <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
+      {disqusConfig.identifier && (
+        <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
+      )}
     </div>
   )
 }
