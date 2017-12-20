@@ -6,6 +6,7 @@ export default class AutoSampler extends Component {
     return (
       <Article
         title="AutoSampler for Max4Live"
+        date="Sep 8 2016"
         disqusId="AutoSampler"
         url="https://karlhiner.com/music_generation/auto_sampler">
         <p>

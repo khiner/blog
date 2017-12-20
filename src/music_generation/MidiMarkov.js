@@ -8,6 +8,7 @@ export default class MidiMarkov extends Component {
     return (
       <Article
         title="Fun generating MIDI with Markov chains"
+        date="Aug 28 2016"
         disqusId="MidiMarkov"
         url="https://karlhiner.com/music_generation/midi_markov">
         <p>

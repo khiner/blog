@@ -9,6 +9,7 @@ export default class BubbleWrap extends Component {
     return (
       <ShowcaseWell
         title="Bubble Wrap"
+        date="Dec 19 2017"
         wellId="bubble-wrap-parent"
         disqusId="BubbleWrap"
         url="https://karlhiner.com/processing/bubble_wrap">

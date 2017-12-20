@@ -9,6 +9,7 @@ export default class SnowGlobe extends Component {
     return (
       <ShowcaseWell
         title="Snow Globe"
+        date="Feb 16 2015"
         wellId="snow-globe-parent"
         disqusId="SnowGlobe"
         url="https://karlhiner.com/processing/snow_globe">

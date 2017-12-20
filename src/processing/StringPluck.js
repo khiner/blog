@@ -9,6 +9,7 @@ export default class StringPluck extends Component {
     return (
       <ShowcaseWell
         title="String Pluck"
+        date="Feb 16 2015"
         wellId="string-pluck-parent"
         disqusId="StringPluck"
         url="https://karlhiner.com/processing/string_pluck">

@@ -17,6 +17,7 @@ export default function ShowcaseWell(props) {
         <Well id={props.wellId}>
           <div>
             <h1>{props.title}</h1>
+            <h2 className="date">{props.date}</h2>
             {props.children}
           </div>
         </Well>

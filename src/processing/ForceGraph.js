@@ -9,6 +9,7 @@ export default class ForceGraph extends Component {
     return (
       <ShowcaseWell
         title="Force-Directed Graph"
+        date="July 31 2016"
         wellId="force-graph-parent"
         disqusId="ForceDirectedGraph"
         url="https://karlhiner.com/processing/bubble_wrap">

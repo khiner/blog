@@ -9,6 +9,7 @@ export default class RetrogradeMotion extends Component {
     return (
       <ShowcaseWell
         title="Apparent Retrograde Motion"
+        date="Feb 15 2016"
         wellId="retrograde-motion-parent"
         disqusId="ApparentRetrogradeMotion"
         url="https://karlhiner.com/processing/retrograde_motion">
