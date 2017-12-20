@@ -1,4 +1,6 @@
 import jsfeat from 'jsfeat'
+
+import { windowResized } from './utils'
 import image_asset from '../assets/cityscape.jpg'
 
 export default function sketch(p) {
@@ -11,19 +13,6 @@ export default function sketch(p) {
   let snowRate = 6
   let imageSelectId = 0 // 0 == original image, 1 == snow, 2 == edge detect
   let isMouseDragging = false
-
-  p.windowResized = function() {
-    const parentStyle = window.getComputedStyle(
-      document.getElementById('snow-globe-parent')
-    )
-    const setupWidth =
-      parseFloat(parentStyle.width) -
-      parseFloat(parentStyle.paddingLeft) -
-      parseFloat(parentStyle.paddingRight)
-    const setupHeight = parseInt(setupWidth * imageRatio, 10)
-    p.resizeCanvas(setupWidth, setupHeight)
-    onSizeChange()
-  }
 
   p.preload = function() {
     image = p.loadImage(image_asset)
@@ -51,6 +40,12 @@ export default function sketch(p) {
     backgroundColor = p.color(BACKGROUND_COLOR_STR)
     foregroundColor = p.color(FOREGROUND_COLOR_STR)
     imageRatio = image.height / image.width
+    p.windowResized = windowResized(
+      p,
+      'snow-globe-parent',
+      image.height / image.width,
+      onSizeChange
+    )
     cnv = p.createCanvas(600, 400)
     cnv.mouseClicked(function() {
       if (imageSelectId !== 1) {

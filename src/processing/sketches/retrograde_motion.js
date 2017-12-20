@@ -1,4 +1,4 @@
-import { getBackgroundColor } from './utils'
+import { getBackgroundColor, windowResized } from './utils'
 
 export default function sketch(p) {
   const AU = 149598000.0 // Astronomical Unit, in km
@@ -21,18 +21,12 @@ export default function sketch(p) {
   var currState
   var pastStates = []
 
-  p.windowResized = function() {
-    const parentStyle = window.getComputedStyle(
-      document.getElementById('retrograde-motion-parent')
-    )
-    const setupWidth =
-      parseFloat(parentStyle.width) -
-      parseFloat(parentStyle.paddingLeft) -
-      parseFloat(parentStyle.paddingRight)
-    const setupHeight = setupWidth
-    p.resizeCanvas(setupWidth, setupHeight)
-    onSizeChange()
-  }
+  p.windowResized = windowResized(
+    p,
+    'retrograde-motion-parent',
+    1.0,
+    onSizeChange
+  )
 
   function onSizeChange() {
     if (sun != null && earth != null && mars != null) {

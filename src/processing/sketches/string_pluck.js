@@ -1,4 +1,4 @@
-import { getBackgroundColor } from './utils'
+import { getBackgroundColor, windowResized } from './utils'
 
 export default function sketch(p) {
   const PI_SQUARED = Math.PI * Math.PI
@@ -16,18 +16,7 @@ export default function sketch(p) {
   let precomputedHarmonics = []
   let isMouseDragging = false // XXX change to use p.mousePressed
 
-  p.windowResized = function() {
-    const parentStyle = window.getComputedStyle(
-      document.getElementById('string-pluck-parent')
-    )
-    const setupWidth =
-      parseFloat(parentStyle.width) -
-      parseFloat(parentStyle.paddingLeft) -
-      parseFloat(parentStyle.paddingRight)
-    const setupHeight = setupWidth / 4
-    p.resizeCanvas(setupWidth, setupHeight)
-    onSizeChange()
-  }
+  p.windowResized = windowResized(p, 'string-pluck-parent', 0.25, onSizeChange)
 
   function onSizeChange() {
     precomputeHarmonics()

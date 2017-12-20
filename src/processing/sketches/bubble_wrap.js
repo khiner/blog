@@ -1,18 +1,10 @@
+import { windowResized } from './utils'
+
 export default function sketch(p) {
   let numX = 20
   let numY = 20
 
-  p.windowResized = function() {
-    const parentStyle = window.getComputedStyle(
-      document.getElementById('bubble-wrap-parent')
-    )
-    const setupWidth =
-      parseFloat(parentStyle.width) -
-      parseFloat(parentStyle.paddingLeft) -
-      parseFloat(parentStyle.paddingRight)
-    const setupHeight = setupWidth / 4
-    p.resizeCanvas(setupWidth, setupHeight)
-  }
+  p.windowResized = windowResized(p, 'bubble-wrap-parent', 0.25)
 
   p.setup = function() {
     const cnv = p.createCanvas(600, 400)

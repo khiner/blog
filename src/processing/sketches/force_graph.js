@@ -1,6 +1,6 @@
 import image_asset from '../assets/mario.jpg'
 
-import { getBackgroundColor, copyArray } from './utils'
+import { getBackgroundColor, copyArray, windowResized } from './utils'
 
 export default function sketch(p) {
   let setupFinished = false
@@ -13,19 +13,7 @@ export default function sketch(p) {
   var imageToggle, edgesToggle, verticesToggle, pauseToggle
   var toggles
 
-  p.windowResized = function() {
-    const parentStyle = window.getComputedStyle(
-      document.getElementById('force-graph-parent')
-    )
-    const setupWidth =
-      parseFloat(parentStyle.width) -
-      parseFloat(parentStyle.paddingLeft) -
-      parseFloat(parentStyle.paddingRight)
-    const setupHeight = setupWidth
-    halfWidth = setupWidth / 2
-    halfHeight = setupHeight / 2
-    p.resizeCanvas(setupWidth, setupHeight)
-  }
+  p.windowResized = windowResized(p, 'force-graph-parent', 0.5)
 
   p.preload = function() {
     image = p.loadImage(image_asset)
