@@ -3,25 +3,46 @@ import image_asset from '../assets/mario.jpg'
 import { getBackgroundColor, copyArray, windowResized } from './utils'
 
 export default function sketch(p) {
+  const DIMENSIONS = 2
+  const AXIS_SECTIONS = 5
+  const TOTAL_SECTIONS = AXIS_SECTIONS * AXIS_SECTIONS
+
   let setupFinished = false
   let parentColor = 100
 
   var halfWidth, halfHeight
-  var image, imagePixels
+  var image
+  const imageSections = []
 
   var network
   var imageToggle, edgesToggle, verticesToggle, pauseToggle
   var toggles
 
-  p.windowResized = windowResized(p, 'force-graph-parent', 0.5)
+  p.windowResized = windowResized(p, 'force-graph-parent', 1, onSizeChange)
+
+  function onSizeChange() {
+    halfWidth = p.width / 2
+    halfHeight = p.height / 2
+    network.onSizeChange()
+  }
 
   p.preload = function() {
-    image = p.loadImage(image_asset)
+    image = p.loadImage(image_asset, function(img) {
+      img.loadPixels()
+
+      let w = img.width / AXIS_SECTIONS
+      let h = img.height / AXIS_SECTIONS
+      for (let row = 0; row < AXIS_SECTIONS - 1; row++) {
+        for (let col = 0; col < AXIS_SECTIONS - 1; col++) {
+          imageSections.push(img.get(col * w, row * h, w, h))
+        }
+      }
+    })
   }
 
   p.setup = function() {
     parentColor = p.color(getBackgroundColor('force-graph-parent'))
-    network = new Network(5)
+    network = new Network()
 
     const cnv = p.createCanvas(600, 400)
     p.noStroke()
@@ -89,77 +110,68 @@ export default function sketch(p) {
     toggles.forEach(toggle => {
       toggle.draw()
     })
-
-    if (imagePixels == null && image) {
-      image.loadPixels()
-      imagePixels = copyArray(image.pixels)
-      network.onSizeChange()
-    }
   }
 
   class Network {
-    constructor(dim) {
-      this.dimensions = 2
+    constructor() {
       this.k = 0.00006
       this.randomOffset = 0
-      this.dim = dim
-      this.numElements = dim * dim
 
       this.weights = []
       this.positions = []
       this.velocities = []
 
-      for (let i = 0; i < this.numElements; i++) {
+      for (let i = 0; i < TOTAL_SECTIONS; i++) {
         this.positions[i] = []
         this.velocities[i] = []
         this.weights[i] = []
 
-        for (let j = 0; j < this.numElements; j++) {
+        for (let j = 0; j < TOTAL_SECTIONS; j++) {
           this.weights[i][j] = 0
         }
 
-        for (let j = 0; j < this.dimensions; j++) {
+        for (let j = 0; j < DIMENSIONS; j++) {
           this.positions[i][j] = 0
           this.velocities[i][j] = 0
         }
       }
 
-      this.viewCenter = this.positions[parseInt(this.numElements / 2.0, 10)]
+      this.viewCenter = this.positions[parseInt(TOTAL_SECTIONS / 2.0, 10)]
 
-      for (let row = 0; row < this.dim; row++) {
-        for (let col = 0; col < this.dim; col++) {
+      for (let row = 0; row < AXIS_SECTIONS; row++) {
+        for (let col = 0; col < AXIS_SECTIONS; col++) {
           if (row > 0) this.setWeight(row, col, row - 1, col, 1)
-          if (row < this.dim - 1) this.setWeight(row, col, row + 1, col, 1)
+          if (row < AXIS_SECTIONS - 1) this.setWeight(row, col, row + 1, col, 1)
           if (col > 0) this.setWeight(row, col, row, col - 1, 1)
-          if (col < this.dim - 1) this.setWeight(row, col, row, col + 1, 1)
+          if (col < AXIS_SECTIONS - 1) this.setWeight(row, col, row, col + 1, 1)
         }
       }
     }
 
     onSizeChange() {
-      for (let i = 0; i < this.numElements; i++) {
-        let row = parseInt(i / this.dim, 10)
-        let col = i % this.dim
+      for (let i = 0; i < TOTAL_SECTIONS; i++) {
+        let row = parseInt(i / AXIS_SECTIONS, 10)
+        let col = i % AXIS_SECTIONS
         this.positions[i][0] =
-          p.width * (col / this.dim) +
+          p.width * (col / AXIS_SECTIONS) +
           p.random(-this.randomOffset, this.randomOffset)
         this.positions[i][1] =
-          p.height * (row / this.dim) +
+          p.height * (row / AXIS_SECTIONS) +
           p.random(-this.randomOffset, this.randomOffset)
       }
     }
 
     setWeight(row, col, otherRow, otherCol, weight) {
-      this.weights[row * this.dim + col][
-        otherRow * this.dim + otherCol
+      this.weights[row * AXIS_SECTIONS + col][
+        otherRow * AXIS_SECTIONS + otherCol
       ] = weight
     }
 
     step() {
-      for (let i = 0; i < this.numElements; i++) {
-        for (let j = 0; j < this.numElements; j++) {
+      for (let i = 0; i < TOTAL_SECTIONS; i++) {
+        for (let j = 0; j < TOTAL_SECTIONS; j++) {
           if (this.weights[i][j] > 0) {
-            for (let d = 0; d < this.dimensions; d++) {
+            for (let d = 0; d < DIMENSIONS; d++) {
               this.velocities[i][d] +=
                 (this.positions[j][d] -
                   this.positions[i][d] -
@@ -170,9 +182,9 @@ export default function sketch(p) {
         }
       }
 
-      for (let i = 0; i < this.numElements; i++) {
-        for (let j = 0; j < this.numElements; j++) {
-          for (let d = 0; d < this.dimensions; d++) {
+      for (let i = 0; i < TOTAL_SECTIONS; i++) {
+        for (let j = 0; j < TOTAL_SECTIONS; j++) {
+          for (let d = 0; d < DIMENSIONS; d++) {
             this.positions[i][d] += this.velocities[i][d]
           }
         }
@@ -187,29 +199,30 @@ export default function sketch(p) {
       )
 
       if (imageToggle.enabled) {
-        let w = image.width / this.dim,
-          h = image.height / this.dim
-        if (imagePixels != null) {
-          for (let col = 0; col < this.dim - 1; col++) {
-            for (let row = 0; row < this.dim - 1; row++) {
-              const imageSection = image.get(col * w, row * h, w, h)
-              const i = row * this.dim + col
-              p.image(
-                imageSection,
-                this.positions[i][0],
-                this.positions[i][1],
-                this.positions[i + 1][0] - this.positions[i][0] + 1,
-                this.positions[i + this.dim][1] - this.positions[i][1] + 1
-              )
-            }
+        let w = image.width / AXIS_SECTIONS
+        let h = image.height / AXIS_SECTIONS
+        let i = 0
+        for (let row = 0; row < AXIS_SECTIONS - 1; row++) {
+          for (let col = 0; col < AXIS_SECTIONS - 1; col++) {
+            const posIndex = row * AXIS_SECTIONS + col
+            const imageSection = imageSections[i++]
+            p.image(
+              imageSection,
+              this.positions[posIndex][0],
+              this.positions[posIndex][1],
+              this.positions[posIndex + 1][0] - this.positions[posIndex][0] + 1,
+              this.positions[posIndex + AXIS_SECTIONS][1] -
+                this.positions[posIndex][1] +
+                1
+            )
           }
         }
       }
 
-      for (let i = 0; i < this.numElements; i++) {
+      for (let i = 0; i < TOTAL_SECTIONS; i++) {
         p.stroke(0)
         if (edgesToggle.enabled) {
-          for (let j = i; j < this.numElements; j++) {
+          for (let j = i; j < TOTAL_SECTIONS; j++) {
             if (this.weights[i][j] > 0) {
               p.line(
                 this.positions[i][0],
