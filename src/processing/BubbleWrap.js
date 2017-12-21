@@ -16,6 +16,6 @@ export default (
         X-axis and Y-axis.
       </li>
     </ul>
-    <P5Wrapper sketch={bubble_wrap_sketch} />
+    <P5Wrapper sketch={bubble_wrap_sketch} {...this.props} />
   </div>
 )

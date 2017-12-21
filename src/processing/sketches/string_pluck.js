@@ -16,7 +16,7 @@ export default function sketch(p) {
   let precomputedHarmonics = []
   let isMouseDragging = false // XXX change to use p.mousePressed
 
-  p.windowResized = windowResized(p, 'string-pluck-parent', 0.5, onSizeChange)
+  p.windowResized = windowResized(p, 0.5, onSizeChange)
 
   function onSizeChange() {
     precomputeHarmonics()
@@ -33,7 +33,7 @@ export default function sketch(p) {
   }
 
   p.setup = function() {
-    parentColor = p.color(getBackgroundColor('string-pluck-parent'))
+    parentColor = p.color(getBackgroundColor())
     const canvas = p.createCanvas(600, 400)
     canvas.mousePressed(function() {
       plucked = false

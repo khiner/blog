@@ -46,12 +46,7 @@ export default function sketch(p) {
       p.blue(foregroundColor),
       255,
     ]
-    p.windowResized = windowResized(
-      p,
-      'snow-globe-parent',
-      image.height / image.width,
-      onSizeChange
-    )
+    p.windowResized = windowResized(p, image.height / image.width, onSizeChange)
     cnv = p.createCanvas(600, 400)
     cnv.mouseClicked(function() {
       if (imageSelectId !== 1) {

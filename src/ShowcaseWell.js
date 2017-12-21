@@ -17,7 +17,7 @@ export default function ShowcaseWell(props) {
     <div className="container">
       <Helmet title={`Karl Hiner - ${props.title}`} />
       <div className="main-content">
-        <Well id={props.wellId}>
+        <Well className="Showcase">
           <div>
             <h1>{props.title}</h1>
             <h2 className="date">{props.date}</h2>

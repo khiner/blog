@@ -20,7 +20,6 @@ const entries = [
     title: 'Apparent Retrograde Motion',
     date: 'Feb 15 2016',
     disqusId: 'ApparentRetrogradeMotion',
-    wellId: 'retrograde-motion-parent',
     description:
       'Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies within its system, as observed from a particular vantage point.',
     content: RetrogradeMotion,
@@ -31,7 +30,6 @@ const entries = [
     title: 'Bubble Wrap',
     date: 'Dec 19 2017',
     disqusId: 'BubbleWrap',
-    wellId: 'bubble-wrap-parent',
     description: 'A simple sketch with for trippy, colorful bubble patterns.',
     content: BubbleWrap,
     type: 'showcase',
@@ -41,7 +39,6 @@ const entries = [
     title: 'Force-Directed Graph',
     date: 'July 31 2016',
     disqusId: 'ForceDirectedGraph',
-    wellId: 'force-graph-parent',
     description:
       'Mapping a force-directed graph to an image for stretching and warping.',
     content: ForceGraph,
@@ -52,7 +49,6 @@ const entries = [
     title: 'Snow Globe',
     date: 'Feb 16 2015',
     disqusId: 'SnowGlobe',
-    wellId: 'snow-globe-parent',
     description:
       'Some fun with edge detection. This simple effect, when used on images like cityscapes, looks like a blizzard.',
     content: SnowGlobe,
@@ -62,8 +58,7 @@ const entries = [
     path: '/processing/string_pluck',
     title: 'String Pluck',
     date: 'Feb 16 2015',
-    disqusId: 'SnowGlobe',
-    wellId: 'string-pluck-parent',
+    disqusId: 'StringPluck',
     description:
       'Pluck the string by holding the mouse down, dragging and releasing.',
     content: StringPluck,
@@ -75,11 +70,11 @@ const entries = [
     date: 'Sep 8 2016',
     disqusId: 'AutoSampler',
     description: (
-      <p>
+      <div>
         <a href="https://github.com/khiner/AutoSampler">AutoSampler</a> is an
         intelligent Max4Live instrument that plays audio segments found in your
         library based on live MIDI.
-      </p>
+      </div>
     ),
     content: AutoSampler,
     type: 'article',
@@ -90,11 +85,11 @@ const entries = [
     date: 'Aug 28 2016',
     disqusId: 'MidiMarkov',
     description: (
-      <p>
+      <div>
         <a href="https://github.com/khiner/midi_markov">Midi Markov</a> is a
         command-line tool that uses a Markov process to generate MIDI streams
         based on a floder of MIDI source material.
-      </p>
+      </div>
     ),
     content: MidiMarkov,
     type: 'article',

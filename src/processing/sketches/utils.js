@@ -1,12 +1,14 @@
-export function getBackgroundColor(parentId) {
-  const parentStyle = window.getComputedStyle(document.getElementById(parentId))
+export function getBackgroundColor() {
+  const parentStyle = window.getComputedStyle(
+    document.querySelector('.Showcase')
+  )
   return parentStyle.backgroundColor
 }
 
-export function windowResized(p, parentId, heightRatio, onSizeChange) {
+export function windowResized(p, heightRatio, onSizeChange) {
   return function() {
     const parentStyle = window.getComputedStyle(
-      document.getElementById(parentId)
+      document.querySelector('.Showcase')
     )
     const setupWidth =
       parseFloat(parentStyle.width) -

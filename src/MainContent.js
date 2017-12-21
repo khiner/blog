@@ -16,7 +16,6 @@ class MainContent extends Component {
             title={entry.title}
             date={entry.date}
             url={entry.url}
-            wellId={entry.wellId}
             disqusId={entry.disqusId}>
             {entry.content}
           </ShowcaseWell>

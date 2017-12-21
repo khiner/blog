@@ -21,12 +21,7 @@ export default function sketch(p) {
   var currState
   var pastStates = []
 
-  p.windowResized = windowResized(
-    p,
-    'retrograde-motion-parent',
-    1.0,
-    onSizeChange
-  )
+  p.windowResized = windowResized(p, 1.0, onSizeChange)
 
   function onSizeChange() {
     if (sun != null && earth != null && mars != null) {
@@ -47,7 +42,7 @@ export default function sketch(p) {
 
   p.setup = function() {
     backgroundColor = p.color(BACKGROUND_COLOR_STR)
-    parentColor = p.color(getBackgroundColor('retrograde-motion-parent'))
+    parentColor = p.color(getBackgroundColor())
     p.createCanvas(600, 400)
     p.noStroke()
     p.windowResized()

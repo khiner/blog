@@ -17,7 +17,7 @@ export default function sketch(p) {
   var imageToggle, edgesToggle, verticesToggle, pauseToggle
   var toggles
 
-  p.windowResized = windowResized(p, 'force-graph-parent', 1, onSizeChange)
+  p.windowResized = windowResized(p, 1, onSizeChange)
 
   function onSizeChange() {
     halfWidth = p.width / 2
@@ -40,7 +40,7 @@ export default function sketch(p) {
   }
 
   p.setup = function() {
-    parentColor = p.color(getBackgroundColor('force-graph-parent'))
+    parentColor = p.color(getBackgroundColor())
     network = new Network()
 
     const cnv = p.createCanvas(600, 400)
