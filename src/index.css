@@ -53,7 +53,7 @@ a {
 .main-content h2 {
   font-size: 21.6px;
 }
-.main-content .well {
+.main-content.well {
   background-image: none;
 }
 

@@ -2,35 +2,14 @@ import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 
 import SummaryList from './SummaryList'
-import Article from './Article'
-import ShowcaseWell from './ShowcaseWell'
+import Entry from './Entry'
 import entries from './entries'
 import { stripSlashes } from './utils'
 
 class MainContent extends Component {
   generateComponent(entry) {
     return props => {
-      if (entry.type && entry.type.toLowerCase() === 'showcase') {
-        return (
-          <ShowcaseWell
-            title={entry.title}
-            date={entry.date}
-            url={entry.url}
-            disqusId={entry.disqusId}>
-            {entry.content}
-          </ShowcaseWell>
-        )
-      } else {
-        return (
-          <Article
-            title={entry.title}
-            date={entry.date}
-            url={entry.url}
-            disqusId={entry.disqusId}>
-            {entry.content}
-          </Article>
-        )
-      }
+      return <Entry {...entry}>{entry.content}</Entry>
     }
   }
 
