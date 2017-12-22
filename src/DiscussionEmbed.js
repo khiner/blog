@@ -1,3 +1,7 @@
+/*
+ * Adapted from https://github.com/ryanvalentin/disqus-react/blob/master/src/DiscussionEmbed.jsx
+*/
+
 import React from 'react'
 
 const DOC = window.document
@@ -19,7 +23,6 @@ function removeScript(id, parentElement) {
   }
 }
 
-// Adapted from https://github.com/ryanvalentin/disqus-react/blob/master/src/DiscussionEmbed.jsx
 export default class DiscussionEmbed extends React.Component {
   componentWillMount() {
     if (

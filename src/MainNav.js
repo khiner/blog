@@ -3,47 +3,25 @@ import { MenuItem, Nav, NavItem, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 
+import config from './config'
 import { snakeCaseToTitle, stripSlashes } from './utils'
-import entries from './entries'
+import parsedEntries from './parsedEntries'
 
 class MainNav extends Component {
-  findAllUniqueTopLevelPathSegments() {
-    return [
-      ...new Set(
-        entries
-          .map(entry => stripSlashes(entry.path))
-          .filter(path => path.split('/').length > 1)
-          .map(path => path.split('/')[0])
-      ),
-    ]
+  generateMenuItem(entry) {
+    return <MenuItem>{entry.title}</MenuItem>
   }
 
-  findAllNonNestedEntries() {
-    return entries.filter(
-      entry => stripSlashes(entry.path).split('/').length === 1
-    )
-  }
-
-  findEntriesMatchingTopLevelPathSegment(topLevelPathSegment) {
-    return entries.filter(entry =>
-      stripSlashes(entry.path).startsWith(topLevelPathSegment)
-    )
-  }
-
-  generateLink(entry) {
+  wrapInLink(content, entry) {
     return (
       <LinkContainer key={entry.path} to={`/${stripSlashes(entry.path)}/`}>
-        <MenuItem>{entry.title}</MenuItem>
+        {content}
       </LinkContainer>
     )
   }
 
   generateNavItem(entry) {
-    return (
-      <LinkContainer key={entry.path} to={`/${stripSlashes(entry.path)}/`}>
-        <NavItem>{entry.title}</NavItem>
-      </LinkContainer>
-    )
+    return <NavItem>{entry.title}</NavItem>
   }
 
   generateNavDropdown(topLevelPathSegment) {
@@ -52,8 +30,8 @@ class MainNav extends Component {
         key={topLevelPathSegment}
         id={topLevelPathSegment}
         title={snakeCaseToTitle(topLevelPathSegment)}>
-        {this.findEntriesMatchingTopLevelPathSegment(topLevelPathSegment).map(
-          entry => this.generateLink(entry)
+        {parsedEntries.byTopLevelPathSegment[topLevelPathSegment].map(entry =>
+          this.wrapInLink(this.generateMenuItem(entry), entry)
         )}
       </NavDropdown>
     )
@@ -70,20 +48,21 @@ class MainNav extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            {this.findAllUniqueTopLevelPathSegments().map(
-              topLevelPathSegment => {
-                return this.generateNavDropdown(topLevelPathSegment)
-              }
+            {Object.keys(parsedEntries.byTopLevelPathSegment).map(
+              topLevelPathSegment =>
+                this.generateNavDropdown(topLevelPathSegment)
             )}
-            {this.findAllNonNestedEntries().map(entry => {
-              return this.generateNavItem(entry)
-            })}
+            {parsedEntries.nonNested.map(entry =>
+              this.wrapInLink(this.generateNavItem(entry), entry)
+            )}
           </Nav>
-          <Nav pullRight>
-            <NavDropdown title="Contact" id="contact">
-              <MenuItem>Email: karl.hiner@gmail.com</MenuItem>
-            </NavDropdown>
-          </Nav>
+          {config.email && (
+            <Nav pullRight>
+              <NavDropdown title="Contact" id="contact">
+                <MenuItem>{config.email}</MenuItem>
+              </NavDropdown>
+            </Nav>
+          )}
         </Navbar.Collapse>
       </Navbar>
     )

@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-
 import { Panel } from 'react-bootstrap'
-import entries from './entries'
+import Helmet from 'react-helmet'
+
+import config from './config'
+import parsedEntries from './parsedEntries'
 
 export default class SummaryList extends Component {
   header(entry) {
@@ -25,12 +27,10 @@ export default class SummaryList extends Component {
   render() {
     return (
       <div>
+        {config && config.siteTitle && <Helmet title={config.siteTitle} />}
         <div className="col-md-2" />
         <div className="col-xs-12 col-md-8">
-          {entries
-            .filter(entry => !entry.excludeFromFrontPage)
-            .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
-            .map(entry => this.panel(entry))}
+          {parsedEntries.reverseChronological.map(entry => this.panel(entry))}
         </div>
         <div className="col-md-2" />
       </div>

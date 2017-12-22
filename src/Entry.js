@@ -1,10 +1,10 @@
 import React from 'react'
 import Helmet from 'react-helmet'
 
+import config from './config'
 import DiscussionEmbed from './DiscussionEmbed'
 
 export default function Entry(props) {
-  const disqusShortname = 'karlhiner'
   const disqusConfig = {
     title: props.title,
     identifier: props.disqusId,
@@ -13,9 +13,18 @@ export default function Entry(props) {
   const isShowcase = props.type && props.type.toLowerCase() === 'showcase'
   const columnBreak = <div className={isShowcase ? 'col-md-1' : 'col-md-2'} />
 
+  var title
+  if (config.siteName && props.title) {
+    title = config.siteName + ' - ' + props.title
+  } else if (config.siteName) {
+    title = config.siteName
+  } else if (props.title) {
+    title = props.title
+  }
+
   return (
     <div className="container">
-      <Helmet title={`Karl Hiner - ${props.title}`} />
+      <Helmet title={title} />
       {columnBreak}
       <div
         className={
@@ -27,9 +36,13 @@ export default function Entry(props) {
         {props.children}
       </div>
       {columnBreak}
-      {disqusConfig.identifier && (
-        <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
-      )}
+      {config.disqusShortname &&
+        disqusConfig.identifier && (
+          <DiscussionEmbed
+            shortname={config.disqusShortname}
+            config={disqusConfig}
+          />
+        )}
     </div>
   )
 }

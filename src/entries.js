@@ -1,5 +1,7 @@
 import React from 'react'
 
+import config from './config'
+
 import RetrogradeMotion from './processing/RetrogradeMotion'
 import BubbleWrap from './processing/BubbleWrap'
 import ForceGraph from './processing/ForceGraph'
@@ -13,7 +15,6 @@ import JupyterNotebooks from './jupyter_notebooks/JupyterNotebooks'
 
 import { stripSlashes } from './utils'
 
-const HOST = 'https://karlhiner.com'
 const entries = [
   {
     path: '/processing/retrograde_motion',
@@ -99,10 +100,11 @@ const entries = [
     title: 'Jupyter Notebooks',
     content: JupyterNotebooks,
     type: 'article',
-    excludeFromFrontPage: true,
   },
 ]
 
-entries.forEach(entry => (entry.url = HOST + `/${stripSlashes(entry.path)}`))
+entries.forEach(
+  entry => (entry.url = config.host + `/${stripSlashes(entry.path)}`)
+)
 
 export default entries
