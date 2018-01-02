@@ -25,7 +25,6 @@ export default class MainNav extends Component {
   }
 
   generateNavDropdown(topLevelPathSegment) {
-    console.log('topLevelPathSegment', topLevelPathSegment)
     return (
       <NavDropdown
         key={topLevelPathSegment}
@@ -61,7 +60,6 @@ export default class MainNav extends Component {
                 } else {
                   const entry =
                     parsedEntries.byTopLevelPathSegment[topLevelPathSegment]
-                  console.log('entry', entry)
                   return this.wrapInLink(this.generateNavItem(entry), entry)
                 }
               })}

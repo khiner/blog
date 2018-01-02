@@ -1,19 +1,14 @@
 import entries from './entries'
 import { stripSlashes } from './utils'
 
+const strippedPaths = entries.map(entry => stripSlashes(entry.path))
+
 function findUniqueTopLevelPathSegments() {
-  return [
-    ...new Set(
-      entries
-        .map(entry => stripSlashes(entry.path))
-        .map(path => path.split('/')[0])
-    ),
-  ]
+  return [...new Set(strippedPaths.map(path => path.split('/')[0]))]
 }
 
 function findNestedTopLevelPathSegments() {
-  return entries
-    .map(entry => stripSlashes(entry.path))
+  return strippedPaths
     .filter(path => path.split('/').length > 1)
     .map(path => path.split('/')[0])
 }
@@ -32,9 +27,6 @@ uniqueTopLevelPathSegments.forEach(topLevelPathSegment => {
     )
   }
 })
-
-console.log('uniqueTopLevelPathSegments', uniqueTopLevelPathSegments)
-console.log('byTopLevelPathSegment', byTopLevelPathSegment)
 
 const reverseChronological = entries
   .filter(entry => entry.date)
