@@ -102,6 +102,8 @@ const entries = [
   {
     path: '/jupyter_notebooks',
     title: 'Jupyter Notebooks',
+    description:
+      'A collection of Jupyter notebooks, mostly related to machine learning and audio processing',
     content: JupyterNotebooks,
     type: 'article',
   },
