@@ -77,12 +77,14 @@ const entries = [
         library based on live MIDI.
       </div>
     ),
+    descriptionPlainText:
+      'AutoSampler is an intelligent Max4Live instrument that plays audio segments found in your library based on live MIDI',
     content: AutoSampler,
     type: 'article',
   },
   {
     path: '/music_generation/midi_markov',
-    title: 'Generating MIDI with Markov chains',
+    title: 'Generating MIDI with Markov Chains',
     date: 'Aug 28 2016',
     disqusId: 'MidiMarkov',
     description: (
@@ -92,6 +94,8 @@ const entries = [
         based on a floder of MIDI source material.
       </div>
     ),
+    descriptionPlainText:
+      'MidiMarkov is a command-line tool that uses a Markov process to generate MIDI streams based on a floder of MIDI source material',
     content: MidiMarkov,
     type: 'article',
   },
@@ -104,7 +108,8 @@ const entries = [
 ]
 
 entries.forEach(
-  entry => (entry.url = config.host + `/${stripSlashes(entry.path)}`)
+  entry =>
+    (entry.url = `${stripSlashes(config.host)}/${stripSlashes(entry.path)}`)
 )
 
 export default entries

@@ -17,6 +17,7 @@ body {
 .main-content h2, p, img, iframe {
   margin-bottom: 28px !important;
 }
+
 a {
   color: #121212;
 }
@@ -104,4 +105,29 @@ a {
   width: 100%;
   height: 100%;
   padding-bottom: 20px;
+}
+
+.share-buttons-parent {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.share-buttons-parent p {
+  font-size: 24px;
+  margin: 5px !important;
+}
+
+.share-buttons {
+  display: flex;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.share-buttons img {
+  width: 35px;
+  margin: 0 10px;
+  padding: 2px;
+  border: 0;
+  box-shadow: 0;
 }

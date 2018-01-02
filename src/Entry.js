@@ -3,37 +3,46 @@ import Helmet from 'react-helmet'
 
 import config from './config'
 import DiscussionEmbed from './DiscussionEmbed'
+import ShareButtons from './share_buttons/ShareButtons'
 
 export default function Entry(props) {
+  const { title, description, descriptionPlainText, url, date, type } = props
+
   const disqusConfig = {
-    title: props.title,
+    title,
     identifier: props.disqusId,
-    url: props.url,
+    url,
   }
-  const isShowcase = props.type && props.type.toLowerCase() === 'showcase'
+
+  const isShowcase = type && type.toLowerCase() === 'showcase'
   const columnBreak = <div className={isShowcase ? 'col-md-1' : 'col-md-2'} />
 
-  var title
-  if (config.siteName && props.title) {
-    title = config.siteName + ' - ' + props.title
+  var formattedTitle
+  if (config.siteName && title) {
+    formattedTitle = config.siteName + ' - ' + title
   } else if (config.siteName) {
-    title = config.siteName
-  } else if (props.title) {
-    title = props.title
+    formattedTitle = config.siteName
+  } else if (title) {
+    formattedTitle = title
   }
 
   return (
     <div className="container">
-      <Helmet title={title} />
+      <Helmet title={formattedTitle} />
       {columnBreak}
       <div
         className={
           'main-content col-xs-12 ' +
           (isShowcase ? 'col-md-10 Showcase well' : 'col-md-8')
         }>
-        <h1>{props.title}</h1>
-        <h2 className="date">{props.date}</h2>
+        {title && <h1>{title}</h1>}
+        {date && <h2 className="date">{date}</h2>}
         {props.children}
+        <ShareButtons
+          title={title || ''}
+          description={descriptionPlainText || description || ''}
+          url={url || ''}
+        />
       </div>
       {columnBreak}
       {config.disqusShortname &&

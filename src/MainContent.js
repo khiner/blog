@@ -6,7 +6,7 @@ import Entry from './Entry'
 import entries from './entries'
 import { stripSlashes } from './utils'
 
-class MainContent extends Component {
+export default class MainContent extends Component {
   generateComponent(entry) {
     return props => {
       return <Entry {...entry}>{entry.content}</Entry>
@@ -32,5 +32,3 @@ class MainContent extends Component {
     )
   }
 }
-
-export default MainContent

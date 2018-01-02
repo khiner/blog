@@ -7,7 +7,7 @@ import config from './config'
 import { snakeCaseToTitle, stripSlashes } from './utils'
 import parsedEntries from './parsedEntries'
 
-class MainNav extends Component {
+export default class MainNav extends Component {
   generateMenuItem(entry) {
     return <MenuItem>{entry.title}</MenuItem>
   }
@@ -68,5 +68,3 @@ class MainNav extends Component {
     )
   }
 }
-
-export default MainNav
