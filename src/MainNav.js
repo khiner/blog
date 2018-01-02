@@ -25,6 +25,7 @@ export default class MainNav extends Component {
   }
 
   generateNavDropdown(topLevelPathSegment) {
+    console.log('topLevelPathSegment', topLevelPathSegment)
     return (
       <NavDropdown
         key={topLevelPathSegment}
@@ -48,13 +49,22 @@ export default class MainNav extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            {Object.keys(parsedEntries.byTopLevelPathSegment).map(
-              topLevelPathSegment =>
-                this.generateNavDropdown(topLevelPathSegment)
-            )}
-            {parsedEntries.nonNested.map(entry =>
-              this.wrapInLink(this.generateNavItem(entry), entry)
-            )}
+            {parsedEntries.uniqueTopLevelPathSegments
+              .sort()
+              .map(topLevelPathSegment => {
+                if (
+                  parsedEntries.nestedTopLevelPathSegments.indexOf(
+                    topLevelPathSegment
+                  ) !== -1
+                ) {
+                  return this.generateNavDropdown(topLevelPathSegment)
+                } else {
+                  const entry =
+                    parsedEntries.byTopLevelPathSegment[topLevelPathSegment]
+                  console.log('entry', entry)
+                  return this.wrapInLink(this.generateNavItem(entry), entry)
+                }
+              })}
           </Nav>
           {config.email && (
             <Nav pullRight>
