@@ -3,7 +3,7 @@ import Helmet from 'react-helmet'
 
 import config from './config'
 import DiscussionEmbed from './DiscussionEmbed'
-import ShareButtons from './share_buttons/ShareButtons'
+import ShareButtons from './follow_and_share/ShareButtons'
 
 export default function Entry(props) {
   const { title, description, descriptionPlainText, url, date, type } = props
@@ -30,14 +30,12 @@ export default function Entry(props) {
     <div className="container">
       <Helmet title={formattedTitle} />
       {columnBreak}
-      <div
-        className={
-          'main-content col-xs-12 ' +
-          (isShowcase ? 'col-md-10 Showcase well' : 'col-md-8')
-        }>
-        {title && <h1>{title}</h1>}
-        {date && <h2 className="date">{date}</h2>}
-        {props.children}
+      <div className={'col-xs-12 ' + (isShowcase ? 'col-md-10' : 'col-md-8')}>
+        <div className={'main-content ' + (isShowcase ? 'Showcase well' : '')}>
+          {title && <h1>{title}</h1>}
+          {date && <h2 className="date">{date}</h2>}
+          {props.children}
+        </div>
         <ShareButtons
           title={title || ''}
           description={descriptionPlainText || description || ''}

@@ -5,7 +5,7 @@ import Helmet from 'react-helmet'
 
 import config from './config'
 import parsedEntries from './parsedEntries'
-import ShareButtons from './share_buttons/ShareButtons'
+import ShareButtons from './follow_and_share/ShareButtons'
 
 export default class SummaryList extends Component {
   header(entry) {

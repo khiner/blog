@@ -12,6 +12,7 @@ body {
   letter-spacing: 0px;
   font-style: normal;
   border-color: #b6b6b6;
+  margin-bottom: 20px;
 }
 
 .main-content h2, p, img, iframe {
@@ -107,11 +108,17 @@ a {
   padding-bottom: 20px;
 }
 
+.follow-and-share {
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+}
+
 .share-buttons-parent {
   display: flex;
   flex-flow: column;
   align-items: center;
-  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .share-buttons-parent p {
@@ -123,12 +130,32 @@ a {
   display: flex;
   margin: 0 auto;
   align-items: center;
+  padding: 5px 0;
 }
 
 .share-buttons img {
-  width: 35px;
-  margin: 0 10px;
-  padding: 2px;
+  width: 30px;
+  margin: 0 10px !important;
   border: 0;
   box-shadow: 0;
+}
+
+#mc_embed_signup {
+  clear:left;
+  font:14px Helvetica,Arial,sans-serif;
+}
+
+#mc_embed_signup form {
+  padding: 10px !important;
+}
+
+#mc_embed_signup input.button {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+#mc_embed_signup input.email {
+  width: 100% !important;
+  min-width: 200px !important;
+  margin: 0 0 10px 0 !important;
 }

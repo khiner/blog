@@ -7,6 +7,8 @@ import config from './config'
 import { snakeCaseToTitle, stripSlashes } from './utils'
 import parsedEntries from './parsedEntries'
 
+import MailChimpEmailSignup from './follow_and_share/MailChimpEmailSignup'
+
 export default class MainNav extends Component {
   generateMenuItem(entry) {
     return <MenuItem>{entry.title}</MenuItem>
@@ -71,6 +73,17 @@ export default class MainNav extends Component {
               </NavDropdown>
             </Nav>
           )}
+          {config.mailChimpFormAction &&
+            config.mailChimpInputName && (
+              <Nav pullRight>
+                <NavDropdown title="Follow" id="follow">
+                  <MailChimpEmailSignup
+                    formAction={config.mailChimpFormAction}
+                    inputName={config.mailChimpInputName}
+                  />
+                </NavDropdown>
+              </Nav>
+            )}
         </Navbar.Collapse>
       </Navbar>
     )
