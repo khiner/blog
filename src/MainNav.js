@@ -66,8 +66,17 @@ export default class MainNav extends Component {
                 }
               })}
           </Nav>
-          {config.email && (
-            <Nav pullRight>
+          <Nav pullRight>
+            {config.mailChimpFormAction &&
+              config.mailChimpInputName && (
+                <NavDropdown title="Subscribe" id="subscribe">
+                  <MailChimpEmailSignup
+                    formAction={config.mailChimpFormAction}
+                    inputName={config.mailChimpInputName}
+                  />
+                </NavDropdown>
+              )}
+            {config.email && (
               <NavDropdown title="Contact" id="contact">
                 <MenuItem
                   href={`mailto:${config.email}?Subject=Hello!`}
@@ -75,19 +84,8 @@ export default class MainNav extends Component {
                   {config.email}
                 </MenuItem>
               </NavDropdown>
-            </Nav>
-          )}
-          {config.mailChimpFormAction &&
-            config.mailChimpInputName && (
-              <Nav pullRight>
-                <NavDropdown title="Subscribe" id="subscribe">
-                  <MailChimpEmailSignup
-                    formAction={config.mailChimpFormAction}
-                    inputName={config.mailChimpInputName}
-                  />
-                </NavDropdown>
-              </Nav>
             )}
+          </Nav>
         </Navbar.Collapse>
       </Navbar>
     )
