@@ -64,11 +64,15 @@ a {
   background-image: none !important;
 }
 
-.panel-heading:hover {
-  background-color: #d5d5d5;
+.panel:hover {
+  background-color: #f4f4f4;
 }
 
-.panel-heading a:hover {
+.panel:hover .panel-heading{
+  background-color: #e3e3e3;
+}
+
+.summary-list a:hover {
   cursor: pointer;
   text-decoration: none;
 }

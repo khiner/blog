@@ -10,24 +10,26 @@ import ShareButtons from './follow_and_share/ShareButtons'
 export default class SummaryList extends Component {
   header(entry) {
     return (
-      <Link to={entry.path}>
+      <div>
         <h1>{entry.title}</h1>
         <h2 className="date">{entry.date}</h2>
-      </Link>
+      </div>
     )
   }
 
   panel(entry) {
     return (
-      <Panel key={entry.path} header={this.header(entry)}>
-        <div className="main-content">{entry.description}</div>
-      </Panel>
+      <Link to={entry.path}>
+        <Panel key={entry.path} header={this.header(entry)}>
+          <div className="main-content">{entry.description}</div>
+        </Panel>
+      </Link>
     )
   }
 
   render() {
     return (
-      <div>
+      <div className="summary-list">
         {config && config.siteTitle && <Helmet title={config.siteTitle} />}
         <div className="col-md-2" />
         <div className="col-xs-12 col-md-8">
