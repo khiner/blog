@@ -76,7 +76,7 @@ export default class MainNav extends Component {
           {config.mailChimpFormAction &&
             config.mailChimpInputName && (
               <Nav pullRight>
-                <NavDropdown title="Follow" id="follow">
+                <NavDropdown title="Subscribe" id="subscribe">
                   <MailChimpEmailSignup
                     formAction={config.mailChimpFormAction}
                     inputName={config.mailChimpInputName}
