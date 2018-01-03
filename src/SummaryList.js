@@ -5,7 +5,6 @@ import Helmet from 'react-helmet'
 
 import config from './config'
 import parsedEntries from './parsedEntries'
-import ShareButtons from './follow_and_share/ShareButtons'
 
 export default class SummaryList extends Component {
   header(entry) {
@@ -33,11 +32,6 @@ export default class SummaryList extends Component {
         {config && config.siteTitle && <Helmet title={config.siteTitle} />}
         <div className="col-md-2" />
         <div className="col-xs-12 col-md-8">
-          <ShareButtons
-            title={config.siteName}
-            description={`${config.siteName}`}
-            url={config.host}
-          />
           {parsedEntries.reverseChronological.map(entry => this.panel(entry))}
         </div>
         <div className="col-md-2" />

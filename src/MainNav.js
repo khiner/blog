@@ -8,6 +8,7 @@ import { snakeCaseToTitle, stripSlashes } from './utils'
 import parsedEntries from './parsedEntries'
 
 import MailChimpEmailSignup from './follow_and_share/MailChimpEmailSignup'
+import ShareButtons from './follow_and_share/ShareButtons'
 
 export default class MainNav extends Component {
   generateMenuItem(entry) {
@@ -67,15 +68,36 @@ export default class MainNav extends Component {
               })}
           </Nav>
           <Nav pullRight>
-            {config.mailChimpFormAction &&
-              config.mailChimpInputName && (
-                <NavDropdown title="Subscribe" id="subscribe">
-                  <MailChimpEmailSignup
-                    formAction={config.mailChimpFormAction}
-                    inputName={config.mailChimpInputName}
-                  />
-                </NavDropdown>
-              )}
+            {config.topLevelLinks &&
+              // TODO change to NavItem when new version (> 0.31.5) of react-bootstrap is available
+              config.topLevelLinks.map(topLevelLink => (
+                <MenuItem href={topLevelLink.href} target="_blank">
+                  {topLevelLink.label}
+                </MenuItem>
+              ))}
+            {config.showShareNavItem && (
+              <NavDropdown
+                title={
+                  config.mailChimpFormAction && config.mailChimpInputName
+                    ? 'Share & Subscribe'
+                    : 'Share'
+                }
+                id="share-and-subscribe">
+                <ShareButtons
+                  title={config.siteName}
+                  description={`${config.siteName}`}
+                  url={config.host}
+                  hideLabel={true}
+                />
+                {config.mailChimpFormAction &&
+                  config.mailChimpInputName && (
+                    <MailChimpEmailSignup
+                      formAction={config.mailChimpFormAction}
+                      inputName={config.mailChimpInputName}
+                    />
+                  )}
+              </NavDropdown>
+            )}
             {config.email && (
               <NavDropdown title="Contact" id="contact">
                 <MenuItem

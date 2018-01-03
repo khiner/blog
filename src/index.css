@@ -122,7 +122,6 @@ a {
   display: flex;
   flex-flow: column;
   align-items: center;
-  margin-bottom: 10px;
 }
 
 .share-buttons-parent p {

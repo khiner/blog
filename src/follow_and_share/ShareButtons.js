@@ -20,11 +20,11 @@ export default class ShareButtons extends Component {
   }
 
   render() {
-    const { title, description, url } = this.props
+    const { title, description, url, hideLabel } = this.props
 
     return (
       <div className="share-buttons-parent">
-        <p>Share</p>
+        {!hideLabel && <p>Share</p>}
         <div className="share-buttons">
           {this.renderShareButton(
             'Email',

@@ -4,7 +4,7 @@ export default function sketch(p) {
   let numX = 20
   let numY = 20
 
-  p.windowResized = windowResized(p, 0.5)
+  p.windowResized = windowResized(p, 0.25)
 
   p.setup = function() {
     const cnv = p.createCanvas(600, 400)
