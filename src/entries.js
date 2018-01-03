@@ -70,15 +70,8 @@ const entries = [
     title: 'AutoSampler for Max4Live',
     date: 'Sep 8 2016',
     disqusId: 'AutoSampler',
-    description: (
-      <div>
-        <a href="https://github.com/khiner/AutoSampler">AutoSampler</a> is an
-        intelligent Max4Live instrument that plays audio segments found in your
-        library based on live MIDI.
-      </div>
-    ),
-    descriptionPlainText:
-      'AutoSampler is an intelligent Max4Live instrument that plays audio segments found in your library based on live MIDI',
+    description:
+      'AutoSampler is an intelligent Max4Live instrument that plays audio segments found in your library based on live MIDI.',
     content: AutoSampler,
     type: 'article',
   },
@@ -87,14 +80,7 @@ const entries = [
     title: 'Generating MIDI with Markov Chains',
     date: 'Aug 28 2016',
     disqusId: 'MidiMarkov',
-    description: (
-      <div>
-        <a href="https://github.com/khiner/midi_markov">Midi Markov</a> is a
-        command-line tool that uses a Markov process to generate MIDI streams
-        based on a floder of MIDI source material.
-      </div>
-    ),
-    descriptionPlainText:
+    description:
       'MidiMarkov is a command-line tool that uses a Markov process to generate MIDI streams based on a floder of MIDI source material',
     content: MidiMarkov,
     type: 'article',

@@ -69,7 +69,11 @@ export default class MainNav extends Component {
           {config.email && (
             <Nav pullRight>
               <NavDropdown title="Contact" id="contact">
-                <MenuItem>{config.email}</MenuItem>
+                <MenuItem
+                  href={`mailto:${config.email}?Subject=Hello!`}
+                  target="_blank">
+                  {config.email}
+                </MenuItem>
               </NavDropdown>
             </Nav>
           )}

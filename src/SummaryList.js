@@ -19,8 +19,8 @@ export default class SummaryList extends Component {
 
   panel(entry) {
     return (
-      <Link to={entry.path}>
-        <Panel key={entry.path} header={this.header(entry)}>
+      <Link to={entry.path} key={entry.path}>
+        <Panel header={this.header(entry)}>
           <div className="main-content">{entry.description}</div>
         </Panel>
       </Link>

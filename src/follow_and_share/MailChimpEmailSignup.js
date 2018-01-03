@@ -24,7 +24,7 @@ export default class MailChimpEmailSignup extends Component {
             target="_blank"
             noValidate>
             <div id="mc_embed_signup_scroll">
-              <label for="mce-EMAIL">Hear about new posts</label>
+              <label htmlFor="mce-EMAIL">Hear about new posts</label>
               <input
                 type="email"
                 name="EMAIL"
