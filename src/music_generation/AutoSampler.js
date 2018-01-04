@@ -5,9 +5,9 @@ export default (
     <p>
       <a href="https://github.com/khiner/AutoSampler">AutoSampler</a> is an
       intelligent Max4Live instrument that plays audio segments found in your
-      library based on live MIDI. Here's what it looks like in action! (A simple
-      sine tone is playing in addition to the instrument so you can hear what
-      notes are being played.)
+      library matching the notes of incoming live MIDI. Here's what it looks
+      like in action! (A simple sine tone is playing in addition to the
+      instrument so you can hear what notes are being played.)
     </p>
     <div className="videoWrapper">
       <iframe

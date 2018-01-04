@@ -1,3 +1,5 @@
+import React from 'react'
+
 import config from './config'
 
 import CalahjesAndLewps from './albums/CalahjesAndLewps'
@@ -19,6 +21,17 @@ import ForceGraph from './processing/ForceGraph'
 import SnowGlobe from './processing/SnowGlobe'
 import StringPluck from './processing/StringPluck'
 
+import kaoss_pad_mini_image from './albums/assets/kaoss_pad_mini.jpg'
+import make_noise_shared_system_image from './albums/assets/makenoise_shared_system.jpg'
+import pluck_equation_image from './processing/assets/pluck_equation.jpg'
+import snow_globe_image from './processing/assets/snow_globe.png'
+import apparent_retrograde_motion_image from './processing/assets/apparent_retrograde_motion.png'
+import mario_warped_image from './processing/assets/mario_warped.png'
+import bubble_wrap_preview_image from './processing/assets/bubble_wrap_preview.png'
+import beethovens_5th_image from './music_generation/assets/beethovens_5th.png'
+import python_crash_course_preview_image from './jupyter_notebooks/assets/python_crash_course_preview.png'
+import windowing_animation from './jupyter_notebooks/assets/windowing_animation.gif'
+
 import { stripSlashes } from './utils'
 
 const entries = [
@@ -39,8 +52,16 @@ const entries = [
     title: 'Calahjes&Lewps',
     date: 'Dec 22 2011',
     disqusId: 'CalahjesAndLewps',
-    description:
-      'Stream of consciousness frenetic sampling from musical sources.',
+    description: (
+      <div>
+        <p>Stream of consciousness frenetic sampling from musical sources.</p>
+        <img
+          src={kaoss_pad_mini_image}
+          alt="Kaoss Pad Mini"
+          style={{ width: '30%' }}
+        />
+      </div>
+    ),
     content: CalahjesAndLewps,
     type: 'article',
   },
@@ -50,8 +71,18 @@ const entries = [
     title: 'Make Noise Shared System Jams',
     date: 'Jan 27 2016',
     disqusId: 'MakeNoiseSharedSystemJams',
-    description:
-      'Modular synth patches, made mostly using the Make Noise Shared System.',
+    description: (
+      <div>
+        <p>
+          Modular synth patches, made mostly using the Make Noise Shared
+          System.'
+        </p>
+        <img
+          src={make_noise_shared_system_image}
+          alt="Make Noise Shared System"
+        />
+      </div>
+    ),
     content: MakeNoiseSharedSystemJams,
     type: 'article',
   },
@@ -59,7 +90,7 @@ const entries = [
     path: '/albums/midi_markov_compose',
     summaryTitle: 'Album - MIDI Markov: Compose',
     title: 'MIDI Markov: Compose',
-    date: 'June 1 2016',
+    date: 'Sep 1 2016',
     disqusId: 'MidiMarkovCompose',
     description:
       'Piano compositions generated from a Markov chain given classical MIDI scores as input.',
@@ -70,7 +101,7 @@ const entries = [
     path: '/albums/midi_markov_decompose',
     summaryTitle: 'Album - MIDI Markov: Decompose',
     title: 'MIDI Markov: Decompose',
-    date: 'June 2 2016',
+    date: 'Sep 2 2016',
     disqusId: 'MidiMarkovDecompose',
     description:
       'Piano compositions generated from a Markov chain given classical MIDI scores as input.  Unlike the "MIDI Markov: Compose" album, these pieces introduce intentional MIDI errors to generate more experimental, ambient pieces.',
@@ -94,8 +125,12 @@ const entries = [
     title: 'String Pluck',
     date: 'Feb 16 2015',
     disqusId: 'StringPluck',
-    description:
-      'Pluck the string by holding the mouse down, dragging and releasing.',
+    description: (
+      <div>
+        <p>Pluck a string by holding the mouse down, dragging and releasing.</p>
+        <img src={pluck_equation_image} alt="Equation for plucked string" />
+      </div>
+    ),
     content: StringPluck,
     type: 'showcase',
   },
@@ -105,8 +140,15 @@ const entries = [
     title: 'Snow Globe',
     date: 'Feb 16 2015',
     disqusId: 'SnowGlobe',
-    description:
-      'Some fun with edge detection. This simple effect, when used on images like cityscapes, looks like a blizzard.',
+    description: (
+      <div>
+        <p>
+          Some fun with edge detection. This simple effect, when used on images
+          like cityscapes, looks like a blizzard.
+        </p>
+        <img src={snow_globe_image} alt="Preview of Snow Globe sketch" />
+      </div>
+    ),
     content: SnowGlobe,
     type: 'showcase',
   },
@@ -116,8 +158,19 @@ const entries = [
     title: 'Apparent Retrograde Motion',
     date: 'Feb 15 2016',
     disqusId: 'ApparentRetrogradeMotion',
-    description:
-      'Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies within its system, as observed from a particular vantage point.',
+    description: (
+      <div>
+        <p>
+          Retrograde motion is the apparent motion of a planet to move in a
+          direction opposite to that of other bodies within its system, as
+          observed from a particular vantage point.
+        </p>
+        <img
+          src={apparent_retrograde_motion_image}
+          alt="Preview of Retrograde Motion sketch"
+        />
+      </div>
+    ),
     content: RetrogradeMotion,
     type: 'showcase',
   },
@@ -127,8 +180,18 @@ const entries = [
     title: 'Force-Directed Graph',
     date: 'July 31 2016',
     disqusId: 'ForceDirectedGraph',
-    description:
-      'Mapping a force-directed graph to an image for stretching and warping.',
+    description: (
+      <div>
+        <p>
+          Mapping a force-directed graph to an image for stretching and warping.
+        </p>
+        <img
+          src={mario_warped_image}
+          alt="Mario warped with force-directed graph"
+          style={{ width: '40%' }}
+        />
+      </div>
+    ),
     content: ForceGraph,
     type: 'showcase',
   },
@@ -137,8 +200,18 @@ const entries = [
     title: 'Generating MIDI with Markov Chains',
     date: 'Aug 28 2016',
     disqusId: 'MidiMarkov',
-    description:
-      'MidiMarkov is a command-line tool that uses a Markov process to generate MIDI streams based on a floder of MIDI source material',
+    description: (
+      <div>
+        <p>
+          MidiMarkov is a command-line tool that uses a Markov process to
+          generate MIDI streams based on a floder of MIDI source material.
+        </p>
+        <img
+          src={beethovens_5th_image}
+          alt="Section of Beethoven's 5th symphony melody"
+        />
+      </div>
+    ),
     content: MidiMarkov,
     type: 'article',
   },
@@ -147,8 +220,23 @@ const entries = [
     title: 'AutoSampler for Max4Live',
     date: 'Sep 8 2016',
     disqusId: 'AutoSampler',
-    description:
-      'AutoSampler is an intelligent Max4Live instrument that plays audio segments found in your library based on live MIDI.',
+    description: (
+      <div>
+        <p>
+          AutoSampler is an intelligent Max4Live instrument that plays audio
+          segments found in your library matching the notes of incoming live
+          MIDI.
+        </p>
+        <div className="videoWrapper">
+          <iframe
+            title="AutoSampler Demo"
+            src="https://www.youtube.com/embed/IgO__9XJ2Cg?wmode=opaque&amp;enablejsapi=1"
+            scrolling="no"
+            frameBorder="0"
+          />
+        </div>
+      </div>
+    ),
     content: AutoSampler,
     type: 'article',
   },
@@ -158,7 +246,15 @@ const entries = [
     title: 'Bubble Wrap',
     date: 'Dec 19 2017',
     disqusId: 'BubbleWrap',
-    description: 'A simple sketch with for trippy, colorful bubble patterns.',
+    description: (
+      <div>
+        <p>A simple sketch with for trippy, colorful bubble patterns.</p>
+        <img
+          src={bubble_wrap_preview_image}
+          alt="Preview of Bubble Wrap sketch"
+        />
+      </div>
+    ),
     content: BubbleWrap,
     type: 'showcase',
   },
@@ -168,8 +264,21 @@ const entries = [
     title: 'Python Crash Course',
     date: 'Dec 20 2017',
     disqusId: 'JupyterPythonCrashCourse',
-    description:
-      'This Jupyter Notebook contains all code, excercises and projects from the Python Crash Course book by Eric Matthes, including three projects: a "Space Invaders"-style game developed with PyGame, a data visualization project and a Django app.',
+    description: (
+      <div>
+        <p>
+          This Jupyter Notebook contains all code, excercises and projects from
+          the Python Crash Course book by Eric Matthes, including three
+          projects: a "Space Invaders"-style game developed with PyGame, a data
+          visualization project and a Django app.
+        </p>
+        <img
+          src={python_crash_course_preview_image}
+          alt="Preview of random walk chart from Python Crash Course book"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
     content: PythonCrashCourse,
     type: 'article',
   },
@@ -179,8 +288,18 @@ const entries = [
     title: 'DFT for timeseries data',
     date: 'Jan 3 2018',
     disqusId: 'JupyterDftTimeseries',
-    description:
-      'This is a Jupyter Notebook I developed for a presentation on applying the DFT to timeseries data for seasonality detection.',
+    description: (
+      <div>
+        <p>
+          I developed this Jupyter Notebook for a presentation on applying the
+          DFT to timeseries data for seasonality detection.
+        </p>
+        <img
+          src={windowing_animation}
+          alt="Animation of windowing's affect on the DFT with pure sinusoids"
+        />
+      </div>
+    ),
     content: DftTimeseries,
     type: 'article',
   },

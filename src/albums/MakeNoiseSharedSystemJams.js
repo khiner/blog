@@ -1,5 +1,6 @@
 import React from 'react'
 
+import make_noise_shared_system_image from './assets/makenoise_shared_system.jpg'
 export default (
   <div>
     <div className="videoWrapper">
@@ -11,7 +12,8 @@ export default (
       />
     </div>
     <p>
-      Modular synth patches, made mostly using the Make Noise Shared System.
+      Modular synth patches, made mostly using the Make Noise Shared System:
     </p>
+    <img src={make_noise_shared_system_image} alt="Make Noise Shared System" />
   </div>
 )
