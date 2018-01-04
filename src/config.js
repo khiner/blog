@@ -1,5 +1,6 @@
 export default {
-  siteName: "Karl Hiner's Blog",
+  siteName: 'Karl Hiner',
+  shareName: "Karl's Blog",
   disqusShortname: 'karlhiner',
   host: 'https://karlhiner.com',
   email: 'karl.hiner@gmail.com',

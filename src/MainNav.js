@@ -45,7 +45,7 @@ export default class MainNav extends Component {
       <Navbar default staticTop collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to="/">Karl Hiner</Link>
+            <Link to="/">{config.siteName}</Link>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
@@ -84,8 +84,8 @@ export default class MainNav extends Component {
                 }
                 id="share-and-subscribe">
                 <ShareButtons
-                  title={config.siteName}
-                  description={`${config.siteName}`}
+                  title={config.shareName || config.siteName}
+                  description={`${config.shareName || config.siteName}`}
                   url={config.host}
                   hideLabel={true}
                 />

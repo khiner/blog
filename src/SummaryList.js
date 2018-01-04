@@ -10,7 +10,7 @@ export default class SummaryList extends Component {
   header(entry) {
     return (
       <div>
-        <h1>{entry.title}</h1>
+        <h1>{entry.summaryTitle || entry.title}</h1>
         <h2 className="date">{entry.date}</h2>
       </div>
     )
