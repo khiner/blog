@@ -1,5 +1,6 @@
 @import './fonts/proxima-nova.css';
 @import '../follow_and_share/style/MailChimpEmailSignup.css';
+@import '../follow_and_share/style/ShareButtons.css';
 
 body {
   font-family: 'Proxima Nova';
@@ -117,30 +118,5 @@ body {
     width: 100%;
     height: 100%;
     padding-bottom: 20px;
-  }
-}
-
-.share-buttons-parent {
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-
-  p {
-    font-size: 24px;
-    margin: 5px !important;
-  }
-
-  .share-buttons {
-    display: flex;
-    margin: 0 auto;
-    align-items: center;
-    padding: 5px 0;
-
-    img {
-      width: 30px;
-      margin: 0 5px !important;
-      border: 0;
-      box-shadow: 0;
-    }
   }
 }
