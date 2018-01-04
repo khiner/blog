@@ -3,6 +3,10 @@
 body {
   font-family: "Proxima Nova";
   font-weight: 400;
+
+  a {
+    color: #121212;
+  }
 }
 
 .main-content {
@@ -13,91 +17,88 @@ body {
   font-style: normal;
   border-color: #b6b6b6;
   margin-bottom: 20px;
+
+  &.well {
+    background-image: none;
+  }
+
+  h2, p, img, iframe {
+    margin-bottom: 28px !important;
+  }
+  a {
+    text-decoration: underline;
+  }
+  img, iframe {
+    display: block;
+    margin: auto;
+  }
+  pre {
+    margin: 28px 0;
+  }
+  code {
+    font-family: monospace,monospace;
+    font-size: 100%;
+    background-color: inherit;
+    color: inherit;
+  }
+  blockquote {
+    font-style: italic;
+    border-left: inherit;
+  }
+  h1, h2 {
+    color: #212121;
+    font-weight: 700;
+  }
+  h1 {
+    font-size: 27px;
+    text-align: center;
+  }
+  h2 {
+    font-size: 22px;
+
+    &.date {
+      font-size: 16px;
+      font-weight: 100;
+      text-align: center;
+      font-style: italic;
+    }
+  }
 }
 
-.main-content h2, p, img, iframe {
-  margin-bottom: 28px !important;
-}
+.panel {
+  .main-content {
+    margin-bottom: 0;
+  }
 
-a {
-  color: #121212;
-}
+  &:hover {
+    background-color: #f4f4f4;
 
-.main-content a {
-  text-decoration: underline;
-}
+    .panel-heading {
+      background-color: #e3e3e3;
+    }
+  }
 
-.main-content img, iframe {
-  display: block;
-  margin: auto;
-}
-.main-content pre {
-  margin: 28px 0;
-}
-.main-content code {
-  font-family: monospace,monospace;
-  font-size: 100%;
-  background-color: inherit;
-  color: inherit;
-}
-.main-content blockquote {
-  font-style: italic;
-  border-left: inherit;
-}
-.main-content h1, h2 {
-  color: #212121;
-  font-weight: 700;
-}
-.main-content h1 {
-  font-size: 27px;
-  text-align: center;
-}
-.main-content h2 {
-  font-size: 21.6px;
-}
-.main-content.well {
-  background-image: none;
-}
+  .panel-heading {
+    background-color: #f5f5f5;
+    background-image: none !important;
 
-.panel-heading {
-  background-color: #f5f5f5;
-  background-image: none !important;
-}
+    h1 {
+      font-size: 27px;
+      margin: 5px 0px;
+    }
 
-.panel .main-content {
-  margin-bottom: 0;
-}
-
-.panel:hover {
-  background-color: #f4f4f4;
-}
-
-.panel:hover .panel-heading{
-  background-color: #e3e3e3;
+    h2.date {
+      margin: 10px 0px;
+      font-size: 16px;
+      font-weight: 100;
+      font-style: italic;
+    }
+  }
 }
 
 .summary-list a:hover {
   cursor: pointer;
   text-decoration: none;
-}
-
-.panel-heading h1 {
-  font-size: 27px;
-  margin: 5px 0px;
-}
-
-.panel-heading h2.date {
-  margin: 10px 0px;
-  font-size: 16px;
-  font-weight: 100;
-  font-style: italic;
-}
-
-.main-content h2.date {
-  font-size: 16px;
-  font-weight: 100;
-  text-align: center;
-  font-style: italic;
 }
 
 /*https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php*/
@@ -106,57 +107,58 @@ a {
   padding-bottom: 56.25%; /* 16:9 */
   padding-top: 25px;
   height: 0;
-}
-.videoWrapper iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding-bottom: 20px;
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 20px;
+  }
 }
 
 .share-buttons-parent {
   display: flex;
   flex-flow: column;
   align-items: center;
-}
 
-.share-buttons-parent p {
-  font-size: 24px;
-  margin: 5px !important;
-}
+  p {
+    font-size: 24px;
+    margin: 5px !important;
+  }
 
-.share-buttons {
-  display: flex;
-  margin: 0 auto;
-  align-items: center;
-  padding: 5px 0;
-}
+  .share-buttons {
+    display: flex;
+    margin: 0 auto;
+    align-items: center;
+    padding: 5px 0;
 
-.share-buttons img {
-  width: 30px;
-  margin: 0 5px !important;
-  border: 0;
-  box-shadow: 0;
+    img {
+      width: 30px;
+      margin: 0 5px !important;
+      border: 0;
+      box-shadow: 0;
+    }
+  }
 }
 
 #mc_embed_signup {
   clear:left;
   font:14px Helvetica,Arial,sans-serif;
-}
 
-#mc_embed_signup form {
-  padding: 10px !important;
-}
+  form {
+    padding: 10px !important;
+  }
+  input {
+    width: 100% !important;
 
-#mc_embed_signup input.button {
-  width: 100% !important;
-  margin: 0 !important;
-}
-
-#mc_embed_signup input.email {
-  width: 100% !important;
-  min-width: 200px !important;
-  margin: 0 0 10px 0 !important;
+    &.button {
+      margin: 0 !important;
+    }
+    &.email {
+      min-width: 200px !important;
+      margin: 0 0 10px 0 !important;
+    }
+  }
 }
