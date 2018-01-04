@@ -28,7 +28,7 @@ export default class ShareButtons extends Component {
         <div className="share-buttons">
           {this.renderShareButton(
             'Email',
-            `mailto:?subject=${title}&body=Though you'd be interested in this!%0D%0A%0D%0A${description}: ${url}`,
+            `mailto:?subject=${title}&body=Though you'd be interested in this!%0D%0A%0D%0A${url}:%0D%0A${description}`,
             email_image
           )}
           {this.renderShareButton(
