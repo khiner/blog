@@ -48,11 +48,11 @@ export default (
       window (if you're on Mac) and running:
     </p>
     <pre>{`$ git clone git@github.com:khiner/midi_markov.git
-  $ cd midi_markov
-  $ gem install bundler
-  $ bundle install
-  $ brew install timidity
-  $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
+$ cd midi_markov
+$ gem install bundler
+$ bundle install
+$ brew install timidity
+$ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
     <p dir="ltr">
       The results vary a ton depending on the parameters and the random seed,
       from patient harmonic meditations to frenetic atonal excursions.
