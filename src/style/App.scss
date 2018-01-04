@@ -11,7 +11,7 @@ body {
   }
 }
 
-.main-content {
+.mainContent {
   color: #424242;
   font-size: 16px;
   line-height: 1.7em;
@@ -69,19 +69,11 @@ body {
 }
 
 .panel {
-  .main-content {
+  .mainContent {
     margin-bottom: 0;
   }
 
-  &:hover {
-    background-color: #f4f4f4;
-
-    .panel-heading {
-      background-color: #e3e3e3;
-    }
-  }
-
-  .panel-heading {
+  .panelHeading {
     background-color: #f5f5f5;
     background-image: none !important;
 
@@ -97,9 +89,17 @@ body {
       font-style: italic;
     }
   }
+
+  &:hover {
+    background-color: #f4f4f4;
+
+    .panelHeading {
+      background-color: #e3e3e3;
+    }
+  }
 }
 
-.summary-list a:hover {
+.summaryList a:hover {
   cursor: pointer;
   text-decoration: none;
 }

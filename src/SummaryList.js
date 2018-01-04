@@ -20,7 +20,7 @@ export default class SummaryList extends Component {
     return (
       <Link to={entry.path} key={entry.path}>
         <Panel header={this.header(entry)}>
-          <div className="main-content">{entry.description}</div>
+          <div className="mainContent">{entry.description}</div>
         </Panel>
       </Link>
     )
@@ -28,7 +28,7 @@ export default class SummaryList extends Component {
 
   render() {
     return (
-      <div className="summary-list">
+      <div className="summaryList">
         {config && config.siteTitle && <Helmet title={config.siteTitle} />}
         <div className="col-md-2" />
         <div className="col-xs-12 col-md-8">

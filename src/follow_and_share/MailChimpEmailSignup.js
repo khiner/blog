@@ -8,7 +8,7 @@ export default class MailChimpEmailSignup extends Component {
     }
 
     return (
-      <div className="mail-chimp-email-signup">
+      <div className="mailChimpEmailSignup">
         <div id="mc_embed_signup">
           <form
             action={formAction}

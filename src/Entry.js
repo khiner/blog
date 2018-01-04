@@ -31,7 +31,7 @@ export default function Entry(props) {
       <Helmet title={formattedTitle} />
       {columnBreak}
       <div className={'col-xs-12 ' + (isShowcase ? 'col-md-10' : 'col-md-8')}>
-        <div className={'main-content ' + (isShowcase ? 'Showcase well' : '')}>
+        <div className={'mainContent ' + (isShowcase ? 'Showcase well' : '')}>
           {title && <h1>{title}</h1>}
           {date && <h2 className="date">{date}</h2>}
           {props.children}

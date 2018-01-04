@@ -23,9 +23,9 @@ export default class ShareButtons extends Component {
     const { title, description, url, hideLabel } = this.props
 
     return (
-      <div className="share-buttons-parent">
+      <div className="shareButtonsParent">
         {!hideLabel && <p>Share</p>}
-        <div className="share-buttons">
+        <div className="shareButtons">
           {this.renderShareButton(
             'Email',
             `mailto:?subject=${title}&body=Though you'd be interested in this!%0D%0A%0D%0A${url}:%0D%0A${description}`,
