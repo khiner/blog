@@ -88,6 +88,7 @@ const entries = [
     path: '/jupyter_notebooks/python_crash_course',
     title: 'Python Crash Course',
     date: 'Dec 20 2017',
+    disqusId: 'JupyterPythonCrashCourse',
     description:
       'This Jupyter Notebook contains all code, excercises and projects from the Python Crash Course book by Eric Matthes, including three projects: a "Space Invaders"-style game developed with PyGame, a data visualization project and a Django app.',
     content: PythonCrashCourse,
@@ -97,6 +98,7 @@ const entries = [
     path: '/jupyter_notebooks/dft_timeseries',
     title: 'DFT for timeseries data',
     date: 'Jan 3 2018',
+    disqusId: 'JupyterDftTimeseries',
     description:
       'This is a Jupyter Notebook I developed for a presentation on applying the DFT to timeseries data for seasonality detection.',
     content: DftTimeseries,
