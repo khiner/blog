@@ -8,6 +8,10 @@ You can find the most recent version of the guide [here](https://github.com/face
 I followed [this guide](https://medium.com/superhighfives/an-almost-static-stack-6df0a2791319) to get static HTML links and
 and SEO titles working using `react-snapshot` and `react-helmet`.
 
+## Sass
+
+I followed [this guid](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-a-css-preprocessor-sass-less-etc) to add support for the CSS preprocessor, Sass.
+
 ## Linting and automatic styling
 
 I followed [this guide](https://hackernoon.com/configure-eslint-prettier-and-flow-in-vs-code-for-react-development-c9d95db07213)

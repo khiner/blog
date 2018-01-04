@@ -5,6 +5,8 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "jsfeat": "0.0.8",
+    "node-sass-chokidar": "0.0.3",
+    "npm-run-all": "^4.1.2",
     "p5": "^0.5.16",
     "react": "^16.2.0",
     "react-bootstrap": "^0.31.5",
@@ -16,8 +18,14 @@
     "react-snapshot": "^1.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build && react-snapshot",
+    "build-css": "node-sass-chokidar src/ -o src/",
+    "build-js": "react-scripts build && react-snapshot",
+    "start-js": "react-scripts start",
+    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
+
+    "start": "npm-run-all -p watch-css start-js",
+    "build": "npm-run-all build-css build-js",
+
     "deploy": "./deploy.sh",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
