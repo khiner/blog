@@ -1,15 +1,9 @@
 import React from 'react'
 
+import AlbumPreview from './AlbumPreview'
+
 export default (
   <div>
-    <div className="videoWrapper">
-      <iframe
-        title="MidiMarkovDecompose"
-        scrolling="no"
-        frameborder="no"
-        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/257110789&amp;color=%23ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true&amp;visual=true"
-      />
-    </div>
     <p>
       These pieces were generated from a Markov chain given some classical piano
       MIDI scores as input.
@@ -36,5 +30,6 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
         Read more about it!
       </a>
     </p>
+    <AlbumPreview title="MidiMarkov: Decompose" playlistId="257110789" />
   </div>
 )

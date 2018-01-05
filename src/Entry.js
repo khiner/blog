@@ -15,7 +15,7 @@ export default function Entry(props) {
   }
 
   const isShowcase = type && type.toLowerCase() === 'showcase'
-  const columnBreak = <div className={isShowcase ? 'col-md-1' : 'col-md-2'} />
+  const columnBreak = <div className="col-md-1 col-lg-2" />
 
   var formattedTitle
   if (config.siteName && title) {
@@ -27,10 +27,10 @@ export default function Entry(props) {
   }
 
   return (
-    <div className="container">
+    <div>
       <Helmet title={formattedTitle} />
       {columnBreak}
-      <div className={'col-xs-12 ' + (isShowcase ? 'col-md-10' : 'col-md-8')}>
+      <div className="container col-xs-12 col-md-10 col-lg-8">
         <div className={'mainContent ' + (isShowcase ? 'Showcase well' : '')}>
           {title && <h1>{title}</h1>}
           {date && <h2 className="date">{date}</h2>}

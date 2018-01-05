@@ -30,11 +30,11 @@ export default class SummaryList extends Component {
     return (
       <div className="summaryList">
         {config && config.siteTitle && <Helmet title={config.siteTitle} />}
-        <div className="col-md-2" />
-        <div className="col-xs-12 col-md-8">
+        <div className="col-md-1 col-lg-2" />
+        <div className="col-xs-12 col-md-10 col-lg-8">
           {parsedEntries.reverseChronological.map(entry => this.panel(entry))}
         </div>
-        <div className="col-md-2" />
+        <div className="col-md-1 col-lg-2" />
       </div>
     )
   }

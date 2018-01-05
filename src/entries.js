@@ -2,6 +2,7 @@ import React from 'react'
 
 import config from './config'
 
+import AlbumPreview from './albums/AlbumPreview'
 import CalahjesAndLewps from './albums/CalahjesAndLewps'
 import MakeNoiseSharedSystemJams from './albums/MakeNoiseSharedSystemJams'
 import MidiMarkovCompose from './albums/MidiMarkovCompose'
@@ -21,7 +22,6 @@ import ForceGraph from './processing/ForceGraph'
 import SnowGlobe from './processing/SnowGlobe'
 import StringPluck from './processing/StringPluck'
 
-import kaoss_pad_mini_image from './albums/assets/kaoss_pad_mini.jpg'
 import make_noise_shared_system_image from './albums/assets/makenoise_shared_system.jpg'
 import pluck_equation_image from './processing/assets/pluck_equation.jpg'
 import snow_globe_image from './processing/assets/snow_globe.png'
@@ -41,7 +41,17 @@ const entries = [
     title: 'Web Tracks 2006 - 2011',
     date: 'May 30 2011',
     disqusId: 'WebTracks2006-2011',
-    description:
+    description: (
+      <div>
+        <p>
+          A bunch of random tracks ranging from about 2006-2011. Playful bedroom
+          experiments. Some are just goofy, some are more serious. Some good
+          ideas, some not so much. All of them mastered terribly.
+        </p>
+        <AlbumPreview title="Web Tracks 2006 - 2011" playlistId="3066212" />
+      </div>
+    ),
+    descriptionPlainText:
       'A bunch of random tracks ranging from about 2006-2011. Playful bedroom experiments. Some are just goofy, some are more serious. Some good ideas, some not so much. All of them mastered terribly.',
     content: WebTracks2006To2011,
     type: 'article',
@@ -55,11 +65,7 @@ const entries = [
     description: (
       <div>
         <p>Stream of consciousness frenetic sampling from musical sources.</p>
-        <img
-          src={kaoss_pad_mini_image}
-          alt="Kaoss Pad Mini"
-          style={{ width: '30%' }}
-        />
+        <AlbumPreview title="Calahjes & Lewps" playlistId="1425406" />
       </div>
     ),
     descriptionPlainText:
@@ -69,8 +75,8 @@ const entries = [
   },
   {
     path: '/albums/make_noise_shared_system_jams',
-    summaryTitle: 'Album - Make Noise Shared System Jams',
-    title: 'Make Noise Shared System Jams',
+    summaryTitle: 'Album - MakeNoise Shared System Jams',
+    title: 'MakeNoise Shared System Jams',
     date: 'Jan 27 2016',
     disqusId: 'MakeNoiseSharedSystemJams',
     description: (
@@ -82,6 +88,10 @@ const entries = [
         <img
           src={make_noise_shared_system_image}
           alt="Make Noise Shared System"
+        />
+        <AlbumPreview
+          title="MakeNoise Shared System Jams"
+          playlistId="63454085"
         />
       </div>
     ),
@@ -96,7 +106,16 @@ const entries = [
     title: 'MIDI Markov: Compose',
     date: 'Sep 1 2016',
     disqusId: 'MidiMarkovCompose',
-    description:
+    description: (
+      <div>
+        <p>
+          Piano compositions generated from a Markov chain given classical MIDI
+          scores as input.
+        </p>
+        <AlbumPreview title="MidiMarkov: Compose" playlistId="257076049" />
+      </div>
+    ),
+    descriptionPlainText:
       'Piano compositions generated from a Markov chain given classical MIDI scores as input.',
     content: MidiMarkovCompose,
     type: 'article',
@@ -107,7 +126,18 @@ const entries = [
     title: 'MIDI Markov: Decompose',
     date: 'Sep 2 2016',
     disqusId: 'MidiMarkovDecompose',
-    description:
+    description: (
+      <div>
+        <p>
+          Piano compositions generated from a Markov chain given classical MIDI
+          scores as input. Unlike the "MIDI Markov: Compose" album, these pieces
+          introduce intentional MIDI errors to generate more experimental,
+          ambient pieces.
+        </p>
+        <AlbumPreview title="MidiMarkov: Decompose" playlistId="257110789" />
+      </div>
+    ),
+    descriptionPlainText:
       'Piano compositions generated from a Markov chain given classical MIDI scores as input.  Unlike the "MIDI Markov: Compose" album, these pieces introduce intentional MIDI errors to generate more experimental, ambient pieces.',
     content: MidiMarkovDecompose,
     type: 'article',
@@ -118,7 +148,17 @@ const entries = [
     title: 'Web Tracks 2012-2017',
     date: 'Nov 1 2017',
     disqusId: 'WebTracks2012-2017',
-    description:
+    description: (
+      <div>
+        <p>
+          A collection of tracks I published spanning from 2012 to 2017. There
+          isn\'t any cohesive theme. Special guests Andrew Knight (on Riders of
+          the Night - the Raccoon Song) and pLiskin (on Elise and Paw).
+        </p>
+        <AlbumPreview title="Web Tracks 2012 - 2017" playlistId="5017148" />
+      </div>
+    ),
+    descriptionPlainText:
       "A collection of tracks I published spanning from 2012 to 2017. There isn't any cohesive theme. Special guests Andrew Knight (on Riders of the Night - the Raccoon Song) and pLiskin (on Elise and Paw).",
     content: WebTracks2012To2017,
     type: 'article',

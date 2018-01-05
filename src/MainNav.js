@@ -71,7 +71,10 @@ export default class MainNav extends Component {
             {config.topLevelLinks &&
               // TODO change to NavItem when new version (> 0.31.5) of react-bootstrap is available
               config.topLevelLinks.map(topLevelLink => (
-                <MenuItem href={topLevelLink.href} target="_blank">
+                <MenuItem
+                  key={topLevelLink.label}
+                  href={topLevelLink.href}
+                  target="_blank">
                   {topLevelLink.label}
                 </MenuItem>
               ))}

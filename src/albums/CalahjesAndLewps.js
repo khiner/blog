@@ -1,15 +1,9 @@
 import React from 'react'
 
+import AlbumPreview from './AlbumPreview'
+
 export default (
   <div>
-    <div className="videoWrapper">
-      <iframe
-        title="Calahjes&Lewps"
-        scrolling="no"
-        frameborder="no"
-        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1425406&amp;color=%23ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true&amp;visual=true"
-      />
-    </div>
     <p>
       I got a Korg Kaoss Mini in 2011 and one of the effects was this simple
       buffer looper. You could punch a loop in and out on the incoming audio and
@@ -26,5 +20,6 @@ export default (
       This whole album was made this way, evolving these loops by rhythmically
       punching in random snippets of audio with my iPod on shuffle.
     </p>
+    <AlbumPreview title="Calahjes & Lewps" playlistId="1425406" />
   </div>
 )
