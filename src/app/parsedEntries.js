@@ -1,4 +1,4 @@
-import entries from '../content/entries'
+import entries from '../entries'
 import { stripSlashes } from '../app/utils'
 
 const strippedPaths = entries.map(entry => stripSlashes(entry.path))
