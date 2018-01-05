@@ -78,20 +78,25 @@ export default class MainNav extends Component {
                   {topLevelLink.label}
                 </MenuItem>
               ))}
-            {config.showShareNavItem && (
+            {(config.showShareNavItem ||
+              (config.mailChimpFormAction && config.mailChimpInputName)) && (
               <NavDropdown
                 title={
-                  config.mailChimpFormAction && config.mailChimpInputName
+                  config.showShareNavItem &&
+                  config.mailChimpFormAction &&
+                  config.mailChimpInputName
                     ? 'Share & Subscribe'
-                    : 'Share'
+                    : config.showShareNavItem ? 'Share' : 'Subscribe'
                 }
                 id="share-and-subscribe">
-                <ShareButtons
-                  title={config.shareName || config.siteName}
-                  description={`${config.shareName || config.siteName}`}
-                  url={config.host}
-                  hideLabel={true}
-                />
+                {config.showShareNavItem && (
+                  <ShareButtons
+                    title={config.shareName || config.siteName}
+                    description={`${config.shareName || config.siteName}`}
+                    url={config.host}
+                    hideLabel={true}
+                  />
+                )}
                 {config.mailChimpFormAction &&
                   config.mailChimpInputName && (
                     <MailChimpEmailSignup
