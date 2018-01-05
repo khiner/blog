@@ -22,10 +22,8 @@
     "build-js": "react-scripts build && react-snapshot",
     "start-js": "react-scripts start",
     "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
-
     "start": "npm-run-all -p watch-css start-js",
     "build": "npm-run-all build-css build-js",
-
     "deploy": "./deploy.sh",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -33,11 +31,11 @@
     "pre-commit": "lint-staged"
   },
   "devDependencies": {
-    "babel-eslint": "^8.0.3",
+    "babel-eslint": "^7.2.3",
     "eslint": "^4.13.1",
-    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-react-app": "^2.0.1",
     "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.5.1",
     "lint-staged": "^6.0.0",
     "pre-commit": "^1.2.2",

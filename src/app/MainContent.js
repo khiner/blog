@@ -5,7 +5,7 @@ import SummaryList from './SummaryList'
 import Entry from './Entry'
 import { stripSlashes } from './utils'
 
-import entries from '../entries'
+import parsedEntries from './parsedEntries'
 
 export default class MainContent extends Component {
   generateComponent(entry) {
@@ -28,7 +28,7 @@ export default class MainContent extends Component {
     return (
       <div>
         <Route exact path="/" component={SummaryList} />
-        {entries.map(entry => this.generateRoute(entry))}
+        {parsedEntries.all.map(entry => this.generateRoute(entry))}
       </div>
     )
   }

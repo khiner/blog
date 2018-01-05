@@ -89,14 +89,15 @@ export default class MainNav extends Component {
                     : config.showShareNavItem ? 'Share' : 'Subscribe'
                 }
                 id="share-and-subscribe">
-                {config.showShareNavItem && (
-                  <ShareButtons
-                    title={config.shareName || config.siteName}
-                    description={`${config.shareName || config.siteName}`}
-                    url={config.host}
-                    hideLabel={true}
-                  />
-                )}
+                {config.showShareNavItem &&
+                  config.host && (
+                    <ShareButtons
+                      title={config.shareName || config.siteName}
+                      description={`${config.shareName || config.siteName}`}
+                      url={config.host}
+                      hideLabel={true}
+                    />
+                  )}
                 {config.mailChimpFormAction &&
                   config.mailChimpInputName && (
                     <MailChimpEmailSignup

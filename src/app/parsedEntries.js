@@ -1,5 +1,13 @@
+import config from '../config'
 import entries from '../entries'
 import { stripSlashes } from '../app/utils'
+
+// decorate all entries with full urls
+if (config.host) {
+  entries.forEach(entry => {
+    entry.url = `${stripSlashes(config.host)}/${stripSlashes(entry.path)}`
+  })
+}
 
 const strippedPaths = entries.map(entry => stripSlashes(entry.path))
 
@@ -33,6 +41,7 @@ const reverseChronological = entries
   .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
 
 export default {
+  all: entries,
   uniqueTopLevelPathSegments,
   nestedTopLevelPathSegments,
   byTopLevelPathSegment,
