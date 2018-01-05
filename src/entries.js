@@ -62,6 +62,8 @@ const entries = [
         />
       </div>
     ),
+    descriptionPlainText:
+      'An album of stream of consciousness frenetic sampling from musical sources.',
     content: CalahjesAndLewps,
     type: 'article',
   },
@@ -83,6 +85,8 @@ const entries = [
         />
       </div>
     ),
+    descriptionPlainText:
+      'Eight Modular synth patches, made mostly using the Make Noise Shareed System.',
     content: MakeNoiseSharedSystemJams,
     type: 'article',
   },
@@ -127,10 +131,12 @@ const entries = [
     disqusId: 'StringPluck',
     description: (
       <div>
-        <p>Pluck a string by holding the mouse down, dragging and releasing.</p>
+        <p>Interactive model of plucked string motion.</p>
         <img src={pluck_equation_image} alt="Equation for plucked string" />
       </div>
     ),
+    descriptionPlainText:
+      'A Processing sketch modeling a plucked string by holding the mouse down, draggind and releasing.',
     content: StringPluck,
     type: 'showcase',
   },
@@ -149,6 +155,8 @@ const entries = [
         <img src={snow_globe_image} alt="Preview of Snow Globe sketch" />
       </div>
     ),
+    descriptionPlainText:
+      'A Processing sketch using edge detection to drop a snowstorm on images.',
     content: SnowGlobe,
     type: 'showcase',
   },
@@ -171,6 +179,8 @@ const entries = [
         />
       </div>
     ),
+    descriptionPlainText:
+      'A Processing sketch showing the effect of retrograde motion - the apparent motion of a planet to move in a direction opposite to that the observing planet.',
     content: RetrogradeMotion,
     type: 'showcase',
   },
@@ -183,7 +193,8 @@ const entries = [
     description: (
       <div>
         <p>
-          Mapping a force-directed graph to an image for stretching and warping.
+          Mapping a force-directed graph to an image for bouncy stretching and
+          warping.
         </p>
         <img
           src={mario_warped_image}
@@ -192,6 +203,8 @@ const entries = [
         />
       </div>
     ),
+    descriptionPlainText:
+      'A Processing sketch that maps a force-directed graph to an image for bouncy stretching and warping.',
     content: ForceGraph,
     type: 'showcase',
   },
@@ -204,7 +217,7 @@ const entries = [
       <div>
         <p>
           MidiMarkov is a command-line tool that uses a Markov process to
-          generate MIDI streams based on a floder of MIDI source material.
+          generate MIDI streams based on a given folder of MIDI source material.
         </p>
         <img
           src={beethovens_5th_image}
@@ -212,6 +225,8 @@ const entries = [
         />
       </div>
     ),
+    descriptionPlainText:
+      'MidiMarkov is a command-line tool that uses a Markov process to generate MIDI streams based on a given folder of MIDI source material',
     content: MidiMarkov,
     type: 'article',
   },
@@ -237,6 +252,8 @@ const entries = [
         </div>
       </div>
     ),
+    descriptionPlainText:
+      'AutoSampler is an intelligent Max4Live instrument that plays audio segments found in your library matching the notes of incoming live MIDI.',
     content: AutoSampler,
     type: 'article',
   },
@@ -255,6 +272,8 @@ const entries = [
         />
       </div>
     ),
+    descriptionPlainText:
+      'A simple Processing sketch with for trippy, colorful bubble patterns.',
     content: BubbleWrap,
     type: 'showcase',
   },
@@ -279,6 +298,8 @@ const entries = [
         />
       </div>
     ),
+    descriptionPlainText:
+      'This Jupyter Notebook contains all code, excercises and projects from the Python Crash Course book by Eric Matthes, including three projects: a "Space Invaders"-style game developed with PyGame, a data visualization project and a Django app.',
     content: PythonCrashCourse,
     type: 'article',
   },
@@ -300,6 +321,8 @@ const entries = [
         />
       </div>
     ),
+    descriptionPlainText:
+      'A Jupyter Notebook on applying the DFT to timeseries data for seasonality detection.',
     content: DftTimeseries,
     type: 'article',
   },
