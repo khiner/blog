@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import config from '../config'
+import config from '../../config'
 
 import email_image from './assets/email.png'
 import facebook_image from './assets/facebook.png'

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Panel } from 'react-bootstrap'
 import Helmet from 'react-helmet'
 
-import config from './config'
+import config from '../config'
 import parsedEntries from './parsedEntries'
 
 export default class SummaryList extends Component {

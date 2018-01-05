@@ -1,6 +1,6 @@
 import React from 'react'
 
-import config from './config'
+import config from '../config'
 
 import AlbumPreview from './albums/AlbumPreview'
 import CalahjesAndLewps from './albums/CalahjesAndLewps'
@@ -32,7 +32,7 @@ import beethovens_5th_image from './music_generation/assets/beethovens_5th.png'
 import python_crash_course_preview_image from './jupyter_notebooks/assets/python_crash_course_preview.png'
 import windowing_animation from './jupyter_notebooks/assets/windowing_animation.gif'
 
-import { stripSlashes } from './utils'
+import { stripSlashes } from '../app/utils'
 
 const entries = [
   {

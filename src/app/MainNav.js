@@ -3,7 +3,7 @@ import { MenuItem, Nav, NavItem, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 
-import config from './config'
+import config from '../config'
 import { snakeCaseToTitle, stripSlashes } from './utils'
 import parsedEntries from './parsedEntries'
 

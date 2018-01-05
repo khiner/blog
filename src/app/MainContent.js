@@ -3,8 +3,9 @@ import { Route } from 'react-router-dom'
 
 import SummaryList from './SummaryList'
 import Entry from './Entry'
-import entries from './entries'
 import { stripSlashes } from './utils'
+
+import entries from '../content/entries'
 
 export default class MainContent extends Component {
   generateComponent(entry) {
