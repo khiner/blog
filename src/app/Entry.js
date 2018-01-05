@@ -47,6 +47,7 @@ export default function Entry(props) {
       </div>
       {columnBreak}
       {config.disqusShortname &&
+        disqusConfig.url &&
         disqusConfig.identifier && (
           <DiscussionEmbed
             shortname={config.disqusShortname}
