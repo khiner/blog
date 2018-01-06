@@ -1,7 +1,5 @@
 import React from 'react'
 
-import config from './config'
-
 import AlbumPreview from './content/albums/AlbumPreview'
 import CalahjesAndLewps from './content/albums/CalahjesAndLewps'
 import MakeNoiseSharedSystemJams from './content/albums/MakeNoiseSharedSystemJams'
@@ -32,8 +30,8 @@ import beethovens_5th_image from './content/music_generation/assets/beethovens_5
 import python_crash_course_preview_image from './content/jupyter_notebooks/assets/python_crash_course_preview.png'
 import windowing_animation from './content/jupyter_notebooks/assets/windowing_animation.gif'
 
-import { stripSlashes } from './app/utils'
-
+// See https://github.com/khiner/react-scripts-bootstrap-site-generator/blob/master/template/src/entries.js
+// for documentation on entries
 const entries = [
   {
     path: '/albums/web_tracks_2006_2011',
@@ -367,9 +365,5 @@ const entries = [
     type: 'article',
   },
 ]
-
-entries.forEach(entry => {
-  entry.url = `${stripSlashes(config.host)}/${stripSlashes(entry.path)}`
-})
 
 export default entries

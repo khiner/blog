@@ -1,19 +1,9 @@
 # My Portfolio
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
-You can find the most recent version of the guide [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
+This project was bootstrapped with [react-scripts-bootstrap-site-generator](https://github.com/khiner/react-scripts-bootstrap-site-generator),
+a site generator I built as a `react-script` on top of [Create React App](https://github.com/facebookincubator/create-react-app).
 
-## Pre-rendering into static HTML files based on `react-router` routes
+The only files not included in the site-generator above are the contents of [](/src/config.js), [](/src/entries.js) and the [](/src/content/) directory.
 
-I followed [this guide](https://medium.com/superhighfives/an-almost-static-stack-6df0a2791319) to get static HTML links and
-and SEO titles working using `react-snapshot` and `react-helmet`.
-
-## Sass
-
-I followed [this guid](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-a-css-preprocessor-sass-less-etc) to add support for the CSS preprocessor, Sass.
-
-## Linting and automatic styling
-
-I followed [this guide](https://hackernoon.com/configure-eslint-prettier-and-flow-in-vs-code-for-react-development-c9d95db07213)
-for a nice default eslint setup using [AirBnb's eslint rules](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb#eslint-config-airbnb-1) and [prettier](https://prettier.io/), and made modifications to Prettier settings
-in [package.json](package.json).
+See the ['Setting up a new site'](https://github.com/khiner/react-scripts-bootstrap-site-generator#setting-up-a-new-site)
+section in the site-generator README to see how to set up a similar site quickly.
