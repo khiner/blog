@@ -15,7 +15,7 @@ export default class EntryNavItems extends Component {
   }
 
   generateNavItem(entry) {
-    return <NavItem>{entry.title}</NavItem>
+    return <NavItem onClick={this.props.onItemClick}>{entry.title}</NavItem>
   }
 
   generateNavDropdown(topLevelPathSegment) {
@@ -32,7 +32,7 @@ export default class EntryNavItems extends Component {
   }
 
   generateMenuItem(entry) {
-    return <MenuItem>{entry.title}</MenuItem>
+    return <MenuItem onClick={this.props.onItemClick}>{entry.title}</MenuItem>
   }
 
   render() {

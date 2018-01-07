@@ -8,19 +8,22 @@ export default class App extends Component {
     super(props)
 
     this.state = {
-      showSidebar: false,
+      shouldShowSidebar: false,
     }
   }
 
   toggleSidebar = () => {
-    this.setState({ showSidebar: !this.state.showSidebar })
+    this.setState({ shouldShowSidebar: !this.state.shouldShowSidebar })
   }
 
   render() {
     return (
       <div>
         <MainNav onShowSidebarClicked={this.toggleSidebar} />
-        <MainContent showSidebar={this.state.showSidebar} />
+        <MainContent
+          shouldShowSidebar={this.state.shouldShowSidebar}
+          toggleSidebar={this.toggleSidebar}
+        />
       </div>
     )
   }

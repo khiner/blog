@@ -29,7 +29,12 @@ export default class MainContent extends Component {
   render() {
     return (
       <div className="contentWrapper">
-        {config.entriesInSidebar && <Sidebar show={this.props.showSidebar} />}
+        {config.entriesInSidebar && (
+          <Sidebar
+            shouldShow={this.props.shouldShowSidebar}
+            toggle={this.props.toggleSidebar}
+          />
+        )}
         <Route exact path="/" component={SummaryList} />
         {parsedEntries.all.map(entry => this.generateRoute(entry))}
       </div>
