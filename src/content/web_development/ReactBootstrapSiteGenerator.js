@@ -35,16 +35,50 @@ export default (
         rel="noopener noreferrer">
         npm package
       </a>{' '}
-      that builds on top of the{' '}
+      that builds on top of the fantastic{' '}
       <a
-        href="https://github.com/facebookincubator/create-react-app/tree/master/packages/react-scripts"
+        href="https://github.com/khiner/create-react-app"
         target="_blank"
         rel="noopener noreferrer">
-        <code>react-scripts</code>
+        Create React App
       </a>{' '}
-      configuration and scripts used by Create React App. The configuration and
-      template have been adapted to work as a crazy simple, opinionated static
-      site generator designed to make creating sites like this one super fast.
+      tool. The configuration and template have been adapted to work as a crazy
+      simple, opinionated static site generator designed to make creating sites
+      like this one super fast.
+    </p>
+    <p>
+      I built it with these goals in mind:
+      <ul>
+        <li>
+          Make it as quick as possible to get something meaningful in the
+          browser
+        </li>
+        <li>
+          Make adding new content as quick as possible, while still allowing
+          content to be arbitrarily complex
+        </li>
+        <li>
+          Separate form from content - writing a new entry should only require
+          touching one file for the usual case
+        </li>
+        <li>
+          Automate the boring stuff - nested nav generation, site and page
+          metadata for search engine crawlers, static HTML generation, browser
+          tab titles
+        </li>
+        <li>Automatic social media stuff per-post</li>
+        <li>
+          Straightforward deployment: run <code>npm build</code> and{' '}
+          <code>scp</code> the build directory to my hosting service's <code>
+            public_html
+          </code>{' '}
+          directory
+        </li>
+        <li>
+          A modern stack with all the trimmings, including a precommit hook for
+          automatic style-enforcement and sass support with file watching
+        </li>
+      </ul>
     </p>
     <h4>
       <i>
@@ -179,7 +213,7 @@ export default (
         rel="noopener noreferrer">
         Create React App
       </a>{' '}
-      (which is <i>amazing</i>!) and{' '}
+      and{' '}
       <a
         href="https://react-bootstrap.github.io/"
         target="_blank"
