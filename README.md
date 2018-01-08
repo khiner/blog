@@ -1,4 +1,4 @@
-# My Portfolio
+# My Blog
 
 This project was bootstrapped with [react-scripts-bootstrap-site-generator](https://github.com/khiner/react-scripts-bootstrap-site-generator),
 a site generator I built as a `react-script` on top of [Create React App](https://github.com/facebookincubator/create-react-app).
