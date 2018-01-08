@@ -20,6 +20,8 @@ import ForceGraph from './content/processing/ForceGraph'
 import SnowGlobe from './content/processing/SnowGlobe'
 import StringPluck from './content/processing/StringPluck'
 
+import ReactBootstrapSiteGenerator from './content/web_development/ReactBootstrapSiteGenerator'
+
 import make_noise_shared_system_image from './content/albums/assets/makenoise_shared_system.jpg'
 import pluck_equation_image from './content/processing/assets/pluck_equation.jpg'
 import snow_globe_image from './content/processing/assets/snow_globe.png'
@@ -29,6 +31,7 @@ import bubble_wrap_preview_image from './content/processing/assets/bubble_wrap_p
 import beethovens_5th_image from './content/music_generation/assets/beethovens_5th.png'
 import python_crash_course_preview_image from './content/jupyter_notebooks/assets/python_crash_course_preview.png'
 import windowing_animation from './content/jupyter_notebooks/assets/windowing_animation.gif'
+import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
 
 // See https://github.com/khiner/react-scripts-bootstrap-site-generator/blob/master/template/src/entries.js
 // for documentation on entries
@@ -363,6 +366,28 @@ const entries = [
       'A Jupyter Notebook on applying the DFT to timeseries data for seasonality detection.',
     content: DftTimeseries,
     type: 'article',
+  },
+  {
+    path: '/web_development/react_bootstrap_site_generator',
+    title: 'React Bootstrap Site Generator',
+    date: 'Jan 6 2018',
+    disqusId: 'ReactBootstrapSiteGenerator',
+    description: (
+      <div>
+        <p>
+          <i>React Bootstrap Site Generator</i> is an npm package designed to
+          make creating sites like this one super quick!
+        </p>
+        <img
+          src={site_generator_demo}
+          alt="Demo gif of site generator"
+          style={{ width: '50%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      "react-scripts-bootstrap-site-generator (https://github.com/khiner/react-scripts-bootstrap-site-generator) is an npm package built on top of the `react-scripts` configuration and scripts used by Create React App. It's designed to work as a crazy simple, opinionated static site generator designed to make creating simple static sites super fast.",
+    content: ReactBootstrapSiteGenerator,
   },
 ]
 

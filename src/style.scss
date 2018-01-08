@@ -2,6 +2,9 @@ body {
   a {
     color: #121212;
   }
+  img {
+    margin-top: 28px !important;
+  }
 }
 
 /*https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php*/
@@ -20,3 +23,347 @@ body {
     padding-bottom: 20px;
   }
 }
+
+body.nineties {
+  margin: 0;
+  font-family: "Comic Sans", "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", "Marker Felt", "Purisa", "URW Chancery L", cursive, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  color: #ffff00 !important;
+  background-color: #0000ff;
+  -webkit-font-smoothing: none;
+  background: #0000ff url('./assets/90s/microfab.gif') top left;
+
+  .mainContent {
+    color: #ffff00;
+  }
+  
+  .panel {
+    background-color: #000000;
+  
+    &:hover {
+      background-color: #222222;
+      .panel-heading {
+        background-color: #3333ff;
+      }
+    }
+    .panel-heading {
+      background-color: #0000ff;
+    }
+  }
+  
+  a {
+    color: #00eeee !important;
+    text-decoration: none;
+  }
+  
+  .panelLink {
+    text-decoration: none;
+  }
+  
+  a:hover,
+  a:focus {
+    color: #00eeee;
+    text-decoration: underline;
+  }
+  
+  [class*="span"].hide,
+  .row-fluid [class*="span"].hide {
+    display: none;
+  }
+  
+  [class*="span"].pull-right,
+  .row-fluid [class*="span"].pull-right {
+    float: right;
+  }
+  
+  p {
+    margin: 0 0 10px;
+  }
+  
+  .lead {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 200;
+    line-height: 30px;
+  }
+  
+  small {
+    font-size: 85%;
+  }
+  
+  strong {
+    font-weight: bold;
+  }
+  
+  em {
+    font-style: italic;
+  }
+  
+  cite {
+    font-style: normal;
+  }
+  
+  .muted {
+    color: #999999;
+  }
+  
+  a.muted:hover,
+  a.muted:focus {
+    color: #808080;
+  }
+  
+  .text-warning {
+    color: #000000;
+  }
+  
+  a.text-warning:hover,
+  a.text-warning:focus {
+    color: #000000;
+  }
+  
+  .text-error {
+    color: #ffffff;
+  }
+  
+  a.text-error:hover,
+  a.text-error:focus {
+    color: #e6e6e6;
+  }
+  
+  .text-info {
+    color: #000000;
+  }
+  
+  a.text-info:hover,
+  a.text-info:focus {
+    color: #000000;
+  }
+  
+  .text-success {
+    color: #ffffff;
+  }
+  
+  a.text-success:hover,
+  a.text-success:focus {
+    color: #e6e6e6;
+  }
+  
+  .text-left {
+    text-align: left;
+  }
+  
+  .text-right {
+    text-align: right;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 10px 0;
+    font-family: inherit;
+    font-weight: bold;
+    line-height: 20px;
+    color: inherit;
+    text-rendering: optimizelegibility;
+  }
+  
+  h1 small,
+  h2 small,
+  h3 small,
+  h4 small,
+  h5 small,
+  h6 small {
+    font-weight: normal;
+    line-height: 1;
+    color: #999999;
+  }
+  
+  h1,
+  h2,
+  h3 {
+    line-height: 40px;
+  }
+  
+  h1 {
+    font-size: 44px !important;
+  }
+  
+  h2 {
+    font-size: 36px !important;
+  }
+  
+  h3 {
+    font-size: 28px;
+  }
+  
+  h4 {
+    font-size: 20px;
+  }
+  
+  h5 {
+    font-size: 16px;
+  }
+  
+  h6 {
+    font-size: 13.6px;
+  }
+  
+  h1 small {
+    font-size: 28px;
+  }
+  
+  h2 small {
+    font-size: 20px;
+  }
+  
+  h3 small {
+    font-size: 16px;
+  }
+  
+  h4 small {
+    font-size: 16px;
+  }
+  
+  .page-header {
+    padding-bottom: 9px;
+    margin: 20px 0 30px;
+    border-bottom: 1px solid #eeeeee;
+  }
+  
+  ul,
+  ol {
+    padding: 0;
+    margin: 0 0 10px 25px;
+  }
+  
+  ul ul,
+  ul ol,
+  ol ol,
+  ol ul {
+    margin-bottom: 0;
+  }
+  
+  li {
+    line-height: 20px;
+  }
+  
+  ul.unstyled,
+  ol.unstyled {
+    margin-left: 0;
+    list-style: none;
+  }
+  
+  ul.inline,
+  ol.inline {
+    margin-left: 0;
+    list-style: none;
+  }
+  
+  ul.inline > li,
+  ol.inline > li {
+    display: inline-block;
+    *display: inline;
+    padding-right: 5px;
+    padding-left: 5px;
+    *zoom: 1;
+  }
+  
+  dl {
+    margin-bottom: 20px;
+  }
+  
+  dt,
+  dd {
+    line-height: 20px;
+  }
+  
+  dt {
+    font-weight: bold;
+  }
+  
+  dd {
+    margin-left: 10px;
+  }
+  
+  h1 {
+    color: #ff0000 !important;
+  }
+  
+  h2 {
+    color: #ffcc00 !important;
+  }
+  
+  h3 {
+    color: #ffff00;
+  }
+  
+  h4 {
+    color: #66ff00;
+  }
+  
+  h5 {
+    color: #0000ff;
+  }
+  
+  h6 {
+    color: #ff00ff;
+  }
+  
+  .page-header {
+    border-bottom: 1px solid #B6B2A3;
+    -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 1px 0 #eae7d8;
+       -moz-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 1px 0 #eae7d8;
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 1px 0 #eae7d8;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  blink {
+    -webkit-animation: blink 1s linear infinite;
+       -moz-animation: blink 1s linear infinite;
+        -ms-animation: blink 1s linear infinite;
+         -o-animation: blink 1s linear infinite;
+            animation: blink 1s linear infinite;
+  }
+  
+  .navbar {
+    border-bottom: 1px solid #fff;
+    -webkit-box-shadow: 0 2px 0 #D4D0C8, 0 3px 0 #808080, 0 4px 0 #404040;
+       -moz-box-shadow: 0 2px 0 #D4D0C8, 0 3px 0 #808080, 0 4px 0 #404040;
+            box-shadow: 0 2px 0 #D4D0C8, 0 3px 0 #808080, 0 4px 0 #404040;
+    background: #000000 url('./assets/90s/stars.gif') top left;
+    border-bottom: 1px solid #D4D0C8;
+  }
+  
+  .btn {
+    border: 6px ridge #bbbbbb;
+  }
+  
+  .btn-primary {
+    background: #000000 url('./assets/90s/rainbow.gif') top left;
+  }
+  
+  legend {
+    font-weight: bold;
+    color: yellow;
+  }
+  
+  .control-group.error input {
+    background: #000000 url('./assets/90s/flames.gif') 0 -30px repeat-x;
+  }
+}
+
