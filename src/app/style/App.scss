@@ -2,6 +2,12 @@
 @import '../follow_and_share/style/MailChimpEmailSignup.css';
 @import '../follow_and_share/style/ShareButtons.css';
 
+$bgDefault   : #22aadd;
+$bgHover   : #0088bb;
+$bgHighlight : #0088bb;
+$colDefault  : #ffffff;
+$colHighlight: #444444;
+
 body {
   font-family: 'Proxima Nova';
   font-weight: 400;
@@ -11,6 +17,7 @@ body {
   }
 
   .navbar-static-top {
+
     .container {
       // sidebar screws this up...
       width: 100%;
@@ -23,21 +30,13 @@ body {
 }
 
 .mainContent {
-  color: #424242;
   font-size: 16px;
-  line-height: 1.7em;
-  letter-spacing: 0px;
-  font-style: normal;
-  border-color: #b6b6b6;
   margin-bottom: 20px;
 
   &.well {
     background-image: none;
   }
 
-  h2, p, img, iframe {
-    margin-bottom: 28px !important;
-  }
   a {
     text-decoration: underline;
   }
@@ -55,26 +54,10 @@ body {
     background-color: inherit;
     color: inherit;
   }
-  blockquote {
-    font-style: italic;
-    border-left: inherit;
-  }
-  h1, h2 {
-    color: #212121;
-    font-weight: 700;
-  }
-  h1 {
-    font-size: 27px;
-    text-align: center;
-  }
   h2 {
-    font-size: 22px;
-
+    margin-bottom: 20px;
     &.date {
-      font-size: 16px;
-      font-weight: 100;
-      text-align: center;
-      font-style: italic;
+      font-size: 20px;
     }
   }
 }
@@ -95,7 +78,8 @@ body {
   }
 
   .panel-heading {
-    background-color: #f5f5f5;
+    background-color: $bgDefault;
+    color: $colDefault;
     background-image: none !important;
 
     h1 {
@@ -114,7 +98,7 @@ body {
     background-color: #f4f4f4;
 
     .panel-heading {
-      background-color: #e3e3e3;
+      background-color: $bgHover;
     }
   }
 }
@@ -127,7 +111,7 @@ body {
   position: absolute;
   top: 14px;
   left: 15px;
-  color: #777;
+  color: $colDefault;
   font-size: 18px;
 }
 
@@ -147,7 +131,8 @@ body {
 
   .sidebarHeader {
     padding: 10px;
-    background-color: #e8e8e8;
+    background-color: $bgDefault;
+    color: $colDefault;
 
     h3 {
       margin: 0;
@@ -186,4 +171,59 @@ body {
   .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
     margin-left: 0px; // overriding a weird -15px from bootstrap :/
   }
+}
+
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+  background-color: $bgDefault !important;
+  background-image: none;
+
+}
+
+.navbar-default {
+  background-color: $bgDefault;
+  border-color: $bgHighlight;
+  background-image: none;
+  .navbar-brand {
+    color: $colDefault;
+    &:hover, &:focus {
+      color: $colHighlight; }}
+  .navbar-text {
+    color: $colDefault; }
+  .navbar-nav {
+    > li {
+      > a {
+        color: $colDefault;
+        &:hover,  &:focus {
+          color: $colHighlight; }}}
+    > .active {
+      > a, > a:hover, > a:focus {
+        color: $colHighlight;
+        background-color: $bgHighlight; }}
+    > .open {
+      > a, > a:hover, > a:focus {
+        color: $colHighlight;
+        background-color: $bgHighlight; }}}
+  .navbar-toggle {
+    border-color: $bgHighlight;
+    &:hover, &:focus {
+      background-color: $bgHighlight; }
+    .icon-bar {
+      background-color: $colDefault; }}
+  .navbar-collapse,
+  .navbar-form {
+    border-color: $colDefault; }
+  .navbar-link {
+    color: $colDefault;
+    &:hover {
+      color: $colHighlight; }}}
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu {
+    > li > a {
+      color: $colDefault;
+      &:hover, &:focus {
+        color: $colHighlight; }}
+    > .active {
+      > a, > a:hover, > a:focus, {
+        color: $colHighlight;
+        background-color: $bgHighlight; }}}
 }
