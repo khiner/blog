@@ -94,18 +94,25 @@ body {
       font-style: italic;
     }
   }
+}
 
-  &:hover {
-    background-color: #f4f4f4;
+a {
+  .panel {
+    &:hover {
+      background-color: #f4f4f4;
 
-    .panel-heading {
-      background-color: $bgHover;
+      .panel-heading {
+        background-color: $bgHover;
+      }
     }
   }
 }
-
 .navbar-brand.leaveLeftSpace {
   margin-left: 30px;
+}
+
+.Showcase {
+  background-color: rgb(255, 255, 255);
 }
 
 .showSidebar {

@@ -1,5 +1,6 @@
 import React from 'react'
 import Helmet from 'react-helmet'
+import { Panel } from 'react-bootstrap'
 
 import config from '../config'
 import DiscussionEmbed from './DiscussionEmbed'
@@ -26,16 +27,33 @@ export default function Entry(props) {
     formattedTitle = title
   }
 
+  function header() {
+    return (
+      <div>
+        <h1>{title}</h1>
+        <h2 className="date">{date}</h2>
+      </div>
+    )
+  }
+
   return (
     <div>
       <Helmet title={formattedTitle} />
       {columnBreak}
       <div className="container col-xs-12 col-md-10 col-lg-8">
-        <div className={'mainContent ' + (isShowcase ? 'Showcase well' : '')}>
-          {title && <h1>{title}</h1>}
-          {date && <h2 className="date">{date}</h2>}
-          {props.children}
-        </div>
+        {!isShowcase && (
+          <div className={'mainContent'}>
+            {title && <h1>{title}</h1>}
+            {date && <h2 className="date">{date}</h2>}
+            {props.children}
+          </div>
+        )}
+        {isShowcase && (
+          <Panel header={header()}>
+            <div className="mainContent Showcase">{props.children}</div>
+          </Panel>
+        )}
+
         {title &&
           url && (
             <ShareButtons
