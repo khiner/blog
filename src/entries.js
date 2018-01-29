@@ -22,6 +22,8 @@ import StringPluck from './content/processing/StringPluck'
 
 import ReactBootstrapSiteGenerator from './content/web_development/ReactBootstrapSiteGenerator'
 
+import BeatBot from './content/beatbot/BeatBot'
+
 import make_noise_shared_system_image from './content/albums/assets/makenoise_shared_system.jpg'
 import pluck_equation_image from './content/processing/assets/pluck_equation.jpg'
 import snow_globe_image from './content/processing/assets/snow_globe.png'
@@ -388,6 +390,41 @@ const entries = [
     descriptionPlainText:
       "react-scripts-bootstrap-site-generator (https://github.com/khiner/react-scripts-bootstrap-site-generator) is an npm package built on top of the `react-scripts` configuration and scripts used by Create React App. It's designed to work as a crazy simple, opinionated static site generator designed to make creating simple static sites super fast.",
     content: ReactBootstrapSiteGenerator,
+  },
+  {
+    path: '/beatbot',
+    title: 'BeatBot',
+    subtitle:
+      'An App Release Announcement and a Reflection on Managing Complex Passion Projects',
+    date: 'Jan 28 2018',
+    disqusId: 'BeatBot',
+    description: (
+      <div>
+        <p>
+          <i>BeatBot</i> is an intuitive and flexible beat production
+          environment. It provides the essential sound design tools for rich
+          sample-based beat production with an interface designed to take full
+          advantage of the expressive capability of multitouch interaction on a
+          mobile form factor.
+        </p>
+        <p>
+          BeatBot aims to be simple and intuitive so you can express your ideas
+          quickly, while also being flexible and powerful enough to refine
+          sketches into full productions.
+        </p>
+        <div className="videoWrapper">
+          <iframe
+            title="BeatBot Demo"
+            src="https://www.youtube.com/embed/XX6qeg30LSo"
+            scrolling="no"
+            frameBorder="0"
+          />
+        </div>
+      </div>
+    ),
+    descriptionPlainText:
+      'BeatBot is an intuitive and flexible beat production environment. It provides the essential sound design tools for rich sample-based beat production with an interface designed to take full advantage of the expressive capability of multitouch interaction on a mobile form factor. BeatBot aims to be simple and intuitive so you can express your ideas quickly, while also being flexible and powerful enough to refine sketches into full productions.',
+    content: BeatBot,
   },
 ]
 

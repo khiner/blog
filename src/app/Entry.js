@@ -7,7 +7,15 @@ import DiscussionEmbed from './DiscussionEmbed'
 import ShareButtons from './follow_and_share/ShareButtons'
 
 export default function Entry(props) {
-  const { title, description, descriptionPlainText, url, date, type } = props
+  const {
+    title,
+    subtitle,
+    description,
+    descriptionPlainText,
+    url,
+    date,
+    type,
+  } = props
 
   const disqusConfig = {
     title,
@@ -44,7 +52,8 @@ export default function Entry(props) {
         {!isShowcase && (
           <div className={'mainContent'}>
             {title && <h1>{title}</h1>}
-            {date && <h2 className="date">{date}</h2>}
+            {subtitle && <h2 className="subtitle">{subtitle}</h2>}
+            {date && <h3 className="date">{date}</h3>}
             {props.children}
           </div>
         )}

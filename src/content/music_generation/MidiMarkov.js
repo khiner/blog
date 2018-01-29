@@ -104,6 +104,7 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
     <img
       src={markov_recipe_image}
       alt="Recipe generated using a Markov chain"
+      style={{ width: '50%' }}
     />
     <p>
       <a href="https://golang.org/doc/codewalk/markov/">
