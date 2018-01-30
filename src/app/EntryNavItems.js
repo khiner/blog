@@ -24,9 +24,12 @@ export default class EntryNavItems extends Component {
         key={topLevelPathSegment}
         id={topLevelPathSegment}
         title={snakeCaseToTitle(topLevelPathSegment)}>
-        {parsedEntries.byTopLevelPathSegment[topLevelPathSegment].map(entry =>
-          this.wrapInLink(this.generateMenuItem(entry), entry)
-        )}
+        {parsedEntries.byTopLevelPathSegment[topLevelPathSegment]
+          .sort(
+            (a, b) =>
+              a.date && b.date ? Date.parse(b.date) - Date.parse(a.date) : 1
+          )
+          .map(entry => this.wrapInLink(this.generateMenuItem(entry), entry))}
       </NavDropdown>
     )
   }
