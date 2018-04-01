@@ -7,12 +7,11 @@ import alien_invasion_screenshot_image from './assets/alien_invasion_screenshot.
 export default (
   <div>
     <p>
-      The{' '}
       <a
         href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/python_crash_course/"
         target="_blank"
         rel="noopener noreferrer">
-        <i>Python Crash Course</i> Jupyter notebook
+        <big>This Jupyter notebook</big>
       </a>{' '}
       includes all code, excercises and projects from the{' '}
       <a
@@ -25,7 +24,10 @@ export default (
       of the Python language, this book includes three projects: a "Space
       Invaders"-style game developed with PyGame, a data visualization project
       and a Django app.{' '}
-      <a href="https://github.com/khiner/notebooks/tree/master/python_crash_course">
+      <a
+        href="https://github.com/khiner/notebooks/tree/master/python_crash_course"
+        target="_blank"
+        rel="noopener noreferrer">
         Here is the GitHub
       </a>.
     </p>

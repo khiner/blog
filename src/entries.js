@@ -9,6 +9,7 @@ import WebTracks2006To2011 from './content/albums/WebTracks2006To2011'
 import WebTracks2012To2017 from './content/albums/WebTracks2012To2017'
 
 import PythonCrashCourse from './content/jupyter_notebooks/PythonCrashCourse'
+import PythonForDataAnalysis from './content/jupyter_notebooks/PythonForDataAnalysis'
 import DftTimeseries from './content/jupyter_notebooks/DftTimeseries'
 
 import AutoSampler from './content/music_generation/AutoSampler'
@@ -32,6 +33,7 @@ import mario_warped_image from './content/processing/assets/mario_warped.png'
 import bubble_wrap_preview_image from './content/processing/assets/bubble_wrap_preview.png'
 import beethovens_5th_image from './content/music_generation/assets/beethovens_5th.png'
 import python_crash_course_preview_image from './content/jupyter_notebooks/assets/python_crash_course_preview.png'
+import python_for_data_analysis_preview_image from './content/jupyter_notebooks/assets/python_for_data_analysis_preview.png'
 import windowing_animation from './content/jupyter_notebooks/assets/windowing_animation.gif'
 import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
 
@@ -330,7 +332,7 @@ const entries = [
       <div>
         <p>
           This Jupyter Notebook contains all code, excercises and projects from
-          the Python Crash Course book by Eric Matthes, including three
+          the "Python Crash Course" book by Eric Matthes, including three
           projects: a "Space Invaders"-style game developed with PyGame, a data
           visualization project and a Django app.
         </p>
@@ -425,6 +427,30 @@ const entries = [
     descriptionPlainText:
       'BeatBot is an intuitive and flexible beat production environment. It provides the essential sound design tools for rich sample-based beat production with an interface designed to take full advantage of the expressive capability of multitouch interaction on a mobile form factor. BeatBot aims to be simple and intuitive so you can express your ideas quickly, while also being flexible and powerful enough to refine sketches into full productions.',
     content: BeatBot,
+  },
+  {
+    path: '/jupyter_notebooks/python_for_data_analysis',
+    summaryTitle: 'Jupyter Notebook - Python for Data Analysis',
+    title: 'Python for Data Analysis',
+    date: 'Feb 9 2018',
+    disqusId: 'PythonForDataAnalysis',
+    description: (
+      <div>
+        <p>
+          This Jupyter Notebook contains all code and corresponding output from
+          the "Python for Data Analysis" book by Wes McKinney.
+        </p>
+        <img
+          src={python_for_data_analysis_preview_image}
+          alt="Preview of chart from Python for Data Analysis book"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      'This Jupyter Notebook contains all code and corresponding output from the "Python for Data Analysis" book by Wes McKinney.',
+    content: PythonForDataAnalysis,
+    type: 'article',
   },
 ]
 
