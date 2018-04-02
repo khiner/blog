@@ -8,6 +8,7 @@ import MidiMarkovDecompose from './content/albums/MidiMarkovDecompose'
 import WebTracks2006To2011 from './content/albums/WebTracks2006To2011'
 import WebTracks2012To2017 from './content/albums/WebTracks2012To2017'
 
+import AcceleratedCpp from './content/jupyter_notebooks/AcceleratedCpp'
 import PythonCrashCourse from './content/jupyter_notebooks/PythonCrashCourse'
 import PythonForDataAnalysis from './content/jupyter_notebooks/PythonForDataAnalysis'
 import DftTimeseries from './content/jupyter_notebooks/DftTimeseries'
@@ -32,9 +33,12 @@ import apparent_retrograde_motion_image from './content/processing/assets/appare
 import mario_warped_image from './content/processing/assets/mario_warped.png'
 import bubble_wrap_preview_image from './content/processing/assets/bubble_wrap_preview.png'
 import beethovens_5th_image from './content/music_generation/assets/beethovens_5th.png'
+
+import accelerated_cpp_preview_image from './content/jupyter_notebooks/assets/accelerated_cpp_preview.png'
 import python_crash_course_preview_image from './content/jupyter_notebooks/assets/python_crash_course_preview.png'
 import python_for_data_analysis_preview_image from './content/jupyter_notebooks/assets/python_for_data_analysis_preview.png'
 import windowing_animation from './content/jupyter_notebooks/assets/windowing_animation.gif'
+
 import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
 
 // See https://github.com/khiner/react-scripts-bootstrap-site-generator/blob/master/template/src/entries.js
@@ -450,6 +454,30 @@ const entries = [
     descriptionPlainText:
       'This Jupyter Notebook contains all code and corresponding output from the "Python for Data Analysis" book by Wes McKinney.',
     content: PythonForDataAnalysis,
+    type: 'article',
+  },
+  {
+    path: '/jupyter_notebooks/accelerated_cpp',
+    summaryTitle: 'Jupyter Notebook - Accelerated C++',
+    title: 'Accelerated C++',
+    date: 'Mar 3 2018',
+    disqusId: 'AcceleratedC++',
+    description: (
+      <div>
+        <p>
+          This Jupyter Notebook contains all code and exercises for the
+          "Accelerated C++" book.
+        </p>
+        <img
+          src={accelerated_cpp_preview_image}
+          alt="Preview of code from the Accelerated C++"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      'This Jupyter Notebook contains all code and exercises for the "Accelerated C++" book.',
+    content: AcceleratedCpp,
     type: 'article',
   },
 ]
