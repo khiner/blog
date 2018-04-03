@@ -9,9 +9,10 @@ import WebTracks2006To2011 from './content/albums/WebTracks2006To2011'
 import WebTracks2012To2017 from './content/albums/WebTracks2012To2017'
 
 import AcceleratedCpp from './content/jupyter_notebooks/AcceleratedCpp'
+import CodingTheMatrix from './content/jupyter_notebooks/CodingTheMatrix'
+import DftTimeseries from './content/jupyter_notebooks/DftTimeseries'
 import PythonCrashCourse from './content/jupyter_notebooks/PythonCrashCourse'
 import PythonForDataAnalysis from './content/jupyter_notebooks/PythonForDataAnalysis'
-import DftTimeseries from './content/jupyter_notebooks/DftTimeseries'
 
 import AutoSampler from './content/music_generation/AutoSampler'
 import MidiMarkov from './content/music_generation/MidiMarkov'
@@ -35,6 +36,7 @@ import bubble_wrap_preview_image from './content/processing/assets/bubble_wrap_p
 import beethovens_5th_image from './content/music_generation/assets/beethovens_5th.png'
 
 import accelerated_cpp_preview_image from './content/jupyter_notebooks/assets/accelerated_cpp_preview.png'
+import coding_the_matrix_preview_image from './content/jupyter_notebooks/assets/coding_the_matrix/coding_the_matrix_preview.png'
 import python_crash_course_preview_image from './content/jupyter_notebooks/assets/python_crash_course_preview.png'
 import python_for_data_analysis_preview_image from './content/jupyter_notebooks/assets/python_for_data_analysis_preview.png'
 import windowing_animation from './content/jupyter_notebooks/assets/windowing_animation.gif'
@@ -478,6 +480,32 @@ const entries = [
     descriptionPlainText:
       'This Jupyter Notebook contains all code and exercises for the "Accelerated C++" book.',
     content: AcceleratedCpp,
+    type: 'article',
+  },
+  {
+    path: '/jupyter_notebooks/coding_the_matrix',
+    summaryTitle:
+      'Jupyter Notebook - Coding the Matrix: Linear Algebra through Applications to Computer Science',
+    title:
+      'Coding the Matrix: Linear Algebra through Applications to Computer Science',
+    date: 'Mar 3 2018',
+    disqusId: 'CodingTheMatrix',
+    description: (
+      <div>
+        <p>
+          This Jupyter Notebook contains all code, problems and labs for the
+          "Coding the Matrix" book.
+        </p>
+        <img
+          src={coding_the_matrix_preview_image}
+          alt="Preview of image perspective transformation"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      'This Jupyter Notebook contains all code, problems and labs for the "Coding the Matrix" book.',
+    content: CodingTheMatrix,
     type: 'article',
   },
 ]
