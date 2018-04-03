@@ -498,7 +498,7 @@ const entries = [
         </p>
         <img
           src={coding_the_matrix_preview_image}
-          alt="Preview of image perspective transformation"
+          alt="Preview of perspective transformation"
           style={{ width: '80%' }}
         />
       </div>

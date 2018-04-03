@@ -1,10 +1,12 @@
 import React from 'react'
 
+import Link from '../Link'
+
 export default (
   <div>
     <p>
-      <a href="https://github.com/khiner/AutoSampler">AutoSampler</a> is an
-      intelligent Max4Live instrument that plays audio segments found in your
+      <Link href="https://github.com/khiner/AutoSampler">AutoSampler</Link> is
+      an intelligent Max4Live instrument that plays audio segments found in your
       library matching the notes of incoming live MIDI. Here's what it looks
       like in action! (A simple sine tone is playing in addition to the
       instrument so you can hear what notes are being played.)

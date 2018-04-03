@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import Link from '../Link'
 
 export default (
   <div>
@@ -13,13 +13,10 @@ export default (
       say it's fun!
     </p>
     <p>
-      <a
-        href="https://play.google.com/store/apps/details?id=com.odang.beatbot_android"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="https://play.google.com/store/apps/details?id=com.odang.beatbot_android">
         Here is the Play Store link
-      </a>. If you have an Android device, please do check it out and share what
-      you make!
+      </Link>. If you have an Android device, please do check it out and share
+      what you make!
     </p>
     <h2>Elevator pitch</h2>
     <p>
@@ -205,12 +202,9 @@ export default (
       I really liked the problem I was working on. I got joy simply from the act
       of working on it, so it was difficult to stop. Actively working on
       something is pleasantly straightforward and rewarding. I know what to work
-      on the next time sit down (<a
-        href="https://image.slidesharecdn.com/hemingway-141105082003-conversion-gate01/95/5-writing-tips-by-ernest-hemingway-3-638.jpg"
-        target="_blank"
-        rel="noopener noreferrer">
+      on the next time sit down (<Link href="https://image.slidesharecdn.com/hemingway-141105082003-conversion-gate01/95/5-writing-tips-by-ernest-hemingway-3-638.jpg">
         following Hemingway's advice
-      </a>). I'm past the boring tedious parts, like writing boilerplate and
+      </Link>). I'm past the boring tedious parts, like writing boilerplate and
       setting up my development environment, so I have quick access to flow
       state whenever I pick up a task. I'm checking things off the list. Life is
       good. This all goes away briefly when you stop and start another thing.
@@ -220,12 +214,7 @@ export default (
       releasing it. Ending something is difficult in part because you're ending
       a part of your life and entering the unknown. Director Paul Thomas
       Anderson puts it well in{' '}
-      <a
-        href="https://youtu.be/PGB8UtHtZWI?t=50s"
-        target="_blank"
-        rel="noopener noreferrer">
-        this interview
-      </a>,
+      <Link href="https://youtu.be/PGB8UtHtZWI?t=50s">this interview</Link>,
     </p>
     <blockquote>
       Cashing the silver in and finding out what it's worth never really ends up
@@ -424,13 +413,7 @@ export default (
         actually be the most important thing to be working on. Another aspect is
         finding the root cause of the problem. We think we <i>need</i> the
         immediate problem solved, and we jump to the obvious solution. But after
-        asking{' '}
-        <a
-          href="https://en.wikipedia.org/wiki/5_Whys"
-          target="_blank"
-          rel="noopener noreferrer">
-          5 Whys
-        </a>{' '}
+        asking <Link href="https://en.wikipedia.org/wiki/5_Whys">5 Whys</Link>{' '}
         about the problem, one often finds that the <i>real</i> problem is
         actually very different than the surface-level one that smacked us in
         the face. The thing we were focused on is actually an <i>effect</i> of a
@@ -532,12 +515,9 @@ export default (
     </p>
     <p>
       In the meantime, I highly recommend{' '}
-      <a
-        href="https://youtu.be/spUNpyF58BY"
-        target="_blank"
-        rel="noreferrer noopener">
+      <Link href="https://youtu.be/spUNpyF58BY">
         this incredibly done visual introduction to the Fourier Transform
-      </a>.
+      </Link>.
     </p>
     <p>Talk to you soon!</p>
   </div>

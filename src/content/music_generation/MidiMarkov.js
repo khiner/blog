@@ -1,12 +1,14 @@
 import React from 'react'
 
+import Link from '../Link'
+
 import beethovens_5th_image from './assets/beethovens_5th.png'
 import markov_recipe_image from './assets/markov_recipe.jpg'
 
 export default (
   <div>
     <p>
-      <a href="https://github.com/khiner/midi_markov">Midi Markov</a> is a
+      <Link href="https://github.com/khiner/midi_markov">Midi Markov</Link> is a
       command-line tool that uses a Markov process to generate MIDI streams
       based on a folder of MIDI source material.
     </p>
@@ -18,25 +20,25 @@ export default (
       really) to the sounds it came up with, using only the general midi piano
       sound included with{' '}
       <span>
-        <a href="http://libtimidity.sourceforge.net/">libTiMidity</a>.
+        <Link href="http://libtimidity.sourceforge.net/">libTiMidity</Link>.
       </span>
     </p>
     <h2>Results</h2>
     <p>
       I uploaded some of the results into two compilations.{' '}
-      <a href="https://soundcloud.com/odangludo/sets/midi-markov-compose">
+      <Link href="https://soundcloud.com/odangludo/sets/midi-markov-compose">
         Compose
-      </a>{' '}
+      </Link>{' '}
       is a selection of more vanilla generated pieces that sound very...
       Markov-y, and{' '}
-      <a href="https://soundcloud.com/odangludo/sets/midi-markov-decompose">
+      <Link href="https://soundcloud.com/odangludo/sets/midi-markov-decompose">
         Decompose
-      </a>{' '}
+      </Link>{' '}
       is a selection of ambient pieces that stack multiple tones on top of each
       other, along with some other artifacts owed to a happy accident{' '}
-      <a href="https://github.com/khiner/midi_markov#drone-option">
+      <Link href="https://github.com/khiner/midi_markov#drone-option">
         that I left in as an option
-      </a>. (The bug was in argument-ordering when instantiating a new
+      </Link>. (The bug was in argument-ordering when instantiating a new
       MidiEvent, where I had accidentally passed the delta-time to the channel
       parameter, causing notes to start when an event happens to have a
       delta-time of 0, but not end until another event with the same note and a
@@ -86,9 +88,9 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
       next change, would get absorbed with the microrhythms created by shifting
       beat frequencies and would find my focus moving between different aspects
       of the sound. It reminds me a bit of{' '}
-      <a href="https://soundcloud.com/editionsmego/thomas-brinkmann-agent-orange">
+      <Link href="https://soundcloud.com/editionsmego/thomas-brinkmann-agent-orange">
         Thomas Brinkmann
-      </a>{' '}
+      </Link>{' '}
       in the way draws attention to various aspects of a single sound - in this
       case, the buzzing tones of the sustain-portion of a particular grand piano
       model.
@@ -97,9 +99,9 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
     <p>
       Markov chains are simple generative tools often used in generating new
       sentences from existing ones,{' '}
-      <a href="https://twitter.com/jamieabrew/status/695060640931549184?lang=en">
+      <Link href="https://twitter.com/jamieabrew/status/695060640931549184?lang=en">
         like these recipes:
-      </a>
+      </Link>
     </p>
     <img
       src={markov_recipe_image}
@@ -107,10 +109,10 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
       style={{ width: '50%' }}
     />
     <p>
-      <a href="https://golang.org/doc/codewalk/markov/">
+      <Link href="https://golang.org/doc/codewalk/markov/">
         Here is a good example of how Markov chains are used on natural
         language.
-      </a>{' '}
+      </Link>{' '}
       You simply start with a word, find all the words that follow it in the
       text, and choose randomly from that selection, including duplicates, so
       that you're more likely to choose words that follow it more often. You
@@ -141,14 +143,14 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
     <p>
       The same is true with musical notes. In my implementation, there are
       options to specify many of these choices, like{' '}
-      <a href="https://github.com/khiner/midi_markov#match-length-option">
+      <Link href="https://github.com/khiner/midi_markov#match-length-option">
         how many notes must be matched in a row
-      </a>, ..., but the general idea is always the same - the equivalent of the{' '}
-      <em>word</em> is a set of notes that begin simultaneously, such as a
+      </Link>, ..., but the general idea is always the same - the equivalent of
+      the <em>word</em> is a set of notes that begin simultaneously, such as a
       single note or a chord.{' '}
-      <a href="https://github.com/khiner/midi_markov#match-length-option">
+      <Link href="https://github.com/khiner/midi_markov#match-length-option">
         Optionally
-      </a>, you can tell the program to change that definition to "a set of
+      </Link>, you can tell the program to change that definition to "a set of
       notes that begin simultaneously <em>and</em> have the same duration" (or{' '}
       <em>delta </em>in MIDI parlance).
     </p>
@@ -194,14 +196,16 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
     <p>
       Markov chains are sooooo early 2000's! Aren't we in the age of the Nth
       neural-net boom, where we can stack all sorts of{' '}
-      <a href="http://people.idsia.ch/~juergen/blues/IDSIA-07-02.pdf">LSTMs</a>,{' '}
-      <a href="http://www.hexahedria.com/2015/08/03/composing-music-with-recurrent-neural-networks/">
+      <Link href="http://people.idsia.ch/~juergen/blues/IDSIA-07-02.pdf">
+        LSTMs
+      </Link>,{' '}
+      <Link href="http://www.hexahedria.com/2015/08/03/composing-music-with-recurrent-neural-networks/">
         RNNs
-      </a>{' '}
+      </Link>{' '}
       and{' '}
-      <a href="http://www.iro.umontreal.ca/~lisa/twiki/pub/Neurones/DynamicallyLinkedBoltzmannMachines/projet6266_stanislas_lauly.pdf">
+      <Link href="http://www.iro.umontreal.ca/~lisa/twiki/pub/Neurones/DynamicallyLinkedBoltzmannMachines/projet6266_stanislas_lauly.pdf">
         RBMs
-      </a>{' '}
+      </Link>{' '}
       and other impressive-sounding acronyms until our fingers bleed?!
     </p>
     <p>
@@ -213,13 +217,13 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
     </p>
     <blockquote>
       I trained the model using a g2.2xlarge{' '}
-      <a href="http://aws.amazon.com/ec2">Amazon Web Services</a> instance. I
-      was able to save money by using "spot instances", which are cheaper,
-      ephemeral instances that can be shut down by Amazon and which are priced
-      based on supply and demand. Prices fluctuated between $0.10 and $0.15 an
-      hour for me, as opposed to $0.70 for a dedicated on-demand instance. My
-      model used two hidden time-axis layers, each with 300 nodes, and two
-      note-axis layers, with 100 and 50 nodes, respectively.
+      <Link href="http://aws.amazon.com/ec2">Amazon Web Services</Link>{' '}
+      instance. I was able to save money by using "spot instances", which are
+      cheaper, ephemeral instances that can be shut down by Amazon and which are
+      priced based on supply and demand. Prices fluctuated between $0.10 and
+      $0.15 an hour for me, as opposed to $0.70 for a dedicated on-demand
+      instance. My model used two hidden time-axis layers, each with 300 nodes,
+      and two note-axis layers, with 100 and 50 nodes, respectively.
     </blockquote>
     <p>
       In other words, your laptop isn't going to be running this as a MIDI

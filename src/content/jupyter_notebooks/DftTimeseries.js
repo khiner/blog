@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Link from '../Link'
+
 import windowing_animation from './assets/windowing_animation.gif'
 import varying_dft_points_animation from './assets/varying_dft_points_animation.gif'
 import varying_window_size_animation from './assets/varying_window_size_animation.gif'
@@ -7,12 +9,9 @@ import varying_window_size_animation from './assets/varying_window_size_animatio
 export default (
   <div>
     <p>
-      <a
-        href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/dft-timeseries/"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/dft-timeseries/">
         DFT for Timeseries Data
-      </a>{' '}
+      </Link>{' '}
       is a Jupyter Notebook I developed for a presentation on applying the DFT
       to timeseries data for seasonality detection. The notebook attempts to
       build understanding one step at a time from a direct mathematical
@@ -29,12 +28,9 @@ export default (
       Armed with some knowledge of the DFT already, I think it should help
       clarify some behaviors visually and could serve an implementation
       reference for some algorithms. I'm going to be digging into{' '}
-      <a
-        href="https://www.amazon.com/Mathematics-Discrete-Fourier-Transform-DFT/dp/097456074X"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="https://www.amazon.com/Mathematics-Discrete-Fourier-Transform-DFT/dp/097456074X">
         Julius O. Smith's <i>Mathematics of the Discrete Fourier Transform</i>
-      </a>{' '}
+      </Link>{' '}
       soon, so there should be more DFT-related notebooks to come!
     </p>
     <p>Here are some of the animations built up in this notebook:</p>

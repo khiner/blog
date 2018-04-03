@@ -1,31 +1,24 @@
 import React from 'react'
 
+import Link from '../Link'
+
 import './style/jupyter-style.css'
 
 export default (
   <div>
     <p>
-      <a
-        href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/python_for_data_analysis/"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/python_for_data_analysis/">
         <big>This Jupyter notebook</big>
-      </a>{' '}
+      </Link>{' '}
       <small>
-        (<a
-          href="https://github.com/khiner/notebooks/tree/master/python_python_for_data_analyisis"
-          target="_blank"
-          rel="noopener noreferrer">
+        (<Link href="https://github.com/khiner/notebooks/tree/master/python_python_for_data_analyisis">
           raw GitHub link
-        </a>)
+        </Link>)
       </small>{' '}
       includes every line of code in the{' '}
-      <a
-        href="https://www.amazon.com/Python-Data-Analysis-Wrangling-IPython/dp/1491957662/"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="https://www.amazon.com/Python-Data-Analysis-Wrangling-IPython/dp/1491957662/">
         <i>Python for Data Analysis</i>
-      </a>{' '}
+      </Link>{' '}
       book (2nd addition) by Wes McKinney, who is the creator of the{' '}
       <code>pandas</code> library that is the subject of the book.
       <br />
@@ -38,12 +31,8 @@ export default (
           Full disclosure: This is probably the lowest-value Jupyter notebook I
           have published (or will publish), since Wes already provides Jupyter
           notebooks for each of the chapters{' '}
-          <a
-            href="https://github.com/wesm/pydata-book"
-            target="_blank"
-            rel="noopener noreferrer">
-            here
-          </a>. So this is more of a "this is what I've been up to" post.{' '}
+          <Link href="https://github.com/wesm/pydata-book">here</Link>. So this
+          is more of a "this is what I've been up to" post.{' '}
         </i>
       </small>
     </p>
@@ -73,13 +62,10 @@ export default (
     <p>
       The <code>DataFrame</code> is its main table-like data structure. It is
       designed to be a direct analogue to{' '}
-      <a
-        href="http://www.r-tutor.com/r-introduction/data-frame"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="http://www.r-tutor.com/r-introduction/data-frame">
         <i>R</i>'s data frames
-      </a>. <code>DataFrame</code>s in both frameworks are designed to strike a
-      balance between the expressiveness of SQL queries (hierarchical indices,{' '}
+      </Link>. <code>DataFrame</code>s in both frameworks are designed to strike
+      a balance between the expressiveness of SQL queries (hierarchical indices,{' '}
       <code>select</code>, <code>join</code>, <code>merge</code>, etc.), the
       numerical convenience of matrices and vectors, and the natural table/cell
       intuition of spreadsheets. <code>pandas</code> adds to this set of
@@ -103,24 +89,18 @@ export default (
       fundamental <code>Index</code> type underneath it, and the mighty{' '}
       <code>Series</code> that simplifies everything time-related (including
       well-labelled plotting, time-zone handling and even{' '}
-      <a
-        href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.resample.html#pandas.Series.resample"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.resample.html#pandas.Series.resample">
         resampling!
-      </a>), I am much more comfortable working within these data structures as
-      first-order abstractions without wanting to always pull out the underlying
-      primitive data types and manipulate them manually. (I still need a{' '}
-      <i>ton</i> of practice to really feel comfortable!)
+      </Link>), I am much more comfortable working within these data structures
+      as first-order abstractions without wanting to always pull out the
+      underlying primitive data types and manipulate them manually. (I still
+      need a <i>ton</i> of practice to really feel comfortable!)
     </p>
     <h2>Example</h2>
     I offer, without explanation, a section of{' '}
-    <a
-      href="http://localhost:8888/notebooks/python_for_data_analysis/chapter_14/chapter_14.ipynb#Analyzing-Naming-Trends"
-      target="_blank"
-      rel="noopener noreferrer">
+    <Link href="http://localhost:8888/notebooks/python_for_data_analysis/chapter_14/chapter_14.ipynb#Analyzing-Naming-Trends">
       Chapter 14
-    </a>{' '}
+    </Link>{' '}
     that I found very interesting. It combines a lot of the techniques covered
     in the book into the interesting application of analyzing the evolution of
     baby names since 1880:

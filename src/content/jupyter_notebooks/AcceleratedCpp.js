@@ -1,24 +1,23 @@
 import React from 'react'
 
+import Link from '../Link'
+
 import './style/jupyter-style.css'
 import cpp_kernels_image from './assets/cpp_kernels.png'
 
 export default (
   <div>
     <p>
-      <a
-        href="https://www.amazon.com/Accelerated-C-Practical-Programming-Example/dp/020170353X/"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="https://www.amazon.com/Accelerated-C-Practical-Programming-Example/dp/020170353X/">
         <i>This book</i>
-      </a>{' '}
+      </Link>{' '}
       comes up on a ton of "best books to learn C++" lists. It was written
       before C++11, so it only covers core features. I hesitated to start with
       it for fear of learning bad habits, but settled on reading this for "core
       C++" (C++98) knowledge, and supplementing with{' '}
-      <a href="https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996">
+      <Link href="https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996">
         Effective Modern C++
-      </a>{' '}
+      </Link>{' '}
       after learning the foundations. I'm actually really happy with this
       approach, since I found all "modern C++" (C++11/14/17) features crucially
       hinge on having a firm understanding of the core language features they
@@ -69,19 +68,13 @@ export default (
     </p>
     <h2>The Jupyter notebook</h2>
     <p>
-      <a
-        href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/accelerated_c++/"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/accelerated_c++/">
         <big>This Jupyter notebook</big>
-      </a>{' '}
+      </Link>{' '}
       <small>
-        (<a
-          href="https://github.com/khiner/notebooks/tree/master/accelerated_c++/"
-          target="_blank"
-          rel="noopener noreferrer">
+        (<Link href="https://github.com/khiner/notebooks/tree/master/accelerated_c++/">
           raw GitHub link
-        </a>)
+        </Link>)
       </small>{' '}
       contains all code and exercises for the book. Where it makes sense, I
       implement the solutions inline in the notebook. I couldn't really find any
@@ -145,25 +138,19 @@ export default (
     <h2>C++ in Jupyter: The Bad</h2>
     <p>
       After reading{' '}
-      <a
-        href="https://blog.jupyter.org/interactive-workflows-for-c-with-jupyter-fe9b54227d92"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="https://blog.jupyter.org/interactive-workflows-for-c-with-jupyter-fe9b54227d92">
         this post
-      </a>{' '}
+      </Link>{' '}
       on the Jupyter blog, my expectations were much higher what I actually
       found. I{' '}
-      <a
-        href="https://github.com/root-project/cling/tree/master/tools/Jupyter"
-        target="_blank"
-        rel="noopener noreferrer">
+      <Link href="https://github.com/root-project/cling/tree/master/tools/Jupyter">
         installed the cling kernelspecs directly
-      </a>{' '}
+      </Link>{' '}
       instead of using the{' '}
-      <a href="https://github.com/QuantStack/xeus-cling">Xeus Cling</a> kernel,
-      since Xeus is currently only available for the{' '}
-      <a href="https://www.anaconda.com/">Anaconda environment</a>, which I
-      don't use. Based on their demo gifs and the comparatively active Github,
+      <Link href="https://github.com/QuantStack/xeus-cling">Xeus Cling</Link>{' '}
+      kernel, since Xeus is currently only available for the{' '}
+      <Link href="https://www.anaconda.com/">Anaconda environment</Link>, which
+      I don't use. Based on their demo gifs and the comparatively active Github,
       it looks like the Xeus version may not suffer from the many problems of
       the pure <code>cling</code> C++ kernels I tried.
     </p>

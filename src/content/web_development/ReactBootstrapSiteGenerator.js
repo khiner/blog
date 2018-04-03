@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import ExternalLink from '../Link'
 
 import rolling_your_own_cms from './assets/rolling_your_own_cms.jpg'
 import site_generator_demo from './assets/site_generator_demo.gif'
@@ -22,26 +23,17 @@ function toggleNineties() {
 export default (
   <div>
     <p>
-      <a
-        href="https://github.com/khiner/react-scripts-bootstrap-site-generator"
-        target="_blank"
-        rel="noopener noreferrer">
+      <ExternalLink href="https://github.com/khiner/react-scripts-bootstrap-site-generator">
         <i>React Bootstrap Site Generator</i>
-      </a>{' '}
+      </ExternalLink>{' '}
       is an{' '}
-      <a
-        href="https://www.npmjs.com/package/react-scripts-bootstrap-site-generator"
-        target="_blank"
-        rel="noopener noreferrer">
+      <ExternalLink href="https://www.npmjs.com/package/react-scripts-bootstrap-site-generator">
         npm package
-      </a>{' '}
+      </ExternalLink>{' '}
       that builds on top of the fantastic{' '}
-      <a
-        href="https://github.com/khiner/create-react-app"
-        target="_blank"
-        rel="noopener noreferrer">
+      <ExternalLink href="https://github.com/khiner/create-react-app">
         Create React App
-      </a>{' '}
+      </ExternalLink>{' '}
       tool. The configuration and template have been adapted to work as a crazy
       simple, opinionated static site generator designed to make creating sites
       like this one super fast.
@@ -184,42 +176,30 @@ export default (
     <p>
       I decided to do a rewrite. I didn't want to to incur the learning overhead
       and unnecessary complexity of another site generator like{' '}
-      <a
-        href="https://github.com/jekyll/jekyll"
-        target="_blank"
-        rel="noopener noreferrer">
+      <ExternalLink href="https://github.com/jekyll/jekyll">
         Jekyll
-      </a>. I wanted to work with common tools that I'm already comfortable
-      with, using and developing skills that are transferable to other projects
-      in my career. I've also developed a healthy fear of running into arbitrary
-      limitations with strict frameworks.
+      </ExternalLink>. I wanted to work with common tools that I'm already
+      comfortable with, using and developing skills that are transferable to
+      other projects in my career. I've also developed a healthy fear of running
+      into arbitrary limitations with strict frameworks.
     </p>
     <p>
       I love React, but it has this whole dynamic routing issue I mentioned
       above. However! I found this amazing tool,{' '}
-      <a
-        href="https://github.com/geelen/react-snapshot"
-        target="_blank"
-        rel="noopener noreferrer">
+      <ExternalLink href="https://github.com/geelen/react-snapshot">
         react-snapshot
-      </a>, that performs static prerendering on React apps by crawling the site
-      and generating html for each page! Problem solved.
+      </ExternalLink>, that performs static prerendering on React apps by
+      crawling the site and generating html for each page! Problem solved.
     </p>
     <p>
       I used{' '}
-      <a
-        href="https://github.com/khiner/create-react-app"
-        target="_blank"
-        rel="noopener noreferrer">
+      <ExternalLink href="https://github.com/khiner/create-react-app">
         Create React App
-      </a>{' '}
+      </ExternalLink>{' '}
       and{' '}
-      <a
-        href="https://react-bootstrap.github.io/"
-        target="_blank"
-        rel="noopener noreferrer">
+      <ExternalLink href="https://react-bootstrap.github.io/">
         React Bootstrap
-      </a>{' '}
+      </ExternalLink>{' '}
       to spin up a new site, and copied the content over. Now that I had nice
       object-oriented tools at my disposal, I was able to solve my larger goal
       of building a system that allows me to focus on content independently of
@@ -227,12 +207,9 @@ export default (
     </p>
     <h2>Using the tool</h2>
     I've shared the{' '}
-    <a
-      href="https://github.com/khiner/react-scripts-bootstrap-site-generator"
-      target="_blank"
-      rel="noopener noreferrer">
+    <ExternalLink href="https://github.com/khiner/react-scripts-bootstrap-site-generator">
       framework
-    </a>{' '}
+    </ExternalLink>{' '}
     as a <code>react-script</code> to be used directly with{' '}
     <code>create-react-app</code>. It's inteded more as a starting point than a
     framework. In the simplest cases, if your needs are similar to mine, you can
@@ -258,12 +235,9 @@ $ npm start`}
     </p>
     <p>
       See the{' '}
-      <a
-        href="https://github.com/khiner/react-scripts-bootstrap-site-generator"
-        target="_blank"
-        rel="noopener noreferrer">
+      <ExternalLink href="https://github.com/khiner/react-scripts-bootstrap-site-generator">
         project README
-      </a>{' '}
+      </ExternalLink>{' '}
       for all the details and documentation, including how to modify and add new
       content and posts to the generated site, and how to build and deploy.
     </p>
