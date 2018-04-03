@@ -11,7 +11,7 @@ export default (
         <big>This Jupyter notebook</big>
       </Link>{' '}
       <small>
-        (<Link href="https://github.com/khiner/notebooks/tree/master/python_python_for_data_analyisis">
+        (<Link href="https://github.com/khiner/notebooks/tree/master/python_for_data_analysis">
           raw GitHub link
         </Link>)
       </small>{' '}
@@ -20,10 +20,9 @@ export default (
         <i>Python for Data Analysis</i>
       </Link>{' '}
       book (2nd addition) by Wes McKinney, who is the creator of the{' '}
-      <code>pandas</code> library that is the subject of the book.
-      <br />
-      The notebook is the result of me simply coding along with every executable
-      line in the book.
+      <code>pandas</code> library that is the subject of the book. The notebook
+      is the result of me simply coding along with every executable line in the
+      book.
     </p>
     <p>
       <small>
@@ -40,11 +39,11 @@ export default (
       Why <code>pandas</code>?
     </h2>
     <p>
-      <big>My main takeaway</big> from reading this book is that{' '}
+      <big>My main takeaway</big> from <i>Python for Data Analysis</i> is that{' '}
       <code>pandas</code> is <i>flipping awesome</i> and one of the very few
       frameworks I've encountered for which I have <i>no reservations</i> about
-      getting fully sucked into its world, drinking its Kool-Aid and working
-      with its eccentricities. It is very clearly <i>worth it</i>.
+      getting fully sucked into, drinking its Kool-Aid and working with its
+      eccentricities. It is very clearly <i>worth it</i>.
     </p>
     <p>
       I'm not going to put a lot of effort here to justify that enthusiasm, as
@@ -56,8 +55,8 @@ export default (
     </p>
     <p>
       I've used <code>pandas</code> before at work, but only in the most basic
-      way as a convenient wrapper for loading and processing data, usually with{' '}
-      <code>scikit-learn</code>.
+      way, as a convenient wrapper for loading and processing data (usually with{' '}
+      <code>scikit-learn</code>).
     </p>
     <p>
       The <code>DataFrame</code> is its main table-like data structure. It is
@@ -73,7 +72,7 @@ export default (
     </p>
     <p>
       I am more familiar with <code>numpy</code>, so I had basically always
-      thought of <code>pandas</code> it as a tool to get data in some other
+      thought of <code>pandas</code> as a tool to get data from some other
       format (CSV, JSON, etc.) into a kind of labelled-<code>numpy</code> format
       as quickly as possible. Without taking the time to understand the
       philosophy and parlance of <code>pandas</code>' core data structures, I{' '}
@@ -81,7 +80,7 @@ export default (
       them as slightly clunky (except when their awesomeness was immediately
       obvious, such as their ability to handle missing data seamlessly). I
       relied on the DataFrame's <code>as_matrix()</code> method to get back to
-      what I considered a more sane representation that can be indexed in a
+      what I considered a more sane representation that can be indexed with a
       natural <code>data[i][j]</code> kind of notation.
     </p>
     <p>
@@ -94,10 +93,10 @@ export default (
       </Link>), I am much more comfortable working within these data structures
       as first-order abstractions without wanting to always pull out the
       underlying primitive data types and manipulate them manually. (I still
-      need a <i>ton</i> of practice to really feel comfortable!)
+      need a <i>ton</i> of practice to really feel comfortable, though!)
     </p>
     <h2>Example</h2>
-    I offer, without explanation, a section of{' '}
+    To close, I offer a section (without explanation - check out the book!) of{' '}
     <Link href="http://localhost:8888/notebooks/python_for_data_analysis/chapter_14/chapter_14.ipynb#Analyzing-Naming-Trends">
       Chapter 14
     </Link>{' '}

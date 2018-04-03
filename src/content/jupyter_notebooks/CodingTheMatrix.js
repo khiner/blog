@@ -26,10 +26,21 @@ export default (
       <Link href="http://codingthematrix.com/">
         <i>Coding the Matrix</i>
       </Link>{' '}
-      seems to have a good reputation as the current de-facto "computer science
-      approach" to Linear Algebra. It's popular and pretty well reviewed on
-      Amazon (especially for a text book), and is frequently recommended on QA
-      sites.
+      seems to have a good reputation as the de-facto "computer science
+      approach" to Linear Algebra. It's popular and mostly well reviewed on
+      Amazon, and is frequently recommended on QA sites. I made a set of{' '}
+      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/">
+        Jupyter notebooks
+      </Link>{' '}
+      <small>
+        (<Link href="https://github.com/khiner/notebooks/tree/master/coding_the_matrix">
+          raw Github link
+        </Link>)
+      </small>{' '}
+      for every problem, lab and code example in the book. It has well-formatted
+      redefinitions of each problem, review question and lab statement along
+      with solutions, and as such should function as a decent solution manual
+      for anyone working through the book.
     </p>
     <h2>The many paths to understanding linear algebra</h2>
     <p>
@@ -49,23 +60,20 @@ export default (
       least from the outside, seem like pretty distinct factions.
     </p>
     <p>
-      The mathematician and the computer scientist (as usual) seem to butt head
-      the most. Mathemetictians argue for the value of generalizability and
+      The mathematician and the computer scientist seem to butt heads the most.
+      Mathemetictians argue for the value of generalizability and
       context-invariant representation, and the CS folks say to them, "dream on"
       as they focus on practically computable solutions to discrete numerical
       problems. For example, the best selling{' '}
       <Link href="https://www.amazon.com/Linear-Algebra-Right-Undergraduate-Mathematics/dp/3319110799">
-        Linear Algebra Done Right
+        <i>Linear Algebra Done Right</i>
       </Link>{' '}
       whose name is an ironic <small>(I hope!)</small> reference to this
-      factionalism, takes the "pure-math" approach with pride and boasts that
+      factionalism, takes the "pure-math" perspective with pride and boasts that
       its "novel approach banishes determinants to the end of the book" on the
-      second line of its Amazon plug. (There is also a{' '}
-      <Link href="http://www.math.brown.edu/~treil/papers/LADW/LADW.html">
-        <i>Linear Algebra Done Wrong</i>
-      </Link>{' '}
-      book whose name nudges good-naturedly at the aforementioned{' '}
-      <i>Done Right</i>.)
+      second line of its Amazon plug.<sup>
+        <a href="#aside_1">1</a>
+      </sup>
     </p>
     <h2>
       <i>
@@ -73,20 +81,19 @@ export default (
       </i>™
     </h2>
     <p>
-      As I mentioned, <i>Coding the Matrix</i> seems to be the common
-      recommendation for any computer science student looking to brush up on
-      linear algebra in preparation for hands-dirty work in applied statistics
-      and machine learning - and that's me, which is why I dove in.
+      <i>Coding the Matrix</i> seems to be the common recommendation for any
+      computer science student looking to brush up on linear algebra in
+      preparation for hands-dirty work in applied statistics and machine
+      learning - and that's me, which is why I dove in.
     </p>
     <p>
-      On the surface, it's true that this book doubles down on the
-      computer-science approach - almost every major concept discussed is
-      ultimately implemented and explained by the author, or its implementation
-      is assigned in a lab or exercise. If you supplement the reading with the
-      author's{' '}
+      On the surface, it's true that this book doubles down on the computer
+      science approach - almost every major concept discussed is ultimately
+      implemented and explained by the author, or its implementation is assigned
+      in a lab or exercise. If you supplement the reading with the author's{' '}
       <Link href="https://cs.brown.edu/video/channels/coding-matrix-fall-2014/">
         Brown University lectures
-      </Link>, you'll hear him say more that once that he takes this approach in
+      </Link>, you'll hear him say more than once that he takes this approach in
       part because implementing the ideas helps students <i>own</i> the
       material. That is something I can always get behind, and this book{' '}
       <i>does that well</i>. I feel much more ownership over these concepts than
@@ -99,8 +106,8 @@ export default (
         <li>
           The matrix and vector implementations built up early on in the book
           (partly as exercises), and used throughout the course, require
-          explicit domains (a numerical domain is never assumed in the code, and
-          rarely in the text, even when it would be much more convenient).
+          explicit domains. (A numerical domain is never assumed in the code,
+          and rarely in the text, even when it would be much more convenient.)
         </li>
         <li>
           Matrix and vector operations are treated as function mappings that
@@ -110,14 +117,15 @@ export default (
         <li>
           The contents of the book are no more conceptually dense than any
           undergrad linear algebra course. However, it is proof-heavy in the
-          extreme (it definitely feels like a math textbook and feels way out of
-          place labelled as a computer science book). This is good for depth if
-          you have the patience and time to dig into those proofs enough to
-          really understand them. But there is very little hand holding along
-          the path to understanding. I think the book could benefit from much
-          more focus on high-level intuition to supplement the proofs. In some
-          chapters more than others, the material is by and large a string of
-          proofs with a sentence or two inbetween each to introduce the next.
+          extreme (it definitely feels like a math textbook and would be way out
+          of place if labelled as a computer science book). This is good for
+          depth if you have the patience and time to dig into those proofs
+          enough to really understand them. But there is very little hand
+          holding along the path to understanding. I think the book could
+          benefit from much more focus on high-level intuition to supplement the
+          proofs. In some chapters more than others, the material is by and
+          large a string of proofs with maybe a sentence or two before each
+          proof as introduction.
         </li>
         <li>
           Just like <i>Linear Algebra Done Wrong</i>, determinants are{' '}
@@ -130,7 +138,7 @@ export default (
           mathemetician thinks so because they're conceptually bulky and
           arguably nonfundamental, and the computer scientist simply has no use
           for them.<sup>
-            <a href="#aside_1">1</a>
+            <a href="#aside_2">2</a>
           </sup>
         </li>
       </ul>
@@ -149,15 +157,16 @@ export default (
       An endorsement <small>with some small reservation</small>
     </h2>
     <p>
-      There's one more qualitative thing I want to say about the book before
+      There is one more qualitative thing I want to say about the book before
       showing some examples. Well, two things. The first is that there are{' '}
       <i>so many</i> typos and mistakes in this book.{' '}
-      <a href="http://codingthematrix.com/Errata1.pdf">The extensive errata</a>,
-      I would estimate, are probably about 60-70% of the actual errors in the
-      book. It really does get to the level of producing distrust in the
-      authoritativeness of the text - it's hard to know what to trust sometimes.
-      I really hope they make another proper printing with the known issues
-      fixed. If it weren't for this little snag, I would much more
+      <Link href="http://codingthematrix.com/Errata1.pdf">
+        The extensive errata
+      </Link>, I would estimate, are probably in the ballpark of 70% of the
+      actual errors in the book. It really does get to the level of producing
+      distrust in the authoritativeness of the text - it's hard to know what to
+      trust sometimes. I really hope they make another proper printing with the
+      known issues fixed. If it weren't for this little snag, I would much more
       wholeheartedly make my second point:{' '}
       <i>I think this book acheives great things</i> with regard to linear
       algebra education - especially for the programming-inclined who are
@@ -512,7 +521,19 @@ Done
     <div id="aside_1">
       <p>
         <small>
-          <sup>1</sup> I remembered determinants feeling unmotivated in my
+          <sup>1</sup> There is also a{' '}
+          <Link href="http://www.math.brown.edu/~treil/papers/LADW/LADW.html">
+            <i>Linear Algebra Done Wrong</i>
+          </Link>{' '}
+          book whose name nudges good-naturedly at the aforementioned{' '}
+          <i>"Done Right"</i>.
+        </small>
+      </p>
+    </div>
+    <div id="aside_2">
+      <p>
+        <small>
+          <sup>2</sup> I remembered determinants feeling unmotivated in my
           first, typically memorization-heavy class on linear algebra in
           college. By the time I finished reading this book, I had several
           authorities backing up my unease. However, I ended up feeling pretty

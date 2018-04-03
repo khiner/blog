@@ -486,8 +486,8 @@ const entries = [
     path: '/jupyter_notebooks/coding_the_matrix',
     summaryTitle:
       'Jupyter Notebook - Coding the Matrix: Linear Algebra through Applications to Computer Science',
-    title:
-      'Coding the Matrix: Linear Algebra through Applications to Computer Science',
+    title: 'Coding the Matrix',
+    subtitle: 'Linear Algebra through Applications to Computer Science',
     date: 'Mar 3 2018',
     disqusId: 'CodingTheMatrix',
     description: (

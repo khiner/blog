@@ -9,26 +9,27 @@ export default (
   <div>
     <p>
       <Link href="https://www.amazon.com/Accelerated-C-Practical-Programming-Example/dp/020170353X/">
-        <i>This book</i>
+        <i>Accelerated C++</i>
       </Link>{' '}
       comes up on a ton of "best books to learn C++" lists. It was written
       before C++11, so it only covers core features. I hesitated to start with
       it for fear of learning bad habits, but settled on reading this for "core
       C++" (C++98) knowledge, and supplementing with{' '}
       <Link href="https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996">
-        Effective Modern C++
+        <i>Effective Modern C++</i>
       </Link>{' '}
       after learning the foundations. I'm actually really happy with this
-      approach, since I found all "modern C++" (C++11/14/17) features crucially
-      hinge on having a firm understanding of the core language features they
-      build on and extend. It's hard for me to imagine a non-overwhelming way of
-      teaching/learning modern C++, in all its glory, without frequent reference
-      to the outdated alternatives. C++, backwards-compatible Frankenstein that
-      it is, keeps these outdated pieces of itself close by at all times - all
-      new features are in reference to, syntactic sugar for, analogous to,
-      supersets of, tiptoeing around, implemented with, defined by ... old C++
-      features. If you're completely new to (or completely rusty with) C++, I
-      can recommend separating learning into "old" and "new" sections.
+      approach, since I found that all "modern C++" (C++11/14/17) features
+      crucially hinge on having a firm understanding of the core language
+      features they build on and extend. It's hard for me to imagine a
+      non-overwhelming way of teaching/learning modern C++, in all its glory,
+      without frequent reference to the outdated alternatives. C++,
+      backwards-compatible Frankenstein that it is, keeps these outdated pieces
+      of itself close by at all times - all new features are in reference to,
+      syntactic sugar for, analogous to, supersets of, tiptoeing around,
+      implemented with, defined by ... old C++ features. If you're completely
+      new to (or completely rusty with) C++, I can recommend separating your
+      learning into "old" and "new" sections.
     </p>
     <h2>Book review</h2>
     <p>
@@ -37,13 +38,14 @@ export default (
       building things right off the bat using powerful standard library
       features, and elucidating details as-needed. It does this without glossing
       over important details and without avoiding complexity where it lies. It
-      builds around two main example applications - ASCII "character pictures"
+      builds around two main example applications: ASCII "character pictures"
       (making framed triangles with stars - that sort of thing), and a
       student-grading application. The former is a fun and eluminating project,
-      but the latter is, in my opinion, excrutiating. I don't know why{' '}
-      <i>so many</i> introductory language resources and schools use this
-      example. I had to do these student grading command-line applications in
-      college, too. Here are my two main issues with it:
+      but the latter is, in my opinion, excrutiating. I don't know why so many
+      introductory language resources and schools use this example. I had to do
+      these student grading command-line applications in college, too, and it
+      was no less painful this time through. Here are my two main issues with
+      it:
       <ol>
         <li>
           {' '}
@@ -62,9 +64,9 @@ export default (
       </ol>
       Problem domain aside, I really enjoyed this book's tone, tempo and
       teaching philosophy. The authors say it is the result of many years of
-      honing the teaching of C++ to large groups of students, and it definitely
-      shows. The tools you build up throughout the book are pretty generic and
-      powerful. I'll show an example in a bit.
+      tweaking and adapting the teaching of C++ to large groups of students, and
+      it definitely shows. The tools you build up throughout the book are pretty
+      generic and powerful. I'll show an example in a bit.
     </p>
     <h2>The Jupyter notebook</h2>
     <p>
@@ -115,8 +117,31 @@ export default (
       <div
         className="jupyter"
         dangerouslySetInnerHTML={{
-          __html: `<div class="cell border-box-sizing code_cell rendered"><div class="input"><div class="prompt input_prompt">In&nbsp;[15]:</div><div class="inner_cell"> <div class="input_area"><div class=" highlight hl-c++"><pre><span></span><span class="n">Picture</span> <span class="nf">histogram</span><span class="p">(</span><span class="k">const</span> <span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;&amp;</span> <span class="n">students</span><span class="p">)</span> <span class="p">{</span> <span class="n">Picture</span> <span class="n">names</span><span class="p">;</span> <span class="n">Picture</span> <span class="n">grades</span><span class="p">;</span> <span class="n">Picture</span> <span class="n">spaces</span><span class="p">;</span> <span class="k">for</span> <span class="p">(</span><span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;::</span><span class="n">const_iterator</span> <span class="n">it</span> <span class="o">=</span> <span class="n">students</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">&lt;</span> <span class="n">students</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span> <span class="p">{</span> <span class="n">Vec</span><span class="o">&lt;</span><span class="n">Str</span><span class="o">&gt;</span> <span class="n">names_vec</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">it</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">());</span> <span class="o">*</span><span class="p">(</span><span class="n">names_vec</span><span class="p">.</span><span class="n">end</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+=</span> <span class="s">&quot; &quot;</span><span class="p">;</span> <span class="n">names</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">names_vec</span><span class="p">);</span> <span class="n">grades</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">grades</span><span class="p">,</span> <span class="n">split</span><span class="p">(</span><span class="n">Str</span><span class="p">(</span><span class="n">it</span><span class="o">-&gt;</span><span class="n">grade</span><span class="p">()</span> <span class="o">/</span> <span class="mi">5</span><span class="p">,</span> <span class="sc">&#39;=&#39;</span><span class="p">)));</span> <span class="p">}</span> <span class="k">return</span> <span class="n">hcat</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">grades</span><span class="p">);</span><span class="p">}</span></pre></div></div></div></div><div class="output_wrapper"><div class="output"><div class="output_area"><div class="prompt output_prompt">Out[15]:</div><div class="output_text output_subarea output_execute_result"><pre></pre></div></div></div></div></div><div class="cell border-box-sizing code_cell rendered"><div class="input"><div class="prompt input_prompt">In&nbsp;[16]:</div><div class="inner_cell"> <div class="input_area"><div class=" highlight hl-c++"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="n">student_file</span><span class="p">(</span><span class="s">&quot;../chapter_13/all_student_types_test_data.txt&quot;</span><span class="p">);</span><span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;</span> <span class="n">students</span><span class="p">;</span><span class="n">Student_info</span> <span class="n">s</span><span class="p">;</span><span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">student_file</span><span class="p">))</span> <span class="p">{</span> <span class="n">students</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);</span><span class="p">}</span><span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">students</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">students</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">Student_info</span><span class="o">::</span><span class="n">compare</span><span class="p">);</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">frame</span><span class="p">(</span><span class="n">histogram</span><span class="p">(</span><span class="n">students</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></pre></div></div></div></div><div class="output_wrapper"><div class="output"><div class="output_area"><div class="prompt"></div><div class="output_subarea output_stream output_stdout output_text">
-<pre>****************************
+          __html: `<div class="cell border-box-sizing code_cell rendered"><div class="input"><div class="prompt input_prompt">In&nbsp;[15]:</div><div class="inner_cell"><div class="input_area"><div class=" highlight hl-c++"><pre><span></span><span class="n">Picture</span> <span class="nf">histogram</span><span class="p">(</span><span class="k">const</span> <span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;&amp;</span> <span class="n">students</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Picture</span> <span class="n">names</span><span class="p">;</span>
+    <span class="n">Picture</span> <span class="n">grades</span><span class="p">;</span>
+    <span class="n">Picture</span> <span class="n">spaces</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;::</span><span class="n">const_iterator</span> <span class="n">it</span> <span class="o">=</span> <span class="n">students</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">&lt;</span> <span class="n">students</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Vec</span><span class="o">&lt;</span><span class="n">Str</span><span class="o">&gt;</span> <span class="n">names_vec</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">it</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">());</span>
+        <span class="o">*</span><span class="p">(</span><span class="n">names_vec</span><span class="p">.</span><span class="n">end</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+=</span> <span class="s">&quot; &quot;</span><span class="p">;</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">names_vec</span><span class="p">);</span>
+        <span class="n">grades</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">grades</span><span class="p">,</span> <span class="n">split</span><span class="p">(</span><span class="n">Str</span><span class="p">(</span><span class="n">it</span><span class="o">-&gt;</span><span class="n">grade</span><span class="p">()</span> <span class="o">/</span> <span class="mi">5</span><span class="p">,</span> <span class="sc">&#39;=&#39;</span><span class="p">)));</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">hcat</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">grades</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div></div></div></div><div class="output_wrapper"><div class="output"><div class="output_area"><div class="prompt output_prompt">Out[15]:</div><div class="output_text output_subarea output_execute_result"><pre></pre></div></div></div></div></div><div class="cell border-box-sizing code_cell rendered"><div class="input"><div class="prompt input_prompt">In&nbsp;[16]:</div><div class="inner_cell"><div class="input_area"><div class=" highlight hl-c++"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="n">student_file</span><span class="p">(</span><span class="s">&quot;../chapter_13/all_student_types_test_data.txt&quot;</span><span class="p">);</span>
+<span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;</span> <span class="n">students</span><span class="p">;</span>
+<span class="n">Student_info</span> <span class="n">s</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">student_file</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">students</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">students</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">students</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">Student_info</span><span class="o">::</span><span class="n">compare</span><span class="p">);</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">frame</span><span class="p">(</span><span class="n">histogram</span><span class="p">(</span><span class="n">students</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div></div></div></div><div class="output_wrapper"><div class="output"><div class="output_area"><div class="prompt"></div><div class="output_subarea output_stream output_stdout output_text"><pre>****************************
 *                          *
 * GradMan ==============   *
 * Hank    ========         *
@@ -126,7 +151,8 @@ export default (
 *                          *
 ****************************
 
-</pre></div></div><div class="output_area"><div class="prompt output_prompt">Out[16]:</div><div class="output_text output_subarea output_execute_result"><pre>(std::__1::basic_ostream &amp;) @0x7fff8d942660</pre></div></div></div></div></div>`,
+</pre></div></div><div class="output_area"><div class="prompt output_prompt">Out[16]:</div><div class="output_text output_subarea output_execute_result"><pre>(std::__1::basic_ostream &amp;) @0x7fff8d942660
+</pre></div></div></div></div></div>`,
         }}
       />
     </p>
@@ -150,22 +176,11 @@ export default (
       <Link href="https://github.com/QuantStack/xeus-cling">Xeus Cling</Link>{' '}
       kernel, since Xeus is currently only available for the{' '}
       <Link href="https://www.anaconda.com/">Anaconda environment</Link>, which
-      I don't use. Based on their demo gifs and the comparatively active Github,
-      it looks like the Xeus version may not suffer from the many problems of
-      the pure <code>cling</code> C++ kernels I tried.
-    </p>
-    <p>
-      <small>
-        *{' '}
-        <i>
-          Much of Jupyter community strongly recommends Anaconda these days
-          anyway, so I'll probably make the switch soon. I've been turned off by
-          its single-gigantic-package approach, and prefer using{' '}
-          <code>pip</code> to install each thing I want separately as I need it.
-          But I've been seeing more of these "Conda-only" packages lately - I'm
-          probably just being a dinosaur here.
-        </i>
-      </small>
+      I don't use. Based on their demo gifs and their comparatively active
+      Github, it looks like the Xeus version may not have as many problems as
+      the pure <code>cling</code> C++ kernels I tried.<sup>
+        <a href="#aside_1">1</a>
+      </sup>
     </p>
     <p>
       The issues I ran into were pretty major:
@@ -180,17 +195,17 @@ export default (
         <li>
           <p>
             I could not run any cell with declarations more than once in the
-            same session! I had to "restart and run all cells" every time I made
+            same session. I had to "restart and run all cells" every time I made
             a change, otherwise it would try redeclaring the functions/variables
             (scope seems to be shared globally and permanently until a kernel
             restart).
           </p>
           <p>
-            Of course, redefinitions are allowed in Python and not in C++, but
-            much of the value of Jupyter is in changing and re-running
+            Of course, same-scope redefinitions are allowed in Python and not in
+            C++, but much of the value of Jupyter is in changing and re-running
             individual cells until you get it right. The behavior I would want
-            is that re-executing a cell basically acts like the previous cell
-            run had never happened.
+            is for cell re-execution to basically act like the previous cell run
+            had never happened.
           </p>
         </li>
         <li>
@@ -199,8 +214,7 @@ export default (
           <code>input</code> call, Jupyter nicely creates an HTML input prompt
           and passes the result back to the variable (which is so cool).
           Instead, in the C++ kernels I tried it just moves on with no prompt,
-          and <code>cin</code> returns as if it only received an{' '}
-          <code>EOF</code>.
+          and <code>cin</code> returns as if it only received <code>EOF</code>.
         </li>
         <li>
           Each cell has a little overhead to get started. It makes the process a
@@ -262,5 +276,18 @@ export default (
       If you've found a good way of integrating C++ and Python in Jupyter, I'd
       love to hear from you!
     </p>
+    <div id="aside_1">
+      <small>
+        <sup>1</sup>{' '}
+        <i>
+          Much of Jupyter community strongly recommends Anaconda these days
+          anyway, so I'll probably make the switch soon. I've been turned off by
+          its single-gigantic-package approach, and prefer using{' '}
+          <code>pip</code> to install each thing I want separately as I need it.
+          But I've been seeing more of these "Conda-only" packages lately - I'm
+          probably just being a dinosaur here.
+        </i>
+      </small>
+    </div>
   </div>
 )
