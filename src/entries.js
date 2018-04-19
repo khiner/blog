@@ -11,6 +11,7 @@ import WebTracks2012To2017 from './content/albums/WebTracks2012To2017'
 import AcceleratedCpp from './content/jupyter_notebooks/AcceleratedCpp'
 import CodingTheMatrix from './content/jupyter_notebooks/CodingTheMatrix'
 import DftTimeseries from './content/jupyter_notebooks/DftTimeseries'
+import MusimathicsVolume1 from './content/jupyter_notebooks/MusimathicsVolume1'
 import PythonCrashCourse from './content/jupyter_notebooks/PythonCrashCourse'
 import PythonForDataAnalysis from './content/jupyter_notebooks/PythonForDataAnalysis'
 
@@ -37,6 +38,7 @@ import beethovens_5th_image from './content/music_generation/assets/beethovens_5
 
 import accelerated_cpp_preview_image from './content/jupyter_notebooks/assets/accelerated_cpp_preview.png'
 import coding_the_matrix_preview_image from './content/jupyter_notebooks/assets/coding_the_matrix/coding_the_matrix_preview.png'
+import musimathics_volume_1_preview_image from './content/jupyter_notebooks/assets/musimathics/musimathics_volume_1_preview.gif'
 import python_crash_course_preview_image from './content/jupyter_notebooks/assets/python_crash_course_preview.png'
 import python_for_data_analysis_preview_image from './content/jupyter_notebooks/assets/python_for_data_analysis_preview.png'
 import windowing_animation from './content/jupyter_notebooks/assets/windowing_animation.gif'
@@ -444,7 +446,7 @@ const entries = [
       <div>
         <p>
           This Jupyter Notebook contains all code and corresponding output from
-          the "Python for Data Analysis" book by Wes McKinney.
+          the <i>Python for Data Analysis</i> book by Wes McKinney.
         </p>
         <img
           src={python_for_data_analysis_preview_image}
@@ -467,8 +469,8 @@ const entries = [
     description: (
       <div>
         <p>
-          This Jupyter Notebook contains all code and exercises for the
-          "Accelerated C++" book.
+          This Jupyter Notebook contains all code and exercises for the{' '}
+          <i>Accelerated C++</i> book.
         </p>
         <img
           src={accelerated_cpp_preview_image}
@@ -488,13 +490,13 @@ const entries = [
       'Jupyter Notebook - Coding the Matrix: Linear Algebra through Applications to Computer Science',
     title: 'Coding the Matrix',
     subtitle: 'Linear Algebra through Applications to Computer Science',
-    date: 'Mar 3 2018',
+    date: 'Mar 30 2018',
     disqusId: 'CodingTheMatrix',
     description: (
       <div>
         <p>
-          This Jupyter Notebook contains all code, problems and labs for the
-          "Coding the Matrix" book.
+          This Jupyter Notebook contains all code, problems and labs for the{' '}
+          <i>Coding the Matrix</i> book.
         </p>
         <img
           src={coding_the_matrix_preview_image}
@@ -506,6 +508,31 @@ const entries = [
     descriptionPlainText:
       'This Jupyter Notebook contains all code, problems and labs for the "Coding the Matrix" book.',
     content: CodingTheMatrix,
+    type: 'article',
+  },
+  {
+    path: '/jupyter_notebooks/musimathics_volume_1',
+    summaryTitle: 'Jupyter Notebook - Musimathics Volume 1',
+    title: 'Musimathics Volume 1',
+    subtitle: 'The Mathematical Foundations of Music',
+    date: 'Apr 19 2018',
+    disqusId: 'MusimathicsVolume1',
+    description: (
+      <div>
+        <p>
+          This Jupyter Notebook contains implementations of many interesting
+          topics from the <i>Musimathics Volume 1</i> book.
+        </p>
+        <img
+          src={musimathics_volume_1_preview_image}
+          alt="Preview gif of Musimathics Volume 1 showing partical displacement in a tube"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 1" book.',
+    content: MusimathicsVolume1,
     type: 'article',
   },
 ]
