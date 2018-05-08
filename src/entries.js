@@ -1,33 +1,6 @@
 import React from 'react'
 
 import AlbumPreview from './content/albums/AlbumPreview'
-import CalahjesAndLewps from './content/albums/CalahjesAndLewps'
-import MakeNoiseSharedSystemJams from './content/albums/MakeNoiseSharedSystemJams'
-import MidiMarkovCompose from './content/albums/MidiMarkovCompose'
-import MidiMarkovDecompose from './content/albums/MidiMarkovDecompose'
-import WebTracks2006To2011 from './content/albums/WebTracks2006To2011'
-import WebTracks2012To2017 from './content/albums/WebTracks2012To2017'
-
-import AcceleratedCpp from './content/jupyter_notebooks/AcceleratedCpp'
-import CodingTheMatrix from './content/jupyter_notebooks/CodingTheMatrix'
-import DftTimeseries from './content/jupyter_notebooks/DftTimeseries'
-import MusimathicsVolume1 from './content/jupyter_notebooks/MusimathicsVolume1'
-import MusimathicsVolume2 from './content/jupyter_notebooks/MusimathicsVolume2'
-import PythonCrashCourse from './content/jupyter_notebooks/PythonCrashCourse'
-import PythonForDataAnalysis from './content/jupyter_notebooks/PythonForDataAnalysis'
-
-import AutoSampler from './content/music_generation/AutoSampler'
-import MidiMarkov from './content/music_generation/MidiMarkov'
-
-import RetrogradeMotion from './content/processing/RetrogradeMotion'
-import BubbleWrap from './content/processing/BubbleWrap'
-import ForceGraph from './content/processing/ForceGraph'
-import SnowGlobe from './content/processing/SnowGlobe'
-import StringPluck from './content/processing/StringPluck'
-
-import ReactBootstrapSiteGenerator from './content/web_development/ReactBootstrapSiteGenerator'
-
-import BeatBot from './content/beatbot/BeatBot'
 
 import make_noise_shared_system_image from './content/albums/assets/makenoise_shared_system.jpg'
 import pluck_equation_image from './content/processing/assets/pluck_equation.jpg'
@@ -68,7 +41,7 @@ const entries = [
     ),
     descriptionPlainText:
       'A bunch of random tracks ranging from about 2006-2011. Playful bedroom experiments. Some are just goofy, some are more serious. Some good ideas, some not so much. All of them mastered terribly.',
-    content: WebTracks2006To2011,
+    contentPath: 'albums/WebTracks2006To2011',
     type: 'article',
   },
   {
@@ -85,7 +58,7 @@ const entries = [
     ),
     descriptionPlainText:
       'An album of stream of consciousness frenetic sampling from musical sources.',
-    content: CalahjesAndLewps,
+    contentPath: 'albums/CalahjesAndLewps',
     type: 'article',
   },
   {
@@ -112,7 +85,7 @@ const entries = [
     ),
     descriptionPlainText:
       'Eight Modular synth patches, made mostly using the Make Noise Shareed System.',
-    content: MakeNoiseSharedSystemJams,
+    contentPath: 'albums/MakeNoiseSharedSystemJams',
     type: 'article',
   },
   {
@@ -132,7 +105,7 @@ const entries = [
     ),
     descriptionPlainText:
       'Piano compositions generated from a Markov chain given classical MIDI scores as input.',
-    content: MidiMarkovCompose,
+    contentPath: 'albums/MidiMarkovCompose',
     type: 'article',
   },
   {
@@ -154,7 +127,7 @@ const entries = [
     ),
     descriptionPlainText:
       'Piano compositions generated from a Markov chain given classical MIDI scores as input.  Unlike the "MIDI Markov: Compose" album, these pieces introduce intentional MIDI errors to generate more experimental, ambient pieces.',
-    content: MidiMarkovDecompose,
+    contentPath: 'albums/MidiMarkovDecompose',
     type: 'article',
   },
   {
@@ -175,7 +148,7 @@ const entries = [
     ),
     descriptionPlainText:
       "A collection of tracks I published spanning from 2012 to 2017. There isn't any cohesive theme. Special guests Andrew Knight (on Riders of the Night - the Raccoon Song) and pLiskin (on Elise and Paw).",
-    content: WebTracks2012To2017,
+    contentPath: 'albums/WebTracks2012To2017',
     type: 'article',
   },
   {
@@ -192,7 +165,7 @@ const entries = [
     ),
     descriptionPlainText:
       'A Processing sketch modeling a plucked string by holding the mouse down, draggind and releasing.',
-    content: StringPluck,
+    contentPath: 'processing/StringPluck',
     type: 'showcase',
   },
   {
@@ -212,7 +185,7 @@ const entries = [
     ),
     descriptionPlainText:
       'A Processing sketch using edge detection to drop a snowstorm on images.',
-    content: SnowGlobe,
+    contentPath: 'processing/SnowGlobe',
     type: 'showcase',
   },
   {
@@ -236,7 +209,7 @@ const entries = [
     ),
     descriptionPlainText:
       'A Processing sketch showing the effect of retrograde motion - the apparent motion of a planet to move in a direction opposite to that the observing planet.',
-    content: RetrogradeMotion,
+    contentPath: 'processing/RetrogradeMotion',
     type: 'showcase',
   },
   {
@@ -260,7 +233,7 @@ const entries = [
     ),
     descriptionPlainText:
       'A Processing sketch that maps a force-directed graph to an image for bouncy stretching and warping.',
-    content: ForceGraph,
+    contentPath: 'processing/ForceGraph',
     type: 'showcase',
   },
   {
@@ -282,7 +255,7 @@ const entries = [
     ),
     descriptionPlainText:
       'MidiMarkov is a command-line tool that uses a Markov process to generate MIDI streams based on a given folder of MIDI source material',
-    content: MidiMarkov,
+    contentPath: 'music_generation/MidiMarkov',
     type: 'article',
   },
   {
@@ -309,7 +282,7 @@ const entries = [
     ),
     descriptionPlainText:
       'AutoSampler is an intelligent Max4Live instrument that plays audio segments found in your library matching the notes of incoming live MIDI.',
-    content: AutoSampler,
+    contentPath: 'music_generation/AutoSampler',
     type: 'article',
   },
   {
@@ -329,7 +302,7 @@ const entries = [
     ),
     descriptionPlainText:
       'A simple Processing sketch with for trippy, colorful bubble patterns.',
-    content: BubbleWrap,
+    contentPath: 'processing/BubbleWrap',
     type: 'showcase',
   },
   {
@@ -355,7 +328,7 @@ const entries = [
     ),
     descriptionPlainText:
       'This Jupyter Notebook contains all code, excercises and projects from the Python Crash Course book by Eric Matthes, including three projects: a "Space Invaders"-style game developed with PyGame, a data visualization project and a Django app.',
-    content: PythonCrashCourse,
+    contentPath: 'jupyter_notebooks/PythonCrashCourse',
     type: 'article',
   },
   {
@@ -378,7 +351,7 @@ const entries = [
     ),
     descriptionPlainText:
       'A Jupyter Notebook on applying the DFT to timeseries data for seasonality detection.',
-    content: DftTimeseries,
+    contentPath: 'jupyter_notebooks/DftTimeseries',
     type: 'article',
   },
   {
@@ -401,7 +374,7 @@ const entries = [
     ),
     descriptionPlainText:
       "react-scripts-bootstrap-site-generator (https://github.com/khiner/react-scripts-bootstrap-site-generator) is an npm package built on top of the `react-scripts` configuration and scripts used by Create React App. It's designed to work as a crazy simple, opinionated static site generator designed to make creating simple static sites super fast.",
-    content: ReactBootstrapSiteGenerator,
+    contentPath: 'web_development/ReactBootstrapSiteGenerator',
   },
   {
     path: '/beatbot',
@@ -436,7 +409,7 @@ const entries = [
     ),
     descriptionPlainText:
       'BeatBot is an intuitive and flexible beat production environment. It provides the essential sound design tools for rich sample-based beat production with an interface designed to take full advantage of the expressive capability of multitouch interaction on a mobile form factor. BeatBot aims to be simple and intuitive so you can express your ideas quickly, while also being flexible and powerful enough to refine sketches into full productions.',
-    content: BeatBot,
+    contentPath: 'beatbot/BeatBot',
   },
   {
     path: '/jupyter_notebooks/python_for_data_analysis',
@@ -459,7 +432,7 @@ const entries = [
     ),
     descriptionPlainText:
       'This Jupyter Notebook contains all code and corresponding output from the "Python for Data Analysis" book by Wes McKinney.',
-    content: PythonForDataAnalysis,
+    contentPath: 'jupyter_notebooks/PythonForDataAnalysis',
     type: 'article',
   },
   {
@@ -483,7 +456,7 @@ const entries = [
     ),
     descriptionPlainText:
       'This Jupyter Notebook contains all code and exercises for the "Accelerated C++" book.',
-    content: AcceleratedCpp,
+    contentPath: 'jupyter_notebooks/AcceleratedCpp',
     type: 'article',
   },
   {
@@ -509,7 +482,7 @@ const entries = [
     ),
     descriptionPlainText:
       'This Jupyter Notebook contains all code, problems and labs for the "Coding the Matrix" book.',
-    content: CodingTheMatrix,
+    contentPath: 'jupyter_notebooks/CodingTheMatrix',
     type: 'article',
   },
   {
@@ -534,7 +507,7 @@ const entries = [
     ),
     descriptionPlainText:
       'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 1" book.',
-    content: MusimathicsVolume1,
+    contentPath: 'jupyter_notebooks/MusimathicsVolume1',
     type: 'article',
   },
   {
@@ -559,7 +532,7 @@ const entries = [
     ),
     descriptionPlainText:
       'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 2" book.',
-    content: MusimathicsVolume2,
+    contentPath: 'jupyter_notebooks/MusimathicsVolume2',
     type: 'article',
   },
 ]
