@@ -162,19 +162,29 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
       This would be what its Markov map would look like if{' '}
       <code>match-length</code> were set to 1:
     </p>
-    <pre>{`G =&gt; (G, G, E) # since a single G is followed by two Gs and one E in the sequence
-  E =&gt; (F)
-  F =&gt; (F, F, D)
-  D =&gt; ()</pre>
-        <p>If the last note played in the sequence were an F, for the next note we are twice as likely to choose another F as we are a D.</p>
-        <p>If <code>match-length</code> were set to 2, the keys in the map would be two note sequences with more limited possibilities at each step:</p>
-        <pre>[G,G] =&gt; (G, E) # since two consecutive Gs are followed by one G and one E in the sequence
-  [G,E] =&gt; (F)
-  [E,F] =&gt; (F)
-  [F,F] =&gt; (F,D)
-  [F,D] =&gt; (D)
-  [F,F] =&gt; (F, D)
-  [F,D] =&gt; ()`}</pre>
+    <pre>
+      {`G => (G, G, E) # since a single G is followed by two Gs and one E in the sequence
+E => (F)
+F => (F, F, D)
+D => ()`}
+    </pre>
+    <p>
+      If the last note played in the sequence were an F, for the next note we
+      are twice as likely to choose another F as we are a D.
+    </p>
+    <p>
+      If <code>match-length</code> were set to 2, the keys in the map would be
+      two note sequences with more limited possibilities at each step:
+    </p>
+    <pre>
+      {`[G,G] => (G, E) # since two consecutive Gs are followed by one G and one E in the sequence
+[G,E] => (F)
+[E,F] => (F)
+[F,F] => (F,D)
+[F,D] => (D)
+[F,F] => (F, D)
+[F,D] => ()`}
+    </pre>
     <p>
       Finally, if <code>match-length=3</code>, the keys would be three-note
       sequences and we would only have one choice at each step. Thus, shorter
