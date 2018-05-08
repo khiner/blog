@@ -230,8 +230,8 @@ D => ()`}
       <Link href="http://aws.amazon.com/ec2">Amazon Web Services</Link>{' '}
       instance. I was able to save money by using "spot instances", which are
       cheaper, ephemeral instances that can be shut down by Amazon and which are
-      priced based on supply and demand. Prices fluctuated between $0.10 and
-      $0.15 an hour for me, as opposed to $0.70 for a dedicated on-demand
+      priced based on supply and demand. Prices fluctuated between \$0.10 and
+      \$0.15 an hour for me, as opposed to \$0.70 for a dedicated on-demand
       instance. My model used two hidden time-axis layers, each with 300 nodes,
       and two note-axis layers, with 100 and 50 nodes, respectively.
     </blockquote>
