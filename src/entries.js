@@ -484,6 +484,7 @@ const entries = [
       'This Jupyter Notebook contains all code, problems and labs for the "Coding the Matrix" book.',
     contentPath: 'jupyter_notebooks/CodingTheMatrix',
     type: 'article',
+    usesMath: true,
   },
   {
     path: '/jupyter_notebooks/musimathics_volume_1',

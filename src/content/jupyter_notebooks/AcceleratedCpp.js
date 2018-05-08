@@ -251,7 +251,12 @@ export default (
       <div
         className="jupyter"
         dangerouslySetInnerHTML={{
-          __html: `<div class="cell border-box-sizing code_cell rendered"> <div class="input"> <div class="prompt input_prompt">In&nbsp;[16]:</div> <div class="inner_cell"> <div class="input_area"> <div class=" highlight hl-c++"><pre> <span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;</span> <span class="n">students</span><span class="p">;</span> <span class="n">Student_info</span> <span class="n">s</span><span class="p">;</span> <span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">std::cin</span><span class="p">))</span> <span class="p">{</span> <span class="n">students</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);</span> <span class="p">}</span> ... </pre></div> </div> </div> </div>`,
+          __html: `<div class="cell border-box-sizing code_cell rendered"> <div class="input"> <div class="prompt input_prompt">In&nbsp;[16]:</div> <div class="inner_cell"> <div class="input_area"> <div class=" highlight hl-c++"><pre><span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;</span> <span class="n">students</span><span class="p">;</span>
+<span class="n">Student_info</span> <span class="n">s</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">std::cin</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">students</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="p">}
+</span>... </pre></div> </div> </div> </div>`,
         }}
       />
       <i>
@@ -260,7 +265,13 @@ export default (
       <div
         className="jupyter"
         dangerouslySetInnerHTML={{
-          __html: `<div class="cell border-box-sizing code_cell rendered"><div class="input"><div class="prompt input_prompt">In&nbsp;[16]:</div><div class="inner_cell"> <div class="input_area"><div class=" highlight hl-c++"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="n">student_file</span><span class="p">(</span><span class="s">&quot;../chapter_13/all_student_types_test_data.txt&quot;</span><span class="p">);</span><span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;</span> <span class="n">students</span><span class="p">;</span><span class="n">Student_info</span> <span class="n">s</span><span class="p">;</span><span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">student_file</span><span class="p">))</span> <span class="p">{</span> <span class="n">students</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);</span><span class="p">}</span>...</pre></div></div></div></div>`,
+          __html: `<div class="cell border-box-sizing code_cell rendered"><div class="input"><div class="prompt input_prompt">In&nbsp;[16]:</div><div class="inner_cell"> <div class="input_area"><div class=" highlight hl-c++"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="n">student_file</span><span class="p">(</span><span class="s">&quot;../chapter_13/all_student_types_test_data.txt&quot;</span><span class="p">);</span>
+<span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;</span> <span class="n">students</span><span class="p">;</span>
+<span class="n">Student_info</span> <span class="n">s</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">student_file</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">students</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="p">}</span>
+...</pre></div></div></div></div>`,
         }}
       />
     </p>
