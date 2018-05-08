@@ -12,6 +12,7 @@ import AcceleratedCpp from './content/jupyter_notebooks/AcceleratedCpp'
 import CodingTheMatrix from './content/jupyter_notebooks/CodingTheMatrix'
 import DftTimeseries from './content/jupyter_notebooks/DftTimeseries'
 import MusimathicsVolume1 from './content/jupyter_notebooks/MusimathicsVolume1'
+import MusimathicsVolume2 from './content/jupyter_notebooks/MusimathicsVolume2'
 import PythonCrashCourse from './content/jupyter_notebooks/PythonCrashCourse'
 import PythonForDataAnalysis from './content/jupyter_notebooks/PythonForDataAnalysis'
 
@@ -39,6 +40,7 @@ import beethovens_5th_image from './content/music_generation/assets/beethovens_5
 import accelerated_cpp_preview_image from './content/jupyter_notebooks/assets/accelerated_cpp_preview.png'
 import coding_the_matrix_preview_image from './content/jupyter_notebooks/assets/coding_the_matrix/coding_the_matrix_preview.png'
 import musimathics_volume_1_preview_image from './content/jupyter_notebooks/assets/musimathics/musimathics_volume_1_preview.gif'
+import musimathics_volume_2_preview_image from './content/jupyter_notebooks/assets/musimathics/musimathics_volume_2_preview.gif'
 import python_crash_course_preview_image from './content/jupyter_notebooks/assets/python_crash_course_preview.png'
 import python_for_data_analysis_preview_image from './content/jupyter_notebooks/assets/python_for_data_analysis_preview.png'
 import windowing_animation from './content/jupyter_notebooks/assets/windowing_animation.gif'
@@ -525,7 +527,7 @@ const entries = [
         </p>
         <img
           src={musimathics_volume_1_preview_image}
-          alt="Preview gif of Musimathics Volume 1 showing partical displacement in a tube"
+          alt="Preview gif of Musimathics Volume 1 showing particle displacement in a tube"
           style={{ width: '80%' }}
         />
       </div>
@@ -533,6 +535,31 @@ const entries = [
     descriptionPlainText:
       'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 1" book.',
     content: MusimathicsVolume1,
+    type: 'article',
+  },
+  {
+    path: '/jupyter_notebooks/musimathics_volume_2',
+    summaryTitle: 'Jupyter Notebook - Musimathics Volume 2',
+    title: 'Musimathics Volume 2',
+    subtitle: 'The Mathematical Foundations of Music',
+    date: 'May 7 2018',
+    disqusId: 'MusimathicsVolume2',
+    description: (
+      <div>
+        <p>
+          This Jupyter Notebook contains demonstrations and visualizations of
+          many topics from the <i>Musimathics Volume 2</i> book.
+        </p>
+        <img
+          src={musimathics_volume_2_preview_image}
+          alt="Preview gif of Musimathics Volume 2 showing"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 2" book.',
+    content: MusimathicsVolume2,
     type: 'article',
   },
 ]
