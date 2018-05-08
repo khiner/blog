@@ -508,6 +508,7 @@ const entries = [
     descriptionPlainText:
       'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 1" book.',
     contentPath: 'jupyter_notebooks/MusimathicsVolume1',
+    usesMath: true,
     type: 'article',
   },
   {
@@ -533,6 +534,7 @@ const entries = [
     descriptionPlainText:
       'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 2" book.',
     contentPath: 'jupyter_notebooks/MusimathicsVolume2',
+    usesMath: true,
     type: 'article',
   },
 ]
