@@ -484,7 +484,6 @@ const entries = [
       'This Jupyter Notebook contains all code, problems and labs for the "Coding the Matrix" book.',
     contentPath: 'jupyter_notebooks/CodingTheMatrix',
     type: 'article',
-    usesMath: true,
   },
   {
     path: '/jupyter_notebooks/musimathics_volume_1',
@@ -509,7 +508,6 @@ const entries = [
     descriptionPlainText:
       'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 1" book.',
     contentPath: 'jupyter_notebooks/MusimathicsVolume1',
-    usesMath: true,
     type: 'article',
   },
   {
@@ -535,7 +533,6 @@ const entries = [
     descriptionPlainText:
       'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 2" book.',
     contentPath: 'jupyter_notebooks/MusimathicsVolume2',
-    usesMath: true,
     type: 'article',
   },
 ]

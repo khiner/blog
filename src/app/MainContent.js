@@ -18,35 +18,7 @@ function createContentLoadable(entry) {
       return <div>Loading...</div>
     },
     render(props) {
-      if (entry.usesMath) {
-        // allow LaTex formatting
-        const mathJax = document.createElement('script')
-        const mathJaxConfig = document.createElement('script')
-
-        mathJax.src =
-          'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML'
-        mathJaxConfig.type = 'text/x-mathjax-config'
-        mathJaxConfig.innerHTML = `MathJax.Hub.Config({
-          tex2jax: {
-              inlineMath: [ ['$','$'], ["\\\\(","\\\\)"] ],
-              displayMath: [ ['$$','$$'], ["\\\\[","\\\\]"] ],
-              processEscapes: true,
-              processEnvironments: true
-          },
-          // Center justify equations in code and markdown cells. Elsewhere
-          // we use CSS to left justify single line equations in code cells.
-          displayAlign: 'center',
-          "HTML-CSS": {
-              styles: {'.MathJax_Display': {"margin": 0}},
-              linebreaks: { automatic: true }
-          }
-        });`
-
-        document.head.appendChild(mathJax)
-        document.head.appendChild(mathJaxConfig)
-      }
-
-      return props.default
+      return <div id="loadedContent">{props.default}</div>
     },
   })
 }

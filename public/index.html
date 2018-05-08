@@ -23,7 +23,29 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Karl Hiner</title>
-  </head>
+
+  <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+          tex2jax: {
+              inlineMath: [ ['$','$'], ["\\\\(","\\\\)"] ],
+              displayMath: [ ['$$','$$'], ["\\\\[","\\\\]"] ],
+              processEscapes: true,
+              processEnvironments: true
+          },
+          // Center justify equations in code and markdown cells. Elsewhere
+          // we use CSS to left justify single line equations in code cells.
+          displayAlign: 'center',
+          "HTML-CSS": {
+              styles: {'.MathJax_Display': {"margin": 0}},
+              linebreaks: { automatic: true }
+          }
+        });
+
+    </script>
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script> 
+</head>
   <body>
     <noscript>
       You need to enable JavaScript to run this app.
