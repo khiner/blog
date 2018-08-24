@@ -7,7 +7,14 @@ import DiscussionEmbed from './DiscussionEmbed'
 import ShareButtons from './follow_and_share/ShareButtons'
 
 export default class Entry extends Component {
-  formatMathWhenContentIsReady = () => {
+  constructor(props) {
+    super(props)
+    this.formatMathWhenContentIsReady = this.formatMathWhenContentIsReady.bind(
+      this
+    ) // arrow functions not working after eslint update.
+  }
+
+  formatMathWhenContentIsReady() {
     const element = document.getElementById('loadedContent')
     if (typeof element === 'undefined' || element === null) {
       window.requestAnimationFrame(this.formatMathWhenContentIsReady)

@@ -1,5 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap/dist/css/bootstrap-theme.css'
 
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'

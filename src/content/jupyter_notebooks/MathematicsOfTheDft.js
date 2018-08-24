@@ -9,11 +9,14 @@ export default (
       Another set of{' '}
       <Link href="http://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/mathematics_of_the_dft/">
         Jupyter notebooks
-      </Link>!{' '}
+      </Link>
+      !{' '}
       <small>
-        (<Link href="https://github.com/khiner/notebooks/tree/master/mathematics_of_the_dft/">
+        (
+        <Link href="https://github.com/khiner/notebooks/tree/master/mathematics_of_the_dft/">
           raw Github link
-        </Link>)
+        </Link>
+        )
       </small>
     </p>
     <p>
@@ -42,11 +45,13 @@ export default (
       <Link href="http://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/mathematics_of_the_dft/chapter_7_fourier_theorems_for_the_dft.ipynb">
         <i>Fourier Theorems for the DFT</i>
       </Link>{' '}
-      chapter, where all of the given time{'<=>'}frequency operational
-      symmetries are visually proven with charts, and some convolution examples
-      are animated. Since that is the most visually interesting section in these
-      notebooks, and since it is a good culmination of the material presented in
-      the book, I'm going to reproduce that section of the notebooks here.
+      chapter, where all of the given time
+      {'<=>'}
+      frequency operational symmetries are visually proven with charts, and some
+      convolution examples are animated. Since that is the most visually
+      interesting section in these notebooks, and since it is a good culmination
+      of the material presented in the book, I'm going to reproduce that section
+      of the notebooks here.
     </p>
     <p>
       What the following charts show is a fascinating link between operations
@@ -60,7 +65,7 @@ export default (
       />
       it means that if we take the DFT of the left-hand side (some time-domain
       signal that had some operation performed on it), we will exactly get the
-      right-hand side (the DFT that signal with some potentially different
+      right-hand side (the DFT of that signal with some potentially different
       operation performed on it).
     </p>
     <p>
@@ -72,7 +77,8 @@ export default (
       example,{' '}
       <Link href="https://github.com/scipy/scipy/blob/v1.1.0/scipy/signal/signaltools.py#L666">
         uses the FFT to perform convolution if the array size is large enough
-      </Link>.
+      </Link>
+      .
     </p>
     <p>Here is most of that chapter's notebook, without exercises:</p>
     <h3>
