@@ -9,9 +9,10 @@ import ShareButtons from './follow_and_share/ShareButtons'
 export default class Entry extends Component {
   constructor(props) {
     super(props)
+    // arrow functions not working after eslint update.
     this.formatMathWhenContentIsReady = this.formatMathWhenContentIsReady.bind(
       this
-    ) // arrow functions not working after eslint update.
+    )
   }
 
   formatMathWhenContentIsReady() {
@@ -79,8 +80,13 @@ export default class Entry extends Component {
             </div>
           )}
           {isShowcase && (
-            <Panel header={this.header(title, date)}>
-              <div className="mainContent Showcase">{this.props.children}</div>
+            <Panel>
+              <Panel.Heading>{this.header(title, date)}</Panel.Heading>
+              <Panel.Body>
+                <div className="mainContent Showcase">
+                  {this.props.children}
+                </div>
+              </Panel.Body>
             </Panel>
           )}
 
