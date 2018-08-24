@@ -12,6 +12,7 @@ import beethovens_5th_image from './content/music_generation/assets/beethovens_5
 
 import accelerated_cpp_preview_image from './content/jupyter_notebooks/assets/accelerated_cpp_preview.png'
 import coding_the_matrix_preview_image from './content/jupyter_notebooks/assets/coding_the_matrix/coding_the_matrix_preview.png'
+import mathematics_of_the_dft_preview_image from './content/jupyter_notebooks/assets/mathematics_of_the_dft_preview.png'
 import musimathics_volume_1_preview_image from './content/jupyter_notebooks/assets/musimathics/musimathics_volume_1_preview.gif'
 import musimathics_volume_2_preview_image from './content/jupyter_notebooks/assets/musimathics/musimathics_volume_2_preview.gif'
 import python_crash_course_preview_image from './content/jupyter_notebooks/assets/python_crash_course_preview.png'
@@ -475,7 +476,7 @@ const entries = [
         </p>
         <img
           src={coding_the_matrix_preview_image}
-          alt="Preview of perspective transformation"
+          alt="An example of perspective transformation"
           style={{ width: '80%' }}
         />
       </div>
@@ -500,7 +501,7 @@ const entries = [
         </p>
         <img
           src={musimathics_volume_1_preview_image}
-          alt="Preview gif of Musimathics Volume 1 showing particle displacement in a tube"
+          alt="Preview gif for Musimathics Volume 1 showing particle displacement in a tube"
           style={{ width: '80%' }}
         />
       </div>
@@ -525,7 +526,7 @@ const entries = [
         </p>
         <img
           src={musimathics_volume_2_preview_image}
-          alt="Preview gif of Musimathics Volume 2 showing"
+          alt="Preview gif for Musimathics Volume 2 showing a visualization of how the foureir transform works"
           style={{ width: '80%' }}
         />
       </div>
@@ -533,6 +534,31 @@ const entries = [
     descriptionPlainText:
       'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 2" book.',
     contentPath: 'jupyter_notebooks/MusimathicsVolume2',
+    type: 'article',
+  },
+  {
+    path: '/jupyter_notebooks/mathematics_of_the_dft',
+    summaryTitle: 'Jupyter Notebook - Mathematics of the DFT',
+    title: 'Mathematics of the DFT',
+    date: 'May 25 2018',
+    disqusId: 'MathematicsOfTheDft',
+    description: (
+      <div>
+        <p>
+          This set of Jupyter Notebooks contains charts, visualizations,
+          demonstrations and excercise solutions for each of the chapters in the{' '}
+          <i>Mathematics of the DFT</i> book by Julius O. Smith III.
+        </p>
+        <img
+          src={mathematics_of_the_dft_preview_image}
+          alt="Preview gif for Mathematics of the DFT"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      'This set of Jupyter Notebooks contains charts, visualizations, demonstrations and excercise solutions for each of the chapters in the "Mathematics of the DFT" book by Julius O. Smith III.',
+    contentPath: 'jupyter_notebooks/MathematicsOfTheDft',
     type: 'article',
   },
 ]
