@@ -33,9 +33,11 @@ export default (
         Jupyter notebooks
       </Link>{' '}
       <small>
-        (<Link href="https://github.com/khiner/notebooks/tree/master/coding_the_matrix">
+        (
+        <Link href="https://github.com/khiner/notebooks/tree/master/coding_the_matrix">
           raw Github link
-        </Link>)
+        </Link>
+        )
       </small>{' '}
       for every problem, lab and code example in the book. It has well-formatted
       redefinitions of each problem, review question and lab statement along
@@ -47,7 +49,8 @@ export default (
       As demonstrated in{' '}
       <Link href="https://youtu.be/fNk_zzaMoSs">
         this incredible introduction to vectors by 3Blue1Brown
-      </Link>,
+      </Link>
+      ,
       <img
         src={three_approaches_image}
         style={{ width: '80%' }}
@@ -66,19 +69,21 @@ export default (
       as they focus on practically computable solutions to discrete numerical
       problems. For example, the best selling{' '}
       <Link href="https://www.amazon.com/Linear-Algebra-Right-Undergraduate-Mathematics/dp/3319110799">
-        <i>Linear Algebra Done Right</i>
+        Linear Algebra Done Right
       </Link>{' '}
       whose name is an ironic <small>(I hope!)</small> reference to this
       factionalism, takes the "pure-math" perspective with pride and boasts that
       its "novel approach banishes determinants to the end of the book" on the
-      second line of its Amazon plug.<sup>
+      second line of its Amazon plug.
+      <sup>
         <a href="#aside_1">1</a>
       </sup>
     </p>
     <h2>
       <i>
         The <small>(mostly)</small> Computer Science Approach
-      </i>™
+      </i>
+      ™
     </h2>
     <p>
       <i>Coding the Matrix</i> seems to be the common recommendation for any
@@ -93,15 +98,17 @@ export default (
       in a lab or exercise. If you supplement the reading with the author's{' '}
       <Link href="https://cs.brown.edu/video/channels/coding-matrix-fall-2014/">
         Brown University lectures
-      </Link>, you'll hear him say more than once that he takes this approach in
-      part because implementing the ideas helps students <i>own</i> the
-      material. That is something I can always get behind, and this book{' '}
+      </Link>
+      , you'll hear him say more than once that he takes this approach in part
+      because implementing the ideas helps students <i>own</i> the material.
+      That is something I can always get behind, and this book{' '}
       <i>does that well</i>. I feel much more ownership over these concepts than
       I used to.
     </p>
     <p>
       What surprised me about this book, however, is how far it turned out to
-      lean towards <i>The Pure Mathematics Approach</i>™!
+      lean towards <i>The Pure Mathematics Approach</i>
+      ™!
       <ul>
         <li>
           The matrix and vector implementations built up early on in the book
@@ -137,7 +144,8 @@ export default (
           to agree that determinants are only worth a side-eyed sneer, but the
           mathemetician thinks so because they're conceptually bulky and
           arguably nonfundamental, and the computer scientist simply has no use
-          for them.<sup>
+          for them.
+          <sup>
             <a href="#aside_2">2</a>
           </sup>
         </li>
@@ -162,11 +170,12 @@ export default (
       <i>so many</i> typos and mistakes in this book.{' '}
       <Link href="http://codingthematrix.com/Errata1.pdf">
         The extensive errata
-      </Link>, I would estimate, are probably in the ballpark of 70% of the
-      actual errors in the book. It really does get to the level of producing
-      distrust in the authoritativeness of the text - it's hard to know what to
-      trust sometimes. I really hope they make another proper printing with the
-      known issues fixed. If it weren't for this little snag, I would much more
+      </Link>
+      , I would estimate, are probably in the ballpark of 70% of the actual
+      errors in the book. It really does get to the level of producing distrust
+      in the authoritativeness of the text - it's hard to know what to trust
+      sometimes. I really hope they make another proper printing with the known
+      issues fixed. If it weren't for this little snag, I would much more
       wholeheartedly make my second point:{' '}
       <i>I think this book acheives great things</i> with regard to linear
       algebra education - especially for the programming-inclined who are
@@ -178,9 +187,9 @@ export default (
       immense subject. Linear algebra is a field that rewards (and arguably
       requires) <i>relearning in several different ways</i> in order to solidify
       understanding. I will continue learning about it from different angles. If
-      for no other reason, so far I've found that linear algebra has a high "<i>
-        Aha!
-      </i>"-to-material ratio.
+      for no other reason, so far I've found that linear algebra has a high "
+      <i>Aha!</i>
+      "-to-material ratio.
     </p>
     <h2>Greatest hits</h2>
     <p>

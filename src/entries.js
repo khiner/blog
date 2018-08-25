@@ -12,6 +12,7 @@ import beethovens_5th_image from './content/music_generation/assets/beethovens_5
 
 import accelerated_cpp_preview_image from './content/jupyter_notebooks/assets/accelerated_cpp_preview.png'
 import coding_the_matrix_preview_image from './content/jupyter_notebooks/assets/coding_the_matrix/coding_the_matrix_preview.png'
+import intro_to_digital_filters_preview_image from './content/jupyter_notebooks/assets/intro_to_digital_filters/two_pole_filter_animation.gif'
 import mathematics_of_the_dft_preview_image from './content/jupyter_notebooks/assets/mathematics_of_the_dft_preview.png'
 import musimathics_volume_1_preview_image from './content/jupyter_notebooks/assets/musimathics/musimathics_volume_1_preview.gif'
 import musimathics_volume_2_preview_image from './content/jupyter_notebooks/assets/musimathics/musimathics_volume_2_preview.gif'
@@ -421,7 +422,7 @@ const entries = [
     description: (
       <div>
         <p>
-          This Jupyter Notebook contains all code and corresponding output from
+          This Jupyter notebook contains all code and corresponding output from
           the <i>Python for Data Analysis</i> book by Wes McKinney.
         </p>
         <img
@@ -432,7 +433,7 @@ const entries = [
       </div>
     ),
     descriptionPlainText:
-      'This Jupyter Notebook contains all code and corresponding output from the "Python for Data Analysis" book by Wes McKinney.',
+      'This set of Jupyter notebooks contains all code and corresponding output from the "Python for Data Analysis" book by Wes McKinney.',
     contentPath: 'jupyter_notebooks/PythonForDataAnalysis',
     type: 'article',
   },
@@ -445,7 +446,7 @@ const entries = [
     description: (
       <div>
         <p>
-          This Jupyter Notebook contains all code and exercises for the{' '}
+          This set of Jupyter notebooks contains all code and exercises for the{' '}
           <i>Accelerated C++</i> book.
         </p>
         <img
@@ -456,7 +457,7 @@ const entries = [
       </div>
     ),
     descriptionPlainText:
-      'This Jupyter Notebook contains all code and exercises for the "Accelerated C++" book.',
+      'This set of Jupyter notebooks contains all code and exercises for the "Accelerated C++" book.',
     contentPath: 'jupyter_notebooks/AcceleratedCpp',
     type: 'article',
   },
@@ -471,8 +472,8 @@ const entries = [
     description: (
       <div>
         <p>
-          This Jupyter Notebook contains all code, problems and labs for the{' '}
-          <i>Coding the Matrix</i> book.
+          This set of Jupyter notebooks contains all code, problems and labs for
+          the <i>Coding the Matrix</i> book.
         </p>
         <img
           src={coding_the_matrix_preview_image}
@@ -482,7 +483,7 @@ const entries = [
       </div>
     ),
     descriptionPlainText:
-      'This Jupyter Notebook contains all code, problems and labs for the "Coding the Matrix" book.',
+      'This set of Jupyter notebooks contains all code, problems and labs for the "Coding the Matrix" book.',
     contentPath: 'jupyter_notebooks/CodingTheMatrix',
     type: 'article',
   },
@@ -496,7 +497,7 @@ const entries = [
     description: (
       <div>
         <p>
-          This Jupyter Notebook contains implementations of many interesting
+          This Jupyter notebook contains implementations of many interesting
           topics from the <i>Musimathics Volume 1</i> book.
         </p>
         <img
@@ -507,7 +508,7 @@ const entries = [
       </div>
     ),
     descriptionPlainText:
-      'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 1" book.',
+      'This Jupyter notebook contains implementations of many interesting topics from the "Musimathics Volume 1" book.',
     contentPath: 'jupyter_notebooks/MusimathicsVolume1',
     type: 'article',
   },
@@ -521,8 +522,8 @@ const entries = [
     description: (
       <div>
         <p>
-          This Jupyter Notebook contains demonstrations and visualizations of
-          many topics from the <i>Musimathics Volume 2</i> book.
+          Jupyter notebooks full of demonstrations and visualizations of many
+          topics from the <i>Musimathics Volume 2</i> book.
         </p>
         <img
           src={musimathics_volume_2_preview_image}
@@ -532,7 +533,7 @@ const entries = [
       </div>
     ),
     descriptionPlainText:
-      'This Jupyter Notebook contains implementations of many interesting topics from the "Musimathics Volume 2" book.',
+      'Jupyter notebook full of demonstrations and visualizations of many interesting topics from the "Musimathics Volume 2" book.',
     contentPath: 'jupyter_notebooks/MusimathicsVolume2',
     type: 'article',
   },
@@ -545,20 +546,47 @@ const entries = [
     description: (
       <div>
         <p>
-          This set of Jupyter Notebooks contains charts, visualizations,
+          This set of Jupyter notebooks contains charts, visualizations,
           demonstrations and excercise solutions for each of the chapters in the{' '}
           <i>Mathematics of the DFT</i> book by Julius O. Smith III.
         </p>
         <img
           src={mathematics_of_the_dft_preview_image}
-          alt="Preview gif for Mathematics of the DFT"
+          alt="Chatrs showing the equivalence of stretching in the time domain and repeating in the frequency domain"
           style={{ width: '80%' }}
         />
       </div>
     ),
     descriptionPlainText:
-      'This set of Jupyter Notebooks contains charts, visualizations, demonstrations and excercise solutions for each of the chapters in the "Mathematics of the DFT" book by Julius O. Smith III.',
+      'This set of Jupyter notebooks contains charts, visualizations, demonstrations and excercise solutions for each of the chapters in the "Mathematics of the DFT" book by Julius O. Smith III.',
     contentPath: 'jupyter_notebooks/MathematicsOfTheDft',
+    type: 'article',
+  },
+  {
+    path: '/jupyter_notebooks/intro_to_digital_filters',
+    summaryTitle: 'Jupyter Notebook - Introduction to Digital Filters',
+    title: 'Introduction to Digital Filters',
+    date: 'June 16 2018',
+    disqusId: 'IntroToDigitalFilters',
+    description: (
+      <div>
+        <p>
+          Another set of Jupyter notebooks! These ones cover the{' '}
+          <i>Introduction to Digital Filters: with Audio Applications</i> book
+          by Julius O. Smith III, including more mathy charts, animations and
+          explorations, as well as solutions/attempts for (almost) every
+          excercise.
+        </p>
+        <img
+          src={intro_to_digital_filters_preview_image}
+          alt="Animation showing a biquad filter's amplitude, phase and impulse responses as the poles are moved"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      'Another set of Jupyter notebooks! This one covers the "Introduction to Digital Filters: with Audio Applications" book by Julius O. Smith III, including more mathy charts, animations and explorations, as well as solutions/attempts for (almost) every excercise.',
+    contentPath: 'jupyter_notebooks/IntroductionToDigitalFilters',
     type: 'article',
   },
 ]

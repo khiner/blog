@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { MenuItem, Nav, Navbar, NavDropdown, Glyphicon } from 'react-bootstrap'
+import { Nav, Navbar, NavItem, NavDropdown, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import config from '../config'
@@ -28,14 +28,13 @@ export default class MainNav extends Component {
           {!config.entriesInSidebar && <EntryNavItems />}
           <Nav pullRight>
             {config.topLevelLinks &&
-              // TODO change to NavItem when new version (> 0.31.5) of react-bootstrap is available
               config.topLevelLinks.map(topLevelLink => (
-                <MenuItem
+                <NavItem
                   key={topLevelLink.label}
                   href={topLevelLink.href}
                   target="_blank">
                   {topLevelLink.label}
-                </MenuItem>
+                </NavItem>
               ))}
             {(config.showShareNavItem ||
               (config.mailChimpFormAction && config.mailChimpInputName)) && (
@@ -45,7 +44,9 @@ export default class MainNav extends Component {
                   config.mailChimpFormAction &&
                   config.mailChimpInputName
                     ? 'Share & Subscribe'
-                    : config.showShareNavItem ? 'Share' : 'Subscribe'
+                    : config.showShareNavItem
+                      ? 'Share'
+                      : 'Subscribe'
                 }
                 id="share-and-subscribe">
                 {config.showShareNavItem &&
@@ -68,11 +69,11 @@ export default class MainNav extends Component {
             )}
             {config.email && (
               <NavDropdown title="Contact" id="contact">
-                <MenuItem
+                <NavItem
                   href={`mailto:${config.email}?Subject=Hello!`}
                   target="_blank">
                   {config.email}
-                </MenuItem>
+                </NavItem>
               </NavDropdown>
             )}
           </Nav>

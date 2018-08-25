@@ -1,21 +1,19 @@
 import React, { Component } from 'react'
-import { Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
+import { Nav, NavItem, NavDropdown } from 'react-bootstrap'
 
 import parsedEntries from './parsedEntries'
 import { snakeCaseToTitle, stripSlashes } from './utils'
 
 export default class EntryNavItems extends Component {
-  wrapInLink(content, entry) {
-    return (
-      <LinkContainer key={entry.path} to={`/${stripSlashes(entry.path)}/`}>
-        {content}
-      </LinkContainer>
-    )
-  }
-
   generateNavItem(entry) {
-    return <NavItem onClick={this.props.onItemClick}>{entry.title}</NavItem>
+    return (
+      <NavItem
+        key={entry.title}
+        href={`/${stripSlashes(entry.path)}/`}
+        onClick={this.props.onItemClick}>
+        {entry.title}
+      </NavItem>
+    )
   }
 
   generateNavDropdown(topLevelPathSegment) {
@@ -29,13 +27,9 @@ export default class EntryNavItems extends Component {
             (a, b) =>
               a.date && b.date ? Date.parse(b.date) - Date.parse(a.date) : 1
           )
-          .map(entry => this.wrapInLink(this.generateMenuItem(entry), entry))}
+          .map(entry => this.generateNavItem(entry))}
       </NavDropdown>
     )
-  }
-
-  generateMenuItem(entry) {
-    return <MenuItem onClick={this.props.onItemClick}>{entry.title}</MenuItem>
   }
 
   render() {
@@ -54,7 +48,7 @@ export default class EntryNavItems extends Component {
             ) {
               return this.generateNavDropdown(topLevelPathSegment)
             } else {
-              return this.wrapInLink(this.generateNavItem(entry), entry)
+              return this.generateNavItem(entry)
             }
           })}
       </Nav>

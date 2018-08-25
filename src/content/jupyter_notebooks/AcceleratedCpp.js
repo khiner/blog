@@ -16,7 +16,7 @@ export default (
       it for fear of learning bad habits, but settled on reading this for "core
       C++" (C++98) knowledge, and supplementing with{' '}
       <Link href="https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996">
-        <i>Effective Modern C++</i>
+        Effective Modern C++
       </Link>{' '}
       after learning the foundations. I'm actually really happy with this
       approach, since I found that all "modern C++" (C++11/14/17) features
@@ -74,9 +74,11 @@ export default (
         <big>This Jupyter notebook</big>
       </Link>{' '}
       <small>
-        (<Link href="https://github.com/khiner/notebooks/tree/master/accelerated_c++/">
+        (
+        <Link href="https://github.com/khiner/notebooks/tree/master/accelerated_c++/">
           raw GitHub link
-        </Link>)
+        </Link>
+        )
       </small>{' '}
       contains all code and exercises for the book. Where it makes sense, I
       implement the solutions inline in the notebook. I couldn't really find any
@@ -178,7 +180,8 @@ export default (
       <Link href="https://www.anaconda.com/">Anaconda environment</Link>, which
       I don't use. Based on their demo gifs and their comparatively active
       Github, it looks like the Xeus version may not have as many problems as
-      the pure <code>cling</code> C++ kernels I tried.<sup>
+      the pure <code>cling</code> C++ kernels I tried.
+      <sup>
         <a href="#aside_1">1</a>
       </sup>
     </p>
@@ -232,8 +235,9 @@ export default (
       issues:
     </p>
     <h3>
-      Separate <code>#include</code>s, definition links and <code>using</code>{' '}
-      declarations into separate cells
+      Separate <code>#include</code>
+      s, definition links and <code>using</code> declarations into separate
+      cells
     </h3>
     <div
       className="jupyter"

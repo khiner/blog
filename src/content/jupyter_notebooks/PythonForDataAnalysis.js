@@ -11,13 +11,15 @@ export default (
         <big>This Jupyter notebook</big>
       </Link>{' '}
       <small>
-        (<Link href="https://github.com/khiner/notebooks/tree/master/python_for_data_analysis">
+        (
+        <Link href="https://github.com/khiner/notebooks/tree/master/python_for_data_analysis">
           raw GitHub link
-        </Link>)
+        </Link>
+        )
       </small>{' '}
       includes every line of code in the{' '}
       <Link href="https://www.amazon.com/Python-Data-Analysis-Wrangling-IPython/dp/1491957662/">
-        <i>Python for Data Analysis</i>
+        Python for Data Analysis
       </Link>{' '}
       book (2nd addition) by Wes McKinney, who is the creator of the{' '}
       <code>pandas</code> library that is the subject of the book. The notebook
@@ -56,15 +58,18 @@ export default (
     <p>
       I've used <code>pandas</code> before at work, but only in the most basic
       way, as a convenient wrapper for loading and processing data (usually with{' '}
-      <code>scikit-learn</code>).
+      <code>scikit-learn</code>
+      ).
     </p>
     <p>
       The <code>DataFrame</code> is its main table-like data structure. It is
       designed to be a direct analogue to{' '}
       <Link href="http://www.r-tutor.com/r-introduction/data-frame">
-        <i>R</i>'s data frames
-      </Link>. <code>DataFrame</code>s in both frameworks are designed to strike
-      a balance between the expressiveness of SQL queries (hierarchical indices,{' '}
+        <i>R</i>
+        's data frames
+      </Link>
+      . <code>DataFrame</code>s in both frameworks are designed to strike a
+      balance between the expressiveness of SQL queries (hierarchical indices,{' '}
       <code>select</code>, <code>join</code>, <code>merge</code>, etc.), the
       numerical convenience of matrices and vectors, and the natural table/cell
       intuition of spreadsheets. <code>pandas</code> adds to this set of
@@ -73,15 +78,16 @@ export default (
     <p>
       I am more familiar with <code>numpy</code>, so I had basically always
       thought of <code>pandas</code> as a tool to get data from some other
-      format (CSV, JSON, etc.) into a kind of labelled-<code>numpy</code> format
-      as quickly as possible. Without taking the time to understand the
-      philosophy and parlance of <code>pandas</code>' core data structures, I{' '}
-      <i>usually</i> found the incantations required to access and manipulate
-      them as slightly clunky (except when their awesomeness was immediately
-      obvious, such as their ability to handle missing data seamlessly). I
-      relied on the DataFrame's <code>as_matrix()</code> method to get back to
-      what I considered a more sane representation that can be indexed with a
-      natural <code>data[i][j]</code> kind of notation.
+      format (CSV, JSON, etc.) into a kind of labelled-
+      <code>numpy</code> format as quickly as possible. Without taking the time
+      to understand the philosophy and parlance of <code>pandas</code>' core
+      data structures, I <i>usually</i> found the incantations required to
+      access and manipulate them as slightly clunky (except when their
+      awesomeness was immediately obvious, such as their ability to handle
+      missing data seamlessly). I relied on the DataFrame's{' '}
+      <code>as_matrix()</code> method to get back to what I considered a more
+      sane representation that can be indexed with a natural{' '}
+      <code>data[i][j]</code> kind of notation.
     </p>
     <p>
       After getting familiar with the <code>DataFrame</code>, the more
@@ -90,10 +96,11 @@ export default (
       well-labelled plotting, time-zone handling and even{' '}
       <Link href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.resample.html#pandas.Series.resample">
         resampling!
-      </Link>), I am much more comfortable working within these data structures
-      as first-order abstractions without wanting to always pull out the
-      underlying primitive data types and manipulate them manually. (I still
-      need a <i>ton</i> of practice to really feel comfortable, though!)
+      </Link>
+      ), I am much more comfortable working within these data structures as
+      first-order abstractions without wanting to always pull out the underlying
+      primitive data types and manipulate them manually. (I still need a{' '}
+      <i>ton</i> of practice to really feel comfortable, though!)
     </p>
     <h2>Example</h2>
     To close, I offer a section (without explanation - check out the book!) of{' '}

@@ -28,6 +28,10 @@ export default class Entry extends Component {
     this.formatMathWhenContentIsReady()
   }
 
+  componentDidUpdate() {
+    this.formatMathWhenContentIsReady()
+  }
+
   header(title, date) {
     return (
       <div>

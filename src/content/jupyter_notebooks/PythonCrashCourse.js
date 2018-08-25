@@ -14,21 +14,24 @@ export default (
       </Link>{' '}
       includes all code, excercises and projects from the{' '}
       <Link href="https://www.amazon.com/Python-Crash-Course-Hands-Project-Based/dp/1593276036/">
-        <i>Python Crash Course</i> book
+        Python Crash Course
       </Link>{' '}
-      by Eric Matthes. In addition to a great overview of the important features
-      of the Python language, this book includes three projects: a "Space
-      Invaders"-style game developed with PyGame, a data visualization project
-      and a Django app.{' '}
+      book by Eric Matthes. In addition to a great overview of the important
+      features of the Python language, this book includes three projects: a
+      "Space Invaders"-style game developed with PyGame, a data visualization
+      project and a Django app.{' '}
       <Link href="https://github.com/khiner/notebooks/tree/master/python_crash_course">
         Here is the GitHub
-      </Link>.
+      </Link>
+      .
     </p>
 
     <p>
-      Here's a screenshot of the Space Invadors-style game (<Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/python_crash_course/chapters_12_13_and_14.ipynb">
+      Here's a screenshot of the Space Invadors-style game (
+      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/python_crash_course/chapters_12_13_and_14.ipynb">
         chapters 12, 13 and 14
-      </Link>):
+      </Link>
+      ):
     </p>
     <img
       src={alien_invasion_screenshot_image}
@@ -41,7 +44,8 @@ export default (
       50,000 points with a color gradient, which can be found in{' '}
       <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/python_crash_course/chapter_15.ipynb">
         chapter 15
-      </Link>:
+      </Link>
+      :
     </p>
     <img
       src={python_crash_course_preview_image}
@@ -51,9 +55,11 @@ export default (
 
     <p>
       ... and here's a screenshot of the Learning Log project built with Django
-      and deployed with Heroku (<Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/python_crash_course/chapters_18_19_and_20.ipynb">
+      and deployed with Heroku (
+      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/python_crash_course/chapters_18_19_and_20.ipynb">
         chapters 18, 19 and 20
-      </Link>):
+      </Link>
+      ):
     </p>
     <img
       src={learning_log_screenshot_image}
