@@ -566,6 +566,7 @@ const entries = [
     path: '/jupyter_notebooks/intro_to_digital_filters',
     summaryTitle: 'Jupyter Notebook - Introduction to Digital Filters',
     title: 'Introduction to Digital Filters',
+    subtitle: 'and a visual approach to filter design',
     date: 'June 16 2018',
     disqusId: 'IntroToDigitalFilters',
     description: (
@@ -576,6 +577,10 @@ const entries = [
           by Julius O. Smith III, including more mathy charts, animations and
           explorations, as well as solutions/attempts for (almost) every
           excercise.
+        </p>
+        <p>
+          Also, I walk through a graphical method of interpretting and designing
+          digital filters.
         </p>
         <img
           src={intro_to_digital_filters_preview_image}
