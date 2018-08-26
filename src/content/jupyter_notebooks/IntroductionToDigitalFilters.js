@@ -69,8 +69,8 @@ export default (
       <Link href="http://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/introduction_to_digital_filters/chapter_8_pole_zero_analysis.ipynb#Pole-Zero-Analysis-Problems">
         the first exercise of Chapter 8
       </Link>
-      ) to completely remove 60 Hz hum, given a sampling rate of 40 KHz. I'll
-      walk through my more analytic attempt at the problem, and then I'll give a
+      ) to attenuate 60 Hz hum, given a sampling rate of 40 KHz. I'll walk
+      through my more analytic attempt at the problem, and then I'll give a
       visual explanation of a more canonical notch filter that cuts past a lot
       of analytic hair-pulling. If you'd like you can also just{' '}
       <a href="#graphical">skip to the graphical approach</a>.
