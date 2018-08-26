@@ -18,6 +18,7 @@ import musimathics_volume_1_preview_image from './content/jupyter_notebooks/asse
 import musimathics_volume_2_preview_image from './content/jupyter_notebooks/assets/musimathics/musimathics_volume_2_preview.gif'
 import python_crash_course_preview_image from './content/jupyter_notebooks/assets/python_crash_course_preview.png'
 import python_for_data_analysis_preview_image from './content/jupyter_notebooks/assets/python_for_data_analysis_preview.png'
+import sound_machine_preview_image from './content/sound_machine/assets/sound_machine_short_demo.gif'
 import windowing_animation from './content/jupyter_notebooks/assets/windowing_animation.gif'
 
 import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
@@ -591,8 +592,33 @@ const entries = [
       </div>
     ),
     descriptionPlainText:
-      'Another set of Jupyter notebooks! This one covers the "Introduction to Digital Filters: with Audio Applications" book by Julius O. Smith III, including more mathy charts, animations and explorations, as well as solutions/attempts for (almost) every excercise.',
+      'Another set of Jupyter notebooks! This one covers the "Introduction to Digital Filters: with Audio Applications" book by Julius O. Smith III, including more mathy charts, animations and explorations, as well as solutions/attempts for (almost) every excercise. Also, I walk through a graphical method of interpretting and designing digital filters.',
     contentPath: 'jupyter_notebooks/IntroductionToDigitalFilters',
+    type: 'article',
+  },
+  {
+    path: '/sound_machine/sound_machine',
+    title: 'Sound Machine',
+    subtitle: 'Making a place to put audio-making things',
+    date: 'Aug 25 2018',
+    disqusId: 'SoundMachine',
+    description: (
+      <div>
+        <p>
+          The beginning of an ongoing project to try and make a flexible, fast
+          and fun music production and performance tool that I will actually
+          use.
+        </p>
+        <img
+          src={sound_machine_preview_image}
+          alt="preview of sound machine"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      'The beginning of an ongoing project to try and make a flexible, fast and fun music production and performance tool that I will actually use.',
+    contentPath: 'sound_machine/SoundMachine',
     type: 'article',
   },
 ]
