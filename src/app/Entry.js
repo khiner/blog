@@ -15,6 +15,10 @@ export default class Entry extends Component {
     )
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return false
+  }
+
   formatMathWhenContentIsReady() {
     const element = document.getElementById('loadedContent')
     if (typeof element === 'undefined' || element === null) {
@@ -25,10 +29,6 @@ export default class Entry extends Component {
   }
 
   componentDidMount() {
-    this.formatMathWhenContentIsReady()
-  }
-
-  componentDidUpdate() {
     this.formatMathWhenContentIsReady()
   }
 
