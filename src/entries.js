@@ -564,9 +564,10 @@ const entries = [
   },
   {
     path: '/jupyter_notebooks/intro_to_digital_filters',
-    summaryTitle: 'Jupyter Notebook - Introduction to Digital Filters',
+    summaryTitle: 'Introduction to Digital Filters',
     title: 'Introduction to Digital Filters',
-    subtitle: 'and a visual approach to filter design',
+    subtitle:
+      'Jupyter notebooks and a geometric interpretation of digital audio filters',
     date: 'June 16 2018',
     disqusId: 'IntroToDigitalFilters',
     description: (
