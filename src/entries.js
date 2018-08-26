@@ -552,7 +552,7 @@ const entries = [
         </p>
         <img
           src={mathematics_of_the_dft_preview_image}
-          alt="Chatrs showing the equivalence of stretching in the time domain and repeating in the frequency domain"
+          alt="Charts showing the equivalence of stretching in the time domain and repeating in the frequency domain"
           style={{ width: '80%' }}
         />
       </div>
