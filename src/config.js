@@ -15,6 +15,11 @@ export default {
   // Optionally provide a list of { label: '...', href: '...' } pairs to display as simple links pulled right in the nav
   topLevelLinks: [
     {
+      label: "Deep learning papers I've read",
+      href:
+        'https://docs.google.com/spreadsheets/d/1uASWP-Qj2ojmaZiXte-z6bJRuqWKP5czq4v5fVn0pEU/edit?usp=sharing',
+    },
+    {
       label: 'GitHub',
       href: 'https://github.com/khiner',
     },
