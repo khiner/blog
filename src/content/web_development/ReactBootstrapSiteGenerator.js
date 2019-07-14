@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import ExternalLink from '../Link'
+import Highlight from 'react-highlight'
 
 import rolling_your_own_cms from './assets/rolling_your_own_cms.jpg'
 import site_generator_demo from './assets/site_generator_demo.gif'
@@ -60,11 +61,10 @@ export default (
         </li>
         <li>Automatic social media stuff per-post</li>
         <li>
-          Straightforward deployment: run <code>npm build</code> and{' '}
-          <code>scp</code> the build directory to my hosting service's <code>
-            public_html
-          </code>{' '}
-          directory
+          Straightforward deployment: run
+          <code>npm build</code> and <code>scp</code> the build directory to my
+          hosting service's
+          <code>public_html</code> directory
         </li>
         <li>
           A modern stack with all the trimmings, including a precommit hook for
@@ -120,7 +120,8 @@ export default (
       of felt like overkill and it serves pages dynamically, meaning direct
       links won't resolve since the directory won't be actually serving up an{' '}
       <code>index.hml</code> file and thus won't load unless you visit the site
-      index and follow a <code>Route</code> link. (<i>More on this in a bit!</i>)
+      index and follow a <code>Route</code> link. (<i>More on this in a bit!</i>
+      )
     </p>
     <p>
       Honestly though, I mostly just thought it was refreshing and fun to write
@@ -136,14 +137,14 @@ export default (
       After adding more content, I was getting fed up with the amount of
       duplication involved. I was avoiding a lot of it using simple tactics like
       this for each page:
-      <pre>
+      <Highlight className="xml">
         {`<script type="text/javascript">
   $(document).ready(function() {
     $('#main_nav').load('../../../main_nav.html');
     $('.main-content').load('main_content.html');
   });
 </script>`}
-      </pre>
+      </Highlight>
       and putting the raw content of each post into its own{' '}
       <code>main_content.html</code>.
     </p>
@@ -178,18 +179,20 @@ export default (
       and unnecessary complexity of another site generator like{' '}
       <ExternalLink href="https://github.com/jekyll/jekyll">
         Jekyll
-      </ExternalLink>. I wanted to work with common tools that I'm already
-      comfortable with, using and developing skills that are transferable to
-      other projects in my career. I've also developed a healthy fear of running
-      into arbitrary limitations with strict frameworks.
+      </ExternalLink>
+      . I wanted to work with common tools that I'm already comfortable with,
+      using and developing skills that are transferable to other projects in my
+      career. I've also developed a healthy fear of running into arbitrary
+      limitations with strict frameworks.
     </p>
     <p>
       I love React, but it has this whole dynamic routing issue I mentioned
       above. However! I found this amazing tool,{' '}
       <ExternalLink href="https://github.com/geelen/react-snapshot">
         react-snapshot
-      </ExternalLink>, that performs static prerendering on React apps by
-      crawling the site and generating html for each page! Problem solved.
+      </ExternalLink>
+      , that performs static prerendering on React apps by crawling the site and
+      generating html for each page! Problem solved.
     </p>
     <p>
       I used{' '}
@@ -214,16 +217,17 @@ export default (
     <code>create-react-app</code>. It's inteded more as a starting point than a
     framework. In the simplest cases, if your needs are similar to mine, you can
     get away with only modifying a couple files (<code>entries.js</code> and{' '}
-    <code>config.js</code>), but more likely you'll want to modify the
-    site-generation code in <code>src/app</code> to suit your own needs.
+    <code>config.js</code>
+    ), but more likely you'll want to modify the site-generation code in{' '}
+    <code>src/app</code> to suit your own needs.
     <h3>Setting up a new site</h3>
-    <pre>
+    <Highlight className="shell">
       {`$ npm install -g create-react-app
 $ create-react-app my-app --scripts-version react-scripts-bootstrap-site-generator
 $ cd my-app
 $ npm install
 $ npm start`}
-    </pre>
+    </Highlight>
     <p>
       That's it! Your browser should load a new tab to{' '}
       <code>localhost:3000</code> and you'll be greeted with the example app:

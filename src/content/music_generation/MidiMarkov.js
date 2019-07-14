@@ -1,6 +1,6 @@
 import React from 'react'
-
 import Link from '../Link'
+import Highlight from 'react-highlight'
 
 import beethovens_5th_image from './assets/beethovens_5th.png'
 import markov_recipe_image from './assets/markov_recipe.jpg'
@@ -38,23 +38,24 @@ export default (
       other, along with some other artifacts owed to a happy accident{' '}
       <Link href="https://github.com/khiner/midi_markov#drone-option">
         that I left in as an option
-      </Link>. (The bug was in argument-ordering when instantiating a new
-      MidiEvent, where I had accidentally passed the delta-time to the channel
-      parameter, causing notes to start when an event happens to have a
-      delta-time of 0, but not end until another event with the same note and a
-      0 delta-time occurs.)
+      </Link>
+      . (The bug was in argument-ordering when instantiating a new MidiEvent,
+      where I had accidentally passed the delta-time to the channel parameter,
+      causing notes to start when an event happens to have a delta-time of 0,
+      but not end until another event with the same note and a 0 delta-time
+      occurs.)
     </p>
     <p>
       The title of each track can be pasted directly as run-options for the
       program. You can reproduce any of these pieces by opening up a terminal
       window (if you're on Mac) and running:
     </p>
-    <pre>{`$ git clone git@github.com:khiner/midi_markov.git
+    <Highlight className="shell">{`$ git clone git@github.com:khiner/midi_markov.git
 $ cd midi_markov
 $ gem install bundler
 $ bundle install
 $ brew install timidity
-$ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
+$ ./midi_markov {track_name}`}</Highlight>
     <p dir="ltr">
       The results vary a ton depending on the parameters and the random seed,
       from patient harmonic meditations to frenetic atonal excursions.
@@ -145,14 +146,17 @@ $ ./midi_markov {PASTE THE TRACK NAME HERE}`}</pre>
       options to specify many of these choices, like{' '}
       <Link href="https://github.com/khiner/midi_markov#match-length-option">
         how many notes must be matched in a row
-      </Link>, ..., but the general idea is always the same - the equivalent of
-      the <em>word</em> is a set of notes that begin simultaneously, such as a
+      </Link>
+      , ..., but the general idea is always the same - the equivalent of the{' '}
+      <em>word</em> is a set of notes that begin simultaneously, such as a
       single note or a chord.{' '}
       <Link href="https://github.com/khiner/midi_markov#match-length-option">
         Optionally
-      </Link>, you can tell the program to change that definition to "a set of
-      notes that begin simultaneously <em>and</em> have the same duration" (or{' '}
-      <em>delta </em>in MIDI parlance).
+      </Link>
+      , you can tell the program to change that definition to "a set of notes
+      that begin simultaneously <em>and</em> have the same duration" (or{' '}
+      <em>delta </em>
+      in MIDI parlance).
     </p>
     <p>
       As an example, consider this passage from Beethoven's 5th:
@@ -208,7 +212,8 @@ D => ()`}
       neural-net boom, where we can stack all sorts of{' '}
       <Link href="http://people.idsia.ch/~juergen/blues/IDSIA-07-02.pdf">
         LSTMs
-      </Link>,{' '}
+      </Link>
+      ,{' '}
       <Link href="http://www.hexahedria.com/2015/08/03/composing-music-with-recurrent-neural-networks/">
         RNNs
       </Link>{' '}

@@ -621,6 +621,28 @@ const entries = [
     contentPath: 'sound_machine/SoundMachine',
     type: 'article',
   },
+  {
+    path: '/music_generation/wavenet_and_samplernn',
+    title: 'Generating Musical Audio with WaveNet and SampleRNN',
+    subtitle: 'Experiments in music generation with popular deep neural models',
+    date: 'July 13 2019',
+    disqusId: 'MusicGenerationDeepModels',
+    description: (
+      <div>
+        <p>
+          Most raw audio generation papers focus on speech. If musical audio
+          samples are published, they're usually the result of training on
+          simple single-instrument recordings. I wanted to explore how two
+          popular audio generation models generalize to more complex and
+          musically interesting audio.
+        </p>
+      </div>
+    ),
+    descriptionPlainText:
+      "Most raw audio generation papers focus on speech. If musical audio samples are published, they're usually the result of training on simple single-instrument recordings. I wanted to explore how two popular audio generation models generalize to more complex and musically interesting audio.",
+    contentPath: 'music_generation/DeepModels',
+    type: 'article',
+  },
 ]
 
 export default entries

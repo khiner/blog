@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import 'highlight.js/styles/atom-one-dark.css'
 
 import MainNav from './MainNav'
 import MainContent from './MainContent'
