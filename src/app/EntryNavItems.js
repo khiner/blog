@@ -35,7 +35,6 @@ export default class EntryNavItems extends Component {
   render() {
     return (
       <Nav>
-        {this.props.children}
         {parsedEntries.uniqueTopLevelPathSegments
           .sort()
           .map(topLevelPathSegment => {
