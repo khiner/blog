@@ -28,12 +28,12 @@ export default class ShareButtons extends Component {
         <div className="shareButtons">
           {this.renderShareButton(
             'Email',
-            `mailto:?subject=${title}&body=Though you'd be interested in this!%0D%0A%0D%0A${url}%0D%0A${description}`,
+            `mailto:?subject=${title}&body=Though you'd be interested in this!%0D%0A%0D%0A${url}%0D%0A${title}`,
             email_image
           )}
           {this.renderShareButton(
             'Twitter',
-            `https://twitter.com/share?url=${url}&text=${description}${
+            `https://twitter.com/share?url=${url}&text=${title}${
               config.twitterHandle ? '&via=' + config.twitterHandle : ''
             }`,
             twitter_image
