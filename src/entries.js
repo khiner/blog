@@ -625,7 +625,7 @@ const entries = [
     path: '/music_generation/wavenet_and_samplernn',
     title: 'Generating Musical Audio with WaveNet and SampleRNN',
     subtitle: 'Experiments in music generation with popular deep neural models',
-    date: 'July 13 2019',
+    date: 'Aug 11 2019',
     disqusId: 'MusicGenerationDeepModels',
     description: (
       <div>
