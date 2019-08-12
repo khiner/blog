@@ -636,6 +636,7 @@ const entries = [
           popular audio generation models generalize to more complex and
           musically interesting audio.
         </p>
+        <AlbumPreview title="SampleRNN Dawn of Midi" playlistId="825451859" />
       </div>
     ),
     descriptionPlainText:
