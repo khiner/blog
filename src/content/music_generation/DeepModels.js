@@ -33,7 +33,7 @@ export default (
     </p>
     <p>
       As such, the results here don't represent what's <i>possible</i>, but
-      rather are just a few datapoints that should be thought of as baselines.
+      rather are just a few data points that should be thought of as baselines.
       Some results I think sound great, and some sound bad, noisy, crackly, or
       just silly. I think both kinds of results have merit for music production.
       "Failure" cases, in addition to sometimes sounding really interesting, can
@@ -58,7 +58,7 @@ export default (
       dependencies across a finite time context determined by the receptive
       field of its final layer (read{' '}
       <Link href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/">
-        DeepMind's original blogpost
+        DeepMind's original blog post
       </Link>{' '}
       for more details). This finite context means the model can only capture
       patterns over relatively short timescales (say, around a second).
@@ -75,7 +75,7 @@ export default (
     </p>
     <p>
       For music, the results are only coherent over a few notes, but the timbral
-      characteristics are well modelled:
+      characteristics are well modeled:
       <br />
       <audio
         src="https://storage.googleapis.com/deepmind-media/pixie/making-music/sample_2.wav"
@@ -165,7 +165,7 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       frequencies that sound like they were learned from the noisy ride and
       crash cymbals, with a clear kick and snare washed in, but with almost no
       clearly pitched components. My intuition is that a lot of the capacity is
-      being allocated to the impossible task of modelling the local distribution
+      being allocated to the impossible task of modeling the local distribution
       of the percussion, which closely approximates white-noise in the case of
       cymbals (applied generously in the training set).
     </p>
@@ -180,24 +180,15 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       distribution. WaveNet isn't a recurrent network like the ones Graves was
       working with, but the same principal still works. It forces the first
       generated values to be realistic ones, seeding the model so that when it
-      predicts the distributions for future samples, it is encouraged to
-      continue where the seed left off. However, given the small receptive field
-      size of the model (about 320ms), and given its clearly poor understanding
-      of the noisy and complex training distrubition, basically all of this
-      influence is lost after generation advances past its receptive field size.
-      You can hear this in the following seeded clip - the first third of a
-      second (again, the receptive field size) is the seed clip. In short order
-      it goes right back to being crappy:
+      predicts future samples, it is encouraged to continue where the seed left
+      off. However, given the small receptive field size of the model (about
+      320ms), and given its clearly poor understanding of the noisy and complex
+      training set, basically all of this influence is lost after generation
+      advances past its receptive field size. You can hear this in the following
+      seeded clip - the first third of a second (again, the receptive field
+      size) is the seed clip. In short order it goes right back to being crappy:
     </p>
     <SoundCloudLink trackId="657682796" />
-    <p>
-      It shouldn't be surprising that the results get stuck in local patterns,
-      given the ~320ms receptive field size. The types of patters taking place
-      over those timescales are best described as textural or timbral. What
-      seems to be happening here is that it's learning mostly complex, noisy
-      drum textures over short timescales. It isn't learning patterns over
-      timescales long enough to transition into and out of the drum fills.
-    </p>
     <p>
       To address this, I followed some advice in{' '}
       <Link href="https://github.com/ibab/tensorflow-wavenet/issues/47">
@@ -216,18 +207,17 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
               1, 2, 4, 8, 16, 32, 64]`}
     </Highlight>
     <p>
-      This change increases the total receptive field dramatically to about 1.3
-      seconds.
+      and the rest of the parameters unaltered from the defaults. This change
+      increases the total receptive field dramatically to about 1.3 seconds.
     </p>
-    <p>and the rest of the parameters unaltered from the defaults.</p>
     <p>
       This is what it came up with (the training and generation commands were
       identical to the above):
     </p>
     <SoundCloudLink trackId="657682826" />
     <p>
-      The results are still pretty cacaphonous, but there are some transition
-      points, some brief pauses, and some pitched tones and squeeks! Also, to my
+      The results are still pretty cacophonous, but there are some transition
+      points, some brief pauses, and some pitched tones and squeaks! Also, to my
       ears, the percussive wash sounds a little more like a jam by Animal from
       the Muppets, rather than just a continuous swell of textured white noise.
       Definitely an improvement.
@@ -267,7 +257,7 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       <Link href="https://arxiv.org/abs/1612.07837">SampleRNN</Link> is another
       very popular audio generation model. Unlike WaveNet, SampleRNN is a
       recurrent model. Recurrent cells like <Link href="">LSTMs</Link> or{' '}
-      <Link href="">GRUs</Link> can theoretically propogate useful information
+      <Link href="">GRUs</Link> can theoretically propagate useful information
       over arbitrarily long time horizons. In practice, however, LSTMs usually
       have a hard time learning latent patterns over long time scales. In part
       this is due to issues like vanishing or exploding gradients. But it is
@@ -275,7 +265,7 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       relatively small bank of recurrent memory cells and learned update rules.
       The main insight behind SampleRNN is that audio in particular exhibits
       salient patterns at multiple timescales, and that these patterns and
-      features are composed heirarchically. For example, timbre is shaped by
+      features are composed hierarchically. For example, timbre is shaped by
       patterns over very short timescales, while musical events and gestures
       like bowing or striking an instrument happen over longer timescales.
       Melodies are composed of a series of musical events, which are often
@@ -283,18 +273,18 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       further grouped into sections and then full songs.
     </p>
     <p>
-      SampleRNN eases the discovery of these heirarchical timeseries features by
-      imposing a similarly heirarchical network architecture.
+      SampleRNN eases the discovery of these hierarchical timeseries features by
+      imposing a similarly hierarchical network architecture.
     </p>
     <img
       src={samplernn_diagram}
       style={{ width: '80%' }}
-      alt="Diagram of SampleRNN showing RNN cell heirarchy"
+      alt="Diagram of SampleRNN showing RNN cell hierarchy"
     />
     <p>
       RNN memory cells are organized into tiers. Each cell receives information
       both from the previous timestep on its own tier, as well as a weighted
-      summary of outputs from a continguous local group of cells in the previous
+      summary of outputs from a contiguous local group of cells in the previous
       tier. This allows each tier to summarize the information in the previous
       tier at a lower granularity (and thus a higher level of abstraction).
     </p>
@@ -399,7 +389,7 @@ $ python train.py --exp dawn_of_midi --frame_sizes 16 4 --n_rnn 2 --sample_lengt
         </li>
         <li>
           <p>
-            The overall quality is pretty good! While the quanitzation error is
+            The overall quality is pretty good! While the quantization error is
             more audible than WaveNet, the long-term structure and sample
             diversity is greatly improved. The samples have pauses and swells,
             melodic movement and more restrained rhythms.
@@ -467,9 +457,9 @@ $ python train.py --exp dawn_of_midi --frame_sizes 16 4 --n_rnn 2 --sample_lengt
         . Towards the goal of providing meaningful control, one promising avenue
         of research is along the lines of{' '}
         <Link href="https://openai.com/blog/glow/">
-          invertible generative models
+          π invertible generative models
         </Link>
-        , which allow for exact, reversable mapping between latent variables and
+        , which allow for exact, reversible mapping between latent variables and
         generated samples. Nvidia's{' '}
         <Link href="https://nv-adlr.github.io/WaveGlow">WaveGlow</Link> model
         combines these ideas with WaveNet for fast, non-autoregressive
