@@ -17,7 +17,7 @@ import dc_blocker_animation from './assets/intro_to_digital_filters/dc_blocker_f
 export default (
   <div>
     <p>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/introduction_to_digital_filters/">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/introduction_to_digital_filters/">
         This set of Jupyter notebooks
       </Link>{' '}
       <small>
@@ -66,7 +66,7 @@ export default (
     <h2>Designing a second-order filter to reject 60 Hz hum</h2>
     <p>
       For example, say we want to design a filter (as we are asked to do in{' '}
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/introduction_to_digital_filters/chapter_8_pole_zero_analysis.ipynb#Pole-Zero-Analysis-Problems">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/introduction_to_digital_filters/chapter_8_pole_zero_analysis.ipynb#Pole-Zero-Analysis-Problems">
         the first exercise of Chapter 8
       </Link>
       ) to attenuate 60 Hz hum, given a sampling rate of 40 KHz. I'll walk
@@ -429,7 +429,7 @@ G(\\omega) &amp;= 1 - \\left|\\cos(\\omega - \\omega_r)\\right|^M\\\\
     />
     <p>
       The code that created these animations is in the{' '}
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/introduction_to_digital_filters/appendix_b_elementary_audio_digital_filters.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/introduction_to_digital_filters/appendix_b_elementary_audio_digital_filters.ipynb">
         notebook for Appendix B: Elementary Audio Digital Filters
       </Link>
       . The graphical interpretation of digital filters originally came from{' '}

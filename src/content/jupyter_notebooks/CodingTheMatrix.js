@@ -29,7 +29,7 @@ export default (
       seems to have a good reputation as the de-facto "computer science
       approach" to Linear Algebra. It's popular and mostly well reviewed on
       Amazon, and is frequently recommended on QA sites. I made a set of{' '}
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/">
         Jupyter notebooks
       </Link>{' '}
       <small>
@@ -201,13 +201,13 @@ export default (
       book!
     </p>
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_0/chapter_0.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_0/chapter_0.ipynb">
         Chapter 0
       </Link>
     </h3>
     (Just introduces Python and is pretty boring.)
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_1/chapter_1.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_1/chapter_1.ipynb">
         Chapter 1
       </Link>
     </h3>
@@ -220,7 +220,7 @@ export default (
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_2/chapter_2.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_2/chapter_2.ipynb">
         Chapter 2
       </Link>
     </h3>
@@ -237,7 +237,7 @@ export default (
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_3/chapter_3.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_3/chapter_3.ipynb">
         Chapter 3
       </Link>
     </h3>
@@ -248,7 +248,7 @@ export default (
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_4/chapter_4_with_lab_and_exercises.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_4/chapter_4_with_lab_and_exercises.ipynb">
         Chapter 4
       </Link>
     </h3>
@@ -269,7 +269,7 @@ export default (
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_5/">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_5/">
         Chapter 5
       </Link>
     </h3>
@@ -288,7 +288,7 @@ export default (
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_6/chapter_6.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_6/chapter_6.ipynb">
         Chapter 6
       </Link>
     </h3>
@@ -304,7 +304,7 @@ export default (
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_7/">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_7/">
         Chapter 7
       </Link>
     </h3>
@@ -325,7 +325,7 @@ export default (
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_8/chapter_8.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_8/chapter_8.ipynb">
         Chapter 8
       </Link>
     </h3>
@@ -367,7 +367,7 @@ Fraction wrong:  0.5133333333333333</pre></div></div></div>`,
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_9/chapter_9.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_9/chapter_9.ipynb">
         Chapter 9
       </Link>
     </h3>
@@ -422,7 +422,7 @@ Fraction wrong:  0.5133333333333333</pre></div></div></div>`,
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_10/chapter_10.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_10/chapter_10.ipynb">
         Chapter 10
       </Link>
     </h3>
@@ -441,7 +441,7 @@ Fraction wrong:  0.5133333333333333</pre></div></div></div>`,
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_11/chapter_11.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_11/chapter_11.ipynb">
         Chapter 11
       </Link>
     </h3>
@@ -488,7 +488,7 @@ Fraction wrong:  0.5133333333333333</pre></div></div></div>`,
       }}
     />
     <h3>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_12/chapter_12.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_12/chapter_12.ipynb">
         Chapter 12
       </Link>
     </h3>

@@ -9,7 +9,7 @@ import varying_window_size_animation from './assets/varying_window_size_animatio
 export default (
   <div>
     <p>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/dft-timeseries/">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/dft-timeseries/">
         DFT for Timeseries Data
       </Link>{' '}
       is a Jupyter Notebook I developed for a presentation on applying the DFT
@@ -20,10 +20,10 @@ export default (
     </p>
     <p>
       <i>
-        <b>Note: </b>Being that this was designed to go along with a
-        presentation, I would not recommend it as a first introduction to the
-        DFT since it's really mostly code with some images for visual
-        explanation.
+        <b>Note: </b>
+        Being that this was designed to go along with a presentation, I would
+        not recommend it as a first introduction to the DFT since it's really
+        mostly code with some images for visual explanation.
       </i>{' '}
       Armed with some knowledge of the DFT already, I think it should help
       clarify some behaviors visually and could serve an implementation

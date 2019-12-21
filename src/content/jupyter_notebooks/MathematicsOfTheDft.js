@@ -7,7 +7,7 @@ export default (
   <div>
     <p>
       Another set of{' '}
-      <Link href="http://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/mathematics_of_the_dft/">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/mathematics_of_the_dft/">
         Jupyter notebooks
       </Link>
       !{' '}
@@ -42,7 +42,7 @@ export default (
       There are a fair amount of extra charts and animations sprinkled
       throughout, and I try to reproduce claims and results where I felt the
       need to - most notably in the{' '}
-      <Link href="http://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/mathematics_of_the_dft/chapter_7_fourier_theorems_for_the_dft.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/mathematics_of_the_dft/chapter_7_fourier_theorems_for_the_dft.ipynb">
         <i>Fourier Theorems for the DFT</i>
       </Link>{' '}
       chapter, where all of the given time
@@ -82,7 +82,7 @@ export default (
     </p>
     <p>Here is most of that chapter's notebook, without exercises:</p>
     <h3>
-      <Link href="http://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/mathematics_of_the_dft/chapter_7_fourier_theorems_for_the_dft.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/mathematics_of_the_dft/chapter_7_fourier_theorems_for_the_dft.ipynb">
         Chapter 7: Digital Signals and Sampling
       </Link>
     </h3>
@@ -1758,7 +1758,7 @@ AAABAAAAAExhdmY1Ny44My4xMDA=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>See my notebook for <a href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/musimathics/volume_2/chapter_4_convolution.ipynb">Musimathics Ch4</a> for more animated examples of convolution. <em>(Note that the definition of convolution in this book is circular, whereas the implementation used in Musimathics is not. Thus the convolutions do not repeat in the Musimathics animations. <strong>Also note</strong> that the non-circular implementation is much more common. It is what numpy and scipy use, and it is the definition that makes the convolution Fourier theorems below hold.)</em></p>
+<p>See my notebook for <a href="https://colab.research.google.com/github/khiner/notebooks/blob/master/musimathics/volume_2/chapter_4_convolution.ipynb">Musimathics Ch4</a> for more animated examples of convolution. <em>(Note that the definition of convolution in this book is circular, whereas the implementation used in Musimathics is not. Thus the convolutions do not repeat in the Musimathics animations. <strong>Also note</strong> that the non-circular implementation is much more common. It is what numpy and scipy use, and it is the definition that makes the convolution Fourier theorems below hold.)</em></p>
 
 </div>
 </div>

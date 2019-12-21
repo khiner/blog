@@ -70,7 +70,7 @@ export default (
     </p>
     <h2>The Jupyter notebook</h2>
     <p>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/accelerated_c++/">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/accelerated_c++/">
         <big>This Jupyter notebook</big>
       </Link>{' '}
       <small>

@@ -7,7 +7,7 @@ import './style/jupyter-style.css'
 export default (
   <div>
     <p>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/python_for_data_analysis/">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/python_for_data_analysis/">
         <big>This Jupyter notebook</big>
       </Link>{' '}
       <small>

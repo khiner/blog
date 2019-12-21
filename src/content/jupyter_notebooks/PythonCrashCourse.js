@@ -9,7 +9,7 @@ import alien_invasion_screenshot_image from './assets/alien_invasion_screenshot.
 export default (
   <div>
     <p>
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/tree/master/python_crash_course/">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/python_crash_course/">
         <big>This Jupyter notebook</big>
       </Link>{' '}
       includes all code, excercises and projects from the{' '}
@@ -28,7 +28,7 @@ export default (
 
     <p>
       Here's a screenshot of the Space Invadors-style game (
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/python_crash_course/chapters_12_13_and_14.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_crash_course/chapters_12_13_and_14.ipynb">
         chapters 12, 13 and 14
       </Link>
       ):
@@ -42,7 +42,7 @@ export default (
     <p>
       Here's an image of a gorgeous fading random walk chart generated from
       50,000 points with a color gradient, which can be found in{' '}
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/python_crash_course/chapter_15.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_crash_course/chapter_15.ipynb">
         chapter 15
       </Link>
       :
@@ -56,7 +56,7 @@ export default (
     <p>
       ... and here's a screenshot of the Learning Log project built with Django
       and deployed with Heroku (
-      <Link href="https://nbviewer.jupyter.org/github/khiner/notebooks/blob/master/python_crash_course/chapters_18_19_and_20.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_crash_course/chapters_18_19_and_20.ipynb">
         chapters 18, 19 and 20
       </Link>
       ):
