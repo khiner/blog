@@ -29,7 +29,7 @@ export default (
       seems to have a good reputation as the de-facto "computer science
       approach" to Linear Algebra. It's popular and mostly well reviewed on
       Amazon, and is frequently recommended on QA sites. I made a set of{' '}
-      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/index.ipynb">
         Jupyter notebooks
       </Link>{' '}
       <small>

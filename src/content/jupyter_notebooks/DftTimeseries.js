@@ -9,7 +9,16 @@ import varying_window_size_animation from './assets/varying_window_size_animatio
 export default (
   <div>
     <p>
-      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/dft-timeseries/">
+      <i>
+        Update: A newer post of mine,{' '}
+        <Link href="https://karlhiner.com/jupyter_notebooks/mathematics_of_the_dft">
+          Mathematics of the DFT
+        </Link>
+        , is a much more comprehensive look at the DFT.
+      </i>
+    </p>
+    <p>
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/dft-timeseries/DftTimeseries.ipynb">
         DFT for Timeseries Data
       </Link>{' '}
       is a Jupyter Notebook I developed for a presentation on applying the DFT
