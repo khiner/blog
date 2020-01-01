@@ -16,6 +16,7 @@ import intro_to_digital_filters_preview_image from './content/jupyter_notebooks/
 import mathematics_of_the_dft_preview_image from './content/jupyter_notebooks/assets/mathematics_of_the_dft_preview.png'
 import musimathics_volume_1_preview_image from './content/jupyter_notebooks/assets/musimathics/musimathics_volume_1_preview.gif'
 import musimathics_volume_2_preview_image from './content/jupyter_notebooks/assets/musimathics/musimathics_volume_2_preview.gif'
+import pasp_preview_image from './content/jupyter_notebooks/assets/pasp/chapter_9_pick_excitation.gif'
 import python_crash_course_preview_image from './content/jupyter_notebooks/assets/python_crash_course_preview.png'
 import python_for_data_analysis_preview_image from './content/jupyter_notebooks/assets/python_for_data_analysis_preview.png'
 import sound_machine_preview_image from './content/sound_machine/assets/sound_machine_short_demo.gif'
@@ -641,6 +642,32 @@ const entries = [
     descriptionPlainText:
       "Most raw audio generation papers focus on speech. If musical audio samples are published, they're usually the result of training on simple single-instrument recordings. I wanted to explore how two popular audio generation models generalize to more complex and musically interesting audio.",
     contentPath: 'music_generation/DeepModels',
+    type: 'article',
+  },
+  {
+    path: '/jupyter_notebooks/physical_audio_signal_processing',
+    title: 'Audiovisual Guide to Physical Audio Signal Processing',
+    subtitle:
+      'Companion Jupyter Notebooks for "Physical Audio Signal Processing" by J. O. Smith III',
+    date: 'Dec 31 2019',
+    disqusId: 'PhysicalAudioSignalProcessing',
+    description: (
+      <div>
+        <p>
+          Continuing with Julius O. Smith III's audio DSP series, this set of
+          Jupyter notebooks covers book III -{' '}
+          <i>Physical Audio Signal Processing</i>.
+        </p>
+        <img
+          src={pasp_preview_image}
+          alt="Animation showing digital waveguide delay lines with excitation scatter junction"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      'Continuing with Julius O. Smith III\'s audio DSP book series, this set of Jupyter notebooks covers book III - "Physical Audio Signal Processing".',
+    contentPath: 'jupyter_notebooks/PhysicalAudioSignalProcessing',
     type: 'article',
   },
 ]
