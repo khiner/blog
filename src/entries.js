@@ -649,7 +649,7 @@ const entries = [
     title: 'Audiovisual Guide to Physical Audio Signal Processing',
     subtitle:
       'Companion Jupyter Notebooks for "Physical Audio Signal Processing" by J. O. Smith III',
-    date: 'Dec 31 2019',
+    date: 'Jan 1 2020',
     disqusId: 'PhysicalAudioSignalProcessing',
     description: (
       <div>
