@@ -17,12 +17,12 @@ import dc_blocker_animation from './assets/intro_to_digital_filters/dc_blocker_f
 export default (
   <div>
     <p>
-      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/introduction_to_digital_filters/index.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/introduction_to_digital_filters/index.ipynb">
         This set of Jupyter notebooks
       </Link>{' '}
       <small>
         (
-        <Link href="https://github.com/khiner/notebooks/tree/master/introduction_to_digital_filters/">
+        <Link href="https://github.com/khiner/notebooks/blob/master/introduction_to_digital_filters/">
           raw Github link
         </Link>
         )

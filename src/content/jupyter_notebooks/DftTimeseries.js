@@ -18,7 +18,7 @@ export default (
       </i>
     </p>
     <p>
-      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/dft-timeseries/DftTimeseries.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/dft-timeseries/DftTimeseries.ipynb">
         DFT for Timeseries Data
       </Link>{' '}
       is a Jupyter Notebook I developed for a presentation on applying the DFT

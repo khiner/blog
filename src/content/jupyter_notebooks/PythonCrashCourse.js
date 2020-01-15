@@ -9,7 +9,7 @@ import alien_invasion_screenshot_image from './assets/alien_invasion_screenshot.
 export default (
   <div>
     <p>
-      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/python_crash_course/index.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_crash_course/index.ipynb">
         <big>This Jupyter notebook</big>
       </Link>{' '}
       includes all code, excercises and projects from the{' '}

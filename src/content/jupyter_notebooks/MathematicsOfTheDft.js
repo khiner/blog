@@ -7,13 +7,13 @@ export default (
   <div>
     <p>
       Another set of{' '}
-      <Link href="https://colab.research.google.com/github/khiner/notebooks/tree/master/mathematics_of_the_dft/index.ipynb">
+      <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/mathematics_of_the_dft/index.ipynb">
         Jupyter notebooks
       </Link>
       !{' '}
       <small>
         (
-        <Link href="https://github.com/khiner/notebooks/tree/master/mathematics_of_the_dft/">
+        <Link href="https://github.com/khiner/notebooks/blob/master/mathematics_of_the_dft/">
           raw Github link
         </Link>
         )
