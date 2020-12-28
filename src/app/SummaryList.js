@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Panel } from 'react-bootstrap'
+import { Card, Container, Row, Col } from 'react-bootstrap'
 import Helmet from 'react-helmet'
 
 import config from '../config'
@@ -20,26 +20,26 @@ export default class SummaryList extends Component {
   panel(entry) {
     return (
       <Link to={entry.path} key={entry.path} className="panelLink">
-        <Panel>
-          <Panel.Heading>{this.header(entry)}</Panel.Heading>
-          <Panel.Body>
+        <Card>
+          <Card.Header>{this.header(entry)}</Card.Header>
+          <Card.Body>
             <div className="mainContent">{entry.description}</div>
-          </Panel.Body>
-        </Panel>
+          </Card.Body>
+        </Card>
       </Link>
     )
   }
 
   render() {
     return (
-      <div className="summaryList">
+      <Container>
         {config && config.siteTitle && <Helmet title={config.siteTitle} />}
-        <div className="col-md-1 col-lg-2" />
-        <div className="col-xs-12 col-md-10 col-lg-8">
-          {parsedEntries.reverseChronological.map(entry => this.panel(entry))}
-        </div>
-        <div className="col-md-1 col-lg-2" />
-      </div>
+        <Row>
+          <Col className="justify-content-md-center">
+            {parsedEntries.reverseChronological.map(entry => this.panel(entry))}
+          </Col>
+        </Row>
+      </Container>
     )
   }
 }

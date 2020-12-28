@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Helmet from 'react-helmet'
-import { Panel } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 
 import config from '../config'
 import DiscussionEmbed from './DiscussionEmbed'
@@ -35,7 +35,7 @@ export default class Entry extends Component {
   header(title, date) {
     return (
       <div>
-        <h1>{title}</h1>
+        <h1 className="title">{title}</h1>
         <h2 className="date">{date}</h2>
       </div>
     )
@@ -77,21 +77,21 @@ export default class Entry extends Component {
         <div className="container col-xs-12 col-md-10 col-lg-8">
           {!isShowcase && (
             <div id="mainContent" className="mainContent">
-              {title && <h1>{title}</h1>}
+              {title && <h1 className="title">{title}</h1>}
               {subtitle && <h2 className="subtitle">{subtitle}</h2>}
               {date && <h3 className="date">{date}</h3>}
               {this.props.children}
             </div>
           )}
           {isShowcase && (
-            <Panel>
-              <Panel.Heading>{this.header(title, date)}</Panel.Heading>
-              <Panel.Body>
+            <Card>
+              <Card.Header>{this.header(title, date)}</Card.Header>
+              <Card.Body>
                 <div className="mainContent Showcase">
                   {this.props.children}
                 </div>
-              </Panel.Body>
-            </Panel>
+              </Card.Body>
+            </Card>
           )}
 
           {title &&

@@ -4,6 +4,8 @@ import 'highlight.js/styles/atom-one-dark.css'
 import MainNav from './MainNav'
 import MainContent from './MainContent'
 
+import './style/App.scss'
+
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -26,7 +28,10 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <MainNav onShowSidebarClicked={this.toggleSidebar} />
+        <MainNav
+          shouldShowSidebar={this.state.shouldShowSidebar}
+          onShowSidebarClicked={this.toggleSidebar}
+        />
         <MainContent
           shouldShowSidebar={this.state.shouldShowSidebar}
           toggleSidebar={this.toggleSidebar}

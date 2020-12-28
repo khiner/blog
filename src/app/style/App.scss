@@ -2,26 +2,27 @@
 @import '../follow_and_share/style/MailChimpEmailSignup.css';
 @import '../follow_and_share/style/ShareButtons.css';
 
-$bgDefault   : #22aadd;
-$bgHover   : #0088bb;
-$bgHighlight : #0088bb;
-$colDefault  : #ffffff;
-$colHighlight: #444444;
+$primary: #22aadd;
+$primary-highlight: #1199cc;
+$text-color-light: #ffffff;
+$navbar-light-brand-color: $text-color-light;
+$navbar-light-color: $text-color-light;
+$navbar-light-hover-color: #444444;
+$navbar-nav-link-padding-x: 1em;
+$card-cap-bg: $primary;
+$card-cap-color: $text-color-light;
+
+$link-color: $primary;
+$link-hover-color: $primary-highlight;
+
+@import "node_modules/bootstrap/scss/bootstrap";
 
 body {
   font-family: 'Proxima Nova';
   font-weight: 400;
 
   .contentWrapper {
-    margin-top: 60px;
-  }
-
-  .navbar-static-top {
-
-    .container {
-      // sidebar screws this up...
-      width: 100%;
-    }
+    margin-top: 5rem;
   }
 
   a {
@@ -30,6 +31,24 @@ body {
 
   small {
     line-height: 1em;
+  }
+  h1 {
+    font-size: 36px;
+  }
+}
+
+.navbar {
+  background-color: $primary;
+  color: $text-color-light;
+  a {
+    color: $text-color-light;
+    &:hover {
+      color: $navbar-light-hover-color;
+      text-decoration: none;
+    }
+    &.active {
+      color: $navbar-light-hover-color;
+    }
   }
 }
 
@@ -59,11 +78,9 @@ body {
   pre {
     border: 0; background-color: transparent;
   }
-  h2 {
-    &.subtitle {
-      font-size: 26px;
-      font-weight: 100;
-    }
+  .subtitle {
+    font-size: 26px;
+    font-weight: 100;
   }
   h3 {
     margin-bottom: 20px;
@@ -82,32 +99,24 @@ body {
   }
 }
 
-.panel {
+.card {
+  margin-bottom: 2em;
   .mainContent {
-    margin-bottom: 0;
     font-size: 18px;
-
-    :last-child {
-      margin-bottom: 0 !important;
-    }
   }
 
-  .panel-heading {
-    background-color: $bgDefault;
-    color: $colDefault;
-    background-image: none !important;
-
-    h1 {
+  .card-header {
+    .title {
       font-size: 27px;
       margin: 5px 0px;
     }
-    h2.subtitle {
+    .subtitle {
       margin-top: -2px;
       margin-left: 0px;
       font-size: 22px;
       font-weight: 100;
     }
-    h3.date {
+    .date {
       margin: 10px 0px;
       font-size: 16px;
       font-weight: 100;
@@ -117,18 +126,18 @@ body {
 }
 
 a {
-  .panel {
+  .card {
     &:hover {
-      background-color: #f4f4f4;
+      background-color: #f6f6f6;
 
-      .panel-heading {
-        background-color: $bgHover;
+      .card-header {
+        background-color: $primary-highlight;
       }
     }
   }
 }
 .navbar-brand.leaveLeftSpace {
-  margin-left: 30px;
+  margin-left: 3em;
 }
 
 .Showcase {
@@ -136,10 +145,10 @@ a {
 }
 
 .showSidebar {
-  position: absolute;
+  position: absolute !important;
   top: 14px;
   left: 15px;
-  color: $colDefault;
+  color: $text-color-light;
   font-size: 18px;
 }
 
@@ -152,6 +161,7 @@ a {
 
   &.show {
     left: 0px;
+    margin-top: -1em;
   }
 
   left: -250px;
@@ -159,8 +169,8 @@ a {
 
   .sidebarHeader {
     padding: 10px;
-    background-color: $bgDefault;
-    color: $colDefault;
+    background-color: $primary;
+    color: $text-color-light;
 
     h3 {
       margin: 0;
@@ -169,10 +179,6 @@ a {
 
   li a {
     overflow: hidden;
-
-    &:hover, &:focus {
-      background-image: none;
-    }
 
     &.open {
       background-color: inherit;
@@ -183,11 +189,34 @@ a {
     border-bottom: 1px solid #47748b;
   }
 
-  ul.dropdown-menu {
-    position: relative;
+  .nav-link, .dropdown-item {
+    &:hover {
+      background-color: #eaeaea;
+    }
+  }
+  .nav-link:hover {
+      color: inherit;
+  }
+  .dropdown-item:hover {
+      color: $link-hover-color;
+  }
+
+  .nav > .dropdown-item {
+    padding-left: 1em;
+  }
+
+  .dropdown-menu > .dropdown-item {
+    font-size: 15px;
+  }
+
+  .dropdown-menu {
     background-color: inherit;
     border: none;
     box-shadow: none;
+    transform: none !important;
+    inset: inherit !important;
+    position: relative !important;
+    margin: inherit !important;
   }
 
   ul li.active > a, a[aria-expanded="true"] {
@@ -202,56 +231,5 @@ a {
 }
 
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
-  background-color: $bgDefault !important;
-  background-image: none;
-
-}
-
-.navbar-default {
-  background-color: $bgDefault;
-  border-color: $bgHighlight;
-  background-image: none;
-  .navbar-brand {
-    color: $colDefault;
-    &:hover, &:focus {
-      color: $colHighlight; }}
-  .navbar-text {
-    color: $colDefault; }
-  .navbar-nav {
-    > li {
-      > a {
-        color: $colDefault;
-        &:hover,  &:focus {
-          color: $colHighlight; }}}
-    > .active {
-      > a, > a:hover, > a:focus {
-        color: $colHighlight;
-        background-color: $bgHighlight; }}
-    > .open {
-      > a, > a:hover, > a:focus {
-        color: $colHighlight;
-        background-color: $bgHighlight; }}}
-  .navbar-toggle {
-    border-color: $bgHighlight;
-    &:hover, &:focus {
-      background-color: $bgHighlight; }
-    .icon-bar {
-      background-color: $colDefault; }}
-  .navbar-collapse,
-  .navbar-form {
-    border-color: $colDefault; }
-  .navbar-link {
-    color: $colDefault;
-    &:hover {
-      color: $colHighlight; }}}
-@media (max-width: 767px) {
-  .navbar-default .navbar-nav .open .dropdown-menu {
-    > li > a {
-      color: $colDefault;
-      &:hover, &:focus {
-        color: $colHighlight; }}
-    > .active {
-      > a, > a:hover, > a:focus, {
-        color: $colHighlight;
-        background-color: $bgHighlight; }}}
+  background-color: $primary !important;
 }

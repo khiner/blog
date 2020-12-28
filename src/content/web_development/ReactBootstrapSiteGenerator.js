@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import ExternalLink from '../Link'
-import Highlight from 'react-highlight'
+import SyntaxHighlighter from 'react-syntax-highlighter';
 
 import rolling_your_own_cms from './assets/rolling_your_own_cms.jpg'
 import site_generator_demo from './assets/site_generator_demo.gif'
@@ -137,14 +137,14 @@ export default (
       After adding more content, I was getting fed up with the amount of
       duplication involved. I was avoiding a lot of it using simple tactics like
       this for each page:
-      <Highlight className="xml">
+      <SyntaxHighlighter language="xml">
         {`<script type="text/javascript">
   $(document).ready(function() {
     $('#main_nav').load('../../../main_nav.html');
     $('.main-content').load('main_content.html');
   });
 </script>`}
-      </Highlight>
+      </SyntaxHighlighter>
       and putting the raw content of each post into its own{' '}
       <code>main_content.html</code>.
     </p>
@@ -221,13 +221,13 @@ export default (
     ), but more likely you'll want to modify the site-generation code in{' '}
     <code>src/app</code> to suit your own needs.
     <h3>Setting up a new site</h3>
-    <Highlight className="shell">
+    <SyntaxHighlighter language="shell">
       {`$ npm install -g create-react-app
 $ create-react-app my-app --scripts-version react-scripts-bootstrap-site-generator
 $ cd my-app
 $ npm install
 $ npm start`}
-    </Highlight>
+    </SyntaxHighlighter>
     <p>
       That's it! Your browser should load a new tab to{' '}
       <code>localhost:3000</code> and you'll be greeted with the example app:

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Nav, Navbar, NavItem, NavDropdown, Glyphicon } from 'react-bootstrap'
+import { Nav, Navbar, NavDropdown } from 'react-bootstrap'
+import { FaList } from 'react-icons/fa';
 import { Link } from 'react-router-dom'
 
 import config from '../config'
@@ -11,30 +12,28 @@ import ShareButtons from './follow_and_share/ShareButtons'
 export default class MainNav extends Component {
   render() {
     return (
-      <Navbar default fixedTop collapseOnSelect>
+      <Navbar fixed="top" expand="md">
         {config.entriesInSidebar && (
-          <a className="showSidebar">
-            <Glyphicon glyph="list" onClick={this.props.onShowSidebarClicked} />
+          <a className={`showSidebar${this.props.shouldShowSidebar ? ' active' : ''}`}>
+            <FaList onClick={this.props.onShowSidebarClicked} />
           </a>
         )}
-        <Navbar.Header>
           <Navbar.Brand
             className={config.entriesInSidebar ? 'leaveLeftSpace' : ''}>
             <Link to="/">{config.siteName}</Link>
           </Navbar.Brand>
           <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
+        <Navbar.Collapse className="justify-content-end">
           {!config.entriesInSidebar && <EntryNavItems />}
-          <Nav pullRight>
+          <Nav>
             {config.topLevelLinks &&
               config.topLevelLinks.map(topLevelLink => (
-                <NavItem
+                <Nav.Link
                   key={topLevelLink.label}
                   href={topLevelLink.href}
                   target="_blank">
                   {topLevelLink.label}
-                </NavItem>
+                </Nav.Link>
               ))}
             {(config.showShareNavItem ||
               (config.mailChimpFormAction && config.mailChimpInputName)) && (
@@ -69,11 +68,11 @@ export default class MainNav extends Component {
             )}
             {config.email && (
               <NavDropdown title="Contact" id="contact">
-                <NavItem
+                <Nav.Link
                   href={`mailto:${config.email}?Subject=Hello!`}
                   target="_blank">
                   {config.email}
-                </NavItem>
+                </Nav.Link>
               </NavDropdown>
             )}
           </Nav>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Nav, NavItem, NavDropdown } from 'react-bootstrap'
+import { Nav, NavDropdown } from 'react-bootstrap'
 
 import parsedEntries from './parsedEntries'
 import { snakeCaseToTitle, stripSlashes } from './utils'
@@ -7,12 +7,12 @@ import { snakeCaseToTitle, stripSlashes } from './utils'
 export default class EntryNavItems extends Component {
   generateNavItem(entry) {
     return (
-      <NavItem
+      <NavDropdown.Item
         key={entry.title}
         href={`/${stripSlashes(entry.path)}/`}
         onClick={this.props.onItemClick}>
         {entry.title}
-      </NavItem>
+      </NavDropdown.Item>
     )
   }
 
@@ -34,7 +34,7 @@ export default class EntryNavItems extends Component {
 
   render() {
     return (
-      <Nav>
+      <Nav className="flex-column">
         {parsedEntries.uniqueTopLevelPathSegments
           .sort()
           .map(topLevelPathSegment => {

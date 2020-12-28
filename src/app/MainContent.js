@@ -51,7 +51,7 @@ export default class MainContent extends Component {
       <div className="contentWrapper">
         {config.entriesInSidebar && (
           <Sidebar
-            shouldShow={this.props.shouldShowSidebar}
+            shouldShowSidebar={this.props.shouldShowSidebar}
             toggle={this.props.toggleSidebar}
           />
         )}

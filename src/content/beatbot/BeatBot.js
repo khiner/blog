@@ -18,7 +18,7 @@ export default (
       </Link>. If you have an Android device, please do check it out and share
       what you make!
     </p>
-    <h2>Elevator pitch</h2>
+    <h2>Overview</h2>
     <p>
       BeatBot is an intuitive and flexible beat production environment. It
       provides the essential sound design tools for rich sample-based beat

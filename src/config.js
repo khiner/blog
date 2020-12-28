@@ -22,11 +22,6 @@ export default {
       label: 'LinkedIn',
       href: 'https://www.linkedin.com/in/karl-hiner-9534b333',
     },
-    {
-      label: "Papers I've read",
-      href:
-        'https://docs.google.com/spreadsheets/d/1uASWP-Qj2ojmaZiXte-z6bJRuqWKP5czq4v5fVn0pEU/edit?usp=sharing',
-    },
   ],
   // Fill in your handle to include in Twitter share links
   twitterHandle: 'odangludo',

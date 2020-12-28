@@ -1,5 +1,5 @@
 import React from 'react'
-import Highlight from 'react-highlight'
+import SyntaxHighlighter from 'react-syntax-highlighter';
 
 import Link from '../Link'
 import SoundCloudLink from '../SoundCloudLink'
@@ -116,7 +116,7 @@ export default (
       Here are the full instructions for setting up, training and generating the
       above samples:
     </p>
-    <Highlight className="shell">
+    <SyntaxHighlighter language="shell">
       {`$ git clone git@github.com:khiner/tensorflow-wavenet.git
 $ cd tensorflow-wavenet
 $ conda create -n tensorflow-wavenet python=3.6.8 anaconda
@@ -124,7 +124,7 @@ $ conda activate tensorflow-wavenet
 $ pip install -r requirements_gpu.txt
 $ python train.py --data_dir=datasets/dawn_of_midi
 $ python generate.py --wav_out_path=generated/ dom-defaultmodel-100ksteps-640000samples.wav --samples 640000 logdir/train/2019-06-29T08-58-25/model.ckpt-99800`}
-    </Highlight>
+    </SyntaxHighlighter>
     <p>
       I was pleasantly surprised at the quality of this sample! It's rambly with
       almost no melodic movement or structure, but rhythmically it has an
@@ -143,20 +143,20 @@ $ python generate.py --wav_out_path=generated/ dom-defaultmodel-100ksteps-640000
       silence. I tried again without trimming or ignoring any silence, letting
       it try to learn the distribution of both low- and high-amplitude audio:
     </p>
-    <Highlight className="shell">
+    <SyntaxHighlighter language="shell">
       {`$ python train.py --data_dir=datasets/bad_plus_give_8s --silence_threshold=0
 $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-64000.wav --samples 64000 logdir/train/2019-07-07T15-54-50/model.ckpt-99950`}
-    </Highlight>
+    </SyntaxHighlighter>
     <p>The short result seemed pretty similar:</p>
     <SoundCloudLink trackId="657682802" />
     <p>
       Since there's a much wider diversity of sounds in this album, I thought it
       would help to train for an additional 100k steps:
     </p>
-    <Highlight className="shell">
+    <SyntaxHighlighter language="shell">
       {`$ python train.py --restore_from=logdir/train/2019-07-07T15-54-50/ --data_dir=datasets/bad_plus_give_8s --silence_threshold=0
 $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200ksteps-64000.wav --samples 64000 logdir/train/2019-07-08T21-30-12/model.ckpt-99900`}
-    </Highlight>
+    </SyntaxHighlighter>
     <SoundCloudLink trackId="657682793" />
     <p>And here's a longer example (although it's not terribly interesting!)</p>
     <SoundCloudLink trackId="657682787" />
@@ -198,14 +198,14 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       Specifically, I settled on a config with a <code>dilations</code> argument
       of:
     </p>
-    <Highlight className="json">
+    <SyntaxHighlighter language="json">
       {`"dilations": [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1014, 2048,
               1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048,
               1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048,
               1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048,
               1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048,
               1, 2, 4, 8, 16, 32, 64]`}
-    </Highlight>
+    </SyntaxHighlighter>
     <p>
       and the rest of the parameters unaltered from the defaults. This change
       increases the total receptive field dramatically to about 1.3 seconds.
@@ -332,7 +332,7 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       Here are the full instructions for setting up, training and generating the
       above samples:
     </p>
-    <Highlight className="shell">
+    <SyntaxHighlighter language="shell">
       {`$ git clone git@github.com:khiner/samplernn-pytorch.git
 $ cd samplernn-pytorch
 $ conda create -n samplernn python=3.6.8 anaconda
@@ -343,7 +343,7 @@ $ ./datasets/download-from-youtube.sh "https://www.youtube.com/watch?v=EhO_MrRff
 $ python train.py --exp piano --frame_sizes 16 4 --n_rnn 2 --sample_length=160000 --sampling_temperature=0.95 --n_samples=2 --dataset piano
 $ ./datasets/download-from-youtube.sh "https://www.youtube.com/watch?v=zH4lkK-vSco" 8 dawn_of_midi
 $ python train.py --exp dawn_of_midi --frame_sizes 16 4 --n_rnn 2 --sample_length=160000 --sampling_temperature=0.95 --n_samples=2 --dataset dawn_of_midi`}
-    </Highlight>
+    </SyntaxHighlighter>
     <p>
       The arguments <code>--sample_length=160000</code> and{' '}
       <code>--n_samples=2</code> tell the trainer to periodically generate and
@@ -377,7 +377,7 @@ $ python train.py --exp dawn_of_midi --frame_sizes 16 4 --n_rnn 2 --sample_lengt
             <code>--n_rnn 3</code>
             ), and letting it train for about twice as long (a little over two
             days):
-            <Highlight className="shell">{`$ python train.py --exp dawn_of_midi_3_tier --frame_sizes 16 4 --n_rnn 3 --q_levels 512 --sample_length=160000 --sampling_temperature=0.95 --n_samples=2 --dataset dawn_of_midi`}</Highlight>
+            <SyntaxHighlighter language="shell">{`$ python train.py --exp dawn_of_midi_3_tier --frame_sizes 16 4 --n_rnn 3 --q_levels 512 --sample_length=160000 --sampling_temperature=0.95 --n_samples=2 --dataset dawn_of_midi`}</SyntaxHighlighter>
             The results of this experiment aren't really worth sharing as they
             were similar but with slightly degraded quality.
           </p>
