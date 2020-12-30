@@ -1,6 +1,6 @@
-import config from '../config'
-import entries from '../entries'
-import { stripSlashes } from '../app/utils'
+import config from './config'
+import entries from './entries'
+import { stripSlashes } from './utils'
 
 // decorate all entries with full urls
 if (config.host) {

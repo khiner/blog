@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
-import config from '../../config'
-import Link from '../../content/Link'
+import config from '../config'
+import Link from '../content/Link'
 import email_image from './assets/email.png'
 import facebook_image from './assets/facebook.png'
 import google_image from './assets/google.png'

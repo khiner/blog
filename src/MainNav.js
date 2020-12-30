@@ -3,7 +3,7 @@ import { Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import { FaList } from 'react-icons/fa';
 import { Link } from 'react-router-dom'
 
-import config from '../config'
+import config from './config'
 
 import EntryNavItems from './EntryNavItems'
 import MailChimpEmailSignup from './follow_and_share/MailChimpEmailSignup'
