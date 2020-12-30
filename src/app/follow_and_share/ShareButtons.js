@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import config from '../../config'
-
+import Link from '../../content/Link'
 import email_image from './assets/email.png'
 import facebook_image from './assets/facebook.png'
 import google_image from './assets/google.png'
@@ -13,14 +13,14 @@ import twitter_image from './assets/twitter.png'
 export default class ShareButtons extends Component {
   renderShareButton(name, href, src) {
     return (
-      <a href={href} target="_blank">
+      <Link>
         <img src={src} alt={name} />
-      </a>
+      </Link>
     )
   }
 
   render() {
-    const { title, description, url, hideLabel } = this.props
+    const { title, url, hideLabel } = this.props
 
     return (
       <div className="shareButtonsParent">

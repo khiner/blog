@@ -14,15 +14,13 @@ export default class MainNav extends Component {
     return (
       <Navbar fixed="top" expand="md">
         {config.entriesInSidebar && (
-          <a className={`showSidebar${this.props.shouldShowSidebar ? ' active' : ''}`}>
-            <FaList onClick={this.props.onShowSidebarClicked} />
-          </a>
+          <FaList className={`clickable${this.props.shouldShowSidebar ? ' active' : ''}`} onClick={this.props.onShowSidebarClicked} />
         )}
-          <Navbar.Brand
-            className={config.entriesInSidebar ? 'leaveLeftSpace' : ''}>
-            <Link to="/">{config.siteName}</Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
+        <Navbar.Brand
+          className={config.entriesInSidebar ? 'leaveLeftSpace' : ''}>
+          <Link to="/">{config.siteName}</Link>
+        </Navbar.Brand>
+        <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           {!config.entriesInSidebar && <EntryNavItems />}
           <Nav>

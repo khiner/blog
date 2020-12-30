@@ -8,9 +8,7 @@ export default class Sidebar extends Component {
     return (
       <div className={`sidebar${this.props.shouldShowSidebar ? ' show' : ''}`}>
         <div className="sidebarHeader">
-          <a style={{float: 'right'}}>
-            <FaTimes onClick={this.props.toggle} />
-          </a>
+          <FaTimes className="clickable" style={{float: 'right'}} onClick={this.props.toggle} />
           <h3>Posts</h3>
         </div>
         <EntryNavItems onItemClick={this.props.toggle} />

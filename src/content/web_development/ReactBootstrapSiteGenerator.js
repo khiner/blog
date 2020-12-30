@@ -93,9 +93,9 @@ export default (
       <ul>
         <li>
           You can{' '}
-          <a onClick={toggleNineties}>
+          <button className="linkButton" onClick={toggleNineties}>
             make the whole site look <span id="decadeLabel">like the 90s</span>
-          </a>{' '}
+          </button>{' '}
           if you want.
         </li>
       </ul>
@@ -149,14 +149,14 @@ export default (
       <code>main_content.html</code>.
     </p>
     <p>
-      But there were still a lot of shortcomings:
+      But there were a lot of shortcomings:
       <ul>
         <li>
           I still had a ton of duplication in the form of html <code>head</code>{' '}
           tags and other random junk.
         </li>
         <li>
-          Making structural changes to each post still required changing html
+          Making structural changes to each post still required changing HTML
           everywhere, and there was no easy way around this.
         </li>
         <li>
@@ -164,14 +164,13 @@ export default (
           manually was a pain and felt really outdated.
         </li>
         <li>
-          I was really missing inheritance and composition, and other
-          object-oriented properties.
+          I was really missing object-oriented patterns like inheritance and composition.
         </li>
       </ul>
-      Basically, I didn't have the setup I wanted, where I could focus on
-      content alone. When adding new things, I usually had to edit multiple
-      files. I could not easily make more complex changes like adding a post
-      summary list page.
+      Basically, I didn't have the setup I wanted - one that would allow me to focus
+      on content alone. When adding new things, I usually had to edit multiple
+      files. I could not easily add more complex features, like a post summary list
+      page.
     </p>
     <h3>Rewriting in React</h3>
     <p>

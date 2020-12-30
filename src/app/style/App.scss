@@ -46,9 +46,19 @@ body {
       color: $navbar-light-hover-color;
       text-decoration: none;
     }
-    &.active {
-      color: $navbar-light-hover-color;
-    }
+  }
+  .active {
+    color: $navbar-light-hover-color;
+  }
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  &:hover {
+    color: $primary;
   }
 }
 
@@ -137,19 +147,19 @@ a {
   }
 }
 .navbar-brand.leaveLeftSpace {
-  margin-left: 3em;
+  margin-left: 2em;
 }
 
 .Showcase {
   background-color: rgb(255, 255, 255);
 }
 
-.showSidebar {
-  position: absolute !important;
-  top: 14px;
-  left: 15px;
-  color: $text-color-light;
+.clickable {
   font-size: 18px;
+  &:hover {
+    cursor: pointer;
+    color: $navbar-light-hover-color;
+  }
 }
 
 .sidebar {
