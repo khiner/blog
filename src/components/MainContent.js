@@ -9,25 +9,21 @@ import { stripSlashes } from '../utils'
 import config from '../config'
 import parsedEntries from '../parsedEntries'
 
-import Loadable from 'react-loadable'
+import loadable from '@loadable/component'
 
-function createContentLoadable(entry) {
-  return Loadable({
-    loader: () => import('../content/' + entry.contentPath),
-    loading(props) {
-      return <div>Loading...</div>
-    },
-    render(props) {
-      return <div id="loadedContent">{props.default}</div>
-    },
-  })
+const LoadableEntry = (entry) => {
+  const Loadable = loadable(async () => {
+    const imported = await import('../content/' + entry.contentPath)
+    return () => imported.default;
+  }, {fallback: <div>Loading...</div>});
+  return <div id="loadedContent"><Loadable /></div>
 }
 
 function generateComponent(entry) {
   return props => (
     <Entry {...entry}>
       {entry.contentPath
-        ? React.createElement(createContentLoadable(entry))
+        ? LoadableEntry(entry)
         : entry.content}
     </Entry>
   )
