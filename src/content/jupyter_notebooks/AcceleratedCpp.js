@@ -1,13 +1,14 @@
 import React from 'react'
 
 import Link from '../Link'
+import Paragraph from '../Paragraph'
 
 import './style/jupyter-style.css'
 import cpp_kernels_image from './assets/cpp_kernels.png'
 
 export default (
   <div>
-    <p>
+    <Paragraph>
       <Link href="https://www.amazon.com/Accelerated-C-Practical-Programming-Example/dp/020170353X/">
         <i>Accelerated C++</i>
       </Link>{' '}
@@ -30,9 +31,9 @@ export default (
       implemented with, defined by ... old C++ features. If you're completely
       new to (or completely rusty with) C++, I can recommend separating your
       learning into "old" and "new" sections.
-    </p>
+    </Paragraph>
     <h2>Book review</h2>
-    <p>
+    <Paragraph>
       The book itself is well written and very well structured, with few
       mistakes. It takes a well-honed and well-argued teaching approach of
       building things right off the bat using powerful standard library
@@ -67,9 +68,9 @@ export default (
       tweaking and adapting the teaching of C++ to large groups of students, and
       it definitely shows. The tools you build up throughout the book are pretty
       generic and powerful. I'll show an example in a bit.
-    </p>
+    </Paragraph>
     <h2>The Jupyter notebook</h2>
-    <p>
+    <Paragraph>
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/accelerated_c++/index.ipynb">
         <big>This Jupyter notebook</big>
       </Link>{' '}
@@ -84,21 +85,21 @@ export default (
       implement the solutions inline in the notebook. I couldn't really find any
       comprehensive solution sets or guides that cover every chapter of the
       book, so I hope people working through it find this and get use out of it!
-    </p>
+    </Paragraph>
     <h2>Wait, C++ in Jupyter?!</h2>
-    <p>
+    <Paragraph>
       Heck yeah! Well, kind of... it's a little clunky as of now. More on that
       later, for now let's focus on the good:
-    </p>
+    </Paragraph>
     <div style={{ display: 'flex', 'flex-direction': 'row' }}>
       <div style={{ width: '50%' }}>
         <h2>C++ in Jupyter: The Good</h2>
-        <p>
+        <Paragraph>
           The fact that you can run C++ at all with an interactive interpretter
           in the browser is really an amazing thing. Being able to select
           whatever C++ version I want from Jupyter tickles me to no end.
-        </p>
-        <p>
+        </Paragraph>
+        <Paragraph>
           The following is an example from the last chapter of the book. It may
           not look like much, but it uses pretty much <i>only</i> classes and
           types built up throughout the book. The <code>Str</code> class is
@@ -107,7 +108,7 @@ export default (
           of the operations of <code>std::vector</code>. <code>Vec</code> even
           uses a custom reference-counting sort of proto-smart-pointer (similar
           to <code>std::auto_ptr</code>) under the hood!
-        </p>
+        </Paragraph>
       </div>
       <img
         src={cpp_kernels_image}
@@ -115,7 +116,7 @@ export default (
         style={{ height: '30%', width: '30%' }}
       />
     </div>
-    <p>
+    <Paragraph>
       <div
         className="jupyter"
         dangerouslySetInnerHTML={{
@@ -157,14 +158,14 @@ export default (
 </pre></div></div></div></div></div>`,
         }}
       />
-    </p>
+    </Paragraph>
     <br />
-    <p>
+    <Paragraph>
       This should feel homely for those who use Jupyter for Python a lot. When
       it all works, it feels a lot like a Python notebook. Pretty sweet.
-    </p>
+    </Paragraph>
     <h2>C++ in Jupyter: The Bad</h2>
-    <p>
+    <Paragraph>
       After reading{' '}
       <Link href="https://blog.jupyter.org/interactive-workflows-for-c-with-jupyter-fe9b54227d92">
         this post
@@ -184,8 +185,8 @@ export default (
       <sup>
         <a href="#aside_1">1</a>
       </sup>
-    </p>
-    <p>
+    </Paragraph>
+    <Paragraph>
       The issues I ran into were pretty major:
       <ul>
         <li>
@@ -196,20 +197,20 @@ export default (
           Ditto for multiple <code>using</code> declarations in the same cell.
         </li>
         <li>
-          <p>
+          <Paragraph>
             I could not run any cell with declarations more than once in the
             same session. I had to "restart and run all cells" every time I made
             a change, otherwise it would try redeclaring the functions/variables
             (scope seems to be shared globally and permanently until a kernel
             restart).
-          </p>
-          <p>
+          </Paragraph>
+          <Paragraph>
             Of course, same-scope redefinitions are allowed in Python and not in
             C++, but much of the value of Jupyter is in changing and re-running
             individual cells until you get it right. The behavior I would want
             is for cell re-execution to basically act like the previous cell run
             had never happened.
-          </p>
+          </Paragraph>
         </li>
         <li>
           Standard input (<code>cin</code>) does not actually allow user input
@@ -228,12 +229,12 @@ export default (
       If anyone has had better luck (say with Xeus) I'd be very curious to hear.
       I'll probably try it with a fresh Conda install next time I'm in need of
       "interpretted" C++ in the browser.
-    </p>
+    </Paragraph>
     <h2>C++ in Jupyter: The Ugly</h2>
-    <p>
+    <Paragraph>
       Here are a couple examples of the hackery I used to get around the above
       issues:
-    </p>
+    </Paragraph>
     <h3>
       Separate <code>#include</code>
       s, definition links and <code>using</code> declarations into separate
@@ -248,7 +249,7 @@ export default (
     <h3>
       Use file IO instead of <code>cin</code>
     </h3>
-    <p>
+    <Paragraph>
       <i>
         <strong>Instead of</strong>
       </i>
@@ -278,9 +279,9 @@ export default (
 ...</pre></div></div></div></div>`,
         }}
       />
-    </p>
+    </Paragraph>
     <h2>The future looks good</h2>
-    <p>
+    <Paragraph>
       We're still in the Wild West phase with these tools, but the powers that
       be clearly have some interest in bringing pleasant workflow tools into the
       realm of the infamously unpleasant C++ environment. I'm excited to see
@@ -290,7 +291,7 @@ export default (
       languages). For a domain like DSP, this sounds like a pretty ideal setup.
       If you've found a good way of integrating C++ and Python in Jupyter, I'd
       love to hear from you!
-    </p>
+    </Paragraph>
     <div id="aside_1">
       <small>
         <sup>1</sup>{' '}

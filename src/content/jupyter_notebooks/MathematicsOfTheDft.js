@@ -1,11 +1,13 @@
 import React from 'react'
 
 import Link from '../Link'
+import Paragraph from '../Paragraph'
+
 import './style/jupyter-style.css'
 
 export default (
   <div>
-    <p>
+    <Paragraph>
       Another set of{' '}
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/mathematics_of_the_dft/index.ipynb">
         Jupyter notebooks
@@ -18,8 +20,8 @@ export default (
         </Link>
         )
       </small>
-    </p>
-    <p>
+    </Paragraph>
+    <Paragraph>
       <Link href="https://www.amazon.com/Mathematics-Discrete-Fourier-Transform-DFT/dp/097456074X/">
         Mathematics of the Discrete Fourier Transform
       </Link>{' '}
@@ -31,14 +33,14 @@ export default (
       knowledge and explaning all notational conventions along the way. I don't
       know what else to say! If you want to know about the DFT, get this book!
       :)
-    </p>
-    <p>
+    </Paragraph>
+    <Paragraph>
       As usual, these Jupyter notebooks go through all the exercises in each of
       the chapters. A few here and there remain unfinished. I couldn't find any
       kind of solutions or really any reproduction of the questions at all on
       the internet, so there were a few I just couldn't figure out.
-    </p>
-    <p>
+    </Paragraph>
+    <Paragraph>
       There are a fair amount of extra charts and animations sprinkled
       throughout, and I try to reproduce claims and results where I felt the
       need to - most notably in the{' '}
@@ -52,23 +54,23 @@ export default (
       interesting section in these notebooks, and since it is a good culmination
       of the material presented in the book, I'm going to reproduce that section
       of the notebooks here.
-    </p>
-    <p>
+    </Paragraph>
+    <Paragraph>
       What the following charts show is a fascinating link between operations
       done in the time domains and operations in the frequency domain. When you
       see notation like{' '}
       <div
         className="jupyter"
         dangerouslySetInnerHTML={{
-          __html: `<p>$\\fbox{Op$(x) \\longleftrightarrow \\text{OtherOp}(X)$}$,</p>`,
+          __html: `<Paragraph>$\\fbox{Op$(x) \\longleftrightarrow \\text{OtherOp}(X)$}$,</Paragraph>`,
         }}
       />
       it means that if we take the DFT of the left-hand side (some time-domain
       signal that had some operation performed on it), we will exactly get the
       right-hand side (the DFT of that signal with some potentially different
       operation performed on it).
-    </p>
-    <p>
+    </Paragraph>
+    <Paragraph>
       As a practical example, the convolution operation in the time domain
       corresponds to multiplication in the frequency domain. More concretely,
       this means that we can compute the convolution of two signals by first
@@ -79,8 +81,8 @@ export default (
         uses the FFT to perform convolution if the array size is large enough
       </Link>
       .
-    </p>
-    <p>Here is most of that chapter's notebook, without exercises:</p>
+    </Paragraph>
+    <Paragraph>Here is most of that chapter's notebook, without exercises:</Paragraph>
     <h3>
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/mathematics_of_the_dft/chapter_7_fourier_theorems_for_the_dft.ipynb">
         Chapter 7: Digital Signals and Sampling
@@ -99,9 +101,9 @@ export default (
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Flip-Operator">Flip Operator<a class="anchor-link" href="#Flip-Operator">&#182;</a></h3><p>We define the <em>flip operator</em> by</p>
-<p>$\\text{Flip}_n(x) \\triangleq x(-n)$,</p>
-<p>for all sample indices $n \\in \\mathbb{Z}$. By modulo indexing, $x(-n)$ is the same as $x(N - n)$. The $\\text{Flip}()$ operator reverses the order of samples $1$ through $N - 1$ of a sequence, leaving sample $0$ alone.</p>
+<h3 id="Flip-Operator">Flip Operator<a class="anchor-link" href="#Flip-Operator">&#182;</a></h3><Paragraph>We define the <em>flip operator</em> by</Paragraph>
+<Paragraph>$\\text{Flip}_n(x) \\triangleq x(-n)$,</Paragraph>
+<Paragraph>for all sample indices $n \\in \\mathbb{Z}$. By modulo indexing, $x(-n)$ is the same as $x(N - n)$. The $\\text{Flip}()$ operator reverses the order of samples $1$ through $N - 1$ of a sequence, leaving sample $0$ alone.</Paragraph>
 
 </div>
 </div>
@@ -170,9 +172,9 @@ export default (
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Shift-Operator">Shift Operator<a class="anchor-link" href="#Shift-Operator">&#182;</a></h3><p>The <em>shift operator</em> is defined by</p>
-<p>$\\text{Shift}_{\\Delta, n}(x) \\triangleq x(n - \\Delta), \\Delta \\in \\mathbb{Z}$,</p>
-<p>and $Shift_\\Delta(x)$ denotes the entire shifted signal.</p>
+<h3 id="Shift-Operator">Shift Operator<a class="anchor-link" href="#Shift-Operator">&#182;</a></h3><Paragraph>The <em>shift operator</em> is defined by</Paragraph>
+<Paragraph>$\\text{Shift}_{\\Delta, n}(x) \\triangleq x(n - \\Delta), \\Delta \\in \\mathbb{Z}$,</Paragraph>
+<Paragraph>and $Shift_\\Delta(x)$ denotes the entire shifted signal.</Paragraph>
 
 </div>
 </div>
@@ -203,8 +205,8 @@ export default (
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The <em>convolution</em> of two signals $x$ and $y$ in $\\mathbb{C}^N$ may be denoted $x \\circledast y$ and defined by</p>
-<p>$(x \\circledast y)_n \\triangleq \\sum_\\limits{m=0}^\\limits{N - 1}{x(m)y(n-m)}$.</p>
+<Paragraph>The <em>convolution</em> of two signals $x$ and $y$ in $\\mathbb{C}^N$ may be denoted $x \\circledast y$ and defined by</Paragraph>
+<Paragraph>$(x \\circledast y)_n \\triangleq \\sum_\\limits{m=0}^\\limits{N - 1}{x(m)y(n-m)}$.</Paragraph>
 
 </div>
 </div>
@@ -1758,7 +1760,7 @@ AAABAAAAAExhdmY1Ny44My4xMDA=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>See my notebook for <a href="https://colab.research.google.com/github/khiner/notebooks/blob/master/musimathics/volume_2/chapter_4_convolution.ipynb">Musimathics Ch4</a> for more animated examples of convolution. <em>(Note that the definition of convolution in this book is circular, whereas the implementation used in Musimathics is not. Thus the convolutions do not repeat in the Musimathics animations. <strong>Also note</strong> that the non-circular implementation is much more common. It is what numpy and scipy use, and it is the definition that makes the convolution Fourier theorems below hold.)</em></p>
+<Paragraph>See my notebook for <a href="https://colab.research.google.com/github/khiner/notebooks/blob/master/musimathics/volume_2/chapter_4_convolution.ipynb">Musimathics Ch4</a> for more animated examples of convolution. <em>(Note that the definition of convolution in this book is circular, whereas the implementation used in Musimathics is not. Thus the convolutions do not repeat in the Musimathics animations. <strong>Also note</strong> that the non-circular implementation is much more common. It is what numpy and scipy use, and it is the definition that makes the convolution Fourier theorems below hold.)</em></Paragraph>
 
 </div>
 </div>
@@ -1767,8 +1769,8 @@ AAABAAAAAExhdmY1Ny44My4xMDA=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Stretch-Operator">Stretch Operator<a class="anchor-link" href="#Stretch-Operator">&#182;</a></h3><p>A <em>stretch by factor $L$</em> is defined by</p>
-<p>$\\text{Stretch}_{L,m}(x) \\triangleq \\begin{cases}\\begin{array}{ll}x(m/L), &amp; m/L \\space\\text{an integer}\\\\0, &amp; m/L \\space\\text{non-integer}\\end{array}\\end{cases}$.</p>
+<h3 id="Stretch-Operator">Stretch Operator<a class="anchor-link" href="#Stretch-Operator">&#182;</a></h3><Paragraph>A <em>stretch by factor $L$</em> is defined by</Paragraph>
+<Paragraph>$\\text{Stretch}_{L,m}(x) \\triangleq \\begin{cases}\\begin{array}{ll}x(m/L), &amp; m/L \\space\\text{an integer}\\\\0, &amp; m/L \\space\\text{non-integer}\\end{array}\\end{cases}$.</Paragraph>
 
 </div>
 </div>
@@ -1831,7 +1833,7 @@ AAABAAAAAExhdmY1Ny44My4xMDA=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The stretch operator describes <em>upsampling</em> - increasing the sampling rate by an integer factor. A stretch by $K$ followed by lowpass filtering to the frequency band $\\omega \\in (-\\pi/K,\\pi/K)$ implements <em>ideal bandlimited interpolation</em>.</p>
+<Paragraph>The stretch operator describes <em>upsampling</em> - increasing the sampling rate by an integer factor. A stretch by $K$ followed by lowpass filtering to the frequency band $\\omega \\in (-\\pi/K,\\pi/K)$ implements <em>ideal bandlimited interpolation</em>.</Paragraph>
 
 </div>
 </div>
@@ -1848,8 +1850,8 @@ AAABAAAAAExhdmY1Ny44My4xMDA=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Definition:</p>
-<p>$\\text{ZeroPad}_{M,m}(x) \\triangleq \\begin{cases}\\begin{array}{ll}x(m), &amp; |m| &lt; N/2 \\space\\text{an integer}\\\\0, &amp; \\space\\text{otherwise}\\end{array}\\end{cases}$</p>
+<Paragraph>Definition:</Paragraph>
+<Paragraph>$\\text{ZeroPad}_{M,m}(x) \\triangleq \\begin{cases}\\begin{array}{ll}x(m), &amp; |m| &lt; N/2 \\space\\text{an integer}\\\\0, &amp; \\space\\text{otherwise}\\end{array}\\end{cases}$</Paragraph>
 
 </div>
 </div>
@@ -2001,12 +2003,12 @@ AAABAAAAAExhdmY1Ny44My4xMDA=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><em>Downsampling by $L$</em> (also called <em>decimation</em> by $L$) is defined for $x \\in \\mathbb{C}^N$ as taking every $L_{th}$ sample, starting with sample zero:</p>
-<p>$\\begin{align}
+<Paragraph><em>Downsampling by $L$</em> (also called <em>decimation</em> by $L$) is defined for $x \\in \\mathbb{C}^N$ as taking every $L_{th}$ sample, starting with sample zero:</Paragraph>
+<Paragraph>$\\begin{align}
 \\text{Downsample}_{L,m}(x) &amp;\\triangleq x(mL),\\\\
 m &amp;= 0,1,2,...,M-1\\\\
 N &amp;= LM
-\\end{align}$.</p>
+\\end{align}$.</Paragraph>
 
 </div>
 </div>
@@ -2070,12 +2072,12 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The <em>aliasing operator</em> for $N$-sample signals $x \\in \\mathbb{C}^N$ is defined by</p>
-<p>$\\begin{align}
+<Paragraph>The <em>aliasing operator</em> for $N$-sample signals $x \\in \\mathbb{C}^N$ is defined by</Paragraph>
+<Paragraph>$\\begin{align}
 \\text{Alias}_{L,m}(x) &amp;\\triangleq \\sum_\\limits{l=0}^\\limits{L-1}x(m + lM),\\\\
 m &amp;= 0,1,2,...,M-1\\\\
 N &amp;= LM
-\\end{align}$.</p>
+\\end{align}$.</Paragraph>
 
 </div>
 </div>
@@ -2190,7 +2192,7 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In the next section, I will show empirically that all of the theorems listed in the book hold.</p>
+<Paragraph>In the next section, I will show empirically that all of the theorems listed in the book hold.</Paragraph>
 
 </div>
 </div>
@@ -2207,8 +2209,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Theorem:</strong> For any $x, y \\in \\mathbb{C}^N$ and $\\alpha, \\beta \\in \\mathbb{C}$, the DFT satisfies</p>
-<p>$\\fbox{$\\alpha x + \\beta y \\longleftrightarrow \\alpha X + \\beta Y$}$</p>
+<Paragraph><strong>Theorem:</strong> For any $x, y \\in \\mathbb{C}^N$ and $\\alpha, \\beta \\in \\mathbb{C}$, the DFT satisfies</Paragraph>
+<Paragraph>$\\fbox{$\\alpha x + \\beta y \\longleftrightarrow \\alpha X + \\beta Y$}$</Paragraph>
 
 </div>
 </div>
@@ -2313,8 +2315,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Theorem:</strong> For any $x \\in \\mathbb{C}^N$,</p>
-<p>$\\fbox{$\\overline{x} \\longleftrightarrow $Flip$(\\overline{X})$}.$</p>
+<Paragraph><strong>Theorem:</strong> For any $x \\in \\mathbb{C}^N$,</Paragraph>
+<Paragraph>$\\fbox{$\\overline{x} \\longleftrightarrow $Flip$(\\overline{X})$}.$</Paragraph>
 
 </div>
 </div>
@@ -2392,8 +2394,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Theorem:</strong> For any $x \\in \\mathbb{C}^N$,</p>
-<p>$\\fbox{Flip$(\\overline{x}) \\longleftrightarrow \\overline{X}$}.$</p>
+<Paragraph><strong>Theorem:</strong> For any $x \\in \\mathbb{C}^N$,</Paragraph>
+<Paragraph>$\\fbox{Flip$(\\overline{x}) \\longleftrightarrow \\overline{X}$}.$</Paragraph>
 
 </div>
 </div>
@@ -2453,8 +2455,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Theorem:</strong> For any $x \\in \\mathbb{C}^N$,</p>
-<p>$\\fbox{Flip$(x) \\longleftrightarrow $ Flip$({X})$}.$</p>
+<Paragraph><strong>Theorem:</strong> For any $x \\in \\mathbb{C}^N$,</Paragraph>
+<Paragraph>$\\fbox{Flip$(x) \\longleftrightarrow $ Flip$({X})$}.$</Paragraph>
 
 </div>
 </div>
@@ -2514,8 +2516,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Corollary:</strong> For any $x \\in \\mathbb{R}^N$,</p>
-<p>$\\fbox{Flip$(x) \\longleftrightarrow \\overline{X}$}.$</p>
+<Paragraph><strong>Corollary:</strong> For any $x \\in \\mathbb{R}^N$,</Paragraph>
+<Paragraph>$\\fbox{Flip$(x) \\longleftrightarrow \\overline{X}$}.$</Paragraph>
 
 </div>
 </div>
@@ -2592,8 +2594,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Corollary:</strong> For any $x \\in \\mathbb{R}^N$,</p>
-<p>$\\fbox{Flip$(X) \\longleftrightarrow \\overline{X}$}.$</p>
+<Paragraph><strong>Corollary:</strong> For any $x \\in \\mathbb{R}^N$,</Paragraph>
+<Paragraph>$\\fbox{Flip$(X) \\longleftrightarrow \\overline{X}$}.$</Paragraph>
 
 </div>
 </div>
@@ -2661,11 +2663,11 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Theorem:</strong> For any $x \\in \\mathbb{C}^N$ and any integer $\\Delta$,</p>
-<p>$\\fbox{$\\text{DFT}_{k}[\\text{Shift}_{\\Delta}(X)] = e^{-j\\omega_k\\Delta}X(k)$}.$</p>
-<p>The shift theorem is often expressed in shorthand as</p>
-<p>$\\fbox{$x(n-\\Delta) \\longleftrightarrow e^{-j\\omega_k\\Delta}X(\\omega_k)$}.$</p>
-<p>The shift theorem says that a <em>delay</em> in the time domain corresponds to a <em>linear phase term</em> in the frequency domain.</p>
+<Paragraph><strong>Theorem:</strong> For any $x \\in \\mathbb{C}^N$ and any integer $\\Delta$,</Paragraph>
+<Paragraph>$\\fbox{$\\text{DFT}_{k}[\\text{Shift}_{\\Delta}(X)] = e^{-j\\omega_k\\Delta}X(k)$}.$</Paragraph>
+<Paragraph>The shift theorem is often expressed in shorthand as</Paragraph>
+<Paragraph>$\\fbox{$x(n-\\Delta) \\longleftrightarrow e^{-j\\omega_k\\Delta}X(\\omega_k)$}.$</Paragraph>
+<Paragraph>The shift theorem says that a <em>delay</em> in the time domain corresponds to a <em>linear phase term</em> in the frequency domain.</Paragraph>
 
 </div>
 </div>
@@ -2744,8 +2746,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Convolution-Theorem">Convolution Theorem<a class="anchor-link" href="#Convolution-Theorem">&#182;</a></h3><p><strong>Theorem:</strong> For any $x,y \\in \\mathbb{C}^N$,</p>
-<p>$\\fbox{$x \\circledast y \\longleftrightarrow X \\cdot Y$}.$</p>
+<h3 id="Convolution-Theorem">Convolution Theorem<a class="anchor-link" href="#Convolution-Theorem">&#182;</a></h3><Paragraph><strong>Theorem:</strong> For any $x,y \\in \\mathbb{C}^N$,</Paragraph>
+<Paragraph>$\\fbox{$x \\circledast y \\longleftrightarrow X \\cdot Y$}.$</Paragraph>
 
 </div>
 </div>
@@ -2754,7 +2756,7 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><em>(Note that we need to zero-pad the signals to the convolution-length before taking their spectra for this to hold, in order to avoid getting spectra corresponding to circular convolution)</em>.</p>
+<Paragraph><em>(Note that we need to zero-pad the signals to the convolution-length before taking their spectra for this to hold, in order to avoid getting spectra corresponding to circular convolution)</em>.</Paragraph>
 
 </div>
 </div>
@@ -2859,9 +2861,9 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The dual of the convolution theorem says that <em>multiplication in the time domain is convolution in the frequency domain</em>.</p>
-<p><strong>Theorem:</strong></p>
-<p>$\\fbox{$x \\cdot y \\longleftrightarrow \\frac{1}{N} X \\circledast Y$}.$</p>
+<Paragraph>The dual of the convolution theorem says that <em>multiplication in the time domain is convolution in the frequency domain</em>.</Paragraph>
+<Paragraph><strong>Theorem:</strong></Paragraph>
+<Paragraph>$\\fbox{$x \\cdot y \\longleftrightarrow \\frac{1}{N} X \\circledast Y$}.$</Paragraph>
 
 </div>
 </div>
@@ -2929,8 +2931,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Theorem:</strong> For all $x,y \\in \\mathbb{C}^N$,</p>
-<p>$\\fbox{$\\langle x , y \\rangle = \\frac{1}{N}\\langle X , Y \\rangle$}.$</p>
+<Paragraph><strong>Theorem:</strong> For all $x,y \\in \\mathbb{C}^N$,</Paragraph>
+<Paragraph>$\\fbox{$\\langle x , y \\rangle = \\frac{1}{N}\\langle X , Y \\rangle$}.$</Paragraph>
 
 </div>
 </div>
@@ -3015,9 +3017,9 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Theorem:</strong> For all $x \\in \\mathbb{C}^N$,</p>
-<p>$\\fbox{$\\text{Stretch}_L(x) \\longleftrightarrow \\text{Repeat}_L(X)$}.$</p>
-<p>That is, when you stretch a signal by the factor $L$ (inserting zeros between the original samples), its spectrum is repeated $L$ times around the unit circle.</p>
+<Paragraph><strong>Theorem:</strong> For all $x \\in \\mathbb{C}^N$,</Paragraph>
+<Paragraph>$\\fbox{$\\text{Stretch}_L(x) \\longleftrightarrow \\text{Repeat}_L(X)$}.$</Paragraph>
+<Paragraph>That is, when you stretch a signal by the factor $L$ (inserting zeros between the original samples), its spectrum is repeated $L$ times around the unit circle.</Paragraph>
 
 </div>
 </div>
@@ -3104,8 +3106,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Theorem:</strong> For all $x \\in \\mathbb{C}^N$,</p>
-<p>$\\fbox{$\\text{Downsample}_L(x) \\longleftrightarrow \\frac{1}{L}\\text{Alias}_L(X)$}.$</p>
+<Paragraph><strong>Theorem:</strong> For all $x \\in \\mathbb{C}^N$,</Paragraph>
+<Paragraph>$\\fbox{$\\text{Downsample}_L(x) \\longleftrightarrow \\frac{1}{L}\\text{Alias}_L(X)$}.$</Paragraph>
 
 </div>
 </div>
@@ -3190,9 +3192,9 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Zero padding in the time domain corresponds to <em>ideal interpolation in the frequency domain</em> (for time-limited signals):</p>
-<p><strong>Theorem:</strong> For any $x \\in \\mathbb{C}^N$,</p>
-<p>$\\fbox{$\\text{ZeroPad}_{LN}(x) \\longleftrightarrow \\text{Interp}_L(X)$}.$</p>
+<Paragraph>Zero padding in the time domain corresponds to <em>ideal interpolation in the frequency domain</em> (for time-limited signals):</Paragraph>
+<Paragraph><strong>Theorem:</strong> For any $x \\in \\mathbb{C}^N$,</Paragraph>
+<Paragraph>$\\fbox{$\\text{ZeroPad}_{LN}(x) \\longleftrightarrow \\text{Interp}_L(X)$}.$</Paragraph>
 
 </div>
 </div>
@@ -3261,9 +3263,9 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The dual of the zero-padding theorem states formally that <em>zero padding in the frequency domain</em> corresponds to <em>periodic interpolation</em> in the time domain:</p>
-<p><strong>Definition:</strong> For all $x \\in \\mathbb{C}^N$ and any integer $L \\geq 1$,</p>
-<p>$\\fbox{$\\text{PerInterp}(x) \\triangleq \\text{IDFT}(\\text{ZeroPad}_{LN}(X))$}.$</p>
+<Paragraph>The dual of the zero-padding theorem states formally that <em>zero padding in the frequency domain</em> corresponds to <em>periodic interpolation</em> in the time domain:</Paragraph>
+<Paragraph><strong>Definition:</strong> For all $x \\in \\mathbb{C}^N$ and any integer $L \\geq 1$,</Paragraph>
+<Paragraph>$\\fbox{$\\text{PerInterp}(x) \\triangleq \\text{IDFT}(\\text{ZeroPad}_{LN}(X))$}.$</Paragraph>
 
 </div>
 </div>
@@ -3325,8 +3327,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Definition:</strong> For any $X \\in \\mathbb{C}^N$ and any odd integer $M &lt; N$ we define the <em>length M even rectangular windowing operation</em> by</p>
-<p>$\\text{Chop}_{M,k}(X) \\triangleq \\begin{cases}\\begin{array}{ll}X(k), &amp; \\space-\\frac{M-1}{2} \\leq k \\leq \\frac{M-1}{2}\\\\0, &amp; \\space\\frac{M+1}{2} \\leq \\left|k\\right| \\leq \\frac{N}{2}\\end{array}\\end{cases}$.</p>
+<Paragraph><strong>Definition:</strong> For any $X \\in \\mathbb{C}^N$ and any odd integer $M &lt; N$ we define the <em>length M even rectangular windowing operation</em> by</Paragraph>
+<Paragraph>$\\text{Chop}_{M,k}(X) \\triangleq \\begin{cases}\\begin{array}{ll}X(k), &amp; \\space-\\frac{M-1}{2} \\leq k \\leq \\frac{M-1}{2}\\\\0, &amp; \\space\\frac{M+1}{2} \\leq \\left|k\\right| \\leq \\frac{N}{2}\\end{array}\\end{cases}$.</Paragraph>
 
 </div>
 </div>
@@ -3352,8 +3354,8 @@ N &amp;= LM
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Theorem:</strong> When $x \\in \\mathbb{C}^N$ consists of one or more periods from a <em>periodic</em> signal $x^\\prime \\in \\mathbb{C}^\\infty$,</p>
-<p>$\\fbox{$\\text{PerInterp}_{L}(x) \\longleftrightarrow \\text{IDFT}(\\text{Chop}_N(\\text{DFT}(\\text{Stretch}_L(x))))$}.$</p>
+<Paragraph><strong>Theorem:</strong> When $x \\in \\mathbb{C}^N$ consists of one or more periods from a <em>periodic</em> signal $x^\\prime \\in \\mathbb{C}^\\infty$,</Paragraph>
+<Paragraph>$\\fbox{$\\text{PerInterp}_{L}(x) \\longleftrightarrow \\text{IDFT}(\\text{Chop}_N(\\text{DFT}(\\text{Stretch}_L(x))))$}.$</Paragraph>
 
 </div>
 </div>

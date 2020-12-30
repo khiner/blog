@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Route } from 'react-router-dom'
 
 import Sidebar from './Sidebar'
@@ -23,41 +23,31 @@ function createContentLoadable(entry) {
   })
 }
 
-export default class MainContent extends Component {
-  generateComponent(entry) {
-    return props => {
-      return (
-        <Entry {...entry}>
-          {entry.contentPath
-            ? React.createElement(createContentLoadable(entry))
-            : entry.content}
-        </Entry>
-      )
-    }
-  }
+function generateComponent(entry) {
+  return props => (
+    <Entry {...entry}>
+      {entry.contentPath
+        ? React.createElement(createContentLoadable(entry))
+        : entry.content}
+    </Entry>
+  )
+}
 
-  generateRoute(entry) {
-    return (
-      <Route
+export default function MainContent({ shouldShowSidebar, toggleSidebar }) {
+  return (
+    <div className="contentWrapper">
+      {config.entriesInSidebar && (
+        <Sidebar
+          shouldShowSidebar={shouldShowSidebar}
+          toggle={toggleSidebar}
+        />
+      )}
+      <Route exact path="/" component={SummaryList} />
+      {parsedEntries.all.map(entry => <Route
         key={entry.path}
         path={`/${stripSlashes(entry.path)}`}
-        render={this.generateComponent(entry)}
-      />
-    )
-  }
-
-  render() {
-    return (
-      <div className="contentWrapper">
-        {config.entriesInSidebar && (
-          <Sidebar
-            shouldShowSidebar={this.props.shouldShowSidebar}
-            toggle={this.props.toggleSidebar}
-          />
-        )}
-        <Route exact path="/" component={SummaryList} />
-        {parsedEntries.all.map(entry => this.generateRoute(entry))}
-      </div>
-    )
-  }
+        render={generateComponent(entry)}
+      />)}
+    </div>
+  )
 }

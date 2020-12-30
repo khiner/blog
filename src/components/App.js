@@ -1,42 +1,27 @@
-import React, { Component } from 'react'
-import 'highlight.js/styles/atom-one-dark.css'
+import React, { useState } from 'react'
+import 'highlight.js/styles/atom-one-dark.css' // TODO delete?
 
 import MainNav from './MainNav'
 import MainContent from './MainContent'
 
 import '../style/App.scss'
 
-export default class App extends Component {
-  constructor(props) {
-    super(props)
+// TODO: only add mathJax for Jupyter notebooks (or somehow make a package.json dep instead)
+export default function App() {
+  const [shouldShowSidebar, setShouldShowSidebar] = useState(false);
 
-    this.state = {
-      shouldShowSidebar: false,
-    }
+  const toggleSidebar = () => setShouldShowSidebar(!shouldShowSidebar);
 
-    this.toggleSidebar = this.toggleSidebar.bind(this) // arrow functions not working after eslint update.
-  }
-
-  componentDidMount() {
-    // TODO: only add mathJax for Jupyter notebooks (or somehow make a package.json dep instead)
-  }
-
-  toggleSidebar() {
-    this.setState({ shouldShowSidebar: !this.state.shouldShowSidebar })
-  }
-
-  render() {
-    return (
-      <div>
-        <MainNav
-          shouldShowSidebar={this.state.shouldShowSidebar}
-          onShowSidebarClicked={this.toggleSidebar}
-        />
-        <MainContent
-          shouldShowSidebar={this.state.shouldShowSidebar}
-          toggleSidebar={this.toggleSidebar}
-        />
-      </div>
-    )
-  }
+  return (
+    <div>
+      <MainNav
+        shouldShowSidebar={shouldShowSidebar}
+        onShowSidebarClicked={toggleSidebar}
+      />
+      <MainContent
+        shouldShowSidebar={shouldShowSidebar}
+        toggleSidebar={toggleSidebar}
+      />
+    </div>
+  )
 }

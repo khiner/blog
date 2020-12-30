@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Link from '../Link'
+import Paragraph from '../Paragraph'
 
 import windowing_animation from './assets/windowing_animation.gif'
 import varying_dft_points_animation from './assets/varying_dft_points_animation.gif'
@@ -8,7 +9,7 @@ import varying_window_size_animation from './assets/varying_window_size_animatio
 
 export default (
   <div>
-    <p>
+    <Paragraph>
       <i>
         Update: A newer post of mine,{' '}
         <Link href="https://karlhiner.com/jupyter_notebooks/mathematics_of_the_dft">
@@ -16,8 +17,8 @@ export default (
         </Link>
         , is a much more comprehensive look at the DFT.
       </i>
-    </p>
-    <p>
+    </Paragraph>
+    <Paragraph>
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/dft-timeseries/DftTimeseries.ipynb">
         DFT for Timeseries Data
       </Link>{' '}
@@ -26,8 +27,8 @@ export default (
       build understanding one step at a time from a direct mathematical
       implementation and explanation of the DFT, to implementing frequency
       magnitude detection and approximate resynthesis.
-    </p>
-    <p>
+    </Paragraph>
+    <Paragraph>
       <i>
         <b>Note: </b>
         Being that this was designed to go along with a presentation, I would
@@ -41,44 +42,44 @@ export default (
         Julius O. Smith's <i>Mathematics of the Discrete Fourier Transform</i>
       </Link>{' '}
       soon, so there should be more DFT-related notebooks to come!
-    </p>
-    <p>Here are some of the animations built up in this notebook:</p>
-    <p>
+    </Paragraph>
+    <Paragraph>Here are some of the animations built up in this notebook:</Paragraph>
+    <Paragraph>
       <ul>
         <li>
-          <p>
+          <Paragraph>
             <i>
               Increasing the number of DFT points results in better
               reconstruction of the original series:
             </i>
-          </p>
+          </Paragraph>
           <img
             src={varying_dft_points_animation}
             alt="Animation varying the number of DFT points"
           />
         </li>
         <li>
-          <p>
+          <Paragraph>
             <i>
               The effects of windowing a pure sinusoid when the window is not an
               exact multiple of the period:
             </i>
-          </p>
+          </Paragraph>
           <img
             src={windowing_animation}
             alt="Animation of windowing's affect on the DFT with pure sinusoids"
           />
         </li>
         <li>
-          <p>
+          <Paragraph>
             <i>The effect of window size on frequency magnitude accuracy:</i>
-          </p>
+          </Paragraph>
           <img
             src={varying_window_size_animation}
             alt="Animation of the effect of window size on frequency magnitude accuracy"
           />
         </li>
       </ul>
-    </p>
+    </Paragraph>
   </div>
 )

@@ -1,13 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-export default class Link extends Component {
-  render() {
-    const { href } = this.props
-
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer">
-        {this.props.children}
-      </a>
-    )
-  }
+export default function Link({ href, children }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
+  )
 }
