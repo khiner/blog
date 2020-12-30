@@ -27,15 +27,15 @@ export default function sketch(p) {
     for (let i = 0; i < harmonics; i++) {
       let m = i + 1
       precomputedHarmonics.push(
-        1.0 / (m * m) * Math.sin(PI_SQUARED * m * d / p.width)
+        (1.0 / (m * m)) * Math.sin((PI_SQUARED * m * d) / p.width)
       )
     }
   }
 
-  p.setup = function() {
+  p.setup = function () {
     parentColor = p.color(getBackgroundColor())
     const canvas = p.createCanvas(600, 400)
-    canvas.mousePressed(function() {
+    canvas.mousePressed(function () {
       plucked = false
       t = 0
       amp = p.mouseY - p.height / 2
@@ -43,14 +43,14 @@ export default function sketch(p) {
       isMouseDragging = true
     })
 
-    canvas.mouseMoved(function() {
+    canvas.mouseMoved(function () {
       if (isMouseDragging) {
         d = p.mouseX
         amp = p.mouseY - p.height / 2
       }
     })
 
-    canvas.mouseReleased(function() {
+    canvas.mouseReleased(function () {
       precomputeHarmonics()
       plucked = true
       isMouseDragging = false
@@ -60,9 +60,9 @@ export default function sketch(p) {
     p.windowResized()
   }
 
-  p.myCustomRedrawAccordingToNewPropsHandler = function(props) {}
+  p.myCustomRedrawAccordingToNewPropsHandler = function (props) {}
 
-  p.draw = function() {
+  p.draw = function () {
     p.background(parentColor)
     p.noStroke()
     p.fill(BACKGROUND_COLOR_STR)
@@ -76,7 +76,7 @@ export default function sketch(p) {
 
     let w = Math.PI * (c / p.width)
     let yScale =
-      1.5 * amp * p.width * p.width / (PI_SQUARED * d * (p.width - d))
+      (1.5 * amp * p.width * p.width) / (PI_SQUARED * d * (p.width - d))
 
     p.beginShape()
     if (plucked) {
@@ -87,7 +87,7 @@ export default function sketch(p) {
           sum +=
             precomputedHarmonics[m - 1] *
             Math.cos(w * m * t) *
-            Math.sin(Math.PI * m * x / p.width)
+            Math.sin((Math.PI * m * x) / p.width)
         }
 
         let y = yScale * sum + p.height / 2.0

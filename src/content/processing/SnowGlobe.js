@@ -29,7 +29,8 @@ export default (
       from Tom Gibara's implementation{' '}
       <a href="http://www.tomgibara.com/computer-vision/CannyEdgeDetector.java">
         here
-      </a>.
+      </a>
+      .
     </small>
     <P5Wrapper sketch={snow_globe_sketch} />
   </div>

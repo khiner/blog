@@ -6,7 +6,7 @@ export function getBackgroundColor() {
 }
 
 export function windowResized(p, heightRatio, onSizeChange) {
-  return function() {
+  return function () {
     const parentStyle = window.getComputedStyle(
       document.querySelector('.Showcase')
     )

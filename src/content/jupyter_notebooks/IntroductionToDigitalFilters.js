@@ -186,8 +186,7 @@ G(\\omega) &amp;= 1 - \\left|\\cos(\\omega - \\omega_r)\\right|^M\\\\
     />
     <h3>
       A graphical approach
-      <a id="graphical" href="#graphical">
-      </a>
+      <a id="graphical" href="#graphical"></a>
     </h3>
     <Paragraph>
       In this case, as mentioned above, I managed to find a Stack Overflow

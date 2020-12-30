@@ -15,7 +15,7 @@ export default function sketch(p) {
   let imageSelectId = 0 // 0 == original image, 1 == snow, 2 == edge detect
   let isMouseDragging = false
 
-  p.preload = function() {
+  p.preload = function () {
     image = p.loadImage(image_asset)
   }
 
@@ -37,7 +37,7 @@ export default function sketch(p) {
     }
   }
 
-  p.setup = function() {
+  p.setup = function () {
     backgroundColor = p.color(BACKGROUND_COLOR_STR)
     foregroundColor = p.color(FOREGROUND_COLOR_STR)
     foregroundColorArray = [
@@ -48,26 +48,26 @@ export default function sketch(p) {
     ]
     p.windowResized = windowResized(p, image.height / image.width, onSizeChange)
     cnv = p.createCanvas(600, 400)
-    cnv.mouseClicked(function() {
+    cnv.mouseClicked(function () {
       if (imageSelectId !== 1) {
         imageSelectId = (imageSelectId + 1) % 3
       }
     })
 
-    cnv.mousePressed(function() {
+    cnv.mousePressed(function () {
       isMouseDragging = true
     })
 
-    cnv.mouseReleased(function() {
+    cnv.mouseReleased(function () {
       isMouseDragging = false
     })
 
     p.windowResized()
   }
 
-  p.myCustomRedrawAccordingToNewPropsHandler = function(props) {}
+  p.myCustomRedrawAccordingToNewPropsHandler = function (props) {}
 
-  p.draw = function() {
+  p.draw = function () {
     if (image && imageSelectId === 0) {
       p.image(image, 0, 0)
     } else if (imageSelectId === 1) {
@@ -104,7 +104,7 @@ export default function sketch(p) {
     }
   }
 
-  p.keyReleased = function(event) {
+  p.keyReleased = function (event) {
     if (p.keyCode === p.UP_ARROW && snowRate < 40) snowRate++
     else if (p.keyCode === p.DOWN_ARROW && snowRate > 0) snowRate--
     else if (p.key === ' ') imageSelectId = (imageSelectId + 1) % 3

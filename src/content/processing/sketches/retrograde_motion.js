@@ -40,7 +40,7 @@ export default function sketch(p) {
     return p.color(p.red(color), p.green(color), p.blue(color), newAlpha)
   }
 
-  p.setup = function() {
+  p.setup = function () {
     backgroundColor = p.color(BACKGROUND_COLOR_STR)
     parentColor = p.color(getBackgroundColor())
     p.createCanvas(600, 400)
@@ -77,11 +77,11 @@ export default function sketch(p) {
     currState = new SavedState(earth.pos, mars.pos)
   }
 
-  p.myCustomRedrawAccordingToNewPropsHandler = function(props) {}
+  p.myCustomRedrawAccordingToNewPropsHandler = function (props) {}
 
   let approaching = false
 
-  p.draw = function() {
+  p.draw = function () {
     if (!currState) {
       return
     }
@@ -102,7 +102,7 @@ export default function sketch(p) {
       currState.drawPlanets(p)
     }
 
-    pastStates.forEach(pastState => {
+    pastStates.forEach((pastState) => {
       if (pastState) {
         pastState.drawLineOfSight(3)
         pastState.drawPlanets(p)

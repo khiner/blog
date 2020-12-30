@@ -9,7 +9,8 @@ function EntryNavDropdownItem({ entry, onItemClick }) {
     <NavDropdown.Item
       key={entry.title}
       href={`/${stripSlashes(entry.path)}/`}
-      onClick={onItemClick}>
+      onClick={onItemClick}
+    >
       {entry.title}
     </NavDropdown.Item>
   )
@@ -20,13 +21,19 @@ function EntryNavDropdown({ topLevelPathSegment, onItemClick }) {
     <NavDropdown
       key={topLevelPathSegment}
       id={topLevelPathSegment}
-      title={snakeCaseToTitle(topLevelPathSegment)}>
+      title={snakeCaseToTitle(topLevelPathSegment)}
+    >
       {parsedEntries.byTopLevelPathSegment[topLevelPathSegment]
-        .sort(
-          (a, b) =>
-            a.date && b.date ? Date.parse(b.date) - Date.parse(a.date) : 1
+        .sort((a, b) =>
+          a.date && b.date ? Date.parse(b.date) - Date.parse(a.date) : 1
         )
-        .map(entry => <EntryNavDropdownItem key={entry.path} entry={entry} onItemClick={onItemClick} />)}
+        .map((entry) => (
+          <EntryNavDropdownItem
+            key={entry.path}
+            entry={entry}
+            onItemClick={onItemClick}
+          />
+        ))}
     </NavDropdown>
   )
 }
@@ -36,12 +43,28 @@ export default function EntryNavItems({ onItemClick }) {
     <Nav className="flex-column">
       {parsedEntries.uniqueTopLevelPathSegments
         .sort()
-        .map(topLevelPathSegment => {
+        .map((topLevelPathSegment) => {
           const entry = parsedEntries.byTopLevelPathSegment[topLevelPathSegment]
-          if (parsedEntries.nestedTopLevelPathSegments.includes(topLevelPathSegment)) {
-            return <EntryNavDropdown key={topLevelPathSegment} topLevelPathSegment={topLevelPathSegment} onItemClick={onItemClick} />
+          if (
+            parsedEntries.nestedTopLevelPathSegments.includes(
+              topLevelPathSegment
+            )
+          ) {
+            return (
+              <EntryNavDropdown
+                key={topLevelPathSegment}
+                topLevelPathSegment={topLevelPathSegment}
+                onItemClick={onItemClick}
+              />
+            )
           } else {
-            return <EntryNavDropdownItem key={entry.title} entry={entry} onItemClick={onItemClick} />
+            return (
+              <EntryNavDropdownItem
+                key={entry.title}
+                entry={entry}
+                onItemClick={onItemClick}
+              />
+            )
           }
         })}
     </Nav>

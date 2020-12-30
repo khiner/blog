@@ -12,19 +12,24 @@ import parsedEntries from '../parsedEntries'
 import loadable from '@loadable/component'
 
 const LoadableEntry = (entry) => {
-  const Loadable = loadable(async () => {
-    const imported = await import('../content/' + entry.contentPath)
-    return () => imported.default;
-  }, {fallback: <div>Loading...</div>});
-  return <div id="loadedContent"><Loadable /></div>
+  const Loadable = loadable(
+    async () => {
+      const imported = await import('../content/' + entry.contentPath)
+      return () => imported.default
+    },
+    { fallback: <div>Loading...</div> }
+  )
+  return (
+    <div id="loadedContent">
+      <Loadable />
+    </div>
+  )
 }
 
 function generateComponent(entry) {
-  return props => (
+  return (props) => (
     <Entry {...entry}>
-      {entry.contentPath
-        ? LoadableEntry(entry)
-        : entry.content}
+      {entry.contentPath ? LoadableEntry(entry) : entry.content}
     </Entry>
   )
 }
@@ -33,17 +38,16 @@ export default function MainContent({ shouldShowSidebar, toggleSidebar }) {
   return (
     <div className="contentWrapper">
       {config.entriesInSidebar && (
-        <Sidebar
-          shouldShowSidebar={shouldShowSidebar}
-          toggle={toggleSidebar}
-        />
+        <Sidebar shouldShowSidebar={shouldShowSidebar} toggle={toggleSidebar} />
       )}
       <Route exact path="/" component={SummaryList} />
-      {parsedEntries.all.map(entry => <Route
-        key={entry.path}
-        path={`/${stripSlashes(entry.path)}`}
-        render={generateComponent(entry)}
-      />)}
+      {parsedEntries.all.map((entry) => (
+        <Route
+          key={entry.path}
+          path={`/${stripSlashes(entry.path)}`}
+          render={generateComponent(entry)}
+        />
+      ))}
     </div>
   )
 }

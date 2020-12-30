@@ -1,5 +1,5 @@
 import React from 'react'
-import SyntaxHighlighter from 'react-syntax-highlighter';
+import SyntaxHighlighter from 'react-syntax-highlighter'
 
 import Link from '../Link'
 import Paragraph from '../Paragraph'
@@ -159,7 +159,9 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-64000.w
 $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200ksteps-64000.wav --samples 64000 logdir/train/2019-07-08T21-30-12/model.ckpt-99900`}
     </SyntaxHighlighter>
     <SoundCloudLink trackId="657682793" />
-    <Paragraph>And here's a longer example (although it's not terribly interesting!)</Paragraph>
+    <Paragraph>
+      And here's a longer example (although it's not terribly interesting!)
+    </Paragraph>
     <SoundCloudLink trackId="657682787" />
     <Paragraph>
       It seems to get easily stuck in a single mode with lots of high
@@ -320,7 +322,7 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       frameBorder="no"
       allow="autoplay"
       src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/825469604&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=false&show_reposts=false&show_teaser=false&show_artwork=false"
-      style={{ marginBottom: "1em" }}
+      style={{ marginBottom: '1em' }}
     />
     <iframe
       title="rnn-playlist-2"
@@ -330,7 +332,7 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       frameBorder="no"
       allow="autoplay"
       src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/825451859&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=false&show_reposts=false&show_teaser=false&show_artwork=false"
-      style={{ marginBottom: "1em" }}
+      style={{ marginBottom: '1em' }}
     />
     <Paragraph>
       Here are the full instructions for setting up, training and generating the

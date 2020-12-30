@@ -25,21 +25,21 @@ function Header({ title, date }) {
 }
 
 // TODO memo?
-  // shouldComponentUpdate(nextProps, nextState) {
-    // return false
-  // }
+// shouldComponentUpdate(nextProps, nextState) {
+// return false
+// }
 
 export default function Entry({
-      title,
-      subtitle,
-      description,
-      descriptionPlainText,
-      disqusId,
-      url,
-      date,
-      type,
-      children,
-  }) {
+  title,
+  subtitle,
+  description,
+  descriptionPlainText,
+  disqusId,
+  url,
+  date,
+  type,
+  children,
+}) {
   useEffect(() => {
     formatMathWhenContentIsReady()
   }, [])
@@ -81,21 +81,18 @@ export default function Entry({
               <Header title={title} date={date} />
             </Card.Header>
             <Card.Body>
-              <div className="mainContent Showcase">
-                {children}
-              </div>
+              <div className="mainContent Showcase">{children}</div>
             </Card.Body>
           </Card>
         )}
 
-        {title &&
-          url && (
-            <ShareButtons
-              title={title || ''}
-              description={descriptionPlainText || description || ''}
-              url={url || ''}
-            />
-          )}
+        {title && url && (
+          <ShareButtons
+            title={title || ''}
+            description={descriptionPlainText || description || ''}
+            url={url || ''}
+          />
+        )}
       </div>
       {columnBreak}
       {config.disqusShortname &&

@@ -21,11 +21,33 @@ export default function ShareButtons({ title, url, hideLabel }) {
     <div className="shareButtonsParent">
       {!hideLabel && <p>Share</p>}
       <div className="shareButtons">
-        <ShareButton name="Email" href={`mailto:?subject=${title}&body=Though you'd be interested in this!%0D%0A%0D%0A${url}%0D%0A${title}`} src={email_image} />
-        <ShareButton name="Twitter" href={`https://twitter.com/share?url=${url}&text=${title}${config.twitterHandle ? '&via=' + config.twitterHandle : ''}`} src={twitter_image} />
-        <ShareButton name="Facebook" href={`http://www.facebook.com/sharer.php?u=${url}`} src={facebook_image} />
-        <ShareButton name="Linkedin" href={`http://www.linkedin.com/shareArticle?mini=true&url=${url}`} src={linkedin_image} />
-        <ShareButton name="Reddit" href={`http://reddit.com/submit?url=${url}&title=${title}`} src={reddit_image} />
+        <ShareButton
+          name="Email"
+          href={`mailto:?subject=${title}&body=Though you'd be interested in this!%0D%0A%0D%0A${url}%0D%0A${title}`}
+          src={email_image}
+        />
+        <ShareButton
+          name="Twitter"
+          href={`https://twitter.com/share?url=${url}&text=${title}${
+            config.twitterHandle ? '&via=' + config.twitterHandle : ''
+          }`}
+          src={twitter_image}
+        />
+        <ShareButton
+          name="Facebook"
+          href={`http://www.facebook.com/sharer.php?u=${url}`}
+          src={facebook_image}
+        />
+        <ShareButton
+          name="Linkedin"
+          href={`http://www.linkedin.com/shareArticle?mini=true&url=${url}`}
+          src={linkedin_image}
+        />
+        <ShareButton
+          name="Reddit"
+          href={`http://reddit.com/submit?url=${url}&title=${title}`}
+          src={reddit_image}
+        />
       </div>
     </div>
   )

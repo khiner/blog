@@ -24,6 +24,6 @@ export default class P5Wrapper extends React.Component {
   }
 
   render() {
-    return <div ref={wrapper => (this.wrapper = wrapper)} />
+    return <div ref={(wrapper) => (this.wrapper = wrapper)} />
   }
 }

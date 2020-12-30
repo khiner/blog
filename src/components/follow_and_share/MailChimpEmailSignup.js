@@ -13,7 +13,8 @@ export default function MailChimpEmailSignup({ formAction, inputName }) {
           name="mc-embedded-subscribe-form"
           className="validate"
           target="_blank"
-          noValidate>
+          noValidate
+        >
           <div id="mc_embed_signup_scroll">
             <label htmlFor="mce-EMAIL">I'll email you about new posts!</label>
             <input
@@ -26,7 +27,8 @@ export default function MailChimpEmailSignup({ formAction, inputName }) {
             />
             <div
               style={{ position: 'absolute', left: '-5000px' }}
-              aria-hidden="true">
+              aria-hidden="true"
+            >
               <input type="text" name={inputName} tabIndex="-1" value="" />
             </div>
             <div className="clear">

@@ -43,7 +43,9 @@ export default (
       </Link>{' '}
       soon, so there should be more DFT-related notebooks to come!
     </Paragraph>
-    <Paragraph>Here are some of the animations built up in this notebook:</Paragraph>
+    <Paragraph>
+      Here are some of the animations built up in this notebook:
+    </Paragraph>
     <Paragraph>
       <ul>
         <li>

@@ -31,7 +31,9 @@ export default function SummaryList() {
       {config && config.siteTitle && <Helmet title={config.siteTitle} />}
       <Row>
         <Col className="justify-content-md-center">
-          {parsedEntries.reverseChronological.map(entry => <Panel key={entry.title} entry={entry} />)}
+          {parsedEntries.reverseChronological.map((entry) => (
+            <Panel key={entry.title} entry={entry} />
+          ))}
         </Col>
       </Row>
     </Container>

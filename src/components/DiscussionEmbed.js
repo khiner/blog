@@ -1,6 +1,6 @@
 /*
  * Adapted from https://github.com/ryanvalentin/disqus-react/blob/master/src/DiscussionEmbed.jsx
-*/
+ */
 
 import React from 'react'
 
@@ -90,7 +90,7 @@ export default class DiscussionEmbed extends React.Component {
   }
 
   getDisqusConfig(config) {
-    return function() {
+    return function () {
       this.page.identifier = config.identifier
       this.page.url = config.url
       this.page.title = config.title

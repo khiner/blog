@@ -15,8 +15,9 @@ export default (
     <p>
       <Link href="https://play.google.com/store/apps/details?id=com.odang.beatbot_android">
         Here is the Play Store link
-      </Link>. If you have an Android device, please do check it out and share
-      what you make!
+      </Link>
+      . If you have an Android device, please do check it out and share what you
+      make!
     </p>
     <h2>Overview</h2>
     <p>
@@ -113,8 +114,8 @@ export default (
     <h3>I wasn't solving my own problem</h3>
     <blockquote>
       The way to get startup ideas is not to try to think of startup ideas. It's
-      to look for problems, preferably problems you have yourself.<br />
-      - Paul Graham
+      to look for problems, preferably problems you have yourself.
+      <br />- Paul Graham
     </blockquote>
 
     <p>
@@ -167,7 +168,8 @@ export default (
         (ugh, I just lost money. I feel bad and dumb. But if I invest more
         money, recoup the losses and even make a profit, I'll feel good and
         smart again!)
-      </small>, and I did it with this app.
+      </small>
+      , and I did it with this app.
     </p>
 
     <h3>I chose a domain with high essential complexity.</h3>
@@ -202,12 +204,14 @@ export default (
       I really liked the problem I was working on. I got joy simply from the act
       of working on it, so it was difficult to stop. Actively working on
       something is pleasantly straightforward and rewarding. I know what to work
-      on the next time sit down (<Link href="https://image.slidesharecdn.com/hemingway-141105082003-conversion-gate01/95/5-writing-tips-by-ernest-hemingway-3-638.jpg">
+      on the next time sit down (
+      <Link href="https://image.slidesharecdn.com/hemingway-141105082003-conversion-gate01/95/5-writing-tips-by-ernest-hemingway-3-638.jpg">
         following Hemingway's advice
-      </Link>). I'm past the boring tedious parts, like writing boilerplate and
-      setting up my development environment, so I have quick access to flow
-      state whenever I pick up a task. I'm checking things off the list. Life is
-      good. This all goes away briefly when you stop and start another thing.
+      </Link>
+      ). I'm past the boring tedious parts, like writing boilerplate and setting
+      up my development environment, so I have quick access to flow state
+      whenever I pick up a task. I'm checking things off the list. Life is good.
+      This all goes away briefly when you stop and start another thing.
     </p>
     <p>
       Also, at least for me, working on a project is so much more rewarding than
@@ -292,7 +296,8 @@ export default (
       working state: 1) decide to work on something, 2) grab the first piece of
       it that comes to mind, 3) start working on it, and 4) compulsively
       continue working on it until it's either done or I run into a brick wall.
-      The "Sunken costs" aspect above is a huge part of this.<br />
+      The "Sunken costs" aspect above is a huge part of this.
+      <br />
       <i>"I've already started, so I may as well finish."</i>
       <br />
       <i>
@@ -305,11 +310,12 @@ export default (
         this point isn't worth the time."
       </i>
       <br />
-      <br />In my professional life this has been a serious issue to grapple
-      with. I've gotten feedback from two of my managers on my propensity to
-      just push forward on tasks without foreseeing some future consequence of a
-      technical decision. I've made huge progress, but it's still really
-      ingrained and takes concerted effort to recognize and manage.
+      <br />
+      In my professional life this has been a serious issue to grapple with.
+      I've gotten feedback from two of my managers on my propensity to just push
+      forward on tasks without foreseeing some future consequence of a technical
+      decision. I've made huge progress, but it's still really ingrained and
+      takes concerted effort to recognize and manage.
     </p>
 
     <h2>What I'm doing differently in the future</h2>
@@ -331,7 +337,8 @@ export default (
     <ul>
       <li>
         <b>Solve my own problem.</b>
-        <br />As discussed above. This should also help keep me motivated and
+        <br />
+        As discussed above. This should also help keep me motivated and
         interested. Using one's own tool is the best way to know whether it's
         better than any alternative in the market. In the future, if I find I'm
         not regularly using the thing I'm building, I'm going to take a
@@ -453,31 +460,36 @@ export default (
         This is usually great advice, and sounds like a truism - instead of
         spending weeks building something, instead spend hours learning what you
         need to interface with an existing solution. <br />
-        <br />However, there are a couple good reasons not to heed this advice.
-        First off, this advice is optimizing for speed of development. If your
-        main goal or a subgoal is <i>learning</i>, it may be wise to build it
-        from scratch to see how things work under the hood. This is usually my
-        justification when I build things from scratch.<br />
-        <br />Another obvious time to build it yourself is when there is no
-        third party solution available. The interesting case is when it{' '}
-        <i>looks</i> like a library will meet your needs, but in fact it only
-        meets some of them - maybe even all of them at the current time - but
-        not all future needs in the domain. Later you'll be trying to build on,
-        extend or otherwise stretch the library to its limits. At a certain
-        point, this framework may become a foundational part of your product.
-        Now you're reimplementing bits of it, sidestepping it for certain edge
-        cases, and cobbling together an awkward interface with no extensibility.
-        The same amount of time could have been invested into understanding the
-        problem space deeply and designing an extensible solution that fit your
-        needs exactly.<br />
+        <br />
+        However, there are a couple good reasons not to heed this advice. First
+        off, this advice is optimizing for speed of development. If your main
+        goal or a subgoal is <i>learning</i>, it may be wise to build it from
+        scratch to see how things work under the hood. This is usually my
+        justification when I build things from scratch.
+        <br />
+        <br />
+        Another obvious time to build it yourself is when there is no third
+        party solution available. The interesting case is when it <i>
+          looks
+        </i>{' '}
+        like a library will meet your needs, but in fact it only meets some of
+        them - maybe even all of them at the current time - but not all future
+        needs in the domain. Later you'll be trying to build on, extend or
+        otherwise stretch the library to its limits. At a certain point, this
+        framework may become a foundational part of your product. Now you're
+        reimplementing bits of it, sidestepping it for certain edge cases, and
+        cobbling together an awkward interface with no extensibility. The same
+        amount of time could have been invested into understanding the problem
+        space deeply and designing an extensible solution that fit your needs
+        exactly.
+        <br />
         <br />
         "Rolling your own", like "premature optimization", is a phrase used
         disparagingly and advised against dogmatically. For ancillary tasks,
         there's no doubt that a library is usually the way to go. Frameworks or
-        libraries that are related to the <i>
-          core competency of your product
-        </i>, on the other hand, deserve a deeply skeptical evalutation with an
-        eye toward the long-term future of your project's development.
+        libraries that are related to the <i>core competency of your product</i>
+        , on the other hand, deserve a deeply skeptical evalutation with an eye
+        toward the long-term future of your project's development.
         <br />
       </li>
       <br />
@@ -517,7 +529,8 @@ export default (
       In the meantime, I highly recommend{' '}
       <Link href="https://youtu.be/spUNpyF58BY">
         this incredibly done visual introduction to the Fourier Transform
-      </Link>.
+      </Link>
+      .
     </p>
     <p>Talk to you soon!</p>
   </div>

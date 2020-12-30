@@ -6,24 +6,24 @@ export default function sketch(p) {
 
   p.windowResized = windowResized(p, 0.25)
 
-  p.setup = function() {
+  p.setup = function () {
     const cnv = p.createCanvas(600, 400)
     p.noStroke()
     p.windowResized()
 
-    cnv.mouseClicked(function() {
+    cnv.mouseClicked(function () {
       numX = p.map(p.mouseX, 0, p.width, p.width / 230, p.width / 4)
       numY = p.map(p.mouseY, 0, p.height, p.height / 230, p.height / 4)
     })
   }
 
-  p.myCustomRedrawAccordingToNewPropsHandler = function(props) {}
+  p.myCustomRedrawAccordingToNewPropsHandler = function (props) {}
 
-  p.draw = function() {
+  p.draw = function () {
     const color =
       parseInt(p.frameCount / 255, 10) % 2 === 0
         ? p.frameCount % 255
-        : 255 - p.frameCount % 255
+        : 255 - (p.frameCount % 255)
     p.background(color)
 
     for (let x = 0; x < p.width + 10; x += numX) {

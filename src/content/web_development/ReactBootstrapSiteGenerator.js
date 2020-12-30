@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import ExternalLink from '../Link'
 import Paragraph from '../Paragraph'
-import SyntaxHighlighter from 'react-syntax-highlighter';
+import SyntaxHighlighter from 'react-syntax-highlighter'
 
 import rolling_your_own_cms from './assets/rolling_your_own_cms.jpg'
 import site_generator_demo from './assets/site_generator_demo.gif'
@@ -32,8 +32,8 @@ export default (
       <ExternalLink href="https://github.com/khiner/create-react-app">
         Create React App
       </ExternalLink>{' '}
-      tool. It is a simple, opinionated static site generator designed to make creating
-      simple sites like this one super fast.
+      tool. It is a simple, opinionated static site generator designed to make
+      creating simple sites like this one super fast.
     </Paragraph>
     <Paragraph>
       I built it with these goals in mind:
@@ -57,9 +57,8 @@ export default (
         </li>
         <li>Automatic social media stuff per-post</li>
         <li>
-          Straightforward deployment: run{' '}
-          <code>npm build</code> and <code>scp</code> the build directory to my
-          hosting service's{' '}
+          Straightforward deployment: run <code>npm build</code> and{' '}
+          <code>scp</code> the build directory to my hosting service's{' '}
           <code>public_html</code> directory
         </li>
         <li>
@@ -160,13 +159,14 @@ export default (
           manually was a pain and felt really outdated.
         </li>
         <li>
-          I was really missing object-oriented patterns like inheritance and composition.
+          I was really missing object-oriented patterns like inheritance and
+          composition.
         </li>
       </ul>
-      Basically, I didn't have the setup I wanted - one that would allow me to focus
-      on content alone. When adding new things, I usually had to edit multiple
-      files. I could not easily add more complex features, like a post summary list
-      page.
+      Basically, I didn't have the setup I wanted - one that would allow me to
+      focus on content alone. When adding new things, I usually had to edit
+      multiple files. I could not easily add more complex features, like a post
+      summary list page.
     </Paragraph>
     <h3>Rewriting in React</h3>
     <Paragraph>

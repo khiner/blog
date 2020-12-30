@@ -4,40 +4,40 @@ import { stripSlashes } from './utils'
 
 // decorate all entries with full urls
 if (config.host) {
-  entries.forEach(entry => {
+  entries.forEach((entry) => {
     entry.url = `${stripSlashes(config.host)}/${stripSlashes(entry.path)}`
   })
 }
 
-const strippedPaths = entries.map(entry => stripSlashes(entry.path))
+const strippedPaths = entries.map((entry) => stripSlashes(entry.path))
 
 function findUniqueTopLevelPathSegments() {
-  return [...new Set(strippedPaths.map(path => path.split('/')[0]))]
+  return [...new Set(strippedPaths.map((path) => path.split('/')[0]))]
 }
 
 function findNestedTopLevelPathSegments() {
   return strippedPaths
-    .filter(path => path.split('/').length > 1)
-    .map(path => path.split('/')[0])
+    .filter((path) => path.split('/').length > 1)
+    .map((path) => path.split('/')[0])
 }
 
 const uniqueTopLevelPathSegments = findUniqueTopLevelPathSegments()
 const nestedTopLevelPathSegments = findNestedTopLevelPathSegments()
 const byTopLevelPathSegment = {}
-uniqueTopLevelPathSegments.forEach(topLevelPathSegment => {
+uniqueTopLevelPathSegments.forEach((topLevelPathSegment) => {
   if (nestedTopLevelPathSegments.indexOf(topLevelPathSegment) !== -1) {
-    byTopLevelPathSegment[topLevelPathSegment] = entries.filter(entry =>
+    byTopLevelPathSegment[topLevelPathSegment] = entries.filter((entry) =>
       stripSlashes(entry.path).startsWith(topLevelPathSegment)
     )
   } else {
     byTopLevelPathSegment[topLevelPathSegment] = entries.find(
-      entry => stripSlashes(entry.path) === topLevelPathSegment
+      (entry) => stripSlashes(entry.path) === topLevelPathSegment
     )
   }
 })
 
 const reverseChronological = entries
-  .filter(entry => entry.date)
+  .filter((entry) => entry.date)
   .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
 
 export default {

@@ -82,7 +82,9 @@ export default (
       </Link>
       .
     </Paragraph>
-    <Paragraph>Here is most of that chapter's notebook, without exercises:</Paragraph>
+    <Paragraph>
+      Here is most of that chapter's notebook, without exercises:
+    </Paragraph>
     <h3>
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/mathematics_of_the_dft/chapter_7_fourier_theorems_for_the_dft.ipynb">
         Chapter 7: Digital Signals and Sampling

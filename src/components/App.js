@@ -8,9 +8,9 @@ import '../style/App.scss'
 
 // TODO: only add mathJax for Jupyter notebooks (or somehow make a package.json dep instead)
 export default function App() {
-  const [shouldShowSidebar, setShouldShowSidebar] = useState(false);
+  const [shouldShowSidebar, setShouldShowSidebar] = useState(false)
 
-  const toggleSidebar = () => setShouldShowSidebar(!shouldShowSidebar);
+  const toggleSidebar = () => setShouldShowSidebar(!shouldShowSidebar)
 
   return (
     <div>

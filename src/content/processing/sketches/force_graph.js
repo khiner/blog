@@ -25,8 +25,8 @@ export default function sketch(p) {
     network.onSizeChange()
   }
 
-  p.preload = function() {
-    p.loadImage(image_asset, function(img) {
+  p.preload = function () {
+    p.loadImage(image_asset, function (img) {
       img.loadPixels()
 
       let w = img.width / AXIS_SECTIONS
@@ -39,7 +39,7 @@ export default function sketch(p) {
     })
   }
 
-  p.setup = function() {
+  p.setup = function () {
     parentColor = p.color(getBackgroundColor())
     network = new Network()
 
@@ -79,14 +79,14 @@ export default function sketch(p) {
     ).setEnabled(false)
     toggles = [imageToggle, edgesToggle, verticesToggle, pauseToggle]
 
-    cnv.mousePressed(function() {
-      toggles.forEach(toggle => {
+    cnv.mousePressed(function () {
+      toggles.forEach((toggle) => {
         toggle.mousePressed()
       })
     })
 
-    cnv.mouseReleased(function() {
-      toggles.forEach(toggle => {
+    cnv.mouseReleased(function () {
+      toggles.forEach((toggle) => {
         toggle.mouseReleased()
       })
     })
@@ -94,9 +94,9 @@ export default function sketch(p) {
     setupFinished = true
   }
 
-  p.myCustomRedrawAccordingToNewPropsHandler = function(props) {}
+  p.myCustomRedrawAccordingToNewPropsHandler = function (props) {}
 
-  p.draw = function() {
+  p.draw = function () {
     if (!setupFinished) {
       return
     }
@@ -106,7 +106,7 @@ export default function sketch(p) {
       network.step()
     }
     network.draw()
-    toggles.forEach(toggle => {
+    toggles.forEach((toggle) => {
       toggle.draw()
     })
   }
@@ -265,7 +265,9 @@ export default function sketch(p) {
     getColor() {
       return this.pressed
         ? this.pressedColor
-        : this.hovering() ? this.hoverColor : this.neutralColor
+        : this.hovering()
+        ? this.hoverColor
+        : this.neutralColor
     }
 
     hovering() {
@@ -308,7 +310,9 @@ export default function sketch(p) {
     getColor() {
       return this.hovering()
         ? this.hoverColor
-        : this.enabled ? this.pressedColor : this.neutralColor
+        : this.enabled
+        ? this.pressedColor
+        : this.neutralColor
     }
   }
 }
