@@ -4,16 +4,16 @@ import { Route } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import SummaryList from './SummaryList'
 import Entry from './Entry'
-import { stripSlashes } from './utils'
+import { stripSlashes } from '../utils'
 
-import config from './config'
-import parsedEntries from './parsedEntries'
+import config from '../config'
+import parsedEntries from '../parsedEntries'
 
 import Loadable from 'react-loadable'
 
 function createContentLoadable(entry) {
   return Loadable({
-    loader: () => import('./content/' + entry.contentPath),
+    loader: () => import('../content/' + entry.contentPath),
     loading(props) {
       return <div>Loading...</div>
     },

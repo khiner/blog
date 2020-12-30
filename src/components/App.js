@@ -4,7 +4,7 @@ import 'highlight.js/styles/atom-one-dark.css'
 import MainNav from './MainNav'
 import MainContent from './MainContent'
 
-import './style/App.scss'
+import '../style/App.scss'
 
 export default class App extends Component {
   constructor(props) {

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Helmet from 'react-helmet'
 import { Card } from 'react-bootstrap'
 
-import config from './config'
+import config from '../config'
 import DiscussionEmbed from './DiscussionEmbed'
 import ShareButtons from './follow_and_share/ShareButtons'
 

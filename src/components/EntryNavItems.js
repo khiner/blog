@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Nav, NavDropdown } from 'react-bootstrap'
 
-import parsedEntries from './parsedEntries'
-import { snakeCaseToTitle, stripSlashes } from './utils'
+import parsedEntries from '../parsedEntries'
+import { snakeCaseToTitle, stripSlashes } from '../utils'
 
 export default class EntryNavItems extends Component {
   generateNavItem(entry) {

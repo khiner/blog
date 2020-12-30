@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { Card, Container, Row, Col } from 'react-bootstrap'
 import Helmet from 'react-helmet'
 
-import config from './config'
-import parsedEntries from './parsedEntries'
+import config from '../config'
+import parsedEntries from '../parsedEntries'
 
 export default class SummaryList extends Component {
   header(entry) {
