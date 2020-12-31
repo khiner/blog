@@ -104,6 +104,10 @@ export default function sketch(p) {
     }
   }
 
+  p.keyPressed = function (event) {
+    event.stopPropagation()
+    event.preventDefault()
+  }
   p.keyReleased = function (event) {
     if (p.keyCode === p.UP_ARROW && snowRate < 40) snowRate++
     else if (p.keyCode === p.DOWN_ARROW && snowRate > 0) snowRate--
