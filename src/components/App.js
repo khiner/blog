@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import 'highlight.js/styles/atom-one-dark.css' // TODO delete?
 
 import MainNav from './MainNav'
 import MainContent from './MainContent'

@@ -1,9 +1,8 @@
 import React from 'react'
+
 import Link from '../Link'
 import Paragraph from '../Paragraph'
-
-import SyntaxHighlighter from 'react-syntax-highlighter'
-
+import CodeBlock from '../CodeBlock'
 import beethovens_5th_image from './assets/beethovens_5th.png'
 import markov_recipe_image from './assets/markov_recipe.jpg'
 
@@ -52,14 +51,14 @@ export default (
       program. You can reproduce any of these pieces by opening up a terminal
       window (if you're on Mac) and running:
     </Paragraph>
-    <SyntaxHighlighter language="shell">
+    <CodeBlock language="shell">
       {`$ git clone git@github.com:khiner/midi_markov.git
 $ cd midi_markov
 $ gem install bundler
 $ bundle install
 $ brew install timidity
 $ ./midi_markov {track_name}`}
-    </SyntaxHighlighter>
+    </CodeBlock>
     <Paragraph>
       The results vary a ton depending on the parameters and the random seed,
       from patient harmonic meditations to frenetic atonal excursions.
