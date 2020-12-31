@@ -1,4 +1,5 @@
 #!/bin/bash
+npm run build
 tar -czf build.tar.gz build
 ssh -p 21098 karlerbd@server144.web-hosting.com "cd public_html && rm -rf *"
 scp -P 21098 build.tar.gz karlerbd@server144.web-hosting.com:public_html/
