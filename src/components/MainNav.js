@@ -48,6 +48,7 @@ export default function MainNav({ shouldShowSidebar, onShowSidebarClicked }) {
                   : 'Subscribe'
               }
               id="share-and-subscribe"
+              alignRight
             >
               {config.showShareNavItem && config.host && (
                 <ShareButtons
@@ -66,7 +67,7 @@ export default function MainNav({ shouldShowSidebar, onShowSidebarClicked }) {
             </NavDropdown>
           )}
           {config.email && (
-            <NavDropdown title="Contact" id="contact">
+            <NavDropdown title="Contact" id="contact" alignRight>
               <Nav.Link
                 href={`mailto:${config.email}?Subject=Hello!`}
                 target="_blank"
