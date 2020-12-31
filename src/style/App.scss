@@ -119,18 +119,24 @@ body {
     background-color: transparent;
     border-radius: 7px;
   }
+  h2 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  h3 {
+    margin-bottom: 0.75rem;
+  }
+  .date {
+    margin-top: 14px;
+    font-size: 18px;
+    font-weight: 100;
+    font-style: italic;
+  }
   .subtitle {
     font-size: 26px;
     font-weight: 100;
-  }
-  h3 {
-    margin-bottom: 20px;
-    &.date {
-      margin-top: 14px;
-      font-size: 18px;
-      font-weight: 100;
-      font-style: italic;
-    }
+    margin-top: 0;
+    margin-bottom: 0.75rem;
   }
 }
 .panelLink {
