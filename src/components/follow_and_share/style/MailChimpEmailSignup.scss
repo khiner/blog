@@ -1,4 +1,4 @@
-@import './slim-10_7.css';
+@import './slim-10_7.scss';
 
 #mc_embed_signup {
   clear: left;
@@ -12,6 +12,10 @@
 
     &.button {
       margin: 0 !important;
+      background-color: #22aadd;
+      &:hover {
+        background-color: #0088bb;
+      }
     }
     &.email {
       min-width: 200px !important;

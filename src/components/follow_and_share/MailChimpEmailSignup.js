@@ -1,3 +1,5 @@
+import './style/MailChimpEmailSignup.scss'
+
 import React from 'react'
 
 export default function MailChimpEmailSignup({ formAction, inputName }) {
@@ -29,7 +31,7 @@ export default function MailChimpEmailSignup({ formAction, inputName }) {
               style={{ position: 'absolute', left: '-5000px' }}
               aria-hidden="true"
             >
-              <input type="text" name={inputName} tabIndex="-1" value="" />
+              <input type="text" name={inputName} tabIndex="-1" />
             </div>
             <div className="clear">
               <input

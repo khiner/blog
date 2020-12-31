@@ -1,3 +1,5 @@
+import './style/ShareButtons.scss'
+
 import React from 'react'
 
 import config from '../../config'
