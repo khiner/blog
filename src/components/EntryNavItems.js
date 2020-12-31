@@ -1,5 +1,6 @@
 import React from 'react'
 import { Nav, NavDropdown } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 import parsedEntries from '../parsedEntries'
 import { snakeCaseToTitle, stripSlashes } from '../utils'
@@ -7,8 +8,8 @@ import { snakeCaseToTitle, stripSlashes } from '../utils'
 function EntryNavDropdownItem({ entry, onItemClick }) {
   return (
     <NavDropdown.Item
-      key={entry.title}
-      href={`/${stripSlashes(entry.path)}/`}
+      as={Link}
+      to={`/${stripSlashes(entry.path)}/`}
       onClick={onItemClick}
     >
       {entry.title}
