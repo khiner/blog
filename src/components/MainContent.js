@@ -15,15 +15,11 @@ const LoadableEntry = (entry) => {
   const Loadable = loadable(
     async () => {
       const imported = await import('../content/' + entry.contentPath)
-      return () => imported.default
+      return () => <div id="loadedContent">{imported.default}</div>
     },
     { fallback: <div>Loading...</div> }
   )
-  return (
-    <div id="loadedContent">
-      <Loadable />
-    </div>
-  )
+  return <Loadable />
 }
 
 function generateComponent(entry) {
