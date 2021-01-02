@@ -66,6 +66,7 @@ body {
 .navbar {
   background-color: $primary;
   color: $text-color-light;
+  border-bottom: 1px white solid;
   a {
     color: $text-color-light;
     &:hover {
