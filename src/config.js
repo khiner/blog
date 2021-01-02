@@ -1,7 +1,7 @@
 export default {
   // `siteName` is used for the main site title in the nav, prepended to browser tab names for each route,
   // and for titles in site metadata used by crawlers.
-  siteName: 'Karl Hiner',
+  siteName: 'karlhiner.com',
   // `shareName` is an optional different name to use in share posts. Defaults to `siteName` value.
   shareName: "Karl's Blog",
   // If you have a Disqus account, find your shortname under /admin/settings/general.
