@@ -3,7 +3,7 @@ import React from 'react'
 import Link from '../Link'
 import Paragraph from '../Paragraph'
 
-import './style/jupyter-style.css'
+import './style/jupyter-style.scss'
 
 export default (
   <div>

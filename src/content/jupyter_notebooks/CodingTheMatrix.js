@@ -3,7 +3,7 @@ import React from 'react'
 import Link from '../Link'
 import Paragraph from '../Paragraph'
 
-import './style/jupyter-style.css'
+import './style/jupyter-style.scss'
 import three_approaches_image from './assets/coding_the_matrix/three_approaches_to_lin_alg.gif'
 import board_transformed_image from './assets/coding_the_matrix/board_transformed.png'
 import board_image from './assets/coding_the_matrix/board.png'

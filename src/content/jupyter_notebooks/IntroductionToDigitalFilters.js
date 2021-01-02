@@ -3,7 +3,7 @@ import React from 'react'
 import Link from '../Link'
 import Paragraph from '../Paragraph'
 
-import './style/jupyter-style.css'
+import './style/jupyter-style.scss'
 import notch_filter_animation from './assets/intro_to_digital_filters/notch_filter.gif'
 import notch_filter_wo_lines_animation from './assets/intro_to_digital_filters/notch_filter_without_lines.gif'
 
