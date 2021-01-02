@@ -3,6 +3,7 @@
 $primary: #22aadd;
 $primary-highlight: #1199cc;
 $text-color-light: #ffffff;
+$border-color: #e8e8e8;
 $navbar-light-brand-color: $text-color-light;
 $navbar-light-color: $text-color-light;
 $navbar-light-hover-color: #444444;
@@ -61,12 +62,19 @@ body {
     margin-top: 28px !important;
     margin-bottom: 28px !important;
   }
+
+  .transitionable {
+    transition: 0.5s;
+    &.opaque {
+      opacity: 0.5;
+    }
+  }
 }
 
 .navbar {
   background-color: $primary;
   color: $text-color-light;
-  border-bottom: 1px white solid;
+  border-bottom: 1px $border-color solid;
   a {
     color: $text-color-light;
     &:hover {
@@ -203,7 +211,7 @@ a {
   z-index: 1000000;
   height: 100vh;
   background: #f8f8f8;
-  border: 1px #e8e8e8 solid;
+  border: 1px $border-color solid;
 
   &.show {
     left: 0px;

@@ -9,13 +9,16 @@ import EntryNavItems from './EntryNavItems'
 import MailChimpEmailSignup from './follow_and_share/MailChimpEmailSignup'
 import ShareButtons from './follow_and_share/ShareButtons'
 
-export default function MainNav({ shouldShowSidebar, onShowSidebarClicked }) {
+export default function MainNav({ sidebarOpen, setSidebarOpen }) {
   return (
     <Navbar fixed="top" expand="md">
       {config.entriesInSidebar && (
         <FaList
-          className={`clickable${shouldShowSidebar ? ' active' : ''}`}
-          onClick={onShowSidebarClicked}
+          className={`clickable${sidebarOpen ? ' active' : ''}`}
+          onClick={(event) => {
+            event.stopPropagation()
+            setSidebarOpen(!sidebarOpen)
+          }}
         />
       )}
       <Navbar.Brand className={config.entriesInSidebar ? 'leaveLeftSpace' : ''}>
