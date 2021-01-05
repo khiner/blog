@@ -670,6 +670,25 @@ const entries = [
     contentPath: 'jupyter_notebooks/PhysicalAudioSignalProcessing',
     type: 'article',
   },
+  {
+    path: '/jaxdsp',
+    title: 'JAXdsp',
+    subtitle: 'Differentiable audio processors',
+    date: 'Jan 4 2021',
+    disqusId: 'jaxdsp',
+    description: (
+      <div>
+        <p>
+          Using JAX to build differentiable audio DSP that can run on the CPU or
+          GPU
+        </p>
+      </div>
+    ),
+    descriptionPlainText:
+      'Using JAX to build differentiable audio DSP that can run on the CPU or GPU',
+    contentPath: 'jaxdsp/JaxDsp',
+    type: 'article',
+  },
 ]
 
 export default entries
