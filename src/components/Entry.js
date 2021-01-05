@@ -10,7 +10,7 @@ function formatMathWhenContentIsReady() {
   const element = document.getElementById('loadedContent')
   if (typeof element === 'undefined' || element === null) {
     window.requestAnimationFrame(formatMathWhenContentIsReady)
-  } else {
+  } else if (window.MathJax) {
     window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, 'MathOutput'])
   }
 }

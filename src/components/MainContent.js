@@ -13,7 +13,9 @@ const LoadableEntry = (entry) => {
   const Loadable = loadable(
     async () => {
       const imported = await import('../content/' + entry.contentPath)
-      return () => <div id="loadedContent">{imported.default}</div>
+      const Content = imported.default
+      const element = React.isValidElement(Content) ? Content : <Content />
+      return () => <div id="loadedContent">{element}</div>
     },
     { fallback: <div>Loading...</div> }
   )
