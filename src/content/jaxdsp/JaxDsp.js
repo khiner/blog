@@ -15,8 +15,13 @@ import Paragraph from '../Paragraph'
 
 // peer connection
 let pc = null
+let dc = null
 
 const audioTransforms = ['none', 'freeverb', 'clip', 'delay_line']
+
+const dataChannelParameters = {
+  ordered: true,
+}
 
 function sdpFilterCodec(kind, codec, realSdp) {
   function escapeRegExp(string) {
@@ -94,6 +99,15 @@ export default function JaxDsp() {
       (event) => (audioRef.current.srcObject = event.streams[0])
     )
 
+    dc = pc.createDataChannel('chat', dataChannelParameters)
+    dc.onopen = () => {
+      dc.send('ping')
+      console.log('sent ping')
+    }
+    dc.onmessage = (event) => {
+      console.log('dc.onmessage: ', event.data)
+    }
+
     navigator.mediaDevices
       .getUserMedia({
         audio: {
@@ -158,19 +172,13 @@ export default function JaxDsp() {
     setStartEnabled(true)
     setStopEnabled(false)
 
-    // close data channel
-    // if (dc) dc.close()
-    // close transceivers
+    if (dc) dc.close()
     if (pc.getTransceivers) {
       pc.getTransceivers().forEach((transceiver) => {
-        if (transceiver.stop) {
-          transceiver.stop()
-        }
+        if (transceiver.stop) transceiver.stop()
       })
     }
-    // close local audio
     pc.getSenders().forEach((sender) => sender.track.stop())
-    // close connection
     setTimeout(() => pc.close(), 500)
   }
 
