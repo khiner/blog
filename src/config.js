@@ -4,9 +4,9 @@ export default {
   siteName: 'karlhiner.com',
   // `shareName` is an optional different name to use in share posts. Defaults to `siteName` value.
   shareName: "Karl's Blog",
-  // If you have a Disqus account, find your shortname under /admin/settings/general.
-  // Populate this and add a `disqusId` to each post you'd like to embed a Disqus comment section at the bottom.
-  disqusShortname: 'karlhiner',
+  // If you have a [commento](https://commento.io/) instance,
+  // each entry will have a commento section at the bottom.
+  commentoHostName: 'https://commento.karlhiner.com',
   // The full qualified hostname where this site will live.
   // Without this field, all sharing links & disqus comments will be excluded.
   host: 'https://karlhiner.com',

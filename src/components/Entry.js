@@ -3,7 +3,7 @@ import Helmet from 'react-helmet'
 import { Card } from 'react-bootstrap'
 
 import config from '../config'
-import DiscussionEmbed from './DiscussionEmbed'
+import Commento from './Commento'
 import ShareButtons from './follow_and_share/ShareButtons'
 
 function formatMathWhenContentIsReady() {
@@ -30,7 +30,7 @@ export default React.memo(
     subtitle,
     description,
     descriptionPlainText,
-    disqusId,
+    commentoId,
     url,
     date,
     type,
@@ -39,12 +39,6 @@ export default React.memo(
     useEffect(() => {
       formatMathWhenContentIsReady()
     }, [])
-
-    const disqusConfig = {
-      title,
-      identifier: disqusId,
-      url,
-    }
 
     const isShowcase = type && type.toLowerCase() === 'showcase'
     const columnBreak = <div className="col-md-1 col-lg-2" />
@@ -91,14 +85,12 @@ export default React.memo(
           )}
         </div>
         {columnBreak}
-        {config.disqusShortname &&
-          disqusConfig.url &&
-          disqusConfig.identifier && (
-            <DiscussionEmbed
-              shortname={config.disqusShortname}
-              config={disqusConfig}
-            />
-          )}
+        {config.commentoHostName && commentoId && (
+          <Commento
+            id={commentoId}
+            commentoHostName={config.commentoHostName}
+          />
+        )}
       </div>
     )
   },
