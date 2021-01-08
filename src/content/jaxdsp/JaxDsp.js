@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import adapter from 'webrtc-adapter' // eslint-disable-line no-unused-vars
 
 import Link from '../Link'
@@ -16,8 +16,6 @@ import Paragraph from '../Paragraph'
 // peer connection
 let pc = null
 let dc = null
-
-const audioTransforms = ['none', 'freeverb', 'clip', 'delay_line']
 
 const dataChannelParameters = {
   ordered: true,
@@ -87,8 +85,28 @@ function sdpFilterCodec(kind, codec, realSdp) {
 export default function JaxDsp() {
   const [startEnabled, setStartEnabled] = useState(true)
   const [stopEnabled, setStopEnabled] = useState(false)
-  const [audioTransform, setAudioTransform] = useState('none')
+  const [processorName, setProcessorName] = useState('None')
+  const [processors, setProcessors] = useState(null)
+
   const audioRef = useRef(null)
+
+  const sendConfig = () => {
+    if (dc) {
+      const serverConfig = {
+        audioProcessorName: processorName,
+      }
+      dc.send(JSON.stringify(serverConfig))
+    }
+  }
+
+  useEffect(() => {
+    sendConfig()
+  }, [processorName])
+
+  useEffect(() => {
+    console.log('processors: ', processors)
+  }, [processors])
+
   const start = () => {
     setStartEnabled(false)
     setStopEnabled(true)
@@ -101,11 +119,14 @@ export default function JaxDsp() {
 
     dc = pc.createDataChannel('chat', dataChannelParameters)
     dc.onopen = () => {
-      dc.send('ping')
-      console.log('sent ping')
+      sendConfig()
+      dc.send('get_processors')
     }
     dc.onmessage = (event) => {
-      console.log('dc.onmessage: ', event.data)
+      // console.log('dc.onmessage: ', event.data)
+      if (event.data.includes('presets')) {
+        setProcessors(JSON.parse(event.data))
+      }
     }
 
     navigator.mediaDevices
@@ -148,7 +169,6 @@ export default function JaxDsp() {
                 body: JSON.stringify({
                   sdp: offer.sdp,
                   type: offer.type,
-                  audio_transform: audioTransform,
                 }),
                 headers: {
                   'Content-Type': 'application/json',
@@ -189,26 +209,31 @@ export default function JaxDsp() {
       </Paragraph>
       <audio controls autoPlay ref={audioRef}></audio>
 
-      <h2>Options</h2>
+      {processors && (
+        <div>
+          <select
+            value={processorName}
+            onChange={(event) => setProcessorName(event.target.value)}
+          >
+            {['None', ...Object.keys(processors)].map((processorName) => (
+              <option key={processorName} value={processorName}>
+                {processorName}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      {processors && processors[processorName] && (
+        <div>{JSON.stringify(processors[processorName])}</div>
+      )}
       <div>
-        <select
-          value={audioTransform}
-          onChange={(event) => setAudioTransform(event.target.value)}
-        >
-          {audioTransforms.map((audioTransformOption) => (
-            <option key={audioTransformOption} value={audioTransformOption}>
-              {audioTransformOption}
-            </option>
-          ))}
-        </select>
+        <button disabled={!startEnabled} onClick={start}>
+          Start
+        </button>
+        <button disabled={!stopEnabled} onClick={stop}>
+          Stop
+        </button>
       </div>
-
-      <button disabled={!startEnabled} onClick={start}>
-        Start
-      </button>
-      <button disabled={!stopEnabled} onClick={stop}>
-        Stop
-      </button>
     </div>
   )
 }
