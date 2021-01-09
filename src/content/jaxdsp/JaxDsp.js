@@ -87,25 +87,27 @@ export default function JaxDsp() {
   const [stopEnabled, setStopEnabled] = useState(false)
   const [processorName, setProcessorName] = useState('None')
   const [processors, setProcessors] = useState(null)
+  const [paramValues, setParamValues] = useState({})
+
+  const updateParamValue = (paramName, value) => {
+    const newParamValues = { ...paramValues }
+    console.log(newParamValues)
+    console.log(processorName)
+    if (newParamValues[processorName]) {
+      newParamValues[processorName][paramName] = value
+    }
+    setParamValues(newParamValues)
+  }
 
   const audioRef = useRef(null)
 
-  const sendConfig = () => {
-    if (dc) {
-      const serverConfig = {
-        audioProcessorName: processorName,
-      }
-      dc.send(JSON.stringify(serverConfig))
-    }
-  }
-
   useEffect(() => {
-    sendConfig()
+    if (dc) dc.send(JSON.stringify({ audio_processor_name: processorName }))
   }, [processorName])
 
   useEffect(() => {
-    console.log('processors: ', processors)
-  }, [processors])
+    if (dc) dc.send(JSON.stringify({ param_values: paramValues }))
+  }, [paramValues])
 
   const start = () => {
     setStartEnabled(false)
@@ -119,13 +121,20 @@ export default function JaxDsp() {
 
     dc = pc.createDataChannel('chat', dataChannelParameters)
     dc.onopen = () => {
-      sendConfig()
-      dc.send('get_processors')
+      dc.send('get_config')
     }
     dc.onmessage = (event) => {
-      // console.log('dc.onmessage: ', event.data)
-      if (event.data.includes('presets')) {
-        setProcessors(JSON.parse(event.data))
+      const message = JSON.parse(event.data)
+      const { processors, param_values: paramValues } = message
+      if (processors) {
+        console.log('Received processor descriptions:')
+        console.log(processors)
+        setProcessors(processors)
+      }
+      if (paramValues) {
+        console.log('Received parameter values:')
+        console.log(paramValues)
+        setParamValues(paramValues)
       }
     }
 
@@ -202,6 +211,9 @@ export default function JaxDsp() {
     setTimeout(() => pc.close(), 500)
   }
 
+  const processorParams =
+    processors && processors[processorName] && processors[processorName].params
+  const processorParamValues = (paramValues && paramValues[processorName]) || {}
   return (
     <div>
       <Paragraph>
@@ -223,9 +235,21 @@ export default function JaxDsp() {
           </select>
         </div>
       )}
-      {processors && processors[processorName] && (
-        <div>{JSON.stringify(processors[processorName])}</div>
-      )}
+      {processorParams &&
+        processorParams.map(({ name, default_value, min_value, max_value }) => (
+          <div key={name}>
+            <input
+              type="range"
+              name={name}
+              value={processorParamValues[name] || default_value || 0.0}
+              min={min_value}
+              max={max_value}
+              step={(max_value - min_value) / 100.0}
+              onChange={(event) => updateParamValue(name, +event.target.value)}
+            />
+            <label htmlFor={name}>{name}</label>
+          </div>
+        ))}
       <div>
         <button disabled={!startEnabled} onClick={start}>
           Start
