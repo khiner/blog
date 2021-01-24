@@ -83,11 +83,12 @@ function sdpFilterCodec(kind, codec, realSdp) {
 }
 
 export default function JaxDsp() {
-  const [startEnabled, setStartEnabled] = useState(true)
-  const [stopEnabled, setStopEnabled] = useState(false)
+  const [isSending, setIsSending] = useState(false)
+  const [isEstimating, setIsEstimating] = useState(false)
   const [processorName, setProcessorName] = useState('None')
   const [processors, setProcessors] = useState(null)
   const [paramValues, setParamValues] = useState({})
+  const [estimatedParamValues, setEstimatedParamValues] = useState({})
 
   const updateParamValue = (paramName, value) => {
     const newParamValues = { ...paramValues }
@@ -109,9 +110,8 @@ export default function JaxDsp() {
     if (dc) dc.send(JSON.stringify({ param_values: paramValues }))
   }, [paramValues])
 
-  const start = () => {
-    setStartEnabled(false)
-    setStopEnabled(true)
+  const startSending = () => {
+    setIsSending(true)
 
     pc = new RTCPeerConnection({ sdpSemantics: 'unified-plan' })
     pc.addEventListener(
@@ -125,7 +125,12 @@ export default function JaxDsp() {
     }
     dc.onmessage = (event) => {
       const message = JSON.parse(event.data)
-      const { processors, param_values: paramValues } = message
+      const {
+        processors,
+        param_values: paramValues,
+        estimated_param_values: estimatedParamValues,
+      } = message
+
       if (processors) {
         console.log('Received processor descriptions:')
         console.log(processors)
@@ -135,6 +140,11 @@ export default function JaxDsp() {
         console.log('Received parameter values:')
         console.log(paramValues)
         setParamValues(paramValues)
+      }
+      if (estimatedParamValues) {
+        console.log('Received estimated parameter values:')
+        console.log(estimatedParamValues)
+        setEstimatedParamValues(estimatedParamValues)
       }
     }
 
@@ -190,16 +200,14 @@ export default function JaxDsp() {
             .catch((error) => console.error(error))
         },
         (error) => {
-          setStartEnabled(true)
-          setStopEnabled(false)
+          setIsSending(false)
           console.error(`Could not acquire media: ${error}`)
         }
       )
   }
 
-  const stop = () => {
-    setStartEnabled(true)
-    setStopEnabled(false)
+  const stopSending = () => {
+    setIsSending(false)
 
     if (dc) dc.close()
     if (pc.getTransceivers) {
@@ -209,6 +217,16 @@ export default function JaxDsp() {
     }
     pc.getSenders().forEach((sender) => sender.track.stop())
     setTimeout(() => pc.close(), 500)
+  }
+
+  const startEstimating = () => {
+    setIsEstimating(true)
+    if (dc) dc.send('start_estimating_params')
+  }
+
+  const stopEstimating = () => {
+    setIsEstimating(false)
+    if (dc) dc.send('stop_estimating_params')
   }
 
   const processorParams =
@@ -235,26 +253,41 @@ export default function JaxDsp() {
           </select>
         </div>
       )}
-      {processorParams &&
-        processorParams.map(({ name, default_value, min_value, max_value }) => (
-          <div key={name}>
-            <input
-              type="range"
-              name={name}
-              value={processorParamValues[name] || default_value || 0.0}
-              min={min_value}
-              max={max_value}
-              step={(max_value - min_value) / 100.0}
-              onChange={(event) => updateParamValue(name, +event.target.value)}
-            />
-            <label htmlFor={name}>{name}</label>
+      {processorParams && (
+        <div>
+          <div>
+            <button disabled={isEstimating} onClick={startEstimating}>
+              Start estimating
+            </button>
+            <button disabled={!isEstimating} onClick={stopEstimating}>
+              Stop estimating
+            </button>
           </div>
-        ))}
+          {processorParams.map(
+            ({ name, default_value, min_value, max_value }) => (
+              <div key={name}>
+                <input
+                  type="range"
+                  name={name}
+                  value={processorParamValues[name] || default_value || 0.0}
+                  min={min_value}
+                  max={max_value}
+                  step={(max_value - min_value) / 100.0}
+                  onChange={(event) =>
+                    updateParamValue(name, +event.target.value)
+                  }
+                />
+                <label htmlFor={name}>{name}</label>
+              </div>
+            )
+          )}
+        </div>
+      )}
       <div>
-        <button disabled={!startEnabled} onClick={start}>
+        <button disabled={isSending} onClick={startSending}>
           Start
         </button>
-        <button disabled={!stopEnabled} onClick={stop}>
+        <button disabled={!isSending} onClick={stopSending}>
           Stop
         </button>
       </div>
