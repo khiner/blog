@@ -4,14 +4,8 @@ import adapter from 'webrtc-adapter' // eslint-disable-line no-unused-vars
 import Link from '../Link'
 import Paragraph from '../Paragraph'
 
-// TODO this is the one: https://github.com/jlaine/aiortc/tree/99dd90f28ac6f0f1daadd7db20673c1f8736ff06/examples/server
-//   - clone and run this locally
-// TODO This also looks on point, but uses rtcbot library instead of plain jane: https://rtcbot.readthedocs.io/en/latest/examples/webrtc/README.html
-
-// TODO use the data channel part of the aiortc server example:
-//   https://github.com/aiortc/aiortc/blob/main/examples/server/client.js#L121-L145
-
-// From https://webrtc.github.io/samples/src/content/peerconnection/webaudio-input/
+// Starting point for this code from
+// https://webrtc.github.io/samples/src/content/peerconnection/webaudio-input/
 
 // peer connection
 let pc = null
@@ -84,6 +78,7 @@ function sdpFilterCodec(kind, codec, realSdp) {
 
 export default function JaxDsp() {
   const [isSending, setIsSending] = useState(false)
+  const [useTestSignal, setUseTestSignal] = useState(false)
   const [isEstimating, setIsEstimating] = useState(false)
   const [processorName, setProcessorName] = useState('None')
   const [processors, setProcessors] = useState(null)
@@ -229,6 +224,16 @@ export default function JaxDsp() {
     if (dc) dc.send('stop_estimating_params')
   }
 
+  const startUsingTestSignal = () => {
+    setUseTestSignal(true)
+    if (dc) dc.send('use_test_signal')
+  }
+
+  const stopUsingTestSignal = () => {
+    setUseTestSignal(false)
+    if (dc) dc.send('use_test_signal')
+  }
+
   const processorParams =
     processors && processors[processorName] && processors[processorName].params
   const processorParamValues = (paramValues && paramValues[processorName]) || {}
@@ -238,7 +243,14 @@ export default function JaxDsp() {
         <Link href="https://github.com/khiner/jaxdsp/">JAXdsp</Link>
       </Paragraph>
       <audio controls autoPlay ref={audioRef}></audio>
-
+      <div>
+        <button disabled={useTestSignal} onClick={startUsingTestSignal}>
+          Use test signal
+        </button>
+        <button disabled={!useTestSignal} onClick={stopUsingTestSignal}>
+          Stop using test signal
+        </button>
+      </div>
       {processors && (
         <div>
           <select
@@ -263,24 +275,52 @@ export default function JaxDsp() {
               Stop estimating
             </button>
           </div>
-          {processorParams.map(
-            ({ name, default_value, min_value, max_value }) => (
-              <div key={name}>
-                <input
-                  type="range"
-                  name={name}
-                  value={processorParamValues[name] || default_value || 0.0}
-                  min={min_value}
-                  max={max_value}
-                  step={(max_value - min_value) / 100.0}
-                  onChange={(event) =>
-                    updateParamValue(name, +event.target.value)
-                  }
-                />
-                <label htmlFor={name}>{name}</label>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div>
+              {processorParams.map(
+                ({ name, default_value, min_value, max_value }) => (
+                  <div key={name}>
+                    <input
+                      type="range"
+                      name={name}
+                      value={processorParamValues[name] || default_value || 0.0}
+                      min={min_value}
+                      max={max_value}
+                      step={(max_value - min_value) / 100.0}
+                      onChange={(event) =>
+                        updateParamValue(name, +event.target.value)
+                      }
+                    />
+                    <label htmlFor={name}>{name}</label>
+                  </div>
+                )
+              )}
+            </div>
+            {estimatedParamValues && (
+              <div>
+                {processorParams.map(
+                  ({ name, min_value, max_value }) =>
+                    !isNaN(estimatedParamValues[name]) && (
+                      <div key={name}>
+                        <input
+                          type="range"
+                          name={name}
+                          value={estimatedParamValues[name]}
+                          min={min_value}
+                          max={max_value}
+                          step={(max_value - min_value) / 100.0}
+                          onChange={(event) =>
+                            updateParamValue(name, +event.target.value)
+                          }
+                          disabled
+                        />
+                        <label htmlFor={name}>{name}</label>
+                      </div>
+                    )
+                )}
               </div>
-            )
-          )}
+            )}
+          </div>
         </div>
       )}
       <div>
