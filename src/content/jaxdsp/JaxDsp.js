@@ -4,6 +4,8 @@ import adapter from 'webrtc-adapter' // eslint-disable-line no-unused-vars
 import Link from '../Link'
 import Paragraph from '../Paragraph'
 
+import testSample from './assets/speech-male.wav'
+
 // Starting point for this code from
 // https://webrtc.github.io/samples/src/content/peerconnection/webaudio-input/
 
@@ -11,10 +13,7 @@ import Paragraph from '../Paragraph'
 let pc = null
 let dc = null
 
-const dataChannelParameters = {
-  ordered: true,
-}
-
+// TODO copied wholesale. I think I don't need a lot of this.
 function sdpFilterCodec(kind, codec, realSdp) {
   function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
@@ -76,19 +75,22 @@ function sdpFilterCodec(kind, codec, realSdp) {
   return sdp
 }
 
+const NONE = 'None'
+const MICROPHONE = 'Microphone'
+const TEST_SAMPLE = 'TEST_SAMPLE'
+const AUDIO_INPUT_SOURCES = [MICROPHONE, TEST_SAMPLE]
+
 export default function JaxDsp() {
+  const [audioInputSource, setAudioInputSource] = useState(MICROPHONE)
   const [isSending, setIsSending] = useState(false)
-  const [useTestSignal, setUseTestSignal] = useState(false)
   const [isEstimating, setIsEstimating] = useState(false)
-  const [processorName, setProcessorName] = useState('None')
+  const [processorName, setProcessorName] = useState(NONE)
   const [processors, setProcessors] = useState(null)
   const [paramValues, setParamValues] = useState({})
   const [estimatedParamValues, setEstimatedParamValues] = useState({})
 
   const updateParamValue = (paramName, value) => {
     const newParamValues = { ...paramValues }
-    console.log(newParamValues)
-    console.log(processorName)
     if (newParamValues[processorName]) {
       newParamValues[processorName][paramName] = value
     }
@@ -105,16 +107,99 @@ export default function JaxDsp() {
     if (dc) dc.send(JSON.stringify({ param_values: paramValues }))
   }, [paramValues])
 
+  const negotiate = async () => {
+    const offer = await pc.createOffer()
+    await pc.setLocalDescription(offer)
+    await new Promise((resolve) => {
+      if (pc.iceGatheringState === 'complete') {
+        resolve()
+      } else {
+        function checkState() {
+          if (pc.iceGatheringState === 'complete') {
+            pc.removeEventListener('icegatheringstatechange', checkState)
+            resolve()
+          }
+        }
+        pc.addEventListener('icegatheringstatechange', checkState)
+      }
+    })
+    pc.localDescription.sdp = sdpFilterCodec(
+      'audio',
+      'opus/48000/2',
+      pc.localDescription.sdp
+    )
+    const response = await fetch('http://localhost:8080/offer', {
+      body: JSON.stringify({
+        sdp: pc.localDescription.sdp,
+        type: pc.localDescription.type,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    })
+    const answer = await response.json()
+    await pc.setRemoteDescription(answer)
+  }
+
+  // Returns true if track was added to the peer connection
+  const addOrReplaceTrack = (track) => {
+    const audioSender = pc
+      .getSenders()
+      .find((s) => s.track && s.track.kind === 'audio')
+    if (audioSender) {
+      audioSender.replaceTrack(track)
+    } else {
+      pc.addTrack(track)
+      negotiate()
+    }
+  }
+
+  const startMicrophone = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: false },
+        video: false,
+      })
+      const microphoneTrack = stream.getTracks()[0]
+      addOrReplaceTrack(microphoneTrack)
+    } catch (error) {
+      setIsSending(false)
+      console.error(`Could not acquire media: ${error}`)
+    }
+  }
+
+  // TODO use https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/replaceTrack
+  // TODO set currentTIme = 0 after pc 'track' event
+  const startTestSample = async () => {
+    const testSampleAudio = new Audio(testSample)
+    testSampleAudio.loop = true
+    const audioContext = new AudioContext()
+    const testSampleSource = audioContext.createMediaElementSource(
+      testSampleAudio
+    )
+    const testSampleDestination = audioContext.createMediaStreamDestination()
+    const testSampleTrack = testSampleDestination.stream.getAudioTracks()[0]
+    testSampleSource.connect(testSampleDestination)
+
+    testSampleAudio.currentTime = 0
+    await testSampleAudio.play()
+    addOrReplaceTrack(testSampleTrack)
+  }
+
+  useEffect(() => {
+    if (!isSending) return
+
+    if (audioInputSource === MICROPHONE) startMicrophone()
+    else if (audioInputSource === TEST_SAMPLE) startTestSample()
+  }, [audioInputSource])
+
   const startSending = () => {
     setIsSending(true)
 
-    pc = new RTCPeerConnection({ sdpSemantics: 'unified-plan' })
-    pc.addEventListener(
-      'track',
-      (event) => (audioRef.current.srcObject = event.streams[0])
-    )
-
-    dc = pc.createDataChannel('chat', dataChannelParameters)
+    pc = new RTCPeerConnection()
+    pc.addTransceiver('audio')
+    dc = pc.createDataChannel('chat', { ordered: true })
     dc.onopen = () => {
       dc.send('get_config')
     }
@@ -143,74 +228,26 @@ export default function JaxDsp() {
       }
     }
 
-    navigator.mediaDevices
-      .getUserMedia({
-        audio: {
-          // sampleSize: 8,
-          echoCancellation: false,
-        },
-        video: false,
-      })
-      .then(
-        (stream) => {
-          stream.getTracks().forEach((track) => pc.addTrack(track, stream))
-          return pc
-            .createOffer()
-            .then((offer) => pc.setLocalDescription(offer))
-            .then(() => {
-              // wait for ICE gathering to complete
-              return new Promise((resolve) => {
-                if (pc.iceGatheringState === 'complete') {
-                  resolve()
-                } else {
-                  function checkState() {
-                    if (pc.iceGatheringState === 'complete') {
-                      pc.removeEventListener(
-                        'icegatheringstatechange',
-                        checkState
-                      )
-                      resolve()
-                    }
-                  }
-                  pc.addEventListener('icegatheringstatechange', checkState)
-                }
-              })
-            })
-            .then(() => {
-              const offer = pc.localDescription
-              offer.sdp = sdpFilterCodec('audio', 'opus/48000/2', offer.sdp)
-              return fetch('http://localhost:8080/offer', {
-                body: JSON.stringify({
-                  sdp: offer.sdp,
-                  type: offer.type,
-                }),
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                method: 'POST',
-              })
-            })
-            .then((response) => response.json())
-            .then((answer) => pc.setRemoteDescription(answer))
-            .catch((error) => console.error(error))
-        },
-        (error) => {
-          setIsSending(false)
-          console.error(`Could not acquire media: ${error}`)
-        }
-      )
+    pc.addEventListener('track', (event) => {
+      audioRef.current.srcObject = event.streams[0]
+    })
+
+    if (audioInputSource === MICROPHONE) startMicrophone()
+    else if (audioInputSource === TEST_SAMPLE) startTestSample()
   }
 
   const stopSending = () => {
     setIsSending(false)
 
+    pc.getSenders().forEach((sender) => {
+      if (sender.track) sender.track.stop()
+    })
     if (dc) dc.close()
     if (pc.getTransceivers) {
       pc.getTransceivers().forEach((transceiver) => {
         if (transceiver.stop) transceiver.stop()
       })
     }
-    pc.getSenders().forEach((sender) => sender.track.stop())
     setTimeout(() => pc.close(), 500)
   }
 
@@ -224,16 +261,6 @@ export default function JaxDsp() {
     if (dc) dc.send('stop_estimating_params')
   }
 
-  const startUsingTestSignal = () => {
-    setUseTestSignal(true)
-    if (dc) dc.send('use_test_signal')
-  }
-
-  const stopUsingTestSignal = () => {
-    setUseTestSignal(false)
-    if (dc) dc.send('use_test_signal')
-  }
-
   const processorParams =
     processors && processors[processorName] && processors[processorName].params
   const processorParamValues = (paramValues && paramValues[processorName]) || {}
@@ -242,14 +269,18 @@ export default function JaxDsp() {
       <Paragraph>
         <Link href="https://github.com/khiner/jaxdsp/">JAXdsp</Link>
       </Paragraph>
-      <audio controls autoPlay ref={audioRef}></audio>
       <div>
-        <button disabled={useTestSignal} onClick={startUsingTestSignal}>
-          Use test signal
-        </button>
-        <button disabled={!useTestSignal} onClick={stopUsingTestSignal}>
-          Stop using test signal
-        </button>
+        <span>Audio input source:</span>{' '}
+        <select
+          value={audioInputSource}
+          onChange={(event) => setAudioInputSource(event.target.value)}
+        >
+          {AUDIO_INPUT_SOURCES.map((audioInputSource) => (
+            <option key={audioInputSource} value={audioInputSource}>
+              {audioInputSource}
+            </option>
+          ))}
+        </select>
       </div>
       {processors && (
         <div>
@@ -257,7 +288,7 @@ export default function JaxDsp() {
             value={processorName}
             onChange={(event) => setProcessorName(event.target.value)}
           >
-            {['None', ...Object.keys(processors)].map((processorName) => (
+            {[NONE, ...Object.keys(processors)].map((processorName) => (
               <option key={processorName} value={processorName}>
                 {processorName}
               </option>
@@ -325,12 +356,13 @@ export default function JaxDsp() {
       )}
       <div>
         <button disabled={isSending} onClick={startSending}>
-          Start
+          Start sending
         </button>
         <button disabled={!isSending} onClick={stopSending}>
-          Stop
+          Stop sending
         </button>
       </div>
+      <audio controls autoPlay ref={audioRef} hidden></audio>
     </div>
   )
 }
