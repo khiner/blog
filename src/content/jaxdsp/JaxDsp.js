@@ -117,6 +117,14 @@ export default function JaxDsp() {
   const [processors, setProcessors] = useState(null)
   const [paramValues, setParamValues] = useState({})
   const [estimatedParamValues, setEstimatedParamValues] = useState({})
+  const [audioStreamErrorMessage, setAudioStreamErrorMessage] = useState(null)
+
+  const onAudioStreamError = (displayMessage, error) => {
+    setIsStreamingAudio(false)
+    setAudioStreamErrorMessage(displayMessage)
+    const errorMessage = error ? `${displayMessage}: ${error}` : displayMessage
+    console.error(errorMessage)
+  }
 
   const updateParamValue = (paramName, value) => {
     const newParamValues = { ...paramValues }
@@ -137,9 +145,23 @@ export default function JaxDsp() {
   }, [paramValues])
 
   useEffect(() => {
-    if (isStreamingAudio && !peerConnection) {
+    const openPeerConnection = () => {
+      if (peerConnection) return
+
       peerConnection = new RTCPeerConnection()
-      peerConnection.addTransceiver('audio')
+      peerConnection.onconnectionstatechange = function () {
+        switch (peerConnection.connectionState) {
+          case 'disconnected':
+          case 'failed':
+            onAudioStreamError('Stream has terminated unexpectedly', null)
+            break
+          case 'connected': // Fully connected
+          case 'closed': // Expected close
+          default:
+            break
+        }
+      }
+      peerConnection.addEventListener('track', event => (audioRef.current.srcObject = event.streams[0]))
       dataChannel = peerConnection.createDataChannel('chat', { ordered: true })
       dataChannel.onopen = () => dataChannel.send('get_config')
       dataChannel.onmessage = event => {
@@ -166,9 +188,11 @@ export default function JaxDsp() {
           setEstimatedParamValues(estimatedParamValues)
         }
       }
+    }
 
-      peerConnection.addEventListener('track', event => (audioRef.current.srcObject = event.streams[0]))
-    } else if (!isStreamingAudio && peerConnection) {
+    const closePeerConnection = () => {
+      if (!peerConnection) return
+
       peerConnection.getSenders().forEach(sender => sender?.track?.stop())
       dataChannel?.close()
       peerConnection.getTransceivers()?.forEach(transceiver => transceiver.stop())
@@ -176,48 +200,59 @@ export default function JaxDsp() {
       peerConnection = null
     }
 
-    if (isStreamingAudio) {
-      const addOrReplaceTrack = track => {
-        const audioSender = peerConnection.getSenders().find(s => s.track && s.track.kind === 'audio')
-        if (audioSender) {
-          audioSender.replaceTrack(track)
-        } else {
-          peerConnection.addTrack(track)
-          negotiate()
-        }
-      }
-
-      const startStreamingMicrophone = async () => {
+    const addOrReplaceTrack = async track => {
+      const audioSender = peerConnection.getSenders().find(s => s.track && s.track.kind === 'audio')
+      if (audioSender) {
+        audioSender.replaceTrack(track)
+      } else {
+        peerConnection.addTrack(track)
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            audio: { echoCancellation: false },
-            video: false,
-          })
-          const microphoneTrack = stream.getTracks()[0]
-          addOrReplaceTrack(microphoneTrack)
+          await negotiate()
         } catch (error) {
-          setIsStreamingAudio(false)
-          console.error(`Could not acquire media: ${error}`)
+          onAudioStreamError('Failed to negotiate RTC peer connection', error)
         }
       }
+    }
 
-      const startStreamingTestSample = () => {
-        const testSampleAudio = new Audio(testSample)
-        const audioContext = new AudioContext()
-        const testSampleSource = audioContext.createMediaElementSource(testSampleAudio)
-        const testSampleDestination = audioContext.createMediaStreamDestination()
-        testSampleSource.connect(testSampleDestination)
-
-        const testSampleTrack = testSampleDestination.stream.getAudioTracks()[0]
-        addOrReplaceTrack(testSampleTrack)
-
-        testSampleAudio.loop = true
-        testSampleAudio.currentTime = 0
-        testSampleAudio.play()
+    const startStreamingMicrophone = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: false },
+          video: false,
+        })
+        const microphoneTrack = stream.getTracks()[0]
+        addOrReplaceTrack(microphoneTrack)
+      } catch (error) {
+        onAudioStreamError('Could not acquire media', error)
       }
+    }
 
+    const startStreamingTestSample = () => {
+      const testSampleAudio = new Audio(testSample)
+      const audioContext = new AudioContext()
+      const testSampleSource = audioContext.createMediaElementSource(testSampleAudio)
+      const testSampleDestination = audioContext.createMediaStreamDestination()
+      testSampleSource.connect(testSampleDestination)
+
+      const testSampleTrack = testSampleDestination.stream.getAudioTracks()[0]
+      addOrReplaceTrack(testSampleTrack)
+
+      testSampleAudio.loop = true
+      testSampleAudio.currentTime = 0
+      testSampleAudio.play()
+    }
+
+    if (isStreamingAudio) {
+      setAudioStreamErrorMessage(null)
+      openPeerConnection()
       if (audioInputSourceLabel === AUDIO_INPUT_SOURCES.microphone.label) startStreamingMicrophone()
       else if (audioInputSourceLabel === AUDIO_INPUT_SOURCES.testSample.label) startStreamingTestSample()
+    } else if (!isStreamingAudio) {
+      closePeerConnection()
+    }
+
+    return () => {
+      closePeerConnection()
     }
   }, [isStreamingAudio, audioInputSourceLabel])
 
@@ -321,6 +356,9 @@ export default function JaxDsp() {
         <button disabled={!isStreamingAudio} onClick={() => setIsStreamingAudio(false)}>
           Stop sending
         </button>
+        {audioStreamErrorMessage && (
+          <div style={{ color: '#B33A3A', fontSize: '12px' }}>{audioStreamErrorMessage}.</div>
+        )}
       </div>
       <audio controls autoPlay ref={audioRef} hidden></audio>
     </div>
