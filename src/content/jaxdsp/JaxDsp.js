@@ -99,16 +99,21 @@ async function negotiate() {
   await peerConnection.setRemoteDescription(answer)
 }
 
-const NONE = 'None'
-const MICROPHONE = 'Microphone'
-const TEST_SAMPLE = 'TEST_SAMPLE'
-const AUDIO_INPUT_SOURCES = [MICROPHONE, TEST_SAMPLE]
+const AUDIO_INPUT_SOURCES = {
+  microphone: {
+    label: 'Microphone',
+  },
+  testSample: {
+    label: 'Test sample',
+  },
+}
+const NONE_PROCESSOR_LABEL = 'None'
 
 export default function JaxDsp() {
-  const [audioInputSource, setAudioInputSource] = useState(MICROPHONE)
+  const [audioInputSourceLabel, setAudioInputSourceLabel] = useState(AUDIO_INPUT_SOURCES.microphone.label)
   const [isStreamingAudio, setIsStreamingAudio] = useState(false)
   const [isEstimatingParams, setIsEstimatingParams] = useState(false)
-  const [processorName, setProcessorName] = useState(NONE)
+  const [processorName, setProcessorName] = useState(NONE_PROCESSOR_LABEL)
   const [processors, setProcessors] = useState(null)
   const [paramValues, setParamValues] = useState({})
   const [estimatedParamValues, setEstimatedParamValues] = useState({})
@@ -211,10 +216,10 @@ export default function JaxDsp() {
         testSampleAudio.play()
       }
 
-      if (audioInputSource === MICROPHONE) startStreamingMicrophone()
-      else if (audioInputSource === TEST_SAMPLE) startStreamingTestSample()
+      if (audioInputSourceLabel === AUDIO_INPUT_SOURCES.microphone.label) startStreamingMicrophone()
+      else if (audioInputSourceLabel === AUDIO_INPUT_SOURCES.testSample.label) startStreamingTestSample()
     }
-  }, [isStreamingAudio, audioInputSource])
+  }, [isStreamingAudio, audioInputSourceLabel])
 
   const startEstimatingParams = () => {
     setIsEstimatingParams(true)
@@ -235,10 +240,13 @@ export default function JaxDsp() {
       </Paragraph>
       <div>
         <span>Audio input source:</span>{' '}
-        <select value={audioInputSource} onChange={event => setAudioInputSource(event.target.value)}>
-          {AUDIO_INPUT_SOURCES.map(audioInputSource => (
-            <option key={audioInputSource} value={audioInputSource}>
-              {audioInputSource}
+        <select
+          value={audioInputSourceLabel}
+          onChange={event => setAudioInputSourceLabel(event.target.value)}
+        >
+          {Object.values(AUDIO_INPUT_SOURCES).map(({ label }) => (
+            <option key={label} value={label}>
+              {label}
             </option>
           ))}
         </select>
@@ -246,7 +254,7 @@ export default function JaxDsp() {
       {processors && (
         <div>
           <select value={processorName} onChange={event => setProcessorName(event.target.value)}>
-            {[NONE, ...Object.keys(processors)].map(processorName => (
+            {[NONE_PROCESSOR_LABEL, ...Object.keys(processors)].map(processorName => (
               <option key={processorName} value={processorName}>
                 {processorName}
               </option>
