@@ -12,64 +12,54 @@ import testSample from './assets/speech-male.wav'
 let peerConnection = null
 let dataChannel = null
 
-// TODO copied wholesale. I think I don't need a lot of this.
+// Adapted from https://github.com/aiortc/aiortc/blob/main/examples/server/client.js#L212-L271
 function sdpFilterCodec(kind, codec, realSdp) {
   function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
   }
 
-  const allowed = []
   const rtxRegex = new RegExp('a=fmtp:(\\d+) apt=(\\d+)\r$')
-  const codecRegex = new RegExp('a=rtpmap:([0-9]+) ' + escapeRegExp(codec))
-  const videoRegex = new RegExp('(m=' + kind + ' .*?)( ([0-9]+))*\\s*$')
+  const codecRegex = new RegExp(`a=rtpmap:([0-9]+) ${escapeRegExp(codec)}`)
 
   const lines = realSdp.split('\n')
 
   let isKind = false
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].startsWith('m=' + kind + ' ')) {
-      isKind = true
-    } else if (lines[i].startsWith('m=')) {
-      isKind = false
-    }
-
-    if (isKind) {
-      var match = lines[i].match(codecRegex)
-      if (match) {
-        allowed.push(parseInt(match[1]))
+  const allowed = lines
+    .map(line => {
+      if (line.startsWith(`m=${kind} `)) {
+        isKind = true
+      } else if (line.startsWith('m=')) {
+        isKind = false
       }
 
-      match = lines[i].match(rtxRegex)
-      if (match && allowed.includes(parseInt(match[2]))) {
-        allowed.push(parseInt(match[1]))
-      }
-    }
-  }
+      if (!isKind) return null
+
+      let match = line.match(codecRegex)
+      if (match) return parseInt(match[1])
+
+      match = line.match(rtxRegex)
+      if (match && allowed.includes(parseInt(match[2]))) return parseInt(match[1])
+
+      return null
+    })
+    .filter(match => !!match)
 
   const skipRegex = 'a=(fmtp|rtcp-fb|rtpmap):([0-9]+)'
   let sdp = ''
 
   isKind = false
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].startsWith('m=' + kind + ' ')) {
+  lines.forEach(line => {
+    if (line.startsWith(`m=${kind} `)) {
       isKind = true
-    } else if (lines[i].startsWith('m=')) {
+    } else if (line.startsWith('m=')) {
       isKind = false
     }
 
-    if (isKind) {
-      const skipMatch = lines[i].match(skipRegex)
-      if (skipMatch && !allowed.includes(parseInt(skipMatch[2]))) {
-        continue
-      } else if (lines[i].match(videoRegex)) {
-        sdp += lines[i].replace(videoRegex, '$1 ' + allowed.join(' ')) + '\n'
-      } else {
-        sdp += lines[i] + '\n'
-      }
-    } else {
-      sdp += lines[i] + '\n'
+    const skipMatch = line.match(skipRegex)
+    if ((isKind && !(skipMatch && !allowed.includes(parseInt(skipMatch[2])))) || !isKind) {
+      sdp += `${line}\n`
     }
-  }
+  })
 
   return sdp
 }
