@@ -6,12 +6,11 @@ import Paragraph from '../Paragraph'
 
 import testSample from './assets/speech-male.wav'
 
-// Starting point for this code from
+// Starting point for this code from:
 // https://webrtc.github.io/samples/src/content/peerconnection/webaudio-input/
 
-// peer connection
-let pc = null
-let dc = null
+let peerConnection = null
+let dataChannel = null
 
 // TODO copied wholesale. I think I don't need a lot of this.
 function sdpFilterCodec(kind, codec, realSdp) {
@@ -100,38 +99,38 @@ export default function JaxDsp() {
   const audioRef = useRef(null)
 
   useEffect(() => {
-    if (dc) dc.send(JSON.stringify({ audio_processor_name: processorName }))
+    if (dataChannel) dataChannel.send(JSON.stringify({ audio_processor_name: processorName }))
   }, [processorName])
 
   useEffect(() => {
-    if (dc) dc.send(JSON.stringify({ param_values: paramValues }))
+    if (dataChannel) dataChannel.send(JSON.stringify({ param_values: paramValues }))
   }, [paramValues])
 
   const negotiate = async () => {
-    const offer = await pc.createOffer()
-    await pc.setLocalDescription(offer)
+    const offer = await peerConnection.createOffer()
+    await peerConnection.setLocalDescription(offer)
     await new Promise((resolve) => {
-      if (pc.iceGatheringState === 'complete') {
+      if (peerConnection.iceGatheringState === 'complete') {
         resolve()
       } else {
         function checkState() {
-          if (pc.iceGatheringState === 'complete') {
-            pc.removeEventListener('icegatheringstatechange', checkState)
+          if (peerConnection.iceGatheringState === 'complete') {
+            peerConnection.removeEventListener('icegatheringstatechange', checkState)
             resolve()
           }
         }
-        pc.addEventListener('icegatheringstatechange', checkState)
+        peerConnection.addEventListener('icegatheringstatechange', checkState)
       }
     })
-    pc.localDescription.sdp = sdpFilterCodec(
+    peerConnection.localDescription.sdp = sdpFilterCodec(
       'audio',
       'opus/48000/2',
-      pc.localDescription.sdp
+      peerConnection.localDescription.sdp
     )
     const response = await fetch('http://localhost:8080/offer', {
       body: JSON.stringify({
-        sdp: pc.localDescription.sdp,
-        type: pc.localDescription.type,
+        sdp: peerConnection.localDescription.sdp,
+        type: peerConnection.localDescription.type,
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -139,18 +138,17 @@ export default function JaxDsp() {
       method: 'POST',
     })
     const answer = await response.json()
-    await pc.setRemoteDescription(answer)
+    await peerConnection.setRemoteDescription(answer)
   }
 
-  // Returns true if track was added to the peer connection
   const addOrReplaceTrack = (track) => {
-    const audioSender = pc
+    const audioSender = peerConnection
       .getSenders()
       .find((s) => s.track && s.track.kind === 'audio')
     if (audioSender) {
       audioSender.replaceTrack(track)
     } else {
-      pc.addTrack(track)
+      peerConnection.addTrack(track)
       negotiate()
     }
   }
@@ -169,22 +167,22 @@ export default function JaxDsp() {
     }
   }
 
-  // TODO use https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/replaceTrack
   // TODO set currentTIme = 0 after pc 'track' event
   const startTestSample = async () => {
     const testSampleAudio = new Audio(testSample)
-    testSampleAudio.loop = true
     const audioContext = new AudioContext()
     const testSampleSource = audioContext.createMediaElementSource(
       testSampleAudio
     )
     const testSampleDestination = audioContext.createMediaStreamDestination()
-    const testSampleTrack = testSampleDestination.stream.getAudioTracks()[0]
     testSampleSource.connect(testSampleDestination)
 
+    const testSampleTrack = testSampleDestination.stream.getAudioTracks()[0]
+    addOrReplaceTrack(testSampleTrack)
+
+    testSampleAudio.loop = true
     testSampleAudio.currentTime = 0
     await testSampleAudio.play()
-    addOrReplaceTrack(testSampleTrack)
   }
 
   useEffect(() => {
@@ -197,13 +195,13 @@ export default function JaxDsp() {
   const startSending = () => {
     setIsSending(true)
 
-    pc = new RTCPeerConnection()
-    pc.addTransceiver('audio')
-    dc = pc.createDataChannel('chat', { ordered: true })
-    dc.onopen = () => {
-      dc.send('get_config')
+    peerConnection = new RTCPeerConnection()
+    peerConnection.addTransceiver('audio')
+    dataChannel = peerConnection.createDataChannel('chat', { ordered: true })
+    dataChannel.onopen = () => {
+      dataChannel.send('get_config')
     }
-    dc.onmessage = (event) => {
+    dataChannel.onmessage = (event) => {
       const message = JSON.parse(event.data)
       const {
         processors,
@@ -228,7 +226,7 @@ export default function JaxDsp() {
       }
     }
 
-    pc.addEventListener('track', (event) => {
+    peerConnection.addEventListener('track', (event) => {
       audioRef.current.srcObject = event.streams[0]
     })
 
@@ -239,26 +237,27 @@ export default function JaxDsp() {
   const stopSending = () => {
     setIsSending(false)
 
-    pc.getSenders().forEach((sender) => {
+    peerConnection.getSenders().forEach((sender) => {
       if (sender.track) sender.track.stop()
     })
-    if (dc) dc.close()
-    if (pc.getTransceivers) {
-      pc.getTransceivers().forEach((transceiver) => {
+    if (dataChannel) dataChannel.close()
+    if (peerConnection.getTransceivers) {
+      peerConnection.getTransceivers().forEach((transceiver) => {
         if (transceiver.stop) transceiver.stop()
       })
     }
-    setTimeout(() => pc.close(), 500)
+    peerConnection.close()
+    // delete peerConnection
   }
 
   const startEstimating = () => {
     setIsEstimating(true)
-    if (dc) dc.send('start_estimating_params')
+    if (dataChannel) dataChannel.send('start_estimating_params')
   }
 
   const stopEstimating = () => {
     setIsEstimating(false)
-    if (dc) dc.send('stop_estimating_params')
+    if (dataChannel) dataChannel.send('stop_estimating_params')
   }
 
   const processorParams =
