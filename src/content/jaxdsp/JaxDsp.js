@@ -74,6 +74,41 @@ function sdpFilterCodec(kind, codec, realSdp) {
   return sdp
 }
 
+async function negotiate() {
+  const offer = await peerConnection.createOffer()
+  await peerConnection.setLocalDescription(offer)
+  await new Promise(resolve => {
+    if (peerConnection.iceGatheringState === 'complete') {
+      resolve()
+    } else {
+      function checkState() {
+        if (peerConnection.iceGatheringState === 'complete') {
+          peerConnection.removeEventListener('icegatheringstatechange', checkState)
+          resolve()
+        }
+      }
+      peerConnection.addEventListener('icegatheringstatechange', checkState)
+    }
+  })
+  peerConnection.localDescription.sdp = sdpFilterCodec(
+    'audio',
+    'opus/48000/2',
+    peerConnection.localDescription.sdp
+  )
+  const response = await fetch('http://localhost:8080/offer', {
+    body: JSON.stringify({
+      sdp: peerConnection.localDescription.sdp,
+      type: peerConnection.localDescription.type,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  })
+  const answer = await response.json()
+  await peerConnection.setRemoteDescription(answer)
+}
+
 const NONE = 'None'
 const MICROPHONE = 'Microphone'
 const TEST_SAMPLE = 'TEST_SAMPLE'
@@ -99,156 +134,97 @@ export default function JaxDsp() {
   const audioRef = useRef(null)
 
   useEffect(() => {
-    if (dataChannel) dataChannel.send(JSON.stringify({ audio_processor_name: processorName }))
+    dataChannel?.send(JSON.stringify({ audio_processor_name: processorName }))
   }, [processorName])
 
   useEffect(() => {
-    if (dataChannel) dataChannel.send(JSON.stringify({ param_values: paramValues }))
+    dataChannel?.send(JSON.stringify({ param_values: paramValues }))
   }, [paramValues])
 
-  const negotiate = async () => {
-    const offer = await peerConnection.createOffer()
-    await peerConnection.setLocalDescription(offer)
-    await new Promise((resolve) => {
-      if (peerConnection.iceGatheringState === 'complete') {
-        resolve()
-      } else {
-        function checkState() {
-          if (peerConnection.iceGatheringState === 'complete') {
-            peerConnection.removeEventListener('icegatheringstatechange', checkState)
-            resolve()
-          }
-        }
-        peerConnection.addEventListener('icegatheringstatechange', checkState)
-      }
-    })
-    peerConnection.localDescription.sdp = sdpFilterCodec(
-      'audio',
-      'opus/48000/2',
-      peerConnection.localDescription.sdp
-    )
-    const response = await fetch('http://localhost:8080/offer', {
-      body: JSON.stringify({
-        sdp: peerConnection.localDescription.sdp,
-        type: peerConnection.localDescription.type,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    })
-    const answer = await response.json()
-    await peerConnection.setRemoteDescription(answer)
-  }
-
-  const addOrReplaceTrack = (track) => {
-    const audioSender = peerConnection
-      .getSenders()
-      .find((s) => s.track && s.track.kind === 'audio')
-    if (audioSender) {
-      audioSender.replaceTrack(track)
-    } else {
-      peerConnection.addTrack(track)
-      negotiate()
-    }
-  }
-
-  const startMicrophone = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: false },
-        video: false,
-      })
-      const microphoneTrack = stream.getTracks()[0]
-      addOrReplaceTrack(microphoneTrack)
-    } catch (error) {
-      setIsStreamingAudio(false)
-      console.error(`Could not acquire media: ${error}`)
-    }
-  }
-
-  // TODO set currentTIme = 0 after pc 'track' event
-  const startTestSample = async () => {
-    const testSampleAudio = new Audio(testSample)
-    const audioContext = new AudioContext()
-    const testSampleSource = audioContext.createMediaElementSource(
-      testSampleAudio
-    )
-    const testSampleDestination = audioContext.createMediaStreamDestination()
-    testSampleSource.connect(testSampleDestination)
-
-    const testSampleTrack = testSampleDestination.stream.getAudioTracks()[0]
-    addOrReplaceTrack(testSampleTrack)
-
-    testSampleAudio.loop = true
-    testSampleAudio.currentTime = 0
-    await testSampleAudio.play()
-  }
-
   useEffect(() => {
-    if (!isStreamingAudio) return
+    if (isStreamingAudio && !peerConnection) {
+      peerConnection = new RTCPeerConnection()
+      peerConnection.addTransceiver('audio')
+      dataChannel = peerConnection.createDataChannel('chat', { ordered: true })
+      dataChannel.onopen = () => dataChannel.send('get_config')
+      dataChannel.onmessage = event => {
+        const message = JSON.parse(event.data)
+        const {
+          processors,
+          param_values: paramValues,
+          estimated_param_values: estimatedParamValues,
+        } = message
 
-    if (audioInputSource === MICROPHONE) startMicrophone()
-    else if (audioInputSource === TEST_SAMPLE) startTestSample()
-  }, [audioInputSource])
-
-  const startStreamingAudio = () => {
-    setIsStreamingAudio(true)
-
-    peerConnection = new RTCPeerConnection()
-    peerConnection.addTransceiver('audio')
-    dataChannel = peerConnection.createDataChannel('chat', { ordered: true })
-    dataChannel.onopen = () => {
-      dataChannel.send('get_config')
-    }
-    dataChannel.onmessage = (event) => {
-      const message = JSON.parse(event.data)
-      const {
-        processors,
-        param_values: paramValues,
-        estimated_param_values: estimatedParamValues,
-      } = message
-
-      if (processors) {
-        console.log('Received processor descriptions:')
-        console.log(processors)
-        setProcessors(processors)
+        if (processors) {
+          console.log('Received processor descriptions:')
+          console.log(processors)
+          setProcessors(processors)
+        }
+        if (paramValues) {
+          console.log('Received parameter values:')
+          console.log(paramValues)
+          setParamValues(paramValues)
+        }
+        if (estimatedParamValues) {
+          console.log('Received estimated parameter values:')
+          console.log(estimatedParamValues)
+          setEstimatedParamValues(estimatedParamValues)
+        }
       }
-      if (paramValues) {
-        console.log('Received parameter values:')
-        console.log(paramValues)
-        setParamValues(paramValues)
-      }
-      if (estimatedParamValues) {
-        console.log('Received estimated parameter values:')
-        console.log(estimatedParamValues)
-        setEstimatedParamValues(estimatedParamValues)
-      }
+
+      peerConnection.addEventListener('track', event => (audioRef.current.srcObject = event.streams[0]))
+    } else if (!isStreamingAudio && peerConnection) {
+      peerConnection.getSenders().forEach(sender => sender?.track?.stop())
+      dataChannel?.close()
+      peerConnection.getTransceivers()?.forEach(transceiver => transceiver.stop())
+      peerConnection.close()
+      peerConnection = null
     }
 
-    peerConnection.addEventListener('track', (event) => {
-      audioRef.current.srcObject = event.streams[0]
-    })
+    if (isStreamingAudio) {
+      const addOrReplaceTrack = track => {
+        const audioSender = peerConnection.getSenders().find(s => s.track && s.track.kind === 'audio')
+        if (audioSender) {
+          audioSender.replaceTrack(track)
+        } else {
+          peerConnection.addTrack(track)
+          negotiate()
+        }
+      }
 
-    if (audioInputSource === MICROPHONE) startMicrophone()
-    else if (audioInputSource === TEST_SAMPLE) startTestSample()
-  }
+      const startStreamingMicrophone = async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: { echoCancellation: false },
+            video: false,
+          })
+          const microphoneTrack = stream.getTracks()[0]
+          addOrReplaceTrack(microphoneTrack)
+        } catch (error) {
+          setIsStreamingAudio(false)
+          console.error(`Could not acquire media: ${error}`)
+        }
+      }
 
-  const stopStreamingAudio = () => {
-    setIsStreamingAudio(false)
+      const startStreamingTestSample = () => {
+        const testSampleAudio = new Audio(testSample)
+        const audioContext = new AudioContext()
+        const testSampleSource = audioContext.createMediaElementSource(testSampleAudio)
+        const testSampleDestination = audioContext.createMediaStreamDestination()
+        testSampleSource.connect(testSampleDestination)
 
-    peerConnection.getSenders().forEach((sender) => {
-      if (sender.track) sender.track.stop()
-    })
-    if (dataChannel) dataChannel.close()
-    if (peerConnection.getTransceivers) {
-      peerConnection.getTransceivers().forEach((transceiver) => {
-        if (transceiver.stop) transceiver.stop()
-      })
+        const testSampleTrack = testSampleDestination.stream.getAudioTracks()[0]
+        addOrReplaceTrack(testSampleTrack)
+
+        testSampleAudio.loop = true
+        testSampleAudio.currentTime = 0
+        testSampleAudio.play()
+      }
+
+      if (audioInputSource === MICROPHONE) startStreamingMicrophone()
+      else if (audioInputSource === TEST_SAMPLE) startStreamingTestSample()
     }
-    peerConnection.close()
-    // delete peerConnection
-  }
+  }, [isStreamingAudio, audioInputSource])
 
   const startEstimatingParams = () => {
     setIsEstimatingParams(true)
@@ -260,8 +236,7 @@ export default function JaxDsp() {
     if (dataChannel) dataChannel.send('stop_estimating_params')
   }
 
-  const processorParams =
-    processors && processors[processorName] && processors[processorName].params
+  const processorParams = processors && processors[processorName] && processors[processorName].params
   const processorParamValues = (paramValues && paramValues[processorName]) || {}
   return (
     <div>
@@ -270,11 +245,8 @@ export default function JaxDsp() {
       </Paragraph>
       <div>
         <span>Audio input source:</span>{' '}
-        <select
-          value={audioInputSource}
-          onChange={(event) => setAudioInputSource(event.target.value)}
-        >
-          {AUDIO_INPUT_SOURCES.map((audioInputSource) => (
+        <select value={audioInputSource} onChange={event => setAudioInputSource(event.target.value)}>
+          {AUDIO_INPUT_SOURCES.map(audioInputSource => (
             <option key={audioInputSource} value={audioInputSource}>
               {audioInputSource}
             </option>
@@ -283,11 +255,8 @@ export default function JaxDsp() {
       </div>
       {processors && (
         <div>
-          <select
-            value={processorName}
-            onChange={(event) => setProcessorName(event.target.value)}
-          >
-            {[NONE, ...Object.keys(processors)].map((processorName) => (
+          <select value={processorName} onChange={event => setProcessorName(event.target.value)}>
+            {[NONE, ...Object.keys(processors)].map(processorName => (
               <option key={processorName} value={processorName}>
                 {processorName}
               </option>
@@ -307,24 +276,20 @@ export default function JaxDsp() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'row' }}>
             <div>
-              {processorParams.map(
-                ({ name, default_value, min_value, max_value }) => (
-                  <div key={name}>
-                    <input
-                      type="range"
-                      name={name}
-                      value={processorParamValues[name] || default_value || 0.0}
-                      min={min_value}
-                      max={max_value}
-                      step={(max_value - min_value) / 100.0}
-                      onChange={(event) =>
-                        updateParamValue(name, +event.target.value)
-                      }
-                    />
-                    <label htmlFor={name}>{name}</label>
-                  </div>
-                )
-              )}
+              {processorParams.map(({ name, default_value, min_value, max_value }) => (
+                <div key={name}>
+                  <input
+                    type="range"
+                    name={name}
+                    value={processorParamValues[name] || default_value || 0.0}
+                    min={min_value}
+                    max={max_value}
+                    step={(max_value - min_value) / 100.0}
+                    onChange={event => updateParamValue(name, +event.target.value)}
+                  />
+                  <label htmlFor={name}>{name}</label>
+                </div>
+              ))}
             </div>
             {estimatedParamValues && (
               <div>
@@ -339,9 +304,7 @@ export default function JaxDsp() {
                           min={min_value}
                           max={max_value}
                           step={(max_value - min_value) / 100.0}
-                          onChange={(event) =>
-                            updateParamValue(name, +event.target.value)
-                          }
+                          onChange={event => updateParamValue(name, +event.target.value)}
                           disabled
                         />
                         <label htmlFor={name}>{name}</label>
@@ -354,10 +317,10 @@ export default function JaxDsp() {
         </div>
       )}
       <div>
-        <button disabled={isStreamingAudio} onClick={startStreamingAudio}>
+        <button disabled={isStreamingAudio} onClick={() => setIsStreamingAudio(true)}>
           Start sending
         </button>
-        <button disabled={!isStreamingAudio} onClick={stopStreamingAudio}>
+        <button disabled={!isStreamingAudio} onClick={() => setIsStreamingAudio(false)}>
           Stop sending
         </button>
       </div>
