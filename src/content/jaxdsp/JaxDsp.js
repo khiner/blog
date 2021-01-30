@@ -81,8 +81,8 @@ const AUDIO_INPUT_SOURCES = [MICROPHONE, TEST_SAMPLE]
 
 export default function JaxDsp() {
   const [audioInputSource, setAudioInputSource] = useState(MICROPHONE)
-  const [isSending, setIsSending] = useState(false)
-  const [isEstimating, setIsEstimating] = useState(false)
+  const [isStreamingAudio, setIsStreamingAudio] = useState(false)
+  const [isEstimatingParams, setIsEstimatingParams] = useState(false)
   const [processorName, setProcessorName] = useState(NONE)
   const [processors, setProcessors] = useState(null)
   const [paramValues, setParamValues] = useState({})
@@ -162,7 +162,7 @@ export default function JaxDsp() {
       const microphoneTrack = stream.getTracks()[0]
       addOrReplaceTrack(microphoneTrack)
     } catch (error) {
-      setIsSending(false)
+      setIsStreamingAudio(false)
       console.error(`Could not acquire media: ${error}`)
     }
   }
@@ -186,14 +186,14 @@ export default function JaxDsp() {
   }
 
   useEffect(() => {
-    if (!isSending) return
+    if (!isStreamingAudio) return
 
     if (audioInputSource === MICROPHONE) startMicrophone()
     else if (audioInputSource === TEST_SAMPLE) startTestSample()
   }, [audioInputSource])
 
-  const startSending = () => {
-    setIsSending(true)
+  const startStreamingAudio = () => {
+    setIsStreamingAudio(true)
 
     peerConnection = new RTCPeerConnection()
     peerConnection.addTransceiver('audio')
@@ -234,8 +234,8 @@ export default function JaxDsp() {
     else if (audioInputSource === TEST_SAMPLE) startTestSample()
   }
 
-  const stopSending = () => {
-    setIsSending(false)
+  const stopStreamingAudio = () => {
+    setIsStreamingAudio(false)
 
     peerConnection.getSenders().forEach((sender) => {
       if (sender.track) sender.track.stop()
@@ -250,13 +250,13 @@ export default function JaxDsp() {
     // delete peerConnection
   }
 
-  const startEstimating = () => {
-    setIsEstimating(true)
+  const startEstimatingParams = () => {
+    setIsEstimatingParams(true)
     if (dataChannel) dataChannel.send('start_estimating_params')
   }
 
-  const stopEstimating = () => {
-    setIsEstimating(false)
+  const stopEstimatingParams = () => {
+    setIsEstimatingParams(false)
     if (dataChannel) dataChannel.send('stop_estimating_params')
   }
 
@@ -298,10 +298,10 @@ export default function JaxDsp() {
       {processorParams && (
         <div>
           <div>
-            <button disabled={isEstimating} onClick={startEstimating}>
+            <button disabled={isEstimatingParams} onClick={startEstimatingParams}>
               Start estimating
             </button>
-            <button disabled={!isEstimating} onClick={stopEstimating}>
+            <button disabled={!isEstimatingParams} onClick={stopEstimatingParams}>
               Stop estimating
             </button>
           </div>
@@ -354,10 +354,10 @@ export default function JaxDsp() {
         </div>
       )}
       <div>
-        <button disabled={isSending} onClick={startSending}>
+        <button disabled={isStreamingAudio} onClick={startStreamingAudio}>
           Start sending
         </button>
-        <button disabled={!isSending} onClick={stopSending}>
+        <button disabled={!isStreamingAudio} onClick={stopStreamingAudio}>
           Stop sending
         </button>
       </div>
