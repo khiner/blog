@@ -30,21 +30,14 @@ export default function MainNav({ sidebarOpen, setSidebarOpen }) {
         <Nav>
           {config.topLevelLinks &&
             config.topLevelLinks.map((topLevelLink) => (
-              <Nav.Link
-                key={topLevelLink.label}
-                href={topLevelLink.href}
-                target="_blank"
-              >
+              <Nav.Link key={topLevelLink.label} href={topLevelLink.href} target="_blank">
                 {topLevelLink.label}
               </Nav.Link>
             ))}
-          {(config.showShareNavItem ||
-            (config.mailChimpFormAction && config.mailChimpInputName)) && (
+          {(config.showShareNavItem || (config.mailChimpFormAction && config.mailChimpInputName)) && (
             <NavDropdown
               title={
-                config.showShareNavItem &&
-                config.mailChimpFormAction &&
-                config.mailChimpInputName
+                config.showShareNavItem && config.mailChimpFormAction && config.mailChimpInputName
                   ? 'Share & Subscribe'
                   : config.showShareNavItem
                   ? 'Share'
@@ -62,19 +55,13 @@ export default function MainNav({ sidebarOpen, setSidebarOpen }) {
                 />
               )}
               {config.mailChimpFormAction && config.mailChimpInputName && (
-                <MailChimpEmailSignup
-                  formAction={config.mailChimpFormAction}
-                  inputName={config.mailChimpInputName}
-                />
+                <MailChimpEmailSignup formAction={config.mailChimpFormAction} inputName={config.mailChimpInputName} />
               )}
             </NavDropdown>
           )}
           {config.email && (
             <NavDropdown title="Contact" id="contact" alignRight>
-              <Nav.Link
-                href={`mailto:${config.email}?Subject=Hello!`}
-                target="_blank"
-              >
+              <Nav.Link href={`mailto:${config.email}?Subject=Hello!`} target="_blank">
                 {config.email}
               </Nav.Link>
             </NavDropdown>

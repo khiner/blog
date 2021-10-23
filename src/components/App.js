@@ -13,13 +13,8 @@ export default function App() {
 
   return (
     <div>
-      {config.entriesInSidebar && (
-        <Sidebar isOpen={sidebarOpen} setOpen={setSidebarOpen} />
-      )}
-      <div
-        className={`transitionable${sidebarOpen ? ' opaque' : ''}`}
-        onClick={() => setSidebarOpen(false)}
-      >
+      {config.entriesInSidebar && <Sidebar isOpen={sidebarOpen} setOpen={setSidebarOpen} />}
+      <div className={`transitionable${sidebarOpen ? ' opaque' : ''}`} onClick={() => setSidebarOpen(false)}>
         <MainNav sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <MainContent />
       </div>

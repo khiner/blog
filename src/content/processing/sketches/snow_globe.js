@@ -40,12 +40,7 @@ export default function sketch(p) {
   p.setup = function () {
     backgroundColor = p.color(BACKGROUND_COLOR_STR)
     foregroundColor = p.color(FOREGROUND_COLOR_STR)
-    foregroundColorArray = [
-      p.red(foregroundColor),
-      p.green(foregroundColor),
-      p.blue(foregroundColor),
-      255,
-    ]
+    foregroundColorArray = [p.red(foregroundColor), p.green(foregroundColor), p.blue(foregroundColor), 255]
     p.windowResized = windowResized(p, image.height / image.width, onSizeChange)
     cnv = p.createCanvas(600, 400)
     cnv.mouseClicked(function () {
@@ -85,9 +80,7 @@ export default function sketch(p) {
             if (pixelMask[y * p.width + x]) {
               for (let i = 0; i < DENSITY; i++) {
                 for (let j = 0; j < DENSITY; j++) {
-                  idx =
-                    4 *
-                    ((y * DENSITY + j) * p.width * DENSITY + (x * DENSITY + i))
+                  idx = 4 * ((y * DENSITY + j) * p.width * DENSITY + (x * DENSITY + i))
                   p.pixels[idx] = foregroundColorArray[0]
                   p.pixels[idx + 1] = foregroundColorArray[1]
                   p.pixels[idx + 2] = foregroundColorArray[2]
@@ -127,12 +120,7 @@ export default function sketch(p) {
   // The mouse drops snow when held down.
   // Drop three 'snowflakes': one on the clicked pixel, one to the left, and one to the right
   function mouseSnow() {
-    if (
-      p.mouseX > 0 &&
-      p.mouseX < p.width - 1 &&
-      p.mouseY > 0 &&
-      p.mouseY < p.height - 1
-    ) {
+    if (p.mouseX > 0 && p.mouseX < p.width - 1 && p.mouseY > 0 && p.mouseY < p.height - 1) {
       let clickedPix = p.mouseX + p.mouseY * p.width
       for (let i = clickedPix - 1; i <= clickedPix + 1; i++) {
         pixelMask[i] = true

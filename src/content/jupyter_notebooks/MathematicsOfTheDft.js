@@ -14,77 +14,60 @@ export default (
       </Link>
       !{' '}
       <small>
-        (
-        <Link href="https://github.com/khiner/notebooks/blob/master/mathematics_of_the_dft/">
-          raw Github link
-        </Link>
-        )
+        (<Link href="https://github.com/khiner/notebooks/blob/master/mathematics_of_the_dft/">raw Github link</Link>)
       </small>
     </Paragraph>
     <Paragraph>
       <Link href="https://www.amazon.com/Mathematics-Discrete-Fourier-Transform-DFT/dp/097456074X/">
         Mathematics of the Discrete Fourier Transform
       </Link>{' '}
-      is a book all about... well it's about the DFT obviously. And that's
-      really it. Just chalk-full of DFT goodness. It's the first in a series of
-      four books about audio and music DSP written by Julius O. Smith III, and I
-      couldn't imagine a better, more comprehensive and well-written text on the
-      subject. It covers everything from square one, assuming very little
-      knowledge and explaning all notational conventions along the way. I don't
-      know what else to say! If you want to know about the DFT, get this book!
-      :)
+      is a book all about... well it's about the DFT obviously. And that's really it. Just chalk-full of DFT goodness.
+      It's the first in a series of four books about audio and music DSP written by Julius O. Smith III, and I couldn't
+      imagine a better, more comprehensive and well-written text on the subject. It covers everything from square one,
+      assuming very little knowledge and explaning all notational conventions along the way. I don't know what else to
+      say! If you want to know about the DFT, get this book! :)
     </Paragraph>
     <Paragraph>
-      As usual, these Jupyter notebooks go through all the exercises in each of
-      the chapters. A few here and there remain unfinished. I couldn't find any
-      kind of solutions or really any reproduction of the questions at all on
-      the internet, so there were a few I just couldn't figure out.
+      As usual, these Jupyter notebooks go through all the exercises in each of the chapters. A few here and there
+      remain unfinished. I couldn't find any kind of solutions or really any reproduction of the questions at all on the
+      internet, so there were a few I just couldn't figure out.
     </Paragraph>
     <Paragraph>
-      There are a fair amount of extra charts and animations sprinkled
-      throughout, and I try to reproduce claims and results where I felt the
-      need to - most notably in the{' '}
+      There are a fair amount of extra charts and animations sprinkled throughout, and I try to reproduce claims and
+      results where I felt the need to - most notably in the{' '}
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/mathematics_of_the_dft/chapter_7_fourier_theorems_for_the_dft.ipynb">
         <i>Fourier Theorems for the DFT</i>
       </Link>{' '}
       chapter, where all of the given time
       {'<=>'}
-      frequency operational symmetries are visually proven with charts, and some
-      convolution examples are animated. Since that is the most visually
-      interesting section in these notebooks, and since it is a good culmination
-      of the material presented in the book, I'm going to reproduce that section
-      of the notebooks here.
+      frequency operational symmetries are visually proven with charts, and some convolution examples are animated.
+      Since that is the most visually interesting section in these notebooks, and since it is a good culmination of the
+      material presented in the book, I'm going to reproduce that section of the notebooks here.
     </Paragraph>
     <Paragraph>
-      What the following charts show is a fascinating link between operations
-      done in the time domains and operations in the frequency domain. When you
-      see notation like{' '}
+      What the following charts show is a fascinating link between operations done in the time domains and operations in
+      the frequency domain. When you see notation like{' '}
       <div
         className="jupyter"
         dangerouslySetInnerHTML={{
           __html: `<Paragraph>$\\fbox{Op$(x) \\longleftrightarrow \\text{OtherOp}(X)$}$,</Paragraph>`,
         }}
       />
-      it means that if we take the DFT of the left-hand side (some time-domain
-      signal that had some operation performed on it), we will exactly get the
-      right-hand side (the DFT of that signal with some potentially different
-      operation performed on it).
+      it means that if we take the DFT of the left-hand side (some time-domain signal that had some operation performed
+      on it), we will exactly get the right-hand side (the DFT of that signal with some potentially different operation
+      performed on it).
     </Paragraph>
     <Paragraph>
-      As a practical example, the convolution operation in the time domain
-      corresponds to multiplication in the frequency domain. More concretely,
-      this means that we can compute the convolution of two signals by first
-      taking the DFT of both signals separately, multiplying the resulting
-      spectra, and then taking the inverse-DFT of the result. Numpy, for
-      example,{' '}
+      As a practical example, the convolution operation in the time domain corresponds to multiplication in the
+      frequency domain. More concretely, this means that we can compute the convolution of two signals by first taking
+      the DFT of both signals separately, multiplying the resulting spectra, and then taking the inverse-DFT of the
+      result. Numpy, for example,{' '}
       <Link href="https://github.com/scipy/scipy/blob/v1.1.0/scipy/signal/signaltools.py#L666">
         uses the FFT to perform convolution if the array size is large enough
       </Link>
       .
     </Paragraph>
-    <Paragraph>
-      Here is most of that chapter's notebook, without exercises:
-    </Paragraph>
+    <Paragraph>Here is most of that chapter's notebook, without exercises:</Paragraph>
     <h3>
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/mathematics_of_the_dft/chapter_7_fourier_theorems_for_the_dft.ipynb">
         Chapter 7: Digital Signals and Sampling

@@ -36,9 +36,8 @@ const entries = [
     description: (
       <div>
         <p>
-          A bunch of random tracks ranging from about 2006-2011. Playful bedroom
-          experiments. Some are just goofy, some are more serious. Some good
-          ideas, some not so much. All of them mastered terribly.
+          A bunch of random tracks ranging from about 2006-2011. Playful bedroom experiments. Some are just goofy, some
+          are more serious. Some good ideas, some not so much. All of them mastered terribly.
         </p>
         <AlbumPreview title="Web Tracks 2006 - 2011" playlistId="3066212" />
       </div>
@@ -60,8 +59,7 @@ const entries = [
         <AlbumPreview title="Calahjes & Lewps" playlistId="1425406" />
       </div>
     ),
-    descriptionPlainText:
-      'An album of stream of consciousness frenetic sampling from musical sources.',
+    descriptionPlainText: 'An album of stream of consciousness frenetic sampling from musical sources.',
     contentPath: 'albums/CalahjesAndLewps',
     type: 'article',
   },
@@ -73,22 +71,12 @@ const entries = [
     commentoId: 'MakeNoiseSharedSystemJams',
     description: (
       <div>
-        <p>
-          Modular synth patches, made mostly using the Make Noise Shared
-          System.'
-        </p>
-        <img
-          src={make_noise_shared_system_image}
-          alt="Make Noise Shared System"
-        />
-        <AlbumPreview
-          title="MakeNoise Shared System Jams"
-          playlistId="63454085"
-        />
+        <p>Modular synth patches, made mostly using the Make Noise Shared System.'</p>
+        <img src={make_noise_shared_system_image} alt="Make Noise Shared System" />
+        <AlbumPreview title="MakeNoise Shared System Jams" playlistId="63454085" />
       </div>
     ),
-    descriptionPlainText:
-      'Eight Modular synth patches, made mostly using the Make Noise Shareed System.',
+    descriptionPlainText: 'Eight Modular synth patches, made mostly using the Make Noise Shareed System.',
     contentPath: 'albums/MakeNoiseSharedSystemJams',
     type: 'article',
   },
@@ -100,15 +88,11 @@ const entries = [
     commentoId: 'MidiMarkovCompose',
     description: (
       <div>
-        <p>
-          Piano compositions generated from a Markov chain given classical MIDI
-          scores as input.
-        </p>
+        <p>Piano compositions generated from a Markov chain given classical MIDI scores as input.</p>
         <AlbumPreview title="MidiMarkov: Compose" playlistId="257076049" />
       </div>
     ),
-    descriptionPlainText:
-      'Piano compositions generated from a Markov chain given classical MIDI scores as input.',
+    descriptionPlainText: 'Piano compositions generated from a Markov chain given classical MIDI scores as input.',
     contentPath: 'albums/MidiMarkovCompose',
     type: 'article',
   },
@@ -121,10 +105,9 @@ const entries = [
     description: (
       <div>
         <p>
-          Piano compositions generated from a Markov chain given classical MIDI
-          scores as input. Unlike the "MIDI Markov: Compose" album, these pieces
-          introduce intentional MIDI errors to generate more experimental,
-          ambient pieces.
+          Piano compositions generated from a Markov chain given classical MIDI scores as input. Unlike the "MIDI
+          Markov: Compose" album, these pieces introduce intentional MIDI errors to generate more experimental, ambient
+          pieces.
         </p>
         <AlbumPreview title="MidiMarkov: Decompose" playlistId="257110789" />
       </div>
@@ -143,9 +126,8 @@ const entries = [
     description: (
       <div>
         <p>
-          A collection of tracks I published spanning from 2012 to 2017. There
-          isn't any cohesive theme. Special guests Andrew Knight (on Riders of
-          the Night - the Raccoon Song) and pLiskin (on Elise and Paw).
+          A collection of tracks I published spanning from 2012 to 2017. There isn't any cohesive theme. Special guests
+          Andrew Knight (on Riders of the Night - the Raccoon Song) and pLiskin (on Elise and Paw).
         </p>
         <AlbumPreview title="Web Tracks 2012 - 2017" playlistId="5017148" />
       </div>
@@ -181,14 +163,12 @@ const entries = [
     description: (
       <div>
         <p>
-          Some fun with edge detection. This simple effect, when used on images
-          like cityscapes, looks like a blizzard.
+          Some fun with edge detection. This simple effect, when used on images like cityscapes, looks like a blizzard.
         </p>
         <img src={snow_globe_image} alt="Preview of Snow Globe sketch" />
       </div>
     ),
-    descriptionPlainText:
-      'A Processing sketch using edge detection to drop a snowstorm on images.',
+    descriptionPlainText: 'A Processing sketch using edge detection to drop a snowstorm on images.',
     contentPath: 'processing/SnowGlobe',
     type: 'showcase',
   },
@@ -201,14 +181,10 @@ const entries = [
     description: (
       <div>
         <p>
-          Retrograde motion is the apparent motion of a planet to move in a
-          direction opposite to that of other bodies within its system, as
-          observed from a particular vantage point.
+          Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies
+          within its system, as observed from a particular vantage point.
         </p>
-        <img
-          src={apparent_retrograde_motion_image}
-          alt="Preview of Retrograde Motion sketch"
-        />
+        <img src={apparent_retrograde_motion_image} alt="Preview of Retrograde Motion sketch" />
       </div>
     ),
     descriptionPlainText:
@@ -224,15 +200,8 @@ const entries = [
     commentoId: 'ForceDirectedGraph',
     description: (
       <div>
-        <p>
-          Mapping a force-directed graph to an image for bouncy stretching and
-          warping.
-        </p>
-        <img
-          src={mario_warped_image}
-          alt="Mario warped with force-directed graph"
-          style={{ width: '40%' }}
-        />
+        <p>Mapping a force-directed graph to an image for bouncy stretching and warping.</p>
+        <img src={mario_warped_image} alt="Mario warped with force-directed graph" style={{ width: '40%' }} />
       </div>
     ),
     descriptionPlainText:
@@ -248,13 +217,10 @@ const entries = [
     description: (
       <div>
         <p>
-          MidiMarkov is a command-line tool that uses a Markov process to
-          generate MIDI streams based on a given folder of MIDI source material.
+          MidiMarkov is a command-line tool that uses a Markov process to generate MIDI streams based on a given folder
+          of MIDI source material.
         </p>
-        <img
-          src={beethovens_5th_image}
-          alt="Section of Beethoven's 5th symphony melody"
-        />
+        <img src={beethovens_5th_image} alt="Section of Beethoven's 5th symphony melody" />
       </div>
     ),
     descriptionPlainText:
@@ -270,9 +236,8 @@ const entries = [
     description: (
       <div>
         <p>
-          AutoSampler is an intelligent Max4Live instrument that plays audio
-          segments found in your library matching the notes of incoming live
-          MIDI.
+          AutoSampler is an intelligent Max4Live instrument that plays audio segments found in your library matching the
+          notes of incoming live MIDI.
         </p>
         <div className="videoWrapper">
           <iframe
@@ -298,14 +263,10 @@ const entries = [
     description: (
       <div>
         <p>A simple sketch with for trippy, colorful bubble patterns.</p>
-        <img
-          src={bubble_wrap_preview_image}
-          alt="Preview of Bubble Wrap sketch"
-        />
+        <img src={bubble_wrap_preview_image} alt="Preview of Bubble Wrap sketch" />
       </div>
     ),
-    descriptionPlainText:
-      'A simple Processing sketch with for trippy, colorful bubble patterns.',
+    descriptionPlainText: 'A simple Processing sketch with for trippy, colorful bubble patterns.',
     contentPath: 'processing/BubbleWrap',
     type: 'showcase',
   },
@@ -318,10 +279,9 @@ const entries = [
     description: (
       <div>
         <p>
-          This Jupyter Notebook contains all code, excercises and projects from
-          the "Python Crash Course" book by Eric Matthes, including three
-          projects: a "Space Invaders"-style game developed with PyGame, a data
-          visualization project and a Django app.
+          This Jupyter Notebook contains all code, excercises and projects from the "Python Crash Course" book by Eric
+          Matthes, including three projects: a "Space Invaders"-style game developed with PyGame, a data visualization
+          project and a Django app.
         </p>
         <img
           src={python_crash_course_preview_image}
@@ -344,17 +304,13 @@ const entries = [
     description: (
       <div>
         <p>
-          I developed this Jupyter Notebook for a presentation on applying the
-          DFT to timeseries data for seasonality detection.
+          I developed this Jupyter Notebook for a presentation on applying the DFT to timeseries data for seasonality
+          detection.
         </p>
-        <img
-          src={windowing_animation}
-          alt="Animation of windowing's affect on the DFT with pure sinusoids"
-        />
+        <img src={windowing_animation} alt="Animation of windowing's affect on the DFT with pure sinusoids" />
       </div>
     ),
-    descriptionPlainText:
-      'A Jupyter Notebook on applying the DFT to timeseries data for seasonality detection.',
+    descriptionPlainText: 'A Jupyter Notebook on applying the DFT to timeseries data for seasonality detection.',
     contentPath: 'jupyter_notebooks/DftTimeseries',
     type: 'article',
   },
@@ -366,14 +322,10 @@ const entries = [
     description: (
       <div>
         <p>
-          <i>React Bootstrap Site Generator</i> is an npm package designed to
-          make creating sites like this one super quick!
+          <i>React Bootstrap Site Generator</i> is an npm package designed to make creating sites like this one super
+          quick!
         </p>
-        <img
-          src={site_generator_demo}
-          alt="Demo gif of site generator"
-          style={{ width: '50%' }}
-        />
+        <img src={site_generator_demo} alt="Demo gif of site generator" style={{ width: '50%' }} />
       </div>
     ),
     descriptionPlainText:
@@ -388,21 +340,13 @@ const entries = [
     commentoId: 'BeatBot',
     description: (
       <div>
-        <p>
-          BeatBot is an Android-native DAW for sample-based beat production.
-        </p>
+        <p>BeatBot is an Android-native DAW for sample-based beat production.</p>
         <div className="videoWrapper">
-          <iframe
-            title="BeatBot Demo"
-            src="https://www.youtube.com/embed/XX6qeg30LSo"
-            scrolling="no"
-            frameBorder="0"
-          />
+          <iframe title="BeatBot Demo" src="https://www.youtube.com/embed/XX6qeg30LSo" scrolling="no" frameBorder="0" />
         </div>
       </div>
     ),
-    descriptionPlainText:
-      'BeatBot is an Android-native DAW for sample-based beat production.',
+    descriptionPlainText: 'BeatBot is an Android-native DAW for sample-based beat production.',
     contentPath: 'beatbot/BeatBot',
   },
   {
@@ -414,8 +358,8 @@ const entries = [
     description: (
       <div>
         <p>
-          This Jupyter notebook contains all code and corresponding output from
-          the <i>Python for Data Analysis</i> book by Wes McKinney.
+          This Jupyter notebook contains all code and corresponding output from the <i>Python for Data Analysis</i> book
+          by Wes McKinney.
         </p>
         <img
           src={python_for_data_analysis_preview_image}
@@ -438,8 +382,7 @@ const entries = [
     description: (
       <div>
         <p>
-          This set of Jupyter notebooks contains all code and exercises for the{' '}
-          <i>Accelerated C++</i> book.
+          This set of Jupyter notebooks contains all code and exercises for the <i>Accelerated C++</i> book.
         </p>
         <img
           src={accelerated_cpp_preview_image}
@@ -455,8 +398,7 @@ const entries = [
   },
   {
     path: '/jupyter_notebooks/coding_the_matrix',
-    summaryTitle:
-      'Jupyter Notebook - Coding the Matrix: Linear Algebra through Applications to Computer Science',
+    summaryTitle: 'Jupyter Notebook - Coding the Matrix: Linear Algebra through Applications to Computer Science',
     title: 'Coding the Matrix',
     subtitle: 'Linear Algebra through Applications to Computer Science',
     date: 'Mar 30 2018',
@@ -464,8 +406,7 @@ const entries = [
     description: (
       <div>
         <p>
-          This set of Jupyter notebooks contains all code, problems and labs for
-          the <i>Coding the Matrix</i> book.
+          This set of Jupyter notebooks contains all code, problems and labs for the <i>Coding the Matrix</i> book.
         </p>
         <img
           src={coding_the_matrix_preview_image}
@@ -489,8 +430,8 @@ const entries = [
     description: (
       <div>
         <p>
-          This Jupyter notebook contains implementations of many interesting
-          topics from the <i>Musimathics Volume 1</i> book.
+          This Jupyter notebook contains implementations of many interesting topics from the <i>Musimathics Volume 1</i>{' '}
+          book.
         </p>
         <img
           src={musimathics_volume_1_preview_image}
@@ -514,8 +455,8 @@ const entries = [
     description: (
       <div>
         <p>
-          Jupyter notebooks full of demonstrations and visualizations of many
-          topics from the <i>Musimathics Volume 2</i> book.
+          Jupyter notebooks full of demonstrations and visualizations of many topics from the{' '}
+          <i>Musimathics Volume 2</i> book.
         </p>
         <img
           src={musimathics_volume_2_preview_image}
@@ -538,9 +479,8 @@ const entries = [
     description: (
       <div>
         <p>
-          This set of Jupyter notebooks contains charts, visualizations,
-          demonstrations and excercise solutions for each of the chapters in the{' '}
-          <i>Mathematics of the DFT</i> book by Julius O. Smith III.
+          This set of Jupyter notebooks contains charts, visualizations, demonstrations and excercise solutions for each
+          of the chapters in the <i>Mathematics of the DFT</i> book by Julius O. Smith III.
         </p>
         <img
           src={mathematics_of_the_dft_preview_image}
@@ -558,23 +498,17 @@ const entries = [
     path: '/jupyter_notebooks/intro_to_digital_filters',
     summaryTitle: 'Introduction to Digital Filters',
     title: 'Introduction to Digital Filters',
-    subtitle:
-      'Jupyter notebooks and a geometric interpretation of digital audio filters',
+    subtitle: 'Jupyter notebooks and a geometric interpretation of digital audio filters',
     date: 'June 16 2018',
     commentoId: 'IntroToDigitalFilters',
     description: (
       <div>
         <p>
           Another set of Jupyter notebooks! These ones cover the{' '}
-          <i>Introduction to Digital Filters: with Audio Applications</i> book
-          by Julius O. Smith III, including more mathy charts, animations and
-          explorations, as well as solutions/attempts for (almost) every
-          excercise.
+          <i>Introduction to Digital Filters: with Audio Applications</i> book by Julius O. Smith III, including more
+          mathy charts, animations and explorations, as well as solutions/attempts for (almost) every excercise.
         </p>
-        <p>
-          Also, I walk through a graphical method of interpretting and designing
-          digital filters.
-        </p>
+        <p>Also, I walk through a graphical method of interpretting and designing digital filters.</p>
         <img
           src={intro_to_digital_filters_preview_image}
           alt="Animation showing a biquad filter's amplitude, phase and impulse responses as the poles are moved"
@@ -596,15 +530,10 @@ const entries = [
     description: (
       <div>
         <p>
-          The beginning of an ongoing project to try and make a flexible, fast
-          and fun music production and performance tool that I will actually
-          use.
+          The beginning of an ongoing project to try and make a flexible, fast and fun music production and performance
+          tool that I will actually use.
         </p>
-        <img
-          src={sound_machine_preview_image}
-          alt="preview of sound machine"
-          style={{ width: '80%' }}
-        />
+        <img src={sound_machine_preview_image} alt="preview of sound machine" style={{ width: '80%' }} />
       </div>
     ),
     descriptionPlainText:
@@ -620,11 +549,9 @@ const entries = [
     description: (
       <div>
         <p>
-          Most raw audio generation papers focus on speech. If musical audio
-          samples are published, they're usually the result of training on
-          simple single-instrument recordings. I wanted to explore how two
-          popular audio generation models generalize to more complex and
-          musically interesting audio.
+          Most raw audio generation papers focus on speech. If musical audio samples are published, they're usually the
+          result of training on simple single-instrument recordings. I wanted to explore how two popular audio
+          generation models generalize to more complex and musically interesting audio.
         </p>
         <AlbumPreview title="SampleRNN Dawn of Midi" playlistId="825451859" />
       </div>
@@ -637,15 +564,13 @@ const entries = [
   {
     path: '/jupyter_notebooks/physical_audio_signal_processing',
     title: 'Audiovisual Guide to Physical Audio Signal Processing',
-    subtitle:
-      'Companion Jupyter Notebooks for "Physical Audio Signal Processing" by J. O. Smith III',
+    subtitle: 'Companion Jupyter Notebooks for "Physical Audio Signal Processing" by J. O. Smith III',
     date: 'Jan 1 2020',
     commentoId: 'PhysicalAudioSignalProcessing',
     description: (
       <div>
         <p>
-          Continuing with Julius O. Smith III's audio DSP series, this set of
-          Jupyter notebooks covers book III -{' '}
+          Continuing with Julius O. Smith III's audio DSP series, this set of Jupyter notebooks covers book III -{' '}
           <i>Physical Audio Signal Processing</i>.
         </p>
         <img

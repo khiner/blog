@@ -181,9 +181,7 @@ export default function sketch(p) {
     }
 
     radians(other) {
-      return Math.acos(
-        this.mult(other).scalar() / (this.magnitude() * other.magnitude())
-      )
+      return Math.acos(this.mult(other).scalar() / (this.magnitude() * other.magnitude()))
     }
   }
 
@@ -203,18 +201,9 @@ export default function sketch(p) {
     }
 
     onSizeChange() {
-      this.radius =
-        p.map(this.radiusUnscaled, 0, SCALE_FACTOR, 0, p.width / 2) *
-        SCALE_PLANETS
-      this.ellipseA = p.map(
-        this.ellipseAUnscaled * AU,
-        0,
-        SCALE_FACTOR,
-        0,
-        p.width / 2
-      )
-      this.ellipseB =
-        this.ellipseA * Math.sqrt(1 - this.ellipseE * this.ellipseE)
+      this.radius = p.map(this.radiusUnscaled, 0, SCALE_FACTOR, 0, p.width / 2) * SCALE_PLANETS
+      this.ellipseA = p.map(this.ellipseAUnscaled * AU, 0, SCALE_FACTOR, 0, p.width / 2)
+      this.ellipseB = this.ellipseA * Math.sqrt(1 - this.ellipseE * this.ellipseE)
       this.ellipseCenter = this.ellipseA * this.ellipseE
       this.orbitSpeed = this.ellipseA === 0 ? 0 : p.width / 500 / this.ellipseA
     }

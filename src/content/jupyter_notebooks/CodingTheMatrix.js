@@ -27,55 +27,43 @@ export default (
       <Link href="http://codingthematrix.com/">
         <i>Coding the Matrix</i>
       </Link>{' '}
-      seems to have a good reputation as the de-facto "computer science
-      approach" to Linear Algebra. It's popular and mostly well reviewed on
-      Amazon, and is frequently recommended on QA sites. I made a set of{' '}
+      seems to have a good reputation as the de-facto "computer science approach" to Linear Algebra. It's popular and
+      mostly well reviewed on Amazon, and is frequently recommended on QA sites. I made a set of{' '}
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/index.ipynb">
         Jupyter notebooks
       </Link>{' '}
       <small>
-        (
-        <Link href="https://github.com/khiner/notebooks/tree/master/coding_the_matrix">
-          raw Github link
-        </Link>
-        )
+        (<Link href="https://github.com/khiner/notebooks/tree/master/coding_the_matrix">raw Github link</Link>)
       </small>{' '}
-      for every problem, lab and code example in the book. It has well-formatted
-      redefinitions of each problem, review question and lab statement along
-      with solutions, and as such should function as a decent solution manual
-      for anyone working through the book.
+      for every problem, lab and code example in the book. It has well-formatted redefinitions of each problem, review
+      question and lab statement along with solutions, and as such should function as a decent solution manual for
+      anyone working through the book.
     </Paragraph>
     <h2>The many paths to understanding linear algebra</h2>
     <Paragraph>
       As demonstrated in{' '}
-      <Link href="https://youtu.be/fNk_zzaMoSs">
-        this incredible introduction to vectors by 3Blue1Brown
-      </Link>
+      <Link href="https://youtu.be/fNk_zzaMoSs">this incredible introduction to vectors by 3Blue1Brown</Link>
       ,
       <img
         src={three_approaches_image}
         style={{ width: '80%' }}
         alt="Three approaches to linear algebra from 3Blue1Brown"
       />
-      linear algebra is framed in at least three major perspectives - the
-      physics, math and computer science perspectives. They each view the
-      subject through distinct (but complementary and fundamentally equivalent)
-      lenses. They each have strong supporters and some detractors, and, at
-      least from the outside, seem like pretty distinct factions.
+      linear algebra is framed in at least three major perspectives - the physics, math and computer science
+      perspectives. They each view the subject through distinct (but complementary and fundamentally equivalent) lenses.
+      They each have strong supporters and some detractors, and, at least from the outside, seem like pretty distinct
+      factions.
     </Paragraph>
     <Paragraph>
-      The mathematician and the computer scientist seem to butt heads the most.
-      Mathemetictians argue for the value of generalizability and
-      context-invariant representation, and the CS folks say to them, "dream on"
-      as they focus on practically computable solutions to discrete numerical
-      problems. For example, the best selling{' '}
+      The mathematician and the computer scientist seem to butt heads the most. Mathemetictians argue for the value of
+      generalizability and context-invariant representation, and the CS folks say to them, "dream on" as they focus on
+      practically computable solutions to discrete numerical problems. For example, the best selling{' '}
       <Link href="https://www.amazon.com/Linear-Algebra-Right-Undergraduate-Mathematics/dp/3319110799">
         Linear Algebra Done Right
       </Link>{' '}
-      whose name is an ironic <small>(I hope!)</small> reference to this
-      factionalism, takes the "pure-math" perspective with pride and boasts that
-      its "novel approach banishes determinants to the end of the book" on the
-      second line of its Amazon plug.
+      whose name is an ironic <small>(I hope!)</small> reference to this factionalism, takes the "pure-math" perspective
+      with pride and boasts that its "novel approach banishes determinants to the end of the book" on the second line of
+      its Amazon plug.
       <sup>
         <a href="#aside_1">1</a>
       </sup>
@@ -87,65 +75,49 @@ export default (
       ™
     </h2>
     <Paragraph>
-      <i>Coding the Matrix</i> seems to be the common recommendation for any
-      computer science student looking to brush up on linear algebra in
-      preparation for hands-dirty work in applied statistics and machine
-      learning - and that's me, which is why I dove in.
+      <i>Coding the Matrix</i> seems to be the common recommendation for any computer science student looking to brush
+      up on linear algebra in preparation for hands-dirty work in applied statistics and machine learning - and that's
+      me, which is why I dove in.
     </Paragraph>
     <Paragraph>
-      On the surface, it's true that this book doubles down on the computer
-      science approach - almost every major concept discussed is ultimately
-      implemented and explained by the author, or its implementation is assigned
-      in a lab or exercise. If you supplement the reading with the author's{' '}
-      <Link href="https://cs.brown.edu/video/channels/coding-matrix-fall-2014/">
-        Brown University lectures
-      </Link>
-      , you'll hear him say more than once that he takes this approach in part
-      because implementing the ideas helps students <i>own</i> the material.
-      That is something I can always get behind, and this book{' '}
-      <i>does that well</i>. I feel much more ownership over these concepts than
-      I used to.
+      On the surface, it's true that this book doubles down on the computer science approach - almost every major
+      concept discussed is ultimately implemented and explained by the author, or its implementation is assigned in a
+      lab or exercise. If you supplement the reading with the author's{' '}
+      <Link href="https://cs.brown.edu/video/channels/coding-matrix-fall-2014/">Brown University lectures</Link>, you'll
+      hear him say more than once that he takes this approach in part because implementing the ideas helps students{' '}
+      <i>own</i> the material. That is something I can always get behind, and this book <i>does that well</i>. I feel
+      much more ownership over these concepts than I used to.
     </Paragraph>
     <Paragraph>
-      What surprised me about this book, however, is how far it turned out to
-      lean towards <i>The Pure Mathematics Approach</i>
+      What surprised me about this book, however, is how far it turned out to lean towards{' '}
+      <i>The Pure Mathematics Approach</i>
       ™!
       <ul>
         <li>
-          The matrix and vector implementations built up early on in the book
-          (partly as exercises), and used throughout the course, require
-          explicit domains. (A numerical domain is never assumed in the code,
-          and rarely in the text, even when it would be much more convenient.)
+          The matrix and vector implementations built up early on in the book (partly as exercises), and used throughout
+          the course, require explicit domains. (A numerical domain is never assumed in the code, and rarely in the
+          text, even when it would be much more convenient.)
         </li>
         <li>
-          Matrix and vector operations are treated as function mappings that
-          sometimes have integers as their domain, and rarely, if ever, as
-          "lists of numbers".
+          Matrix and vector operations are treated as function mappings that sometimes have integers as their domain,
+          and rarely, if ever, as "lists of numbers".
         </li>
         <li>
-          The contents of the book are no more conceptually dense than any
-          undergrad linear algebra course. However, it is proof-heavy in the
-          extreme (it definitely feels like a math textbook and would be way out
-          of place if labelled as a computer science book). This is good for
-          depth if you have the patience and time to dig into those proofs
-          enough to really understand them. But there is very little hand
-          holding along the path to understanding. I think the book could
-          benefit from much more focus on high-level intuition to supplement the
-          proofs. In some chapters more than others, the material is by and
-          large a string of proofs with maybe a sentence or two before each
-          proof as introduction.
+          The contents of the book are no more conceptually dense than any undergrad linear algebra course. However, it
+          is proof-heavy in the extreme (it definitely feels like a math textbook and would be way out of place if
+          labelled as a computer science book). This is good for depth if you have the patience and time to dig into
+          those proofs enough to really understand them. But there is very little hand holding along the path to
+          understanding. I think the book could benefit from much more focus on high-level intuition to supplement the
+          proofs. In some chapters more than others, the material is by and large a string of proofs with maybe a
+          sentence or two before each proof as introduction.
         </li>
         <li>
-          Just like <i>Linear Algebra Done Wrong</i>, determinants are{' '}
-          <i>also</i> banished here to the end of the book. In fact,
-          determinants are not even <i>mentioned</i> in the Brown U lectures,
-          and in the book they are relegated to the position of "helpful in
-          mathematical arguments, but turn out to be rarely useful in matrix
-          computations". So the mathematicians and computer scientists both seem
-          to agree that determinants are only worth a side-eyed sneer, but the
-          mathemetician thinks so because they're conceptually bulky and
-          arguably nonfundamental, and the computer scientist simply has no use
-          for them.
+          Just like <i>Linear Algebra Done Wrong</i>, determinants are <i>also</i> banished here to the end of the book.
+          In fact, determinants are not even <i>mentioned</i> in the Brown U lectures, and in the book they are
+          relegated to the position of "helpful in mathematical arguments, but turn out to be rarely useful in matrix
+          computations". So the mathematicians and computer scientists both seem to agree that determinants are only
+          worth a side-eyed sneer, but the mathemetician thinks so because they're conceptually bulky and arguably
+          nonfundamental, and the computer scientist simply has no use for them.
           <sup>
             <a href="#aside_2">2</a>
           </sup>
@@ -153,53 +125,39 @@ export default (
       </ul>
     </Paragraph>
     <Paragraph>
-      If I were to summarize the most "shut-up-and-calculate"
-      pure-computer-sciency-pragmatic lesson from this book, it would be to
-      pretend matrix inversions don't exist, because they are slow to compute.
-      There always seems to be a clever way to work around needing to actually
-      compute a matrix inverse. In <i>Coding the Matrix</i>, inverses are used
-      only mathematically in proofs. If one is needed in an assignment, one
-      formulates it as an exact or approximate solution to a matrix-vector
-      equation instead.
+      If I were to summarize the most "shut-up-and-calculate" pure-computer-sciency-pragmatic lesson from this book, it
+      would be to pretend matrix inversions don't exist, because they are slow to compute. There always seems to be a
+      clever way to work around needing to actually compute a matrix inverse. In <i>Coding the Matrix</i>, inverses are
+      used only mathematically in proofs. If one is needed in an assignment, one formulates it as an exact or
+      approximate solution to a matrix-vector equation instead.
     </Paragraph>
     <h2>
       An endorsement <small>with some small reservation</small>
     </h2>
     <Paragraph>
-      There is one more qualitative thing I want to say about the book before
-      showing some examples. Well, two things. The first is that there are{' '}
-      <i>so many</i> typos and mistakes in this book.{' '}
-      <Link href="http://codingthematrix.com/Errata1.pdf">
-        The extensive errata
-      </Link>
-      , I would estimate, are probably in the ballpark of 70% of the actual
-      errors in the book. It really does get to the level of producing distrust
-      in the authoritativeness of the text - it's hard to know what to trust
-      sometimes. I really hope they make another proper printing with the known
-      issues fixed. If it weren't for this little snag, I would much more
-      wholeheartedly make my second point:{' '}
-      <i>I think this book acheives great things</i> with regard to linear
-      algebra education - especially for the programming-inclined who are
-      looking to get their hands dirty in a well-guided tour along an
-      interesting variety of domains.
+      There is one more qualitative thing I want to say about the book before showing some examples. Well, two things.
+      The first is that there are <i>so many</i> typos and mistakes in this book.{' '}
+      <Link href="http://codingthematrix.com/Errata1.pdf">The extensive errata</Link>, I would estimate, are probably in
+      the ballpark of 70% of the actual errors in the book. It really does get to the level of producing distrust in the
+      authoritativeness of the text - it's hard to know what to trust sometimes. I really hope they make another proper
+      printing with the known issues fixed. If it weren't for this little snag, I would much more wholeheartedly make my
+      second point: <i>I think this book acheives great things</i> with regard to linear algebra education - especially
+      for the programming-inclined who are looking to get their hands dirty in a well-guided tour along an interesting
+      variety of domains.
     </Paragraph>
     <Paragraph>
-      No single book can represent all the useful ways of understanding this
-      immense subject. Linear algebra is a field that rewards (and arguably
-      requires) <i>relearning in several different ways</i> in order to solidify
-      understanding. I will continue learning about it from different angles. If
-      for no other reason, so far I've found that linear algebra has a high "
-      <i>Aha!</i>
+      No single book can represent all the useful ways of understanding this immense subject. Linear algebra is a field
+      that rewards (and arguably requires) <i>relearning in several different ways</i> in order to solidify
+      understanding. I will continue learning about it from different angles. If for no other reason, so far I've found
+      that linear algebra has a high "<i>Aha!</i>
       "-to-material ratio.
     </Paragraph>
     <h2>Greatest hits</h2>
     <Paragraph>
-      The following is a selection of some notable example material selected
-      from each chapter's notebook. I offer no explanations here - the purpose
-      is to provide a selection of the variety of material covered in the book
-      for you to skim through and get a sense of what to expect from it. For a
-      full understanding of what's going on in these examples, read through the
-      book!
+      The following is a selection of some notable example material selected from each chapter's notebook. I offer no
+      explanations here - the purpose is to provide a selection of the variety of material covered in the book for you
+      to skim through and get a sense of what to expect from it. For a full understanding of what's going on in these
+      examples, read through the book!
     </Paragraph>
     <h3>
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/coding_the_matrix/chapter_0/chapter_0.ipynb">
@@ -535,32 +493,25 @@ Done
           <Link href="http://www.math.brown.edu/~treil/papers/LADW/LADW.html">
             <i>Linear Algebra Done Wrong</i>
           </Link>{' '}
-          book whose name nudges good-naturedly at the aforementioned{' '}
-          <i>"Done Right"</i>.
+          book whose name nudges good-naturedly at the aforementioned <i>"Done Right"</i>.
         </small>
       </Paragraph>
     </div>
     <div id="aside_2">
       <Paragraph>
         <small>
-          <sup>2</sup> I remembered determinants feeling unmotivated in my
-          first, typically memorization-heavy class on linear algebra in
-          college. By the time I finished reading this book, I had several
-          authorities backing up my unease. However, I ended up feeling pretty
-          ripped off when I watched the{' '}
+          <sup>2</sup> I remembered determinants feeling unmotivated in my first, typically memorization-heavy class on
+          linear algebra in college. By the time I finished reading this book, I had several authorities backing up my
+          unease. However, I ended up feeling pretty ripped off when I watched the{' '}
           <Link href="https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab">
             insanely good linear algebra series
           </Link>{' '}
           that I sourced the above "paths of understanding" animation from.{' '}
-          <Link href="https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw">
-            3Blue1Brown
-          </Link>{' '}
-          takes what might be considered a fourth path that could be called the
-          "geometric intuition" path to understanding linear algebra. And from
-          this vantage point, determinants make everything <i>way</i> easier to
-          understand. They're a conceptual glue between projection, inversion,
-          change-of-basis and eigenvalues, and I just wish I'd watched his
-          series before reading this book.
+          <Link href="https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw">3Blue1Brown</Link> takes what might be
+          considered a fourth path that could be called the "geometric intuition" path to understanding linear algebra.
+          And from this vantage point, determinants make everything <i>way</i> easier to understand. They're a
+          conceptual glue between projection, inversion, change-of-basis and eigenvalues, and I just wish I'd watched
+          his series before reading this book.
         </small>
       </Paragraph>
     </div>

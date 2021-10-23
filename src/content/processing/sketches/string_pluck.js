@@ -26,9 +26,7 @@ export default function sketch(p) {
     precomputedHarmonics = []
     for (let i = 0; i < harmonics; i++) {
       let m = i + 1
-      precomputedHarmonics.push(
-        (1.0 / (m * m)) * Math.sin((PI_SQUARED * m * d) / p.width)
-      )
+      precomputedHarmonics.push((1.0 / (m * m)) * Math.sin((PI_SQUARED * m * d) / p.width))
     }
   }
 
@@ -75,8 +73,7 @@ export default function sketch(p) {
     }
 
     let w = Math.PI * (c / p.width)
-    let yScale =
-      (1.5 * amp * p.width * p.width) / (PI_SQUARED * d * (p.width - d))
+    let yScale = (1.5 * amp * p.width * p.width) / (PI_SQUARED * d * (p.width - d))
 
     p.beginShape()
     if (plucked) {
@@ -84,10 +81,7 @@ export default function sketch(p) {
       for (let x = 0; x < p.width; x += segmentWidth) {
         let sum = 0
         for (let m = 1; m <= harmonics; m++) {
-          sum +=
-            precomputedHarmonics[m - 1] *
-            Math.cos(w * m * t) *
-            Math.sin((Math.PI * m * x) / p.width)
+          sum += precomputedHarmonics[m - 1] * Math.cos(w * m * t) * Math.sin((Math.PI * m * x) / p.width)
         }
 
         let y = yScale * sum + p.height / 2.0

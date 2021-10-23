@@ -35,21 +35,13 @@ export default function ShareButtons({ title, url, hideLabel }) {
           }`}
           src={twitter_image}
         />
-        <ShareButton
-          name="Facebook"
-          href={`http://www.facebook.com/sharer.php?u=${url}`}
-          src={facebook_image}
-        />
+        <ShareButton name="Facebook" href={`http://www.facebook.com/sharer.php?u=${url}`} src={facebook_image} />
         <ShareButton
           name="Linkedin"
           href={`http://www.linkedin.com/shareArticle?mini=true&url=${url}`}
           src={linkedin_image}
         />
-        <ShareButton
-          name="Reddit"
-          href={`http://reddit.com/submit?url=${url}&title=${title}`}
-          src={reddit_image}
-        />
+        <ShareButton name="Reddit" href={`http://reddit.com/submit?url=${url}&title=${title}`} src={reddit_image} />
       </div>
     </div>
   )

@@ -49,20 +49,8 @@ export default function sketch(p) {
 
     const toggleDim = p.height / 40,
       toggleOffset = 5
-    imageToggle = new Toggle(
-      p.width - 200,
-      0,
-      toggleDim,
-      toggleDim,
-      'Image'
-    ).setEnabled(true)
-    edgesToggle = new Toggle(
-      p.width - 200,
-      toggleDim + toggleOffset,
-      toggleDim,
-      toggleDim,
-      'Edges'
-    ).setEnabled(true)
+    imageToggle = new Toggle(p.width - 200, 0, toggleDim, toggleDim, 'Image').setEnabled(true)
+    edgesToggle = new Toggle(p.width - 200, toggleDim + toggleOffset, toggleDim, toggleDim, 'Edges').setEnabled(true)
     verticesToggle = new Toggle(
       p.width - 200,
       (toggleDim + toggleOffset) * 2,
@@ -70,13 +58,7 @@ export default function sketch(p) {
       toggleDim,
       'Vertices'
     ).setEnabled(true)
-    pauseToggle = new Toggle(
-      p.width - 400,
-      0,
-      toggleDim,
-      toggleDim,
-      'Pause'
-    ).setEnabled(false)
+    pauseToggle = new Toggle(p.width - 400, 0, toggleDim, toggleDim, 'Pause').setEnabled(false)
     toggles = [imageToggle, edgesToggle, verticesToggle, pauseToggle]
 
     cnv.mousePressed(function () {
@@ -151,19 +133,13 @@ export default function sketch(p) {
       for (let i = 0; i < TOTAL_SECTIONS; i++) {
         let row = parseInt(i / AXIS_SECTIONS, 10)
         let col = i % AXIS_SECTIONS
-        this.positions[i][0] =
-          p.width * (col / AXIS_SECTIONS) +
-          p.random(-this.randomOffset, this.randomOffset)
-        this.positions[i][1] =
-          p.height * (row / AXIS_SECTIONS) +
-          p.random(-this.randomOffset, this.randomOffset)
+        this.positions[i][0] = p.width * (col / AXIS_SECTIONS) + p.random(-this.randomOffset, this.randomOffset)
+        this.positions[i][1] = p.height * (row / AXIS_SECTIONS) + p.random(-this.randomOffset, this.randomOffset)
       }
     }
 
     setWeight(row, col, otherRow, otherCol, weight) {
-      this.weights[row * AXIS_SECTIONS + col][
-        otherRow * AXIS_SECTIONS + otherCol
-      ] = weight
+      this.weights[row * AXIS_SECTIONS + col][otherRow * AXIS_SECTIONS + otherCol] = weight
     }
 
     step() {
@@ -171,11 +147,7 @@ export default function sketch(p) {
         for (let j = 0; j < TOTAL_SECTIONS; j++) {
           if (this.weights[i][j] > 0) {
             for (let d = 0; d < DIMENSIONS; d++) {
-              this.velocities[i][d] +=
-                (this.positions[j][d] -
-                  this.positions[i][d] -
-                  this.weights[i][j]) *
-                this.k
+              this.velocities[i][d] += (this.positions[j][d] - this.positions[i][d] - this.weights[i][j]) * this.k
             }
           }
         }
@@ -192,10 +164,7 @@ export default function sketch(p) {
 
     draw() {
       p.push()
-      p.translate(
-        halfWidth - this.viewCenter[0],
-        halfHeight - this.viewCenter[1]
-      )
+      p.translate(halfWidth - this.viewCenter[0], halfHeight - this.viewCenter[1])
 
       if (imageToggle.enabled) {
         let i = 0
@@ -208,9 +177,7 @@ export default function sketch(p) {
               this.positions[posIndex][0],
               this.positions[posIndex][1],
               this.positions[posIndex + 1][0] - this.positions[posIndex][0] + 1,
-              this.positions[posIndex + AXIS_SECTIONS][1] -
-                this.positions[posIndex][1] +
-                1
+              this.positions[posIndex + AXIS_SECTIONS][1] - this.positions[posIndex][1] + 1
             )
           }
         }
@@ -221,12 +188,7 @@ export default function sketch(p) {
         if (edgesToggle.enabled) {
           for (let j = i; j < TOTAL_SECTIONS; j++) {
             if (this.weights[i][j] > 0) {
-              p.line(
-                this.positions[i][0],
-                this.positions[i][1],
-                this.positions[j][0],
-                this.positions[j][1]
-              )
+              p.line(this.positions[i][0], this.positions[i][1], this.positions[j][0], this.positions[j][1])
             }
           }
         }
@@ -263,20 +225,11 @@ export default function sketch(p) {
     }
 
     getColor() {
-      return this.pressed
-        ? this.pressedColor
-        : this.hovering()
-        ? this.hoverColor
-        : this.neutralColor
+      return this.pressed ? this.pressedColor : this.hovering() ? this.hoverColor : this.neutralColor
     }
 
     hovering() {
-      return (
-        p.mouseX >= this.x &&
-        p.mouseX <= this.x + this.w &&
-        p.mouseY >= this.y &&
-        p.mouseY <= this.y + this.h
-      )
+      return p.mouseX >= this.x && p.mouseX <= this.x + this.w && p.mouseY >= this.y && p.mouseY <= this.y + this.h
     }
 
     mousePressed() {
@@ -308,11 +261,7 @@ export default function sketch(p) {
     }
 
     getColor() {
-      return this.hovering()
-        ? this.hoverColor
-        : this.enabled
-        ? this.pressedColor
-        : this.neutralColor
+      return this.hovering() ? this.hoverColor : this.enabled ? this.pressedColor : this.neutralColor
     }
   }
 }

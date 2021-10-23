@@ -25,17 +25,7 @@ function Header({ title, date }) {
 }
 
 export default React.memo(
-  function Entry({
-    title,
-    subtitle,
-    description,
-    descriptionPlainText,
-    commentoId,
-    url,
-    date,
-    type,
-    children,
-  }) {
+  function Entry({ title, subtitle, description, descriptionPlainText, commentoId, url, date, type, children }) {
     useEffect(() => {
       formatMathWhenContentIsReady()
     }, [])
@@ -77,19 +67,12 @@ export default React.memo(
           )}
 
           {title && url && (
-            <ShareButtons
-              title={title || ''}
-              description={descriptionPlainText || description || ''}
-              url={url || ''}
-            />
+            <ShareButtons title={title || ''} description={descriptionPlainText || description || ''} url={url || ''} />
           )}
         </div>
         {columnBreak}
         {config.commentoHostName && commentoId && (
-          <Commento
-            id={commentoId}
-            commentoHostName={config.commentoHostName}
-          />
+          <Commento id={commentoId} commentoHostName={config.commentoHostName} />
         )}
       </div>
     )

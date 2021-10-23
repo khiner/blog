@@ -17,14 +17,10 @@ export default (
       <Link href="https://www.amazon.com/Python-Crash-Course-Hands-Project-Based/dp/1593276036/">
         Python Crash Course
       </Link>{' '}
-      book by Eric Matthes. In addition to a great overview of the important
-      features of the Python language, this book includes three projects: a
-      "Space Invaders"-style game developed with PyGame, a data visualization
-      project and a Django app.{' '}
-      <Link href="https://github.com/khiner/notebooks/tree/master/python_crash_course">
-        Here is the GitHub
-      </Link>
-      .
+      book by Eric Matthes. In addition to a great overview of the important features of the Python language, this book
+      includes three projects: a "Space Invaders"-style game developed with PyGame, a data visualization project and a
+      Django app.{' '}
+      <Link href="https://github.com/khiner/notebooks/tree/master/python_crash_course">Here is the GitHub</Link>.
     </Paragraph>
 
     <Paragraph>
@@ -41,8 +37,8 @@ export default (
     />
 
     <Paragraph>
-      Here's an image of a gorgeous fading random walk chart generated from
-      50,000 points with a color gradient, which can be found in{' '}
+      Here's an image of a gorgeous fading random walk chart generated from 50,000 points with a color gradient, which
+      can be found in{' '}
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_crash_course/chapter_15.ipynb">
         chapter 15
       </Link>
@@ -55,8 +51,7 @@ export default (
     />
 
     <Paragraph>
-      ... and here's a screenshot of the Learning Log project built with Django
-      and deployed with Heroku (
+      ... and here's a screenshot of the Learning Log project built with Django and deployed with Heroku (
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_crash_course/chapters_18_19_and_20.ipynb">
         chapters 18, 19 and 20
       </Link>
@@ -69,19 +64,13 @@ export default (
     />
     <Paragraph>
       Mine is available for use at{' '}
-      <Link href="https://learning-log-pcc.herokuapp.com/">
-        https://learning-log-pcc.herokuapp.com
-      </Link>{' '}
-      <i>
-        (although this was just an exercise and I don't promise any functional
-        maintenance if anything's broken!)
-      </i>
+      <Link href="https://learning-log-pcc.herokuapp.com/">https://learning-log-pcc.herokuapp.com</Link>{' '}
+      <i>(although this was just an exercise and I don't promise any functional maintenance if anything's broken!)</i>
     </Paragraph>
 
     <Paragraph>
-      If you end up referring to this notebook while going through the book, or
-      if you've already gone through the excercises yourself and want to chat
-      about them, I'd love to hear from you!
+      If you end up referring to this notebook while going through the book, or if you've already gone through the
+      excercises yourself and want to chat about them, I'd love to hear from you!
     </Paragraph>
   </div>
 )

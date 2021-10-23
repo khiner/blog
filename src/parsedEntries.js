@@ -16,9 +16,7 @@ function findUniqueTopLevelPathSegments() {
 }
 
 function findNestedTopLevelPathSegments() {
-  return strippedPaths
-    .filter((path) => path.split('/').length > 1)
-    .map((path) => path.split('/')[0])
+  return strippedPaths.filter((path) => path.split('/').length > 1).map((path) => path.split('/')[0])
 }
 
 const uniqueTopLevelPathSegments = findUniqueTopLevelPathSegments()
