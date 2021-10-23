@@ -383,23 +383,13 @@ const entries = [
   {
     path: '/beatbot',
     title: 'BeatBot',
-    subtitle:
-      'An App Release Announcement and a Reflection on Managing Complex Passion Projects',
+    subtitle: 'Android app release announcement',
     date: 'Jan 28 2018',
     commentoId: 'BeatBot',
     description: (
       <div>
         <p>
-          <i>BeatBot</i> is an intuitive and flexible beat production
-          environment. It provides the essential sound design tools for rich
-          sample-based beat production with an interface designed to take full
-          advantage of the expressive capability of multitouch interaction on a
-          mobile form factor.
-        </p>
-        <p>
-          BeatBot aims to be simple and intuitive so you can express your ideas
-          quickly, while also being flexible and powerful enough to refine
-          sketches into full productions.
+          BeatBot is an Android-native DAW for sample-based beat production.
         </p>
         <div className="videoWrapper">
           <iframe
@@ -412,7 +402,7 @@ const entries = [
       </div>
     ),
     descriptionPlainText:
-      'BeatBot is an intuitive and flexible beat production environment. It provides the essential sound design tools for rich sample-based beat production with an interface designed to take full advantage of the expressive capability of multitouch interaction on a mobile form factor. BeatBot aims to be simple and intuitive so you can express your ideas quickly, while also being flexible and powerful enough to refine sketches into full productions.',
+      'BeatBot is an Android-native DAW for sample-based beat production.',
     contentPath: 'beatbot/BeatBot',
   },
   {
