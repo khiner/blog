@@ -1,7 +1,6 @@
 import React from 'react'
 
 import Link from '../Link'
-import Paragraph from '../Paragraph'
 
 import python_crash_course_preview_image from './assets/python_crash_course_preview.png'
 import learning_log_screenshot_image from './assets/learning_log_screenshot.png'
@@ -9,7 +8,7 @@ import alien_invasion_screenshot_image from './assets/alien_invasion_screenshot.
 
 export default (
   <div>
-    <Paragraph>
+    <p>
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_crash_course/index.ipynb">
         <big>This Jupyter notebook</big>
       </Link>{' '}
@@ -21,56 +20,56 @@ export default (
       includes three projects: a "Space Invaders"-style game developed with PyGame, a data visualization project and a
       Django app.{' '}
       <Link href="https://github.com/khiner/notebooks/tree/master/python_crash_course">Here is the GitHub</Link>.
-    </Paragraph>
+    </p>
 
-    <Paragraph>
+    <p>
       Here's a screenshot of the Space Invadors-style game (
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_crash_course/chapters_12_13_and_14.ipynb">
         chapters 12, 13 and 14
       </Link>
       ):
-    </Paragraph>
+    </p>
     <img
       src={alien_invasion_screenshot_image}
       alt="Preview of random walk chart from Python Crash Course book"
       style={{ width: '80%' }}
     />
 
-    <Paragraph>
+    <p>
       Here's an image of a gorgeous fading random walk chart generated from 50,000 points with a color gradient, which
       can be found in{' '}
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_crash_course/chapter_15.ipynb">
         chapter 15
       </Link>
       :
-    </Paragraph>
+    </p>
     <img
       src={python_crash_course_preview_image}
       alt="Preview of random walk chart from Python Crash Course book"
       style={{ width: '80%' }}
     />
 
-    <Paragraph>
+    <p>
       ... and here's a screenshot of the Learning Log project built with Django and deployed with Heroku (
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_crash_course/chapters_18_19_and_20.ipynb">
         chapters 18, 19 and 20
       </Link>
       ):
-    </Paragraph>
+    </p>
     <img
       src={learning_log_screenshot_image}
       alt="Preview of random walk chart from Python Crash Course book"
       style={{ width: '80%' }}
     />
-    <Paragraph>
+    <p>
       Mine is available for use at{' '}
       <Link href="https://learning-log-pcc.herokuapp.com/">https://learning-log-pcc.herokuapp.com</Link>{' '}
       <i>(although this was just an exercise and I don't promise any functional maintenance if anything's broken!)</i>
-    </Paragraph>
+    </p>
 
-    <Paragraph>
+    <p>
       If you end up referring to this notebook while going through the book, or if you've already gone through the
       excercises yourself and want to chat about them, I'd love to hear from you!
-    </Paragraph>
+    </p>
   </div>
 )

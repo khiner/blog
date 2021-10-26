@@ -22,17 +22,15 @@ const LoadableEntry = (entry) => {
   return <Loadable />
 }
 
-function generateComponent(entry) {
-  return (props) => <Entry {...entry}>{entry.contentPath ? LoadableEntry(entry) : entry.content}</Entry>
-}
+const generateComponent = (entry) => (props) => (
+  <Entry {...entry}>{entry.contentPath ? LoadableEntry(entry) : entry.content}</Entry>
+)
 
-export default function MainContent() {
-  return (
-    <div className="contentWrapper">
-      <Route exact path="/" component={SummaryList} />
-      {parsedEntries.all.map((entry) => (
-        <Route key={entry.path} path={`/${stripSlashes(entry.path)}`} render={generateComponent(entry)} />
-      ))}
-    </div>
-  )
-}
+export default () => (
+  <div className="contentWrapper">
+    <Route exact path="/" component={SummaryList} />
+    {parsedEntries.all.map((entry) => (
+      <Route key={entry.path} path={`/${stripSlashes(entry.path)}`} render={generateComponent(entry)} />
+    ))}
+  </div>
+)

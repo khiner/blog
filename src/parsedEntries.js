@@ -11,13 +11,9 @@ if (config.host) {
 
 const strippedPaths = entries.map((entry) => stripSlashes(entry.path))
 
-function findUniqueTopLevelPathSegments() {
-  return [...new Set(strippedPaths.map((path) => path.split('/')[0]))]
-}
-
-function findNestedTopLevelPathSegments() {
-  return strippedPaths.filter((path) => path.split('/').length > 1).map((path) => path.split('/')[0])
-}
+const findUniqueTopLevelPathSegments = () => [...new Set(strippedPaths.map((path) => path.split('/')[0]))]
+const findNestedTopLevelPathSegments = () =>
+  strippedPaths.filter((path) => path.split('/').length > 1).map((path) => path.split('/')[0])
 
 const uniqueTopLevelPathSegments = findUniqueTopLevelPathSegments()
 const nestedTopLevelPathSegments = findNestedTopLevelPathSegments()

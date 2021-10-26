@@ -1,3 +1,1 @@
-export default function Paragraph({ children }) {
-  return <div style={{ marginBottom: '1rem' }}>{children}</div>
-}
+export default ({ children }) => <div style={{ marginBottom: '1rem' }}>{children}</div>

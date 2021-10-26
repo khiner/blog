@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import ExternalLink from '../Link'
-import Paragraph from '../Paragraph'
 import CodeBlock from '../CodeBlock'
 
 import rolling_your_own_cms from './assets/rolling_your_own_cms.jpg'
@@ -24,15 +23,15 @@ function toggleNineties() {
 
 export default (
   <div>
-    <Paragraph>
+    <p>
       <ExternalLink href="https://www.npmjs.com/package/react-scripts-bootstrap-site-generator">
         <i>React Bootstrap Site Generator</i>
       </ExternalLink>{' '}
       is an npm package that builds on top of the{' '}
       <ExternalLink href="https://github.com/khiner/create-react-app">Create React App</ExternalLink> tool. It is a
       simple, opinionated static site generator designed to make creating simple sites like this one super fast.
-    </Paragraph>
-    <Paragraph>
+    </p>
+    <p>
       I built it with these goals in mind:
       <ul>
         <li>Make it as quick as possible to get something meaningful in the browser</li>
@@ -54,16 +53,16 @@ export default (
           support with file watching
         </li>
       </ul>
-    </Paragraph>
+    </p>
     <h4>
       <i>So why god why not just write stuff on Wordpress or Medium and be done with it?</i>
     </h4>
     <img src={rolling_your_own_cms} alt="O'Reilly: Rolling your own CMS for no good reason" style={{ width: '50%' }} />
-    <Paragraph>
+    <p>
       Well because c'mon, who wouldn't rather have their own domain where they can have control over every pixel on the
       screen, rather than dealing with some WYSIWYG editor in the browser and playing by the rules of the MAN?!
-    </Paragraph>
-    <Paragraph>
+    </p>
+    <p>
       More reasons:
       <ul>
         <li>
@@ -74,32 +73,32 @@ export default (
           if you want.
         </li>
       </ul>
-    </Paragraph>
-    <Paragraph>
+    </p>
+    <p>
       Now that we all agree making your own site is still a desirable thing to do in 20-whatever, let's talk about how!
-    </Paragraph>
+    </p>
     <h2>My journey building a content hub</h2>
     <h3>Squarespace</h3>
-    <Paragraph>Originally I subscribed to Squarespace account where I posted simple blog-style content.</Paragraph>
+    <p>Originally I subscribed to Squarespace account where I posted simple blog-style content.</p>
     <h3>Squarespace + manual hosting</h3>
-    <Paragraph>
+    <p>
       I started this site to add other content like <Link to="/processing/retrograde_motion">Processing sketches</Link>{' '}
       that Squarespace isn't well-suited to host. I built it using raw HTML, CSS and JS for simplicity and control, but
       also because I wanted it to be served statically from the Namecheap hosting I bought. I love React, but it kind of
       felt like overkill and it serves pages dynamically, meaning direct links won't resolve since the directory won't
       be actually serving up an <code>index.hml</code> file and thus won't load unless you visit the site index and
       follow a <code>Route</code> link. (<i>More on this in a bit!</i>)
-    </Paragraph>
-    <Paragraph>
+    </p>
+    <p>
       Honestly though, I mostly just thought it was refreshing and fun to write things barebones after working so much
       with more complex stacks at my day job.
-    </Paragraph>
+    </p>
     <h3>Manual hosting only</h3>
-    <Paragraph>
+    <p>
       It started to feel silly to have two places for content, so I moved the Squarespace posts over here and stole the
       CSS styles I liked.
-    </Paragraph>
-    <Paragraph>
+    </p>
+    <p>
       After adding more content, I was getting fed up with the amount of duplication involved. I was avoiding a lot of
       it using simple tactics like this for each page:
       <CodeBlock language="xml">
@@ -111,8 +110,8 @@ export default (
 </script>`}
       </CodeBlock>
       and putting the raw content of each post into its own <code>main_content.html</code>.
-    </Paragraph>
-    <Paragraph>
+    </p>
+    <p>
       But there were a lot of shortcomings:
       <ul>
         <li>
@@ -130,26 +129,26 @@ export default (
       Basically, I didn't have the setup I wanted - one that would allow me to focus on content alone. When adding new
       things, I usually had to edit multiple files. I could not easily add more complex features, like a post summary
       list page.
-    </Paragraph>
+    </p>
     <h3>Rewriting in React</h3>
-    <Paragraph>
+    <p>
       I decided to do a rewrite. I didn't want to to incur the learning overhead and unnecessary complexity of another
       site generator like <ExternalLink href="https://github.com/jekyll/jekyll">Jekyll</ExternalLink>. I wanted to work
       with common tools that I'm already comfortable with, using and developing skills that are transferable to other
       projects in my career. I've also developed a healthy fear of running into arbitrary limitations with strict
       frameworks.
-    </Paragraph>
-    <Paragraph>
+    </p>
+    <p>
       I love React, but it has this whole dynamic routing issue I mentioned above. However! I found this amazing tool,{' '}
       <ExternalLink href="https://github.com/geelen/react-snapshot">react-snapshot</ExternalLink>, that performs static
       prerendering on React apps by crawling the site and generating html for each page! Problem solved.
-    </Paragraph>
-    <Paragraph>
+    </p>
+    <p>
       I used <ExternalLink href="https://github.com/khiner/create-react-app">Create React App</ExternalLink> and{' '}
       <ExternalLink href="https://react-bootstrap.github.io/">React Bootstrap</ExternalLink> to spin up a new site, and
       copied the content over. Now that I had nice object-oriented tools at my disposal, I was able to solve my larger
       goal of building a system that allows me to focus on content independently of form and architecture.
-    </Paragraph>
+    </p>
     <h2>Using the tool</h2>
     I've shared the{' '}
     <ExternalLink href="https://github.com/khiner/react-scripts-bootstrap-site-generator">framework</ExternalLink> as a{' '}
@@ -165,22 +164,22 @@ $ cd my-app
 $ npm install
 $ npm start`}
     </CodeBlock>
-    <Paragraph>
+    <p>
       That's it! Your browser should load a new tab to <code>localhost:3000</code> and you'll be greeted with the
       example app:
       <img src={site_generator_demo} alt="Demo gif of site generator" style={{ width: '75%' }} />
-    </Paragraph>
-    <Paragraph>
+    </p>
+    <p>
       See the{' '}
       <ExternalLink href="https://github.com/khiner/react-scripts-bootstrap-site-generator">
         project README
       </ExternalLink>{' '}
       for all the details and documentation, including how to modify and add new content and posts to the generated
       site, and how to build and deploy.
-    </Paragraph>
-    <Paragraph>
+    </p>
+    <p>
       I hope this saves someone time setting up their next site! If you have any questions, comments or bugs, comment
       below or contact me directly!
-    </Paragraph>
+    </p>
   </div>
 )

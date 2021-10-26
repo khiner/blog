@@ -14,7 +14,7 @@ const removeScript = (id, parentElement) => {
   if (script) parentElement.removeChild(script)
 }
 
-export default function Commento({ id, commentoHostName }) {
+export default ({ id, commentoHostName }) => {
   useEffect(() => {
     insertScript(`${commentoHostName}/js/commento.js`, 'commento-script', window.document.body)
     return () => removeScript('commento-script', window.document.body)

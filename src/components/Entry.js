@@ -15,14 +15,12 @@ function formatMathWhenContentIsReady() {
   }
 }
 
-function Header({ title, date }) {
-  return (
-    <div>
-      <h1 className="title">{title}</h1>
-      <h2 className="date">{date}</h2>
-    </div>
-  )
-}
+const Header = ({ title, date }) => (
+  <div>
+    <h1 className="title">{title}</h1>
+    <h2 className="date">{date}</h2>
+  </div>
+)
 
 export default React.memo(
   function Entry({ title, subtitle, description, descriptionPlainText, commentoId, url, date, type, children }) {

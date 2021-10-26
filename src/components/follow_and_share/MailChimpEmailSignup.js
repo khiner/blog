@@ -2,10 +2,8 @@ import './style/MailChimpEmailSignup.scss'
 
 import React from 'react'
 
-export default function MailChimpEmailSignup({ formAction, inputName }) {
-  if (!formAction || !inputName) return null
-
-  return (
+export default ({ formAction, inputName }) =>
+  !formAction || !inputName ? null : (
     <div className="mailChimpEmailSignup">
       <div id="mc_embed_signup">
         <form
@@ -31,4 +29,3 @@ export default function MailChimpEmailSignup({ formAction, inputName }) {
       </div>
     </div>
   )
-}
