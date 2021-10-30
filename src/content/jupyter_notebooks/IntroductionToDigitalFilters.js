@@ -2,7 +2,7 @@ import React from 'react'
 
 import Image from '../Image'
 import Link from '../Link'
-import CodeBlock from '../CodeBlock'
+import { Python } from '../CodeBlock'
 
 import notch_filter_animation from './assets/intro_to_digital_filters/notch_filter.gif'
 import notch_filter_wo_lines_animation from './assets/intro_to_digital_filters/notch_filter_without_lines.gif'
@@ -89,7 +89,7 @@ export default (
       such that {`$\\frac{q_i}{z} = 1$`} when {`$z = e^{j\\omega_{ri}} \\implies q_i = e^{j\\omega_{ri}}$`}.
     </p>
     <p>Here is an example for clarity:</p>
-    <CodeBlock language="python">
+    <Python>
       {`from scipy.signal import freqz
 
 # Pick a couple of arbitrary frequencies to reject.
@@ -106,7 +106,7 @@ plt.plot(w, np.abs(h))
 for w_reject in [w1_reject, w2_reject]:
     plt.axvline(x=w_reject, linestyle='--', c='k')
 plt.grid(True)`}
-    </CodeBlock>
+    </Python>
     <Image
       src={second_order_response}
       alt="frequency response of second-order filter rejecting two hand-picked frequencies"
@@ -152,7 +152,7 @@ b_1 &= -2\\cos(\\omega T)\\\\
     </p>
     <p>Finally, our naive second-order 60 Hz hum-reject-filter for a sampling rate of $f_s=40$ Khz is</p>
     <p>{`$y(n) = x(n) - 2\\cos\\left(\\frac{3\\pi}{1000}\\right)x(n-1) + x(n-2)$.`}</p>
-    <CodeBlock language="python">
+    <Python>
       {`fs = 40_000
 B = [1, -2*np.cos(3 * np.pi / 1000), 1]
 H = np.fft.fft(B, n=fs)
@@ -162,7 +162,7 @@ plt.axvline(x=60, linestyle='--', c='k', label='Target reject frequency (60 Hz)'
 plt.loglog(f, np.abs(H[:fs//2]))
 plt.legend()
 plt.grid(True)`}
-    </CodeBlock>
+    </Python>
     <Image
       src={reject_single_frequency_response}
       alt="frequency response of filter rejecting 60 Hz"

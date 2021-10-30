@@ -1,6 +1,7 @@
 import React from 'react'
 
-import CodeBlock from '../CodeBlock'
+import { Python } from '../CodeBlock'
+import Image from '../Image'
 import Link from '../Link'
 
 import conv_adsr from './assets/mathematics_of_the_dft/conv_adsr.gif'
@@ -45,8 +46,6 @@ import conv_stretch_repeat_2 from './assets/mathematics_of_the_dft/conv_stretch_
 import conv_stretch_repeat_3 from './assets/mathematics_of_the_dft/conv_stretch_repeat_3.png'
 import conv_zero_pad_1 from './assets/mathematics_of_the_dft/conv_zero_pad_1.png'
 import conv_zero_pad_2 from './assets/mathematics_of_the_dft/conv_zero_pad_2.png'
-
-import Image from '../Image'
 
 export default (
   <div>
@@ -117,30 +116,30 @@ export default (
       {`$n \\in \\mathbb{Z}$`}. By modulo indexing, $x(-n)$ is the same as $x(N - n)$. The {`$\\text{Flip}()$`} operator
       reverses the order of samples $1$ through $N - 1$ of a sequence, leaving sample $0$ alone.
     </p>
-    <CodeBlock language="python">
+    <Python>
       {`def flip(x):
     return np.concatenate([[x[0]], x[-1:0:-1]])
 
 flip(np.arange(5))
 > array([0, 4, 3, 2, 1])`}
-    </CodeBlock>
+    </Python>
     <h4 id="Shift-Operator">Shift Operator</h4>
     <p>
       The <em>shift operator</em> is defined by{' '}
       {`$\\text{Shift}_{\\Delta, n}(x) \\triangleq x(n - \\Delta), \\Delta \\in \\mathbb{Z}$,`} and{' '}
       {`$Shift_\\Delta(x)$`} denotes the entire shifted signal.
     </p>
-    <CodeBlock language="python">
+    <Python>
       {`def shift(x, delta):
     return np.roll(x, delta)`}
-    </CodeBlock>
+    </Python>
     <h3 id="Convolution">Convolution</h3>
     <p>
       The <em>convolution</em> of two signals $x$ and $y$ in {`$\\mathbb{C}^N$`} may be denoted {`$x \\circledast y$`}{' '}
       and defined by
       {`$(x \\circledast y)_n \\triangleq \\sum_\\limits{m=0}^\\limits{N - 1}{x(m)y(n-m)}$`}.
     </p>
-    <CodeBlock language="python">
+    <Python>
       {`def convolve(x, y):
     x = np.asarray(x)
     y = np.asarray(y)
@@ -151,29 +150,29 @@ flip(np.arange(5))
     for n in range(convolved.size):
         convolved[n] = np.sum(x * shift(flipped_y, n))
     return convolved`}
-    </CodeBlock>
+    </Python>
     <h4 id="Convolution-Example-1:-Smoothing-a-Rectangular-Pulse">
       Convolution Example 1: Smoothing a Rectangular Pulse
     </h4>
-    <CodeBlock language="python">
+    <Python>
       {`x = [0,0,0,0,1,1,1,1,1,1,0,0,0,0]
 h = [1/3,1/3,1/3,0,0,0,0,0,0,0,0,0,0,0]
 create_convolution_animation(x, h, title='Convolution: Smoothing a Rectangular Pulse')`}
-    </CodeBlock>
+    </Python>
     <Image src={conv_smooth_rect} alt="convolution animation showing smoothing of a rectangular pulse" />
     <h4 id="Convolution-Example-2:-ADSR-Envelope">Convolution Example 2: ADSR Envelope</h4>
-    <CodeBlock language="python">
+    <Python>
       {`x = [1.5] * 10 + [1] * 10 + [0] * 20
 h = np.exp(-np.arange(40))
 create_convolution_animation(x, h, title='Convolution: ADSR Envelope')`}
-    </CodeBlock>
+    </Python>
     <Image src={conv_adsr} alt="convolution animation showing creation of an ADSR envelope" />
     <h4 id="Convolution-Example-3:-Matched-Filtering">Convolution Example 3: Matched Filtering</h4>
-    <CodeBlock language="python">
+    <Python>
       {`x = [1,1,1,1,0,0,0,0]
 h = flip(x)
 create_convolution_animation(x, h, title='Convolution: Matched Filtering')`}
-    </CodeBlock>
+    </Python>
     <Image
       src={conv_matched_filter}
       alt="animation showing convolution of inverted filters leading to a triangle wave"
@@ -196,7 +195,7 @@ create_convolution_animation(x, h, title='Convolution: Matched Filtering')`}
       A <em>stretch by factor $L$</em> is defined by
     </p>
     <p>{`$\\text{Stretch}_{L,m}(x) \\triangleq \\begin{cases}\\begin{array}{ll}x(m/L), & m/L \\space\\text{an integer}\\\\0, & m/L \\space\\text{non-integer}\\end{array}\\end{cases}$.`}</p>
-    <CodeBlock language="python">{`def stretch(x, L):
+    <Python>{`def stretch(x, L):
     x = np.asarray(x)
     stretched = np.zeros(L * len(x))
     if x.dtype == complex:
@@ -207,7 +206,7 @@ create_convolution_animation(x, h, title='Convolution: Matched Filtering')`}
     return stretched
 
 stretch([4,1,2], 3)
-> array([ 4.,  0.,  0.,  1.,  0.,  0.,  2.,  0.,  0.])`}</CodeBlock>
+> array([ 4.,  0.,  0.,  1.,  0.,  0.,  2.,  0.,  0.])`}</Python>
     <p>
       The stretch operator describes <em>upsampling</em> - increasing the sampling rate by an integer factor. A stretch
       by $K$ followed by lowpass filtering to the frequency band {`$\\omega \\in (-\\pi/K,\\pi/K)$`} implements{' '}
@@ -218,7 +217,7 @@ stretch([4,1,2], 3)
       Definition:{' '}
       {`$\\text{ZeroPad}_{M,m}(x) \\triangleq \\begin{cases}\\begin{array}{ll}x(m), & |m| < N/2 \\space\\text{an integer}\\\\0, & \\space\\text{otherwise}\\end{array}\\end{cases}$`}
     </p>
-    <CodeBlock language="python">
+    <Python>
       {`def zero_pad(x, M):
     return np.insert(x, (len(x) + 1) // 2, np.zeros(M - len(x)))
 
@@ -227,15 +226,15 @@ zero_pad([1,2,3,4,5], 10)
 
 zero_pad([1,2,3,0,0], 10)
 > array([1, 2, 3, 0, 0, 0, 0, 0, 0, 0])`}
-    </CodeBlock>
+    </Python>
 
     <h3 id="Repeat-Operator">Repeat Operator</h3>
-    <CodeBlock language="python">
+    <Python>
       {`def repeat(x, L):
     return np.hstack([x] * L)
 
 repeat([0,2,1,4,3,1], 2)`}
-    </CodeBlock>
+    </Python>
 
     <h3 id="Down-sampling-Operator">Down-sampling Operator</h3>
     <p>
@@ -247,13 +246,13 @@ repeat([0,2,1,4,3,1], 2)`}
 m &= 0,1,2,...,M-1\\\\
 N &= LM
 \\end{align}$.`}</p>
-    <CodeBlock language="python">
+    <Python>
       {`def downsample(x, L):
     return x[::L]
 
 downsample(np.arange(10), 2)
 > array([0, 2, 4, 6, 8])`}
-    </CodeBlock>
+    </Python>
 
     <h3 id="Alias-Operator">Alias Operator</h3>
     <p>
@@ -264,7 +263,7 @@ downsample(np.arange(10), 2)
 m &= 0,1,2,...,M-1\\\\
 N &= LM
 \\end{align}$.`}</p>
-    <CodeBlock language="python">{`def alias(x, L):
+    <Python>{`def alias(x, L):
     x = np.asarray(x)
     M = (x.size + 1) // L
     return x.reshape((L, M)).sum(axis=0)
@@ -274,7 +273,7 @@ alias(x, 2)
 > array([3, 5, 7])
 
 alias(x, 3)
-> array([6, 9])`}</CodeBlock>
+> array([6, 9])`}</Python>
 
     <h3 id="Fourier-Theorems">Fourier Theorems</h3>
     <p>In the next section, I will show empirically that all of the theorems listed in the book hold.</p>
@@ -284,7 +283,7 @@ alias(x, 3)
       satisfies
     </p>
     <p>{`$\\fbox{$\\alpha x + \\beta y \\longleftrightarrow \\alpha X + \\beta Y$}$`}</p>
-    <CodeBlock language="python">
+    <Python>
       {`x = np.cos(np.linspace(-2 * np.pi, 2 * np.pi * 4, 40, endpoint=False))
 y = np.sin(np.linspace(-2 * np.pi, 2 * np.pi * 7, 40, endpoint=False))
 
@@ -293,7 +292,7 @@ Y = plot_signal_and_fft(y, show=[1,2], signal_label='$y$')
 
 plot_signal_and_fft(2 * x + 3 * y, show=[1,2], signal_label='$2x + 3y$', spectrum_label='$DFT(2x + 3y)$')
 plot_signal_and_fft(spectrum=2 * X + 3 * Y, show=[1,2], signal_label='$2x + 3y$', spectrum_label='$2X + 3Y$')`}
-    </CodeBlock>
+    </Python>
     <Image src={conv_linearity_1} alt="Convolution" />
     <Image src={conv_linearity_2} alt="Convolution" />
     <Image src={conv_linearity_3} alt="Convolution" />
@@ -304,11 +303,11 @@ plot_signal_and_fft(spectrum=2 * X + 3 * Y, show=[1,2], signal_label='$2x + 3y$'
       <strong>Theorem:</strong> For any {`$x \\in \\mathbb{C}^N$`},
     </p>
     <p>{`$\\fbox{$\\overline{x} \\longleftrightarrow $Flip$(\\overline{X})$}.$`}</p>
-    <CodeBlock language="python">{`x = np.exp(1j * np.linspace(-2 * np.pi, 2 * np.pi * 4, 40, endpoint=False))
+    <Python>{`x = np.exp(1j * np.linspace(-2 * np.pi, 2 * np.pi * 4, 40, endpoint=False))
 
 X = plot_signal_and_fft(x, show=[1,2])
 plot_signal_and_fft(np.conj(x), show=[1,2], signal_label='$\\bar{x}$', spectrum_label='$DFT(\\bar{x})$')
-plot_signal_and_fft(x, show=[2], spectrum_operator=lambda X: flip(np.conj(X)), spectrum_label='Flip$(\\bar{X})$')`}</CodeBlock>
+plot_signal_and_fft(x, show=[2], spectrum_operator=lambda X: flip(np.conj(X)), spectrum_label='Flip$(\\bar{X})$')`}</Python>
     <Image src={conv_conj_reverse_1} alt="Convolution" />
     <Image src={conv_conj_reverse_2} alt="Convolution" />
     <Image src={conv_conj_reverse_3} alt="Convolution" />
@@ -317,8 +316,8 @@ plot_signal_and_fft(x, show=[2], spectrum_operator=lambda X: flip(np.conj(X)), s
       <strong>Theorem:</strong> For any {`$x \\in \\mathbb{C}^N$`},
     </p>
     <p>{`$\\fbox{Flip$(\\overline{x}) \\longleftrightarrow \\overline{X}$}.$`}</p>
-    <CodeBlock language="python">{`plot_signal_and_fft(flip(np.conj(x)), show=[1,2], signal_label='Flip$(\\bar{x})$', spectrum_label='$DFT($Flip$(\\bar{x}))$')
-plot_signal_and_fft(spectrum=X, show=[2], spectrum_operator=np.conj, spectrum_label='$\\bar{X}$')`}</CodeBlock>
+    <Python>{`plot_signal_and_fft(flip(np.conj(x)), show=[1,2], signal_label='Flip$(\\bar{x})$', spectrum_label='$DFT($Flip$(\\bar{x}))$')
+plot_signal_and_fft(spectrum=X, show=[2], spectrum_operator=np.conj, spectrum_label='$\\bar{X}$')`}</Python>
     <Image src={conv_conj_reverse_4} alt="Convolution" />
     <Image src={conv_conj_reverse_5} alt="Convolution" />
 
@@ -326,8 +325,8 @@ plot_signal_and_fft(spectrum=X, show=[2], spectrum_operator=np.conj, spectrum_la
       <strong>Theorem:</strong> For any {`$x \\in \\mathbb{C}^N$`},
     </p>
     <p>{`$\\fbox{Flip$(x) \\longleftrightarrow $ Flip$({X})$}.$`}</p>
-    <CodeBlock language="python">{`plot_signal_and_fft(flip(x), show=[1,2], signal_label='Flip$(x)$', spectrum_label='$DFT($Flip$(x))$')
-plot_signal_and_fft(spectrum=flip(X), show=[1,2], spectrum_label='Flip$(X)$')`}</CodeBlock>
+    <Python>{`plot_signal_and_fft(flip(x), show=[1,2], signal_label='Flip$(x)$', spectrum_label='$DFT($Flip$(x))$')
+plot_signal_and_fft(spectrum=flip(X), show=[1,2], spectrum_label='Flip$(X)$')`}</Python>
     <Image src={conv_conj_reverse_6} alt="Convolution" />
     <Image src={conv_conj_reverse_7} alt="Convolution" />
 
@@ -335,10 +334,10 @@ plot_signal_and_fft(spectrum=flip(X), show=[1,2], spectrum_label='Flip$(X)$')`}<
       <strong>Corollary:</strong> For any {`$x \\in \\mathbb{R}^N$`},
     </p>
     <p>{`$\\fbox{Flip$(x) \\longleftrightarrow \\overline{X}$}.$`}</p>
-    <CodeBlock language="python">{`x = np.sin(np.linspace(-2 * np.pi, 2 * np.pi * 4, 40, endpoint=False))
+    <Python>{`x = np.sin(np.linspace(-2 * np.pi, 2 * np.pi * 4, 40, endpoint=False))
 X = plot_signal_and_fft(x, show=[1,3])
 plot_signal_and_fft(flip(x), show=[1,3], signal_label='Flip$(x)$', spectrum_label='$DFT($Flip$(x))$')
-plot_signal_and_fft(spectrum=np.conj(X), show=[3], spectrum_label='$\\\\bar{X}$')`}</CodeBlock>
+plot_signal_and_fft(spectrum=np.conj(X), show=[3], spectrum_label='$\\\\bar{X}$')`}</Python>
     <Image src={conv_conj_reverse_8} alt="Convolution" />
     <Image src={conv_conj_reverse_9} alt="Convolution" />
     <Image src={conv_conj_reverse_10} alt="Convolution" />
@@ -361,12 +360,12 @@ plot_signal_and_fft(spectrum=np.conj(X), show=[3], spectrum_label='$\\\\bar{X}$'
       The shift theorem says that a <em>delay</em> in the time domain corresponds to a <em>linear phase term</em> in the
       frequency domain.
     </p>
-    <CodeBlock language="python">{`x = np.exp(1j * np.linspace(0, 2 * np.pi * 6, 40, endpoint=False))
+    <Python>{`x = np.exp(1j * np.linspace(0, 2 * np.pi * 6, 40, endpoint=False))
 
 delta = 10
 X = plot_signal_and_fft(x)
 plot_signal_and_fft(shift(x, delta), signal_label='Shift$_\\Delta(x)$', spectrum_label='$DFT($Shift$_\\Delta(x))$')
-plot_signal_and_fft(spectrum=np.exp(-1j * 2 * np.pi * delta * np.arange(X.size) / X.size) * X, spectrum_label='$e^{-j\\omega_k\\Delta}X(\\omega_k)$')`}</CodeBlock>
+plot_signal_and_fft(spectrum=np.exp(-1j * 2 * np.pi * delta * np.arange(X.size) / X.size) * X, spectrum_label='$e^{-j\\omega_k\\Delta}X(\\omega_k)$')`}</Python>
     <Image src={conv_shift_1} alt="Convolution" />
     <Image src={conv_shift_2} alt="Convolution" />
     <Image src={conv_shift_3} alt="Convolution" />
@@ -383,14 +382,14 @@ plot_signal_and_fft(spectrum=np.exp(-1j * 2 * np.pi * delta * np.arange(X.size) 
       </em>
       .
     </p>
-    <CodeBlock language="python">{`x = np.exp(1j * np.linspace(0, 2 * np.pi * 20, 128, endpoint=False))
+    <Python>{`x = np.exp(1j * np.linspace(0, 2 * np.pi * 20, 128, endpoint=False))
 y = np.exp(1j * np.linspace(0, 2 * np.pi * 36, 128, endpoint=False))
 
 conv_size = x.size + y.size - 1
 X = plot_signal_and_fft(zero_pad(x, conv_size), show=[1,2])
 Y = plot_signal_and_fft(zero_pad(y, conv_size), show=[1,2], signal_label='y')
 plot_signal_and_fft(np.convolve(x, y), show=[1,2], signal_label='$conv(x, y)$', spectrum_label='DFT$(conv(x, y))$')
-plot_signal_and_fft(spectrum=X * Y, show=[2], spectrum_label='$X \\\\cdot Y$')`}</CodeBlock>
+plot_signal_and_fft(spectrum=X * Y, show=[2], spectrum_label='$X \\\\cdot Y$')`}</Python>
     <Image src={conv_conv_1} alt="Convolution" />
     <Image src={conv_conv_2} alt="Convolution" />
     <Image src={conv_conv_3} alt="Convolution" />
@@ -405,8 +404,8 @@ plot_signal_and_fft(spectrum=X * Y, show=[2], spectrum_label='$X \\\\cdot Y$')`}
       <strong>Theorem:</strong>
     </p>
     <p>{`$\\fbox{$x \\cdot y \\longleftrightarrow \\frac{1}{N} X \\circledast Y$}.$`}</p>
-    <CodeBlock language="python">{`_ = plot_signal_and_fft(x * y, show=[1,3], signal_label = '$x * y$', spectrum_label='DFT$(x * y)$')
-plot_signal_and_fft(spectrum=np.convolve(X, Y)[:x.size] / x.size, show=[3], spectrum_label='$\\\\frac{1}{N}conv(X, Y)$')`}</CodeBlock>
+    <Python>{`_ = plot_signal_and_fft(x * y, show=[1,3], signal_label = '$x * y$', spectrum_label='DFT$(x * y)$')
+plot_signal_and_fft(spectrum=np.convolve(X, Y)[:x.size] / x.size, show=[3], spectrum_label='$\\\\frac{1}{N}conv(X, Y)$')`}</Python>
     <Image src={conv_dual_1} alt="Convolution" />
     <Image src={conv_dual_2} alt="Convolution" />
 
@@ -415,13 +414,13 @@ plot_signal_and_fft(spectrum=np.convolve(X, Y)[:x.size] / x.size, show=[3], spec
       <strong>Theorem:</strong> For all {`$x,y \\in \\mathbb{C}^N$`},
     </p>
     <p>{`$\\fbox{$\\langle x , y \\rangle = \\frac{1}{N}\\langle X , Y \\rangle$}.$`}</p>
-    <CodeBlock language="python">{`x = np.exp(1j * np.arange(100))
+    <Python>{`x = np.exp(1j * np.arange(100))
 y = np.exp(1j * np.arange(100) * 2 * np.pi)
 np.abs((x * np.conj(y)).sum())
 > 0.54726924741583161
 
 np.abs((np.fft.fft(x) * np.conj(np.fft.fft(y)))).sum() / x.size
-> 0.54726924741635341`}</CodeBlock>
+> 0.54726924741635341`}</Python>
     <h3 id="Stretch-Theorem-(Repeat-Theorem)">Stretch Theorem (Repeat Theorem)</h3>
     <p>
       <strong>Theorem:</strong> For all {`$x \\in \\mathbb{C}^N$`},
@@ -431,12 +430,12 @@ np.abs((np.fft.fft(x) * np.conj(np.fft.fft(y)))).sum() / x.size
       That is, when you stretch a signal by the factor $L$ (inserting zeros between the original samples), its spectrum
       is repeated $L$ times around the unit circle.
     </p>
-    <CodeBlock language="python">{`x = np.exp(1j * np.linspace(0, 2 * np.pi * 20, 128, endpoint=False))
+    <Python>{`x = np.exp(1j * np.linspace(0, 2 * np.pi * 20, 128, endpoint=False))
 
 L = 3
 X = plot_signal_and_fft(x, show=[1,2])
 _ = plot_signal_and_fft(stretch(x, L), show=[1,2], signal_label='Stretch$_L(x)$', spectrum_label='DFT(Stretch$_L(x)$)')
-_ = plot_signal_and_fft(spectrum=repeat(X, L), show=[1,2], spectrum_label='Repeat$_L(X)$')`}</CodeBlock>
+_ = plot_signal_and_fft(spectrum=repeat(X, L), show=[1,2], spectrum_label='Repeat$_L(X)$')`}</Python>
     <Image src={conv_stretch_repeat_1} alt="Convolution" />
     <Image src={conv_stretch_repeat_2} alt="Convolution" />
     <Image src={conv_stretch_repeat_3} alt="Convolution" />
@@ -446,10 +445,10 @@ _ = plot_signal_and_fft(spectrum=repeat(X, L), show=[1,2], spectrum_label='Repea
       <strong>Theorem:</strong> For all {`$x \\in \\mathbb{C}^N$`},
     </p>
     <p>{`$\\fbox{$\\text{Downsample}_L(x) \\longleftrightarrow \\frac{1}{L}\\text{Alias}_L(X)$}.$`}</p>
-    <CodeBlock language="python">{`L = 4
+    <Python>{`L = 4
 X = plot_signal_and_fft(x, show=[1,2])
 plot_signal_and_fft(downsample(x, L), show=[1,2], signal_label='Stretch$_L(x)$)', spectrum_label='DFT(Stretch$_L(x)$)')
-plot_signal_and_fft(spectrum=alias(X, L) / L, show=[1,2], spectrum_label='$\\\\frac{1}{L}$Alias$_L(X)$')`}</CodeBlock>
+plot_signal_and_fft(spectrum=alias(X, L) / L, show=[1,2], spectrum_label='$\\\\frac{1}{L}$Alias$_L(X)$')`}</Python>
     <Image src={conv_downsample_1} alt="Convolution" />
     <Image src={conv_downsample_2} alt="Convolution" />
     <Image src={conv_downsample_3} alt="Convolution" />
@@ -463,9 +462,9 @@ plot_signal_and_fft(spectrum=alias(X, L) / L, show=[1,2], spectrum_label='$\\\\f
       <strong>Theorem:</strong> For any {`$x \\in \\mathbb{C}^N$`},
     </p>
     <p>{`$\\fbox{$\\text{ZeroPad}_{LN}(x) \\longleftrightarrow \\text{Interp}_L(X)$}.$`}</p>
-    <CodeBlock language="python">{`x = np.exp(1j * np.linspace(0, 2 * np.pi * 4.4, 24, endpoint=False))
+    <Python>{`x = np.exp(1j * np.linspace(0, 2 * np.pi * 4.4, 24, endpoint=False))
 X = plot_signal_and_fft(x, show=[1,2])
-plot_signal_and_fft(zero_pad(x, 100), show=[1,2], signal_label='ZeroPad$_L(x)$)', spectrum_label='DFT(ZeroPad$_L(x)$)')`}</CodeBlock>
+plot_signal_and_fft(zero_pad(x, 100), show=[1,2], signal_label='ZeroPad$_L(x)$)', spectrum_label='DFT(ZeroPad$_L(x)$)')`}</Python>
     <Image src={conv_zero_pad_1} alt="Convolution" />
     <Image src={conv_zero_pad_2} alt="Convolution" />
 
@@ -478,11 +477,11 @@ plot_signal_and_fft(zero_pad(x, 100), show=[1,2], signal_label='ZeroPad$_L(x)$)'
       <strong>Definition:</strong> For all {`$x \\in \\mathbb{C}^N$ and any integer $L \\geq 1$`},
     </p>
     <p>{`$\\fbox{$\\text{PerInterp}(x) \\triangleq \\text{IDFT}(\\text{ZeroPad}_{LN}(X))$}.$`}</p>
-    <CodeBlock language="python">{`x = np.exp(1j * np.linspace(0, 2 * np.pi * 5, 24, endpoint=False))
+    <Python>{`x = np.exp(1j * np.linspace(0, 2 * np.pi * 5, 24, endpoint=False))
 X = plot_signal_and_fft(x, show=[1,2])
 
 x_interp = np.fft.ifft(zero_pad(X, 100))
-plot_signal_and_fft(x_interp, show=[1], signal_label='IDFT(ZeroPad$_{LN}((x))$')`}</CodeBlock>
+plot_signal_and_fft(x_interp, show=[1], signal_label='IDFT(ZeroPad$_{LN}((x))$')`}</Python>
     <Image src={conv_periodic_interp_1} alt="Convolution" />
     <Image src={conv_periodic_interp_2} alt="Convolution" />
 
@@ -499,7 +498,7 @@ plot_signal_and_fft(x_interp, show=[1], signal_label='IDFT(ZeroPad$_{LN}((x))$')
       signal {`$x^\\prime \\in \\mathbb{C}^\\infty$`},
     </p>
     <p>{`$\\fbox{$\\text{PerInterp}_{L}(x) \\longleftrightarrow \\text{IDFT}(\\text{Chop}_N(\\text{DFT}(\\text{Stretch}_L(x))))$}.$`}</p>
-    <CodeBlock language="python">{`def chop(X, M):
+    <Python>{`def chop(X, M):
     X_chopped = np.zeros(X.size).astype(complex)
     X_chopped[-(M - 1) // 2:] = X[-(M - 1) // 2:]
     X_chopped[:(M - 1) // 2] = X[:(M - 1) // 2]
@@ -513,7 +512,7 @@ x_stretch = stretch(x, L)
 X_stretch = plot_signal_and_fft(x_stretch, show=[1,2], signal_label='Stretch$_L(x)$', spectrum_label='DFT(Stretch$_L(x)$)')
 
 x_interp = np.fft.ifft(chop(X_stretch, x.size))
-plot_signal_and_fft(x_interp, show=[1], signal_label='IDFT(Chop$_{N}($DFT$($Stretch$(x))))$')`}</CodeBlock>
+plot_signal_and_fft(x_interp, show=[1], signal_label='IDFT(Chop$_{N}($DFT$($Stretch$(x))))$')`}</Python>
     <Image src={conv_periodic_interp_3} alt="Convolution" />
     <Image src={conv_periodic_interp_4} alt="Convolution" />
     <Image src={conv_periodic_interp_5} alt="Convolution" />
