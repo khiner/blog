@@ -6,8 +6,7 @@ import { Link } from 'react-router-dom'
 import config from '../config'
 
 import EntryNavItems from './EntryNavItems'
-import MailChimpEmailSignup from './follow_and_share/MailChimpEmailSignup'
-import ShareButtons from './follow_and_share/ShareButtons'
+import MailChimpEmailSignup from './MailChimpEmailSignup'
 
 export default ({ sidebarOpen, setSidebarOpen }) => (
   <Navbar fixed="top" expand="md">
@@ -33,26 +32,8 @@ export default ({ sidebarOpen, setSidebarOpen }) => (
               {topLevelLink.label}
             </Nav.Link>
           ))}
-        {(config.showShareNavItem || (config.mailChimpFormAction && config.mailChimpInputName)) && (
-          <NavDropdown
-            title={
-              config.showShareNavItem && config.mailChimpFormAction && config.mailChimpInputName
-                ? 'Share & Subscribe'
-                : config.showShareNavItem
-                ? 'Share'
-                : 'Subscribe'
-            }
-            id="share-and-subscribe"
-            alignRight
-          >
-            {config.showShareNavItem && config.host && (
-              <ShareButtons
-                title={config.shareName || config.siteName}
-                description={`${config.shareName || config.siteName}`}
-                url={config.host}
-                hideLabel={true}
-              />
-            )}
+        {config.mailChimpFormAction && config.mailChimpInputName && (
+          <NavDropdown title="Subscribe" id="subscribe" alignRight>
             {config.mailChimpFormAction && config.mailChimpInputName && (
               <MailChimpEmailSignup formAction={config.mailChimpFormAction} inputName={config.mailChimpInputName} />
             )}

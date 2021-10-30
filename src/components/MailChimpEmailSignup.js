@@ -1,4 +1,4 @@
-import './style/MailChimpEmailSignup.scss'
+import '../style/MailChimpEmailSignup.scss'
 
 import React from 'react'
 

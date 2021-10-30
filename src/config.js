@@ -2,8 +2,6 @@ export default {
   // `siteName` is used for the main site title in the nav, prepended to browser tab names for each route,
   // and for titles in site metadata used by crawlers.
   siteName: 'karlhiner.com',
-  // `shareName` is an optional different name to use in share posts. Defaults to `siteName` value.
-  shareName: "Karl's Blog",
   // If you have a [commento](https://commento.io/) instance,
   // each entry will have a commento section at the bottom.
   commentoHostName: 'https://commento.karlhiner.com',
@@ -23,17 +21,12 @@ export default {
       href: 'https://www.linkedin.com/in/karl-hiner-9534b333',
     },
   ],
-  // Fill in your handle to include in Twitter share links
-  twitterHandle: 'odangludo',
   // If you have a MailChimp list, find these in the generated embed forms at
   // https://us17.admin.mailchimp.com/lists/integration/embeddedcode
   // to include a formatted 'Subscribe' link and dropdown in the top nav
   mailChimpFormAction:
     'https://karlhiner.us17.list-manage.com/subscribe/post?u=c0cc0feba9f4a6a66942e7edb&amp;id=7025b14ea8',
   mailChimpInputName: 'b_c0cc0feba9f4a6a66942e7edb_7025b14ea8',
-  // Change the 'Subscribe' link to a 'Share & Subscribe' link with share icons?
-  // (Or add a 'Share' link if no mailChimp fields populated)
-  showShareNavItem: false,
   // Should entries go in a collapsable sidebar instead of in the main nav?
   // (Useful if you have many top-level entry sections)
   entriesInSidebar: true,

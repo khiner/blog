@@ -4,7 +4,6 @@ import { Card } from 'react-bootstrap'
 
 import config from '../config'
 import Commento from './Commento'
-import ShareButtons from './follow_and_share/ShareButtons'
 
 function formatMathWhenContentIsReady() {
   const element = document.getElementById('loadedContent')
@@ -62,10 +61,6 @@ export default React.memo(
                 <div className="mainContent Showcase">{children}</div>
               </Card.Body>
             </Card>
-          )}
-
-          {title && url && (
-            <ShareButtons title={title || ''} description={descriptionPlainText || description || ''} url={url || ''} />
           )}
         </div>
         {columnBreak}
