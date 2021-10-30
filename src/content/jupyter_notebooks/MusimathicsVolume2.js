@@ -403,7 +403,7 @@ render_samples_ipython(channels, rate=rate)`}</Python>
     <br />
     <br />
     <p>
-      I hope you get some use or inspiration out of these notebooks! As always, please comment or email with questions,
+      I hope you get some use or inspiration out of these notebooks. As always, please comment or email with questions,
       corrections, thoughts and comments!
     </p>
   </div>
