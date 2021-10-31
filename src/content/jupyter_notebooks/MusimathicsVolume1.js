@@ -222,8 +222,8 @@ plt.legend()`}</Python>
     <br />
     <br />
     <p>
-      If you find any mistakes, or if you get inspired and improve or expand on some of these concepts, please comment
-      below or email me directly!
+      If you find any mistakes, or if you get inspired and improve or expand on some of these concepts, please email me
+      directly or open an issue on GitHub!
     </p>
   </div>
 )

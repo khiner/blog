@@ -2,11 +2,7 @@ export default {
   // `siteName` is used for the main site title in the nav, prepended to browser tab names for each route,
   // and for titles in site metadata used by crawlers.
   siteName: 'karlhiner.com',
-  // If you have a [commento](https://commento.io/) instance,
-  // each entry will have a commento section at the bottom.
-  commentoHostName: 'https://commento.karlhiner.com',
   // The full qualified hostname where this site will live.
-  // Without this field, all sharing links & disqus comments will be excluded.
   host: 'https://karlhiner.com',
   // Include this for a 'Contact' link on the right of the top nav.
   email: 'karl.hiner@gmail.com',

@@ -429,6 +429,6 @@ Audio(out_samples, rate=fs)`}</Python>
     <Audio src={clarinet} />
     <br />
     <br />
-    <p>As always, please comment or email with questions, corrections and comments!</p>
+    <p>Please email or open an issue on GitHub with questions, corrections and comments!</p>
   </div>
 )

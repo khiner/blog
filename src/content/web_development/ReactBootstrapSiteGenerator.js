@@ -178,8 +178,8 @@ $ npm start`}
       site, and how to build and deploy.
     </p>
     <p>
-      I hope this saves someone time setting up their next site! If you have any questions, comments or bugs, comment
-      below or contact me directly!
+      I hope this saves someone time setting up their next site! If you have any questions, comments or bugs, please
+      email or open an issue on GitHub!
     </p>
   </div>
 )

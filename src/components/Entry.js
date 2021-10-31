@@ -3,7 +3,6 @@ import Helmet from 'react-helmet'
 import { Card } from 'react-bootstrap'
 
 import config from '../config'
-import Commento from './Commento'
 
 function formatMathWhenContentIsReady() {
   const element = document.getElementById('loadedContent')
@@ -22,7 +21,7 @@ const Header = ({ title, date }) => (
 )
 
 export default React.memo(
-  function Entry({ title, subtitle, description, descriptionPlainText, commentoId, url, date, type, children }) {
+  function Entry({ title, subtitle, description, descriptionPlainText, url, date, type, children }) {
     useEffect(() => {
       formatMathWhenContentIsReady()
     }, [])
@@ -64,9 +63,6 @@ export default React.memo(
           )}
         </div>
         {columnBreak}
-        {config.commentoHostName && commentoId && (
-          <Commento id={commentoId} commentoHostName={config.commentoHostName} />
-        )}
       </div>
     )
   },

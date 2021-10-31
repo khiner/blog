@@ -99,6 +99,14 @@ body {
   }
 }
 
+.dropdown-toggle::after {
+  vertical-align: 0.15em;
+  margin-left: 0.255em;
+  border-top: 0.3em solid;
+  border-right: 0.28em solid transparent;
+  border-left: 0.28em solid transparent;
+}
+
 .navbar {
   background-color: $primary;
   color: $text-color-light;

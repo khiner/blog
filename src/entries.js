@@ -24,15 +24,12 @@ import windowing_animation from './content/jupyter_notebooks/assets/windowing_an
 
 import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
 
-// See https://github.com/khiner/react-scripts-bootstrap-site-generator/blob/master/template/src/entries.js
-// for documentation on entries
 const entries = [
   {
     path: '/albums/web_tracks_2006_2011',
     summaryTitle: 'Album - Web Tracks 2006 - 2011',
     title: 'Web Tracks 2006 - 2011',
     date: 'May 30 2011',
-    commentoId: 'WebTracks2006-2011',
     description: (
       <div>
         <p>
@@ -52,7 +49,6 @@ const entries = [
     summaryTitle: 'Album - Calahjes&Lewps',
     title: 'Calahjes&Lewps',
     date: 'Dec 22 2011',
-    commentoId: 'CalahjesAndLewps',
     description: (
       <div>
         <p>Stream of consciousness frenetic sampling from musical sources.</p>
@@ -68,7 +64,6 @@ const entries = [
     summaryTitle: 'Album - MakeNoise Shared System Jams',
     title: 'MakeNoise Shared System Jams',
     date: 'Jan 27 2016',
-    commentoId: 'MakeNoiseSharedSystemJams',
     description: (
       <div>
         <p>Modular synth patches, made mostly using the Make Noise Shared System.'</p>
@@ -85,7 +80,6 @@ const entries = [
     summaryTitle: 'Album - MIDI Markov: Compose',
     title: 'MIDI Markov: Compose',
     date: 'Sep 1 2016',
-    commentoId: 'MidiMarkovCompose',
     description: (
       <div>
         <p>Piano compositions generated from a Markov chain given classical MIDI scores as input.</p>
@@ -101,7 +95,6 @@ const entries = [
     summaryTitle: 'Album - MIDI Markov: Decompose',
     title: 'MIDI Markov: Decompose',
     date: 'Sep 2 2016',
-    commentoId: 'MidiMarkovDecompose',
     description: (
       <div>
         <p>
@@ -122,7 +115,6 @@ const entries = [
     summaryTitle: 'Album - Web Tracks 2012-2017',
     title: 'Web Tracks 2012-2017',
     date: 'Nov 1 2017',
-    commentoId: 'WebTracks2012-2017',
     description: (
       <div>
         <p>
@@ -142,7 +134,6 @@ const entries = [
     summaryTitle: 'Processing Sketch - String Pluck',
     title: 'String Pluck',
     date: 'Feb 16 2015',
-    commentoId: 'StringPluck',
     description: (
       <div>
         <p>Interactive model of plucked string motion.</p>
@@ -159,7 +150,6 @@ const entries = [
     summaryTitle: 'Processing Sketch - Snow Globe',
     title: 'Snow Globe',
     date: 'Feb 16 2015',
-    commentoId: 'SnowGlobe',
     description: (
       <div>
         <p>
@@ -177,7 +167,6 @@ const entries = [
     summaryTitle: 'Processing Sketch - Apparent Retrograde Motion',
     title: 'Apparent Retrograde Motion',
     date: 'Feb 15 2016',
-    commentoId: 'ApparentRetrogradeMotion',
     description: (
       <div>
         <p>
@@ -197,7 +186,6 @@ const entries = [
     summaryTitle: 'Processing Sketch - Force-Directed Graph',
     title: 'Force-Directed Graph',
     date: 'July 31 2016',
-    commentoId: 'ForceDirectedGraph',
     description: (
       <div>
         <p>Mapping a force-directed graph to an image for bouncy stretching and warping.</p>
@@ -213,7 +201,6 @@ const entries = [
     path: '/music_generation/midi_markov',
     title: 'Generating MIDI with Markov Chains',
     date: 'Aug 28 2016',
-    commentoId: 'MidiMarkov',
     description: (
       <div>
         <p>
@@ -232,7 +219,6 @@ const entries = [
     path: '/music_generation/auto_sampler',
     title: 'AutoSampler for Max4Live',
     date: 'Sep 8 2016',
-    commentoId: 'AutoSampler',
     description: (
       <div>
         <p>
@@ -259,7 +245,6 @@ const entries = [
     summaryTitle: 'Processing Sketch - Bubble Wrap',
     title: 'Bubble Wrap',
     date: 'Dec 19 2017',
-    commentoId: 'BubbleWrap',
     description: (
       <div>
         <p>A simple sketch with for trippy, colorful bubble patterns.</p>
@@ -275,7 +260,6 @@ const entries = [
     summaryTitle: 'Jupyter Notebook - Python Crash Course',
     title: 'Python Crash Course',
     date: 'Dec 20 2017',
-    commentoId: 'JupyterPythonCrashCourse',
     description: (
       <div>
         <p>
@@ -300,7 +284,6 @@ const entries = [
     summaryTitle: 'Jupyter Notebook - DFT for timeseries data',
     title: 'DFT for timeseries data',
     date: 'Jan 3 2018',
-    commentoId: 'JupyterDftTimeseries',
     description: (
       <div>
         <p>
@@ -318,7 +301,6 @@ const entries = [
     path: '/web_development/react_bootstrap_site_generator',
     title: 'React Bootstrap Site Generator',
     date: 'Jan 6 2018',
-    commentoId: 'ReactBootstrapSiteGenerator',
     description: (
       <div>
         <p>
@@ -337,7 +319,6 @@ const entries = [
     title: 'BeatBot',
     subtitle: 'Android app release announcement',
     date: 'Jan 28 2018',
-    commentoId: 'BeatBot',
     description: (
       <div>
         <p>BeatBot is an Android-native DAW for sample-based beat production.</p>
@@ -354,7 +335,6 @@ const entries = [
     summaryTitle: 'Jupyter Notebook - Python for Data Analysis',
     title: 'Python for Data Analysis',
     date: 'Feb 9 2018',
-    commentoId: 'PythonForDataAnalysis',
     description: (
       <div>
         <p>
@@ -378,7 +358,6 @@ const entries = [
     summaryTitle: 'Jupyter Notebook - Accelerated C++',
     title: 'Accelerated C++',
     date: 'Mar 3 2018',
-    commentoId: 'AcceleratedC++',
     description: (
       <div>
         <p>
@@ -402,7 +381,6 @@ const entries = [
     title: 'Coding the Matrix',
     subtitle: 'Linear Algebra through Applications to Computer Science',
     date: 'Mar 30 2018',
-    commentoId: 'CodingTheMatrix',
     description: (
       <div>
         <p>
@@ -426,7 +404,6 @@ const entries = [
     title: 'Musimathics Volume 1',
     subtitle: 'The Mathematical Foundations of Music',
     date: 'Apr 19 2018',
-    commentoId: 'MusimathicsVolume1',
     description: (
       <div>
         <p>
@@ -451,7 +428,6 @@ const entries = [
     title: 'Musimathics Volume 2',
     subtitle: 'The Mathematical Foundations of Music',
     date: 'May 7 2018',
-    commentoId: 'MusimathicsVolume2',
     description: (
       <div>
         <p>
@@ -475,7 +451,6 @@ const entries = [
     summaryTitle: 'Jupyter Notebook - Mathematics of the DFT',
     title: 'Mathematics of the DFT',
     date: 'May 25 2018',
-    commentoId: 'MathematicsOfTheDft',
     description: (
       <div>
         <p>
@@ -500,7 +475,6 @@ const entries = [
     title: 'Introduction to Digital Filters',
     subtitle: 'Jupyter notebooks and a geometric interpretation of digital audio filters',
     date: 'June 16 2018',
-    commentoId: 'IntroToDigitalFilters',
     description: (
       <div>
         <p>
@@ -526,7 +500,6 @@ const entries = [
     title: 'Sound Machine',
     subtitle: 'Making a place to put audio-making things',
     date: 'Aug 25 2018',
-    commentoId: 'SoundMachine',
     description: (
       <div>
         <p>
@@ -545,7 +518,6 @@ const entries = [
     path: '/music_generation/wavenet_and_samplernn',
     title: 'Generating Music with WaveNet and SampleRNN',
     date: 'Aug 11 2019',
-    commentoId: 'MusicGenerationDeepModels',
     description: (
       <div>
         <p>
@@ -566,7 +538,6 @@ const entries = [
     title: 'Audiovisual Guide to Physical Audio Signal Processing',
     subtitle: 'Companion Jupyter Notebooks for "Physical Audio Signal Processing" by J. O. Smith III',
     date: 'Jan 1 2020',
-    commentoId: 'PhysicalAudioSignalProcessing',
     description: (
       <div>
         <p>
