@@ -23,6 +23,12 @@ code {
   }
 }
 
+blockquote {
+  font-style: italic;
+  padding-left: 1em;
+  border-left: 4px solid $primary-highlight;
+}
+
 /* From https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php */
 .videoWrapper {
   position: relative;
