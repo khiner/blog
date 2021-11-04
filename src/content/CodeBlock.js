@@ -10,3 +10,4 @@ const CodeBlock = ({ language = 'shell', children }) => (
 
 export default CodeBlock
 export const Python = ({ children }) => CodeBlock({ language: 'python', children })
+export const Cpp = ({ children }) => CodeBlock({ language: 'cpp', children })

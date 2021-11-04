@@ -1,8 +1,8 @@
 import React from 'react'
 
+import CodeBlock, { Cpp } from '../CodeBlock'
 import Link from '../Link'
 
-import './style/jupyter-style.scss'
 import cpp_kernels_image from './assets/cpp_kernels.png'
 
 export default (
@@ -50,8 +50,8 @@ export default (
         </li>
       </ol>
       Problem domain aside, I really enjoyed this book's tone, tempo and teaching philosophy. The authors say it is the
-      result of many years of tweaking and adapting the teaching of C++ to large groups of students, and it definitely
-      shows. The tools you build up throughout the book are pretty generic and powerful. I'll show an example in a bit.
+      result of many years of tweaking and adapting the teaching of C++ to large groups of students, and it shows. The
+      tools you build up throughout the book are pretty generic and powerful. I'll show an example in a bit.
     </p>
     <h2>The Jupyter notebook</h2>
     <p>
@@ -67,7 +67,7 @@ export default (
     </p>
     <h2>Wait, C++ in Jupyter?!</h2>
     <p>
-      Heck yeah! Well, kind of... it's a little clunky as of now. More on that later, for now let's focus on the good:
+      Heck yeah! Well, kind of... it's a little clunky as of now. More on that later. For now, let's focus on the good:
     </p>
     <div style={{ display: 'flex', 'flex-direction': 'row' }}>
       <div style={{ width: '50%' }}>
@@ -86,35 +86,31 @@ export default (
       </div>
       <img src={cpp_kernels_image} alt="C++ kernel selection in Jupyter" style={{ height: '30%', width: '30%' }} />
     </div>
-    <p>
-      <div
-        className="jupyter"
-        dangerouslySetInnerHTML={{
-          __html: `<div class="cell border-box-sizing code_cell rendered"><div class="input"><div class="prompt input_prompt">In&nbsp;[15]:</div><div class="inner_cell"><div class="input_area"><div class=" highlight hl-c++"><pre><span></span><span class="n">Picture</span> <span class="nf">histogram</span><span class="p">(</span><span class="k">const</span> <span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;&amp;</span> <span class="n">students</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">Picture</span> <span class="n">names</span><span class="p">;</span>
-    <span class="n">Picture</span> <span class="n">grades</span><span class="p">;</span>
-    <span class="n">Picture</span> <span class="n">spaces</span><span class="p">;</span>
+    <Cpp>{`Picture histogram(const Vec<Student_info>& students) {
+    Picture names;
+    Picture grades;
+    Picture spaces;
 
-    <span class="k">for</span> <span class="p">(</span><span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;::</span><span class="n">const_iterator</span> <span class="n">it</span> <span class="o">=</span> <span class="n">students</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">&lt;</span> <span class="n">students</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">Vec</span><span class="o">&lt;</span><span class="n">Str</span><span class="o">&gt;</span> <span class="n">names_vec</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">it</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">());</span>
-        <span class="o">*</span><span class="p">(</span><span class="n">names_vec</span><span class="p">.</span><span class="n">end</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+=</span> <span class="s">&quot; &quot;</span><span class="p">;</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">names_vec</span><span class="p">);</span>
-        <span class="n">grades</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">grades</span><span class="p">,</span> <span class="n">split</span><span class="p">(</span><span class="n">Str</span><span class="p">(</span><span class="n">it</span><span class="o">-&gt;</span><span class="n">grade</span><span class="p">()</span> <span class="o">/</span> <span class="mi">5</span><span class="p">,</span> <span class="sc">&#39;=&#39;</span><span class="p">)));</span>
-    <span class="p">}</span>
+    for (Vec<Student_info>::const_iterator it = students.begin(); it < students.end(); ++it) {
+        Vec<Str> names_vec = split(it->name());
+        *(names_vec.end() - 1) += " ";
+        names = vcat(names, names_vec);
+        grades = vcat(grades, split(Str(it->grade() / 5, '=')));
+    }
 
-    <span class="k">return</span> <span class="n">hcat</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">grades</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div></div></div></div><div class="output_wrapper"><div class="output"><div class="output_area"><div class="prompt output_prompt">Out[15]:</div><div class="output_text output_subarea output_execute_result"><pre></pre></div></div></div></div></div><div class="cell border-box-sizing code_cell rendered"><div class="input"><div class="prompt input_prompt">In&nbsp;[16]:</div><div class="inner_cell"><div class="input_area"><div class=" highlight hl-c++"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="n">student_file</span><span class="p">(</span><span class="s">&quot;../chapter_13/all_student_types_test_data.txt&quot;</span><span class="p">);</span>
-<span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;</span> <span class="n">students</span><span class="p">;</span>
-<span class="n">Student_info</span> <span class="n">s</span><span class="p">;</span>
-<span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">student_file</span><span class="p">))</span> <span class="p">{</span>
-    <span class="n">students</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
-<span class="p">}</span>
+    return hcat(names, grades);
+}`}</Cpp>
+    <Cpp>{`std::ifstream student_file("../chapter_13/all_student_types_test_data.txt");
+Vec<Student_info> students;
+Student_info s;
+while (s.read(student_file)) {
+    students.push_back(s);
+}
 
-<span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">students</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">students</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">Student_info</span><span class="o">::</span><span class="n">compare</span><span class="p">);</span>
+std::sort(students.begin(), students.end(), Student_info::compare);
 
-<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">frame</span><span class="p">(</span><span class="n">histogram</span><span class="p">(</span><span class="n">students</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</pre></div></div></div></div><div class="output_wrapper"><div class="output"><div class="output_area"><div class="prompt"></div><div class="output_subarea output_stream output_stdout output_text"><pre>****************************
+std::cout << frame(histogram(students)) << std::endl;`}</Cpp>
+    <CodeBlock>{`****************************
 *                          *
 * GradMan ==============   *
 * Hank    ========         *
@@ -122,23 +118,16 @@ export default (
 * Quentin ===============  *
 * Tina                     *
 *                          *
-****************************
-
-</pre></div></div><div class="output_area"><div class="prompt output_prompt">Out[16]:</div><div class="output_text output_subarea output_execute_result"><pre>(std::__1::basic_ostream &amp;) @0x7fff8d942660
-</pre></div></div></div></div></div>`,
-        }}
-      />
-    </p>
-    <br />
+****************************`}</CodeBlock>
     <p>
       This should feel homely for those who use Jupyter for Python a lot. When it all works, it feels a lot like a
-      Python notebook. Pretty sweet.
+      Python notebook. Pretty sweet. However ...
     </p>
     <h2>C++ in Jupyter: The Bad</h2>
     <p>
       After reading{' '}
       <Link href="https://blog.jupyter.org/interactive-workflows-for-c-with-jupyter-fe9b54227d92">this post</Link> on
-      the Jupyter blog, my expectations were much higher what I actually found. I{' '}
+      the Jupyter blog, my expectations were much higher than what I actually found. I{' '}
       <Link href="https://github.com/root-project/cling/tree/master/tools/Jupyter">
         installed the cling kernelspecs directly
       </Link>{' '}
@@ -146,9 +135,6 @@ export default (
       currently only available for the <Link href="https://www.anaconda.com/">Anaconda environment</Link>, which I don't
       use. Based on their demo gifs and their comparatively active Github, it looks like the Xeus version may not have
       as many problems as the pure <code>cling</code> C++ kernels I tried.
-      <sup>
-        <a href="#aside_1">1</a>
-      </sup>
     </p>
     <p>
       The issues I ran into were pretty major:
@@ -192,46 +178,34 @@ export default (
       Separate <code>#include</code>
       s, definition links and <code>using</code> declarations into separate cells
     </h3>
-    <div
-      className="jupyter"
-      dangerouslySetInnerHTML={{
-        __html: `<div class="cell border-box-sizing code_cell rendered"> <div class="input"> <div class="prompt input_prompt">In&nbsp;[1]:</div> <div class="inner_cell"> <div class="input_area"> <div class=" highlight hl-c++"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span> </pre></div> </div> </div> </div> <div class="output_wrapper"> <div class="output"> <div class="output_area"> <div class="prompt output_prompt">Out[1]:</div> <div class="output_text output_subarea output_execute_result"> <pre></pre> </div> </div> </div> </div> </div> <div class="cell border-box-sizing code_cell rendered"> <div class="input"> <div class="prompt input_prompt">In&nbsp;[2]:</div> <div class="inner_cell"> <div class="input_area"> <div class=" highlight hl-c++"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;fstream&gt;</span><span class="cp"></span> </pre></div> </div> </div> </div> <div class="output_wrapper"> <div class="output"> <div class="output_area"> <div class="prompt output_prompt">Out[2]:</div> <div class="output_text output_subarea output_execute_result"> <pre></pre> </div> </div> </div> </div> </div> <div class="cell border-box-sizing code_cell rendered"> <div class="input"> <div class="prompt input_prompt">In&nbsp;[3]:</div> <div class="inner_cell"> <div class="input_area"> <div class=" highlight hl-c++"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;../chapter_14/Str.h&quot;</span><span class="cp"></span> </pre></div> </div> </div> </div> <div class="output_wrapper"> <div class="output"> <div class="output_area"> <div class="prompt output_prompt">Out[3]:</div> <div class="output_text output_subarea output_execute_result"> <pre></pre> </div> </div> </div> </div> </div> <i><strong>... and so on...</strong></i> <div class="cell border-box-sizing code_cell rendered"> <div class="input"> <div class="prompt input_prompt">In&nbsp;[11]:</div> <div class="inner_cell"> <div class="input_area"> <div class=" highlight hl-c++"><pre><span></span><span class="p">.</span><span class="n">L</span> <span class="p">..</span><span class="o">/</span><span class="n">chapter_14</span><span class="o">/</span><span class="n">Student_info</span><span class="p">.</span><span class="n">cpp</span> </pre></div> </div> </div> </div> <div class="output_wrapper"> <div class="output"> <div class="output_area"> <div class="prompt output_prompt">Out[11]:</div> <div class="output_text output_subarea output_execute_result"> <pre></pre> </div> </div> </div> </div> </div> <div class="cell border-box-sizing code_cell rendered"> <div class="input"> <div class="prompt input_prompt">In&nbsp;[12]:</div> <div class="inner_cell"> <div class="input_area"> <div class=" highlight hl-c++"><pre><span></span><span class="p">.</span><span class="n">L</span> <span class="p">..</span><span class="o">/</span><span class="n">chapter_15</span><span class="o">/</span><span class="n">split</span><span class="p">.</span><span class="n">cpp</span> </pre></div> </div> </div> </div> <div class="output_wrapper"> <div class="output"> <div class="output_area"> <div class="prompt output_prompt">Out[12]:</div> <div class="output_text output_subarea output_execute_result"> <pre></pre> </div> </div> </div> </div> </div> <div class="cell border-box-sizing code_cell rendered"> <div class="input"> <div class="prompt input_prompt">In&nbsp;[13]:</div> <div class="inner_cell"> <div class="input_area"> <div class=" highlight hl-c++"><pre><span></span><span class="p">.</span><span class="n">L</span> <span class="p">..</span><span class="o">/</span><span class="n">chapter_4</span><span class="o">/</span><span class="n">median</span><span class="p">.</span><span class="n">cpp</span> </pre></div> </div> </div> </div> <div class="output_wrapper"> <div class="output"> <div class="output_area"> <div class="prompt output_prompt">Out[13]:</div> <div class="output_text output_subarea output_execute_result"> <pre></pre> </div> </div> </div> </div> </div> <i><strong>...</strong></i> </div> </div> </div> </div> </div>`,
-      }}
-    />
+    <Cpp>{`#include <iostream>`}</Cpp>
+    <Cpp>{`#include <fstream>`}</Cpp>
+    <Cpp>{`#include "../chapter_14/Str.h"`}</Cpp>
+    <Cpp>{`.L ../chapter_14/Student_info.cpp`}</Cpp>
+    <Cpp>{`.L ../chapter_15/split.cpp`}</Cpp>
+    <Cpp>{`.L ../chapter_4/median.cpp`}</Cpp>
     <h3>
       Use file IO instead of <code>cin</code>
     </h3>
-    <p>
-      <i>
-        <strong>Instead of</strong>
-      </i>
-      <div
-        className="jupyter"
-        dangerouslySetInnerHTML={{
-          __html: `<div class="cell border-box-sizing code_cell rendered"> <div class="input"> <div class="prompt input_prompt">In&nbsp;[16]:</div> <div class="inner_cell"> <div class="input_area"> <div class=" highlight hl-c++"><pre><span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;</span> <span class="n">students</span><span class="p">;</span>
-<span class="n">Student_info</span> <span class="n">s</span><span class="p">;</span>
-<span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">std::cin</span><span class="p">))</span> <span class="p">{</span>
-    <span class="n">students</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
-<span class="p">}
-</span>... </pre></div> </div> </div> </div>`,
-        }}
-      />
-      <i>
-        <strong>Do something like</strong>
-      </i>
-      <div
-        className="jupyter"
-        dangerouslySetInnerHTML={{
-          __html: `<div class="cell border-box-sizing code_cell rendered"><div class="input"><div class="prompt input_prompt">In&nbsp;[16]:</div><div class="inner_cell"> <div class="input_area"><div class=" highlight hl-c++"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="n">student_file</span><span class="p">(</span><span class="s">&quot;../chapter_13/all_student_types_test_data.txt&quot;</span><span class="p">);</span>
-<span class="n">Vec</span><span class="o">&lt;</span><span class="n">Student_info</span><span class="o">&gt;</span> <span class="n">students</span><span class="p">;</span>
-<span class="n">Student_info</span> <span class="n">s</span><span class="p">;</span>
-<span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">student_file</span><span class="p">))</span> <span class="p">{</span>
-    <span class="n">students</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
-<span class="p">}</span>
-...</pre></div></div></div></div>`,
-        }}
-      />
-    </p>
+    <i>
+      <strong>Instead of</strong>
+    </i>
+    <Cpp>{`Vec<Student_info> students;
+Student_info s;
+while (s.read(std::cin)) {
+    students.push_back(s);
+}
+... `}</Cpp>
+    <i>
+      <strong>Do something like</strong>
+    </i>
+    <Cpp>{`std::ifstream student_file("../chapter_13/all_student_types_test_data.txt");
+Vec<Student_info> students;
+Student_info s;
+while (s.read(student_file)) {
+    students.push_back(s);
+}
+...`}</Cpp>
     <h2>The future looks good</h2>
     <p>
       We're still in the Wild West phase with these tools, but the powers that be clearly have some interest in bringing
@@ -241,16 +215,5 @@ export default (
       a domain like DSP, this sounds like a pretty ideal setup. If you've found a good way of integrating C++ and Python
       in Jupyter, I'd love to hear from you!
     </p>
-    <div id="aside_1">
-      <small>
-        <sup>1</sup>{' '}
-        <i>
-          Much of Jupyter community strongly recommends Anaconda these days anyway, so I'll probably make the switch
-          soon. I've been turned off by its single-gigantic-package approach, and prefer using <code>pip</code> to
-          install each thing I want separately as I need it. But I've been seeing more of these "Conda-only" packages
-          lately - I'm probably just being a dinosaur here.
-        </i>
-      </small>
-    </div>
   </div>
 )
