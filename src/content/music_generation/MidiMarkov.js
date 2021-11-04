@@ -202,9 +202,9 @@ D => ()`}
     <div id="aside_1">
       <p>
         <small>
-          The bug was an argument-ordering mistake when instantiating a new <code>MidiEvent</code>. I had accidentally
-          passed the delta-time to the channel parameter, causing notes to start when an event happens to have a
-          delta-time of 0, but not end until another event with the same note and a 0 delta-time occurs.
+          <sup>1</sup> The bug was an argument-ordering mistake when instantiating a new <code>MidiEvent</code>. I had
+          accidentally passed the delta-time to the channel parameter, causing notes to start when an event happens to
+          have a delta-time of 0, but not end until another event with the same note and a 0 delta-time occurs.
         </small>
       </p>
     </div>
