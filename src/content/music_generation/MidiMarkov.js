@@ -10,7 +10,7 @@ export default (
   <div>
     <p>
       <Link href="https://github.com/khiner/midi_markov">Midi Markov</Link> is a command-line tool that uses a Markov
-      process to generate MIDI streams based on a folder of MIDI source material.
+      process to generate MIDI streams based on a provided source directory of MIDI files.
     </p>
     <p>
       I expected this to be more of an academic exercise, getting a few interesting melodies out of it. And while that
