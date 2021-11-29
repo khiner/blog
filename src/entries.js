@@ -1,6 +1,7 @@
 import React from 'react'
 
 import AlbumPreview from './content/albums/AlbumPreview'
+import Audio from './content/Audio'
 
 import make_noise_shared_system_image from './content/albums/assets/makenoise_shared_system.jpg'
 import pluck_equation_image from './content/processing/assets/pluck_equation.jpg'
@@ -21,8 +22,8 @@ import python_crash_course_preview_image from './content/jupyter_notebooks/asset
 import python_for_data_analysis_preview_image from './content/jupyter_notebooks/assets/python_for_data_analysis_preview.png'
 import sound_machine_preview_image from './content/sound_machine/assets/sound_machine_short_demo.gif'
 import windowing_animation from './content/jupyter_notebooks/assets/windowing_animation.gif'
-
 import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
+import candle_rhythm_audio from './content/candle_rhythm/assets/candle_rhythm.m4a'
 
 const entries = [
   {
@@ -554,6 +555,22 @@ const entries = [
     descriptionPlainText:
       'Continuing with Julius O. Smith III\'s audio DSP book series, this set of Jupyter notebooks covers book III - "Physical Audio Signal Processing".',
     contentPath: 'jupyter_notebooks/PhysicalAudioSignalProcessing',
+    type: 'article',
+  },
+  {
+    path: '/candle_rhythm/candle_rhythm',
+    title: 'Candle Rhythm',
+    subtitle: "Using the Nature's Wick Weathered Wood candle as a tasty pseudo-rhythmic random audio source",
+    date: 'Nov 28 2021',
+    description: (
+      <div>
+        <Audio
+          src={candle_rhythm_audio}
+          alt="The sound of the Nature's Wick Weathered Wood candle, recorded with an iPhone 11"
+        />
+      </div>
+    ),
+    contentPath: 'candle_rhythm/CandleRhythm',
     type: 'article',
   },
 ]
