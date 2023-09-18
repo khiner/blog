@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 
 import SummaryList from './SummaryList'
 import Entry from './Entry'
@@ -22,15 +22,17 @@ const LoadableEntry = (entry) => {
   return <Loadable />
 }
 
-const generateComponent = (entry) => (props) => (
-  <Entry {...entry}>{entry.contentPath ? LoadableEntry(entry) : entry.content}</Entry>
-)
-
 export default () => (
   <div className="contentWrapper">
-    <Route exact path="/" component={SummaryList} />
-    {parsedEntries.all.map((entry) => (
-      <Route key={entry.path} path={`/${stripSlashes(entry.path)}`} render={generateComponent(entry)} />
-    ))}
+    <Routes>
+      <Route exact path="/" element={SummaryList} />
+      {parsedEntries.all.map((entry) => (
+        <Route
+          key={entry.path}
+          path={`/${stripSlashes(entry.path)}`}
+          element={<Entry {...entry}>{entry.contentPath ? LoadableEntry(entry) : entry.content}</Entry>}
+        />
+      ))}
+    </Routes>
   </div>
 )

@@ -23,7 +23,7 @@ const Panel = ({ entry }) => (
   </Link>
 )
 
-export default () => (
+export default (
   <Container>
     {config && config.siteTitle && <Helmet title={config.siteTitle} />}
     <Row>
