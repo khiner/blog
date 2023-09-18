@@ -5,13 +5,11 @@ import { Link } from 'react-router-dom'
 import parsedEntries from '../parsedEntries'
 import { snakeCaseToTitle, stripSlashes } from '../utils'
 
-function EntryNavDropdownItem({ entry, onItemClick }) {
-  return (
-    <NavDropdown.Item as={Link} to={`/${stripSlashes(entry.path)}/`} onClick={onItemClick}>
-      {entry.title}
-    </NavDropdown.Item>
-  )
-}
+const EntryNavDropdownItem = ({ entry, onItemClick }) => (
+  <NavDropdown.Item as={Link} to={`/${stripSlashes(entry.path)}/`} onClick={onItemClick}>
+    {entry.title}
+  </NavDropdown.Item>
+)
 
 const EntryNavDropdown = ({ topLevelPathSegment, onItemClick }) => (
   <NavDropdown key={topLevelPathSegment} id={topLevelPathSegment} title={snakeCaseToTitle(topLevelPathSegment)}>

@@ -132,83 +132,82 @@ export default (
       Having access to real-time controllable virtual instruments that sound like real instruments is incredibly
       valuable on its own. However, there are many other exciting aspects of physical audio models that we get "for
       free":
-      <ul>
-        <li>
-          <strong>Intuitive control</strong>
-          <p>
-            Physical models have physically meaningful parameters of control. For example, we can change the length or
-            tension of a string, the position of a violin bow, the stiffness of a clarinet reed, or the mass of a guitar
-            pick. Because we're modeling these aspects directly, we get direct control for free.
-          </p>
-        </li>
-        <li>
-          <strong>Mutability</strong>
-          <p>
-            Unlike instruments in the real world, we can in principle change <i>any</i> aspect of a virtual instrument.
-            I can't change the material properties of my real guitar's wooden body, or the shape of the hammers in my
-            piano. These are <i>immutable</i> properties of the instruments I bought. With virtual instruments, these
-            properties can not only be changed, but can often be changed <i> in real-time</i>.
-          </p>
-        </li>
-        <li>
-          <strong>Modularity</strong>
-          <p>
-            Physical systems are naturally modular and hierarchically composed. Most techniques (like digital
-            waveguides) model physical relationships in a way that reflects this, with a modular design. A string is
-            modeled with a delay line, which has inputs and outputs at discrete positions along its length. A guitar
-            bridge is modeled with a digital filter with multiple inputs and outputs.
-          </p>
-          <p>
-            This allows for combining model components in musically creative ways. For example, there's no reason we
-            couldn't send a <i>force</i> wave signal into something expecting a <i>velocity</i> input. Or (as is
-            actually done in{' '}
-            <Link href="https://ccrma.stanford.edu/~jos/pasp/Commuted_Synthesis.html">commuted synthesis</Link>) we can
-            excite a string with the impulse response of a piano soundboard. In other words, anything can be hooked up
-            to anything. There's no need to constrain ourselves to what's physically plausible. Experimenting with{' '}
-            <i>connectivity</i> in low-level DSP architecture is a powerful dimension of control that is not often
-            exposed in audio software, and is something I'm excited to pursue further.
-          </p>
-        </li>
-        <li>
-          <strong>Scalability</strong>
-          <p>
-            I mentioned the tradeoff between accuracy and efficiency above. In many cases, it is actually <i>simpler</i>{' '}
-            to make a physically accurate model if computational complexity isn't a concern. A lot of complexity in
-            physical modeling comes from "hacks" that make things faster, but also less physically interpretable. For
-            example,{' '}
-            <Link href="https://github.com/grame-cncm/faust/blob/master-dev/tools/physicalModeling/mesh2faust/README.md">
-              this tool
-            </Link>{' '}
-            transforms a volumetric mesh of a 3D object into a modal physical model in{' '}
-            <Link href="https://faust.grame.fr/">Faust</Link>. The realism of the resulting model, and the computational
-            complexity, will scale with the number of mesh vertices included in the transformation.
-          </p>
-          <p>
-            Physical modeling techniques, perhaps more so than other synthesis techniques, have a capacity for
-            improvement by simply throwing more hardware at the problem. This means the possibilities available to us
-            will grow with hardware capabilities. In particular, I'm excited to see how this influences{' '}
-            <Link href="https://www.researchgate.net/publication/263020611_Modular_Physical_Modeling_Synthesis_Environments_on_GPU">
-              the role of GPUs
-            </Link>{' '}
-            in music production in the future.
-          </p>
-        </li>
-        <li>
-          <strong>Exploring the unreal</strong>
-          <p>
-            Once the physical aspects of an instrument are digitally modeled and parameterized, there's nothing stopping
-            us from changing parameter values to ones that are physically ridiculous. As an example, researchers at the
-            University of Edinburgh created{' '}
-            <Link href="http://www.ness.music.ed.ac.uk/archives/systems/brass-instruments-2">
-              a brass instrument model
-            </Link>{' '}
-            "using traditional instrument geometries along with a 10m long trumpet". Of course, geometry isn't the only
-            thing we can get crazy with. Everything down to the most basic laws of physics are mutable in a
-            computational model!
-          </p>
-        </li>
-      </ul>
     </p>
+    <ul>
+      <li>
+        <strong>Intuitive control</strong>
+        <p>
+          Physical models have physically meaningful parameters of control. For example, we can change the length or
+          tension of a string, the position of a violin bow, the stiffness of a clarinet reed, or the mass of a guitar
+          pick. Because we're modeling these aspects directly, we get direct control for free.
+        </p>
+      </li>
+      <li>
+        <strong>Mutability</strong>
+        <p>
+          Unlike instruments in the real world, we can in principle change <i>any</i> aspect of a virtual instrument. I
+          can't change the material properties of my real guitar's wooden body, or the shape of the hammers in my piano.
+          These are <i>immutable</i> properties of the instruments I bought. With virtual instruments, these properties
+          can not only be changed, but can often be changed <i> in real-time</i>.
+        </p>
+      </li>
+      <li>
+        <strong>Modularity</strong>
+        <p>
+          Physical systems are naturally modular and hierarchically composed. Most techniques (like digital waveguides)
+          model physical relationships in a way that reflects this, with a modular design. A string is modeled with a
+          delay line, which has inputs and outputs at discrete positions along its length. A guitar bridge is modeled
+          with a digital filter with multiple inputs and outputs.
+        </p>
+        <p>
+          This allows for combining model components in musically creative ways. For example, there's no reason we
+          couldn't send a <i>force</i> wave signal into something expecting a <i>velocity</i> input. Or (as is actually
+          done in <Link href="https://ccrma.stanford.edu/~jos/pasp/Commuted_Synthesis.html">commuted synthesis</Link>)
+          we can excite a string with the impulse response of a piano soundboard. In other words, anything can be hooked
+          up to anything. There's no need to constrain ourselves to what's physically plausible. Experimenting with{' '}
+          <i>connectivity</i> in low-level DSP architecture is a powerful dimension of control that is not often exposed
+          in audio software, and is something I'm excited to pursue further.
+        </p>
+      </li>
+      <li>
+        <strong>Scalability</strong>
+        <p>
+          I mentioned the tradeoff between accuracy and efficiency above. In many cases, it is actually <i>simpler</i>{' '}
+          to make a physically accurate model if computational complexity isn't a concern. A lot of complexity in
+          physical modeling comes from "hacks" that make things faster, but also less physically interpretable. For
+          example,{' '}
+          <Link href="https://github.com/grame-cncm/faust/blob/master-dev/tools/physicalModeling/mesh2faust/README.md">
+            this tool
+          </Link>{' '}
+          transforms a volumetric mesh of a 3D object into a modal physical model in{' '}
+          <Link href="https://faust.grame.fr/">Faust</Link>. The realism of the resulting model, and the computational
+          complexity, will scale with the number of mesh vertices included in the transformation.
+        </p>
+        <p>
+          Physical modeling techniques, perhaps more so than other synthesis techniques, have a capacity for improvement
+          by simply throwing more hardware at the problem. This means the possibilities available to us will grow with
+          hardware capabilities. In particular, I'm excited to see how this influences{' '}
+          <Link href="https://www.researchgate.net/publication/263020611_Modular_Physical_Modeling_Synthesis_Environments_on_GPU">
+            the role of GPUs
+          </Link>{' '}
+          in music production in the future.
+        </p>
+      </li>
+      <li>
+        <strong>Exploring the unreal</strong>
+        <p>
+          Once the physical aspects of an instrument are digitally modeled and parameterized, there's nothing stopping
+          us from changing parameter values to ones that are physically ridiculous. As an example, researchers at the
+          University of Edinburgh created{' '}
+          <Link href="http://www.ness.music.ed.ac.uk/archives/systems/brass-instruments-2">
+            a brass instrument model
+          </Link>{' '}
+          "using traditional instrument geometries along with a 10m long trumpet". Of course, geometry isn't the only
+          thing we can get crazy with. Everything down to the most basic laws of physics are mutable in a computational
+          model!
+        </p>
+      </li>
+    </ul>
     <h2>About these notebooks</h2>
     <p>
       This book has the most material of the series, with about 430 dense pages of material, and an additional 300 pages
@@ -300,8 +299,8 @@ for delay_growth in delay_growths:
     delayed_set.append(Audio(delay.tick_all(samples), rate=fs))
 
 delayed_set`}</Python>
-    {allDelayAudios.map((delayAudio) => (
-      <Audio src={delayAudio} />
+    {allDelayAudios.map((delayAudio, i) => (
+      <Audio key={i} src={delayAudio} />
     ))}
     <h3>
       <Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_6_digital_waveguide_models.ipynb">
