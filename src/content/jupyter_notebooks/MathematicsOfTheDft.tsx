@@ -88,9 +88,9 @@ export default (
     <p>
       What the following charts show is a fascinating link between operations done in the time domains and operations in
       the frequency domain. When you see notation like{' '}
-      <p style={{ margin: '1em 0' }}>{`$\\fbox{Op$(x) \\longleftrightarrow \\text{OtherOp}(X)$}$`} ,</p>
-      it means that if we take the DFT of the left-hand side (some time-domain signal that had some operation performed
-      on it), we will exactly get the right-hand side (the DFT of that signal with some potentially different operation
+      <span style={{ margin: '1em 0' }}>{`$\\fbox{Op$(x) \\longleftrightarrow \\text{OtherOp}(X)$}$`} ,</span> it means
+      that if we take the DFT of the left-hand side (some time-domain signal that had some operation performed on it),
+      we will exactly get the right-hand side (the DFT of that signal with some potentially different operation
       performed on it).
     </p>
     <p>
