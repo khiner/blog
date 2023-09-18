@@ -6,10 +6,12 @@ import config from '../config'
 
 function formatMathWhenContentIsReady() {
   const element = document.getElementById('loadedContent')
-  if (typeof element === 'undefined' || element === null) {
+  if (element === null) {
     window.requestAnimationFrame(formatMathWhenContentIsReady)
   } else if (window.MathJax) {
-    window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, 'MathOutput'])
+    window.MathJax.typesetPromise([element]).catch((err) => {
+      console.error('Error typesetting math:', err)
+    })
   }
 }
 
