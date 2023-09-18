@@ -6,7 +6,14 @@ import parsedEntries from '../parsedEntries'
 import { snakeCaseToTitle, stripSlashes } from '../utils'
 
 const EntryNavDropdownItem = ({ entry, onItemClick }) => (
-  <NavDropdown.Item as={Link} to={`/${stripSlashes(entry.path)}/`} onClick={onItemClick}>
+  <NavDropdown.Item
+    as={Link}
+    to={`/${stripSlashes(entry.path)}`}
+    onClick={(event) => {
+      onItemClick(event)
+      history.push(entry.path)
+    }}
+  >
     {entry.title}
   </NavDropdown.Item>
 )

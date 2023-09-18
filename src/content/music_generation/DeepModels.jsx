@@ -275,95 +275,95 @@ $ python train.py --exp dawn_of_midi --frame_sizes 16 4 --n_rnn 2 --sample_lengt
       The arguments <code>--sample_length=160000</code> and <code>--n_samples=2</code> tell the trainer to periodically
       generate and save two 160,000-sample wav files (two 10-second clips of 16kHz audio).
     </p>
+    <p>Here are some observations:</p>
+    <ul>
+      <li>
+        <p>
+          All of the clips have a kind of bit-crushed quality, especially during quiet segments. This makes sense, since
+          the default number of quantization bins, (controlled by the <code>--q_levels</code> argument), is 256 (8 bit
+          quantization). However, all of the WaveNet samples above were also generated with 8 bit quantization, and they
+          don't have nearly as much of that depth-reduction quality to my ears. One reason for this is likely that
+          SampleRNN uses <i>linear</i> quantization, while WaveNet uses{' '}
+          <Link href="https://en.wikipedia.org/wiki/%CE%9C-law_algorithm">µ-law</Link> companding quantization, which
+          reduces quantization error in low-amplitude signals.
+        </p>
+        <p>
+          I tried to address this by increasing the number of quantization bins to 512. This makes the learning problem
+          more difficult by doubling the number of bins in the final softmax classification layer. To compensate, I also
+          increased the capacity of the model by increasing the number of RNN layers in each tier (
+          <code>--n_rnn 3</code>
+          ), and letting it train for about twice as long (a little over two days):
+        </p>
+        <CodeBlock language="shell">{`$ python train.py --exp dawn_of_midi_3_tier --frame_sizes 16 4 --n_rnn 3 --q_levels 512 --sample_length=160000 --sampling_temperature=0.95 --n_samples=2 --dataset dawn_of_midi`}</CodeBlock>
+        <p>
+          The results of this experiment aren't really worth sharing as they were similar but with slightly degraded
+          quality.
+        </p>
+        <p>
+          Further investigation is needed to figure out why this increase in capacity and resolution capability didn't
+          translate to better qualitative results.
+        </p>
+      </li>
+      <li>
+        <p>
+          The overall quality is pretty good! While the quantization error is more audible than WaveNet, the long-term
+          structure and sample diversity is greatly improved. The samples have pauses and swells, melodic movement and
+          more restrained rhythms.
+        </p>
+        <p>
+          This agrees with the impression I've gotten from the <Link href="https://dadabots.bandcamp.com/">many</Link>{' '}
+          <Link href="https://youtu.be/dTYdRX1b000">impressive</Link>{' '}
+          <Link href="https://soundcloud.com/psylent-v/sets/samplernn_iclr2017-tangerine">results</Link> created by the
+          ML audio community. SampleRNN has become a go-to model for musicians and coders looking for fresh ways to mash
+          audio data together in fascinating new ways, and some folks are getting much better results than I was able to
+          in these short experiments.
+        </p>
+      </li>
+      <li>
+        <p>
+          Training is generally not stable. Predictive accuracy improves quickly early on, and quickly flattens out.
+          Often, after many steps, the accuracy can drop and stay low for long periods, resulting in a consistent run of
+          poor (crackly, noisy) samples.
+        </p>
+        <p>
+          While I don't have any answers for improving <i>training</i> stability, I found a decent remedy for unstable{' '}
+          <i>generation</i>. While looking into different implementations, I saw that this early{' '}
+          <Link href="https://github.com/richardassar/SampleRNN_torch">Torch port</Link> of the original authors'
+          implementation had a{' '}
+          <Link href="https://github.com/richardassar/SampleRNN_torch/blob/master/train.lua#L658">
+            <code>sampling_temperature</code>
+          </Link>{' '}
+          option that allowed for damping the generated samples (at the expense of slightly reduced dynamic range). I
+          ported this to the PyTorch implementation in{' '}
+          <Link href="https://github.com/khiner/samplernn-pytorch/commit/0b8f678c10e0f053a2f205106b371c137f281873">
+            this commit
+          </Link>
+          , which is the only addition in my fork. I found that a <code>sampling_temperature</code> of around{' '}
+          <code>0.95</code> basically fixes the problem of runaway high-amplitude sample generation, while also not
+          decaying to silence due to over-damping.
+        </p>
+      </li>
+    </ul>
+    <h3>Toward realtime, controllable audio generation for musicians</h3>
     <p>
-      Here are some observations:
-      <ul>
-        <li>
-          <p>
-            All of the clips have a kind of bit-crushed quality, especially during quiet segments. This makes sense,
-            since the default number of quantization bins, (controlled by the <code>--q_levels</code> argument), is 256
-            (8 bit quantization). However, all of the WaveNet samples above were also generated with 8 bit quantization,
-            and they don't have nearly as much of that depth-reduction quality to my ears. One reason for this is likely
-            that SampleRNN uses <i>linear</i> quantization, while WaveNet uses{' '}
-            <Link href="https://en.wikipedia.org/wiki/%CE%9C-law_algorithm">µ-law</Link> companding quantization, which
-            reduces quantization error in low-amplitude signals.
-          </p>
-          <p>
-            I tried to address this by increasing the number of quantization bins to 512. This makes the learning
-            problem more difficult by doubling the number of bins in the final softmax classification layer. To
-            compensate, I also increased the capacity of the model by increasing the number of RNN layers in each tier (
-            <code>--n_rnn 3</code>
-            ), and letting it train for about twice as long (a little over two days):
-            <CodeBlock language="shell">{`$ python train.py --exp dawn_of_midi_3_tier --frame_sizes 16 4 --n_rnn 3 --q_levels 512 --sample_length=160000 --sampling_temperature=0.95 --n_samples=2 --dataset dawn_of_midi`}</CodeBlock>
-            The results of this experiment aren't really worth sharing as they were similar but with slightly degraded
-            quality.
-          </p>
-          <p>
-            Further investigation is needed to figure out why this increase in capacity and resolution capability didn't
-            translate to better qualitative results.
-          </p>
-        </li>
-        <li>
-          <p>
-            The overall quality is pretty good! While the quantization error is more audible than WaveNet, the long-term
-            structure and sample diversity is greatly improved. The samples have pauses and swells, melodic movement and
-            more restrained rhythms.
-          </p>
-          <p>
-            This agrees with the impression I've gotten from the <Link href="https://dadabots.bandcamp.com/">many</Link>{' '}
-            <Link href="https://youtu.be/dTYdRX1b000">impressive</Link>{' '}
-            <Link href="https://soundcloud.com/psylent-v/sets/samplernn_iclr2017-tangerine">results</Link> created by
-            the ML audio community. SampleRNN has become a go-to model for musicians and coders looking for fresh ways
-            to mash audio data together in fascinating new ways, and some folks are getting much better results than I
-            was able to in these short experiments.
-          </p>
-        </li>
-        <li>
-          <p>
-            Training is generally not stable. Predictive accuracy improves quickly early on, and quickly flattens out.
-            Often, after many steps, the accuracy can drop and stay low for long periods, resulting in a consistent run
-            of poor (crackly, noisy) samples.
-          </p>
-          <p>
-            While I don't have any answers for improving <i>training</i> stability, I found a decent remedy for unstable{' '}
-            <i>generation</i>. While looking into different implementations, I saw that this early{' '}
-            <Link href="https://github.com/richardassar/SampleRNN_torch">Torch port</Link> of the original authors'
-            implementation had a{' '}
-            <Link href="https://github.com/richardassar/SampleRNN_torch/blob/master/train.lua#L658">
-              <code>sampling_temperature</code>
-            </Link>{' '}
-            option that allowed for damping the generated samples (at the expense of slightly reduced dynamic range). I
-            ported this to the PyTorch implementation in{' '}
-            <Link href="https://github.com/khiner/samplernn-pytorch/commit/0b8f678c10e0f053a2f205106b371c137f281873">
-              this commit
-            </Link>
-            , which is the only addition in my fork. I found that a <code>sampling_temperature</code> of around{' '}
-            <code>0.95</code> basically fixes the problem of runaway high-amplitude sample generation, while also not
-            decaying to silence due to over-damping.
-          </p>
-        </li>
-      </ul>
-      <h3>Toward realtime, controllable audio generation for musicians</h3>
-      <p>
-        Ultimately, musicians need tools capable of both realtime generation, and realtime control. There are many
-        fronts converging right now to make that dream possible.
-      </p>
-      <p>
-        As mentioned above, SampleRNN is already capable of faster-than-realtime generation on high-quality GPUs, and
-        there are highly optimized implementations of WaveNet that allow for realtime inference, such as Nvidia's{' '}
-        <Link href="https://github.com/NVIDIA/nv-wavenet">nv-wavenet</Link>. Another promising avenue of realtime
-        generation being explored is{' '}
-        <Link href="https://arxiv.org/abs/1902.08710v2">
-          adapting generative adversarial networks to the audio domain
-        </Link>
-        . Towards the goal of providing meaningful control, one promising avenue of research is along the lines of{' '}
-        <Link href="https://openai.com/blog/glow/">π invertible generative models</Link>, which allow for exact,
-        reversible mapping between latent variables and generated samples. Nvidia's{' '}
-        <Link href="https://nv-adlr.github.io/WaveGlow">WaveGlow</Link> model combines these ideas with WaveNet for
-        fast, non-autoregressive conditional audio generation. Of course, there are{' '}
-        <Link href="http://www.arxiv-sanity.com/search?q=audio+generation">many other</Link> audio generation models
-        being developed all the time, and I hope to look into some of these other approaches in future posts!
-      </p>
+      Ultimately, musicians need tools capable of both realtime generation, and realtime control. There are many fronts
+      converging right now to make that dream possible.
+    </p>
+    <p>
+      As mentioned above, SampleRNN is already capable of faster-than-realtime generation on high-quality GPUs, and
+      there are highly optimized implementations of WaveNet that allow for realtime inference, such as Nvidia's{' '}
+      <Link href="https://github.com/NVIDIA/nv-wavenet">nv-wavenet</Link>. Another promising avenue of realtime
+      generation being explored is{' '}
+      <Link href="https://arxiv.org/abs/1902.08710v2">
+        adapting generative adversarial networks to the audio domain
+      </Link>
+      . Towards the goal of providing meaningful control, one promising avenue of research is along the lines of{' '}
+      <Link href="https://openai.com/blog/glow/">π invertible generative models</Link>, which allow for exact,
+      reversible mapping between latent variables and generated samples. Nvidia's{' '}
+      <Link href="https://nv-adlr.github.io/WaveGlow">WaveGlow</Link> model combines these ideas with WaveNet for fast,
+      non-autoregressive conditional audio generation. Of course, there are{' '}
+      <Link href="http://www.arxiv-sanity.com/search?q=audio+generation">many other</Link> audio generation models being
+      developed all the time, and I hope to look into some of these other approaches in future posts!
     </p>
   </div>
 )
