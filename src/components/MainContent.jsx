@@ -19,7 +19,7 @@ const LoadableEntry = (entry) => {
       const element = React.isValidElement(Content) ? Content : <Content />
       return () => <div id="loadedContent">{element}</div>
     },
-    { fallback: <div>Loading...</div> }
+    { fallback: <div>Loading...</div> },
   )
   return <Loadable />
 }

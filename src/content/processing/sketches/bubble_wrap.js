@@ -28,13 +28,13 @@ export default function sketch(p) {
         p.fill(
           255 * Math.cos(x + y + p.frameCount * 0.01),
           255 * Math.sin(y + x + p.frameCount * 0.01),
-          255 * Math.tan(x + y + p.frameCount * 0.01)
+          255 * Math.tan(x + y + p.frameCount * 0.01),
         )
         p.ellipse(
           x,
           y,
           circleSize() * Math.sin(x + y + p.frameCount * speed()) + 8,
-          circleSize() * Math.cos(x + y + p.frameCount * speed()) + 8
+          circleSize() * Math.cos(x + y + p.frameCount * speed()) + 8,
         )
       }
     }

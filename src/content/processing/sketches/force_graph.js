@@ -56,7 +56,7 @@ export default function sketch(p) {
       (toggleDim + toggleOffset) * 2,
       toggleDim,
       toggleDim,
-      'Vertices'
+      'Vertices',
     ).setEnabled(true)
     pauseToggle = new Toggle(p.width - 400, 0, toggleDim, toggleDim, 'Pause').setEnabled(false)
     toggles = [imageToggle, edgesToggle, verticesToggle, pauseToggle]
@@ -177,7 +177,7 @@ export default function sketch(p) {
               this.positions[posIndex][0],
               this.positions[posIndex][1],
               this.positions[posIndex + 1][0] - this.positions[posIndex][0] + 1,
-              this.positions[posIndex + AXIS_SECTIONS][1] - this.positions[posIndex][1] + 1
+              this.positions[posIndex + AXIS_SECTIONS][1] - this.positions[posIndex][1] + 1,
             )
           }
         }

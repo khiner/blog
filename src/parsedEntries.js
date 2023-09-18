@@ -21,11 +21,11 @@ const byTopLevelPathSegment = {}
 uniqueTopLevelPathSegments.forEach((topLevelPathSegment) => {
   if (nestedTopLevelPathSegments.indexOf(topLevelPathSegment) !== -1) {
     byTopLevelPathSegment[topLevelPathSegment] = entries.filter((entry) =>
-      stripSlashes(entry.path).startsWith(topLevelPathSegment)
+      stripSlashes(entry.path).startsWith(topLevelPathSegment),
     )
   } else {
     byTopLevelPathSegment[topLevelPathSegment] = entries.find(
-      (entry) => stripSlashes(entry.path) === topLevelPathSegment
+      (entry) => stripSlashes(entry.path) === topLevelPathSegment,
     )
   }
 })

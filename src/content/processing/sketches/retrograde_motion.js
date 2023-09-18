@@ -212,7 +212,7 @@ export default function sketch(p) {
       this.pathAngleRadians += this.orbitSpeed * SIM_SPEED
       this.pos.set(
         this.ellipseCenter + this.ellipseA * Math.sin(this.pathAngleRadians),
-        this.ellipseB * Math.cos(this.pathAngleRadians)
+        this.ellipseB * Math.cos(this.pathAngleRadians),
       )
     }
 

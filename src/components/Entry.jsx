@@ -68,5 +68,5 @@ export default React.memo(
       </div>
     )
   },
-  () => true
+  () => true,
 )
