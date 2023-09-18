@@ -22,10 +22,11 @@
 $primary: #22aadd;
 $primary-highlight: #1199cc;
 $text-color-light: #ffffff;
+$text-color-dark: #444444;
 $border-color: #e8e8e8;
 $navbar-light-brand-color: $text-color-light;
 $navbar-light-color: $text-color-light;
-$navbar-light-hover-color: #444444;
+$navbar-light-hover-color: $text-color-dark;
 $navbar-nav-link-padding-x: 1em;
 $card-cap-bg: $primary;
 $card-cap-color: $text-color-light;
@@ -137,15 +138,28 @@ body {
   background-color: $primary;
   color: $text-color-light;
   border-bottom: 1px $border-color solid;
+  padding: 0.5rem 1rem;
   a {
     color: $text-color-light;
+    text-decoration: none;
     &:hover {
-      color: $navbar-light-hover-color;
-      text-decoration: none;
+      color: $text-color-dark;
     }
   }
   .active {
     color: $navbar-light-hover-color;
+  }
+}
+
+.navbar {
+  .dropdown-menu {
+    a {
+      color: $text-color-dark;
+      &:hover {
+        color: $link-hover-color;
+        text-decoration: none;
+      }
+    }
   }
 }
 
@@ -217,9 +231,7 @@ body {
   }
 }
 .panelLink {
-  &:hover {
-    text-decoration: none;
-  }
+  text-decoration: none;
 }
 
 .card {
@@ -300,26 +312,17 @@ a {
     }
   }
 
-  li a {
-    overflow: hidden;
-
-    &.open {
-      background-color: inherit;
-    }
-  }
-  ul.components {
-    padding: 20px 0;
-    border-bottom: 1px solid #47748b;
-  }
-
   .nav-link,
   .dropdown-item {
     &:hover {
       background-color: #eaeaea;
     }
   }
-  .nav-link:hover {
-    color: inherit;
+  .nav-link {
+    color: $text-color-dark;
+    &:hover {
+      color: $link-hover-color;
+    }
   }
   .dropdown-item:hover {
     color: $link-hover-color;
@@ -329,11 +332,8 @@ a {
     padding-left: 1em;
   }
 
-  .dropdown-menu > .dropdown-item {
-    font-size: 15px;
-  }
-
   .dropdown-menu {
+    padding: 0 0 0 1em;
     background-color: inherit;
     border: none;
     box-shadow: none;
@@ -341,6 +341,10 @@ a {
     inset: inherit !important;
     position: relative !important;
     margin: inherit !important;
+
+    .dropdown-item {
+      font-size: 15px;
+    }
   }
 
   ul li.active > a,

@@ -33,14 +33,14 @@ export default ({ sidebarOpen, setSidebarOpen }) => (
             </Nav.Link>
           ))}
         {config.mailChimpFormAction && config.mailChimpInputName && (
-          <NavDropdown title="Subscribe" id="subscribe" alignRight>
+          <NavDropdown title="Subscribe" id="subscribe" align="end">
             {config.mailChimpFormAction && config.mailChimpInputName && (
               <MailChimpEmailSignup formAction={config.mailChimpFormAction} inputName={config.mailChimpInputName} />
             )}
           </NavDropdown>
         )}
         {config.email && (
-          <NavDropdown title="Contact" id="contact" alignRight>
+          <NavDropdown title="Contact" id="contact" align="end">
             <Nav.Link href={`mailto:${config.email}?Subject=Hello!`} target="_blank">
               {config.email}
             </Nav.Link>
