@@ -1,4 +1,23 @@
-@import '../assets/fonts/proxima-nova.css';
+@font-face {
+  font-family: 'Roboto';
+  src: url(/src/assets/fonts/Roboto/Roboto-Light.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: italic;
+  src: url(/src/assets/fonts/Roboto/Roboto-Italic.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-weight: bold;
+  src: url(/src/assets/fonts/Roboto/Roboto-Bold.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-weight: bold;
+  font-style: italic;
+  src: url(/src/assets/fonts/Roboto/Roboto-BoldItalic.ttf) format('truetype');
+}
 
 $primary: #22aadd;
 $primary-highlight: #1199cc;
@@ -75,7 +94,7 @@ blockquote {
 }
 
 body {
-  font-family: 'Proxima Nova';
+  font-family: 'Roboto';
   font-weight: 400;
 
   .contentWrapper {
