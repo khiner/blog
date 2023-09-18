@@ -9,10 +9,12 @@ import parsedEntries from '../parsedEntries'
 
 import loadable from '@loadable/component'
 
+const modules = import.meta.glob('../content/**/*.jsx')
+
 const LoadableEntry = (entry) => {
   const Loadable = loadable(
     async () => {
-      const imported = await import('../content/' + entry.contentPath)
+      const imported = await modules[`../content/${entry.contentPath}.jsx`]()
       const Content = imported.default
       const element = React.isValidElement(Content) ? Content : <Content />
       return () => <div id="loadedContent">{element}</div>

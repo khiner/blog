@@ -89,8 +89,8 @@ export default (
         ).
       </small>{' '}
       <i>
-        Note: these will generally look bad in Colab's dark mode. From top menu, select Tools => Settings. Under Theme,
-        select "light".
+        Note: these will generally look bad in Colab's dark mode. From top menu, select Tools {'->'} Settings. Under
+        Theme, select "light".
       </i>
     </p>
     <h2>What is physical audio signal processing?</h2>
