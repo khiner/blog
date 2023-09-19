@@ -9,7 +9,7 @@ import EntryNavItems from './EntryNavItems'
 import MailChimpEmailSignup from './MailChimpEmailSignup'
 
 export default ({ sidebarOpen, setSidebarOpen }) => (
-  <Navbar fixed="top" expand="md">
+  <Navbar fixed="top" expand="md" variant="dark">
     {config.entriesInSidebar && (
       <FaList
         className={`clickable${sidebarOpen ? ' active' : ''}`}
@@ -25,7 +25,7 @@ export default ({ sidebarOpen, setSidebarOpen }) => (
     <Navbar.Toggle />
     <Navbar.Collapse className="justify-content-end">
       {!config.entriesInSidebar && <EntryNavItems />}
-      <Nav>
+      <Nav activeKey={location.pathname}>
         {config.topLevelLinks &&
           config.topLevelLinks.map((topLevelLink) => (
             <Nav.Link key={topLevelLink.label} href={topLevelLink.href} target="_blank">
