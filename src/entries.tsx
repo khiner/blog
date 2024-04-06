@@ -24,6 +24,8 @@ import windowing_animation from './content/jupyter_notebooks/assets/windowing_an
 
 import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
 
+import mesh_editor_preview from './content/mesh_audio_editor/assets/RealImpact_27_WoodPlate.png'
+
 const entries = [
   {
     path: '/albums/web_tracks_2006_2011',
@@ -554,6 +556,41 @@ const entries = [
     descriptionPlainText:
       'Continuing with Julius O. Smith III\'s audio DSP book series, this set of Jupyter notebooks covers book III - "Physical Audio Signal Processing".',
     contentPath: 'jupyter_notebooks/PhysicalAudioSignalProcessing',
+    type: 'article',
+  },
+  {
+    path: '/mesh_audio_editor',
+    title: 'Mesh Audio Editor (coming soon)',
+    subtitle: "I'm busy finishing up my last semester of my Master's at Georgia Tech.",
+    date: 'Apr 5 2024',
+    description: (
+      <div>
+        <p>
+          Hi :) I haven't posted since 2020 but I've been working on lots of fun and intersting things! I'm busy
+          finishing up my last semester of my Master's degree in Computational Science and Engineering at Georgia Tech.
+          I've been working hard on lots of things for two years, and will post them here soon! (and do a full redesign
+          shortly after that I hope, this one is from 2016/17 and looks/feels it O_o)
+        </p>
+        <p>
+          I am looking for interesting and exciting work opportunities after graduation, especially related to
+          simulation, augmented and virtual realities, digital audio/graphics, creative digital media production
+          applications/tools, and similar areas. If you are aware of any positions you think I would be a good fit for,
+          please let me know!
+        </p>
+        <p>
+          Below is a screenshot of the project I'm currently working on - a mesh and rigid body physical audio model
+          editor.
+        </p>
+        <img
+          src={mesh_editor_preview}
+          alt="Wooden plate mesh in the RealImpact mesh editor, with a listener position (reprecented by a cylinder) selected and the modal audio control panel open"
+          style={{ width: '80%' }}
+        />
+      </div>
+    ),
+    descriptionPlainText:
+      "I'm busy finishing up my last semester of my Master's degree in Computational Science and Engineering at Georgia Tech. I have been working hard on lots of things for two years, and will post them here soon! (and do a full redesign shortly after that I hope, this one is from 2016/17 and looks/feels it O_o.  I am open to exciting and interesting work opportunities, especially related to simulation, augmented and virtual realities, digital audio/graphics, creative digital media production applications/tools, and similar areas!",
+    contentPath: 'mesh_audio_editor/MeshAudioEditor',
     type: 'article',
   },
 ]
