@@ -23,7 +23,7 @@ const Header = ({ title, date }) => (
 )
 
 export default React.memo(
-  function Entry({ title, subtitle, description, descriptionPlainText, url, date, type, children }) {
+  function Entry({ title, subtitle, date, type, children }) {
     useEffect(() => {
       formatMathWhenContentIsReady()
     }, [])

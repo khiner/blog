@@ -41,8 +41,6 @@ const entries = [
         <AlbumPreview title="Web Tracks 2006 - 2011" playlistId="3066212" />
       </div>
     ),
-    descriptionPlainText:
-      'A bunch of random tracks ranging from about 2006-2011. Playful bedroom experiments. Some are just goofy, some are more serious. Some good ideas, some not so much. All of them mastered terribly.',
     contentPath: 'albums/WebTracks2006To2011',
     type: 'article',
   },
@@ -57,7 +55,6 @@ const entries = [
         <AlbumPreview title="Calahjes & Lewps" playlistId="1425406" />
       </div>
     ),
-    descriptionPlainText: 'An album of stream of consciousness frenetic sampling from musical sources.',
     contentPath: 'albums/CalahjesAndLewps',
     type: 'article',
   },
@@ -73,7 +70,6 @@ const entries = [
         <AlbumPreview title="MakeNoise Shared System Jams" playlistId="63454085" />
       </div>
     ),
-    descriptionPlainText: 'Eight Modular synth patches, made mostly using the Make Noise Shareed System.',
     contentPath: 'albums/MakeNoiseSharedSystemJams',
     type: 'article',
   },
@@ -88,7 +84,6 @@ const entries = [
         <AlbumPreview title="MidiMarkov: Compose" playlistId="257076049" />
       </div>
     ),
-    descriptionPlainText: 'Piano compositions generated from a Markov chain given classical MIDI scores as input.',
     contentPath: 'albums/MidiMarkovCompose',
     type: 'article',
   },
@@ -107,8 +102,6 @@ const entries = [
         <AlbumPreview title="MidiMarkov: Decompose" playlistId="257110789" />
       </div>
     ),
-    descriptionPlainText:
-      'Piano compositions generated from a Markov chain given classical MIDI scores as input.  Unlike the "MIDI Markov: Compose" album, these pieces introduce intentional MIDI errors to generate more experimental, ambient pieces.',
     contentPath: 'albums/MidiMarkovDecompose',
     type: 'article',
   },
@@ -126,8 +119,6 @@ const entries = [
         <AlbumPreview title="Web Tracks 2012 - 2017" playlistId="5017148" />
       </div>
     ),
-    descriptionPlainText:
-      "A collection of tracks I published spanning from 2012 to 2017. There isn't any cohesive theme. Special guests Andrew Knight (on Riders of the Night - the Raccoon Song) and pLiskin (on Elise and Paw).",
     contentPath: 'albums/WebTracks2012To2017',
     type: 'article',
   },
@@ -142,8 +133,6 @@ const entries = [
         <img src={pluck_equation_image} alt="Equation for plucked string" />
       </div>
     ),
-    descriptionPlainText:
-      'A Processing sketch modeling a plucked string by holding the mouse down, draggind and releasing.',
     contentPath: 'processing/StringPluck',
     type: 'showcase',
   },
@@ -160,7 +149,6 @@ const entries = [
         <img src={snow_globe_image} alt="Preview of Snow Globe sketch" />
       </div>
     ),
-    descriptionPlainText: 'A Processing sketch using edge detection to drop a snowstorm on images.',
     contentPath: 'processing/SnowGlobe',
     type: 'showcase',
   },
@@ -178,8 +166,6 @@ const entries = [
         <img src={apparent_retrograde_motion_image} alt="Preview of Retrograde Motion sketch" />
       </div>
     ),
-    descriptionPlainText:
-      'A Processing sketch showing the effect of retrograde motion - the apparent motion of a planet to move in a direction opposite to that the observing planet.',
     contentPath: 'processing/RetrogradeMotion',
     type: 'showcase',
   },
@@ -194,8 +180,6 @@ const entries = [
         <img src={mario_warped_image} alt="Mario warped with force-directed graph" style={{ width: '40%' }} />
       </div>
     ),
-    descriptionPlainText:
-      'A Processing sketch that maps a force-directed graph to an image for bouncy stretching and warping.',
     contentPath: 'processing/ForceGraph',
     type: 'showcase',
   },
@@ -212,8 +196,6 @@ const entries = [
         <img src={beethovens_5th_image} alt="Section of Beethoven's 5th symphony melody" />
       </div>
     ),
-    descriptionPlainText:
-      'MidiMarkov is a command-line tool that uses a Markov process to generate MIDI streams based on a given folder of MIDI source material',
     contentPath: 'music_generation/MidiMarkov',
     type: 'article',
   },
@@ -237,8 +219,6 @@ const entries = [
         </div>
       </div>
     ),
-    descriptionPlainText:
-      'AutoSampler is an intelligent Max4Live instrument that plays audio segments found in your library matching the notes of incoming live MIDI.',
     contentPath: 'music_generation/AutoSampler',
     type: 'article',
   },
@@ -253,7 +233,6 @@ const entries = [
         <img src={bubble_wrap_preview_image} alt="Preview of Bubble Wrap sketch" />
       </div>
     ),
-    descriptionPlainText: 'A simple Processing sketch with for trippy, colorful bubble patterns.',
     contentPath: 'processing/BubbleWrap',
     type: 'showcase',
   },
@@ -276,8 +255,6 @@ const entries = [
         />
       </div>
     ),
-    descriptionPlainText:
-      'This Jupyter Notebook contains all code, excercises and projects from the Python Crash Course book by Eric Matthes, including three projects: a "Space Invaders"-style game developed with PyGame, a data visualization project and a Django app.',
     contentPath: 'jupyter_notebooks/PythonCrashCourse',
     type: 'article',
   },
@@ -295,7 +272,6 @@ const entries = [
         <img src={windowing_animation} alt="Animation of windowing's affect on the DFT with pure sinusoids" />
       </div>
     ),
-    descriptionPlainText: 'A Jupyter Notebook on applying the DFT to timeseries data for seasonality detection.',
     contentPath: 'jupyter_notebooks/DftTimeseries',
     type: 'article',
   },
@@ -312,8 +288,6 @@ const entries = [
         <img src={site_generator_demo} alt="Demo gif of site generator" style={{ width: '50%' }} />
       </div>
     ),
-    descriptionPlainText:
-      "react-scripts-bootstrap-site-generator (https://github.com/khiner/react-scripts-bootstrap-site-generator) is an npm package built on top of the `react-scripts` configuration and scripts used by Create React App. It's designed to work as a crazy simple, opinionated static site generator designed to make creating simple static sites super fast.",
     contentPath: 'web_development/ReactBootstrapSiteGenerator',
   },
   {
@@ -329,7 +303,6 @@ const entries = [
         </div>
       </div>
     ),
-    descriptionPlainText: 'BeatBot is an Android-native DAW for sample-based beat production.',
     contentPath: 'beatbot/BeatBot',
   },
   {
@@ -350,8 +323,6 @@ const entries = [
         />
       </div>
     ),
-    descriptionPlainText:
-      'This set of Jupyter notebooks contains all code and corresponding output from the "Python for Data Analysis" book by Wes McKinney.',
     contentPath: 'jupyter_notebooks/PythonForDataAnalysis',
     type: 'article',
   },
@@ -372,8 +343,6 @@ const entries = [
         />
       </div>
     ),
-    descriptionPlainText:
-      'This set of Jupyter notebooks contains all code and exercises for the "Accelerated C++" book.',
     contentPath: 'jupyter_notebooks/AcceleratedCpp',
     type: 'article',
   },
@@ -395,8 +364,6 @@ const entries = [
         />
       </div>
     ),
-    descriptionPlainText:
-      'This set of Jupyter notebooks contains all code, problems and labs for the "Coding the Matrix" book.',
     contentPath: 'jupyter_notebooks/CodingTheMatrix',
     type: 'article',
   },
@@ -419,8 +386,6 @@ const entries = [
         />
       </div>
     ),
-    descriptionPlainText:
-      'This Jupyter notebook contains implementations of many interesting topics from the "Musimathics Volume 1" book.',
     contentPath: 'jupyter_notebooks/MusimathicsVolume1',
     type: 'article',
   },
@@ -443,8 +408,6 @@ const entries = [
         />
       </div>
     ),
-    descriptionPlainText:
-      'Jupyter notebook full of demonstrations and visualizations of many interesting topics from the "Musimathics Volume 2" book.',
     contentPath: 'jupyter_notebooks/MusimathicsVolume2',
     type: 'article',
   },
@@ -466,8 +429,6 @@ const entries = [
         />
       </div>
     ),
-    descriptionPlainText:
-      'This set of Jupyter notebooks contains charts, visualizations, demonstrations and excercise solutions for each of the chapters in the "Mathematics of the DFT" book by Julius O. Smith III.',
     contentPath: 'jupyter_notebooks/MathematicsOfTheDft',
     type: 'article',
   },
@@ -492,8 +453,6 @@ const entries = [
         />
       </div>
     ),
-    descriptionPlainText:
-      'Another set of Jupyter notebooks! This one covers the "Introduction to Digital Filters: with Audio Applications" book by Julius O. Smith III, including more mathy charts, animations and explorations, as well as solutions/attempts for (almost) every excercise. Also, I walk through a graphical method of interpretting and designing digital filters.',
     contentPath: 'jupyter_notebooks/IntroductionToDigitalFilters',
     type: 'article',
   },
@@ -511,8 +470,6 @@ const entries = [
         <img src={sound_machine_preview_image} alt="preview of sound machine" style={{ width: '80%' }} />
       </div>
     ),
-    descriptionPlainText:
-      'The beginning of an ongoing project to try and make a flexible, fast and fun music production and performance tool that I will actually use.',
     contentPath: 'sound_machine/SoundMachine',
     type: 'article',
   },
@@ -530,8 +487,6 @@ const entries = [
         <AlbumPreview title="SampleRNN Dawn of Midi" playlistId="825451859" />
       </div>
     ),
-    descriptionPlainText:
-      "Most raw audio generation papers focus on speech. If musical audio samples are published, they're usually the result of training on simple single-instrument recordings. I wanted to explore how two popular audio generation models generalize to more complex and musically interesting audio.",
     contentPath: 'music_generation/DeepModels',
     type: 'article',
   },
@@ -553,8 +508,6 @@ const entries = [
         />
       </div>
     ),
-    descriptionPlainText:
-      'Continuing with Julius O. Smith III\'s audio DSP book series, this set of Jupyter notebooks covers book III - "Physical Audio Signal Processing".',
     contentPath: 'jupyter_notebooks/PhysicalAudioSignalProcessing',
     type: 'article',
   },
@@ -571,6 +524,7 @@ const entries = [
           I've been working hard on lots of things for two years, and will post them here soon! (and do a full redesign
           shortly after that I hope, this one is from 2016/17 and looks/feels it O_o)
         </p>
+        <p>In the meantime, my GitHub is the best place to see what I've been up to (see link in header).</p>
         <p>
           I am looking for interesting and exciting work opportunities after graduation, especially related to
           simulation, augmented and virtual realities, digital audio/graphics, creative digital media production
@@ -588,8 +542,6 @@ const entries = [
         />
       </div>
     ),
-    descriptionPlainText:
-      "I'm busy finishing up my last semester of my Master's degree in Computational Science and Engineering at Georgia Tech. I have been working hard on lots of things for two years, and will post them here soon! (and do a full redesign shortly after that I hope, this one is from 2016/17 and looks/feels it O_o.  I am open to exciting and interesting work opportunities, especially related to simulation, augmented and virtual realities, digital audio/graphics, creative digital media production applications/tools, and similar areas!",
     contentPath: 'mesh_audio_editor/MeshAudioEditor',
     type: 'article',
   },
