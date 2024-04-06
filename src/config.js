@@ -14,7 +14,7 @@ export default {
     },
     {
       label: 'LinkedIn',
-      href: 'https://www.linkedin.com/in/karl-hiner-9534b333',
+      href: 'https://www.linkedin.com/in/karl-hiner',
     },
   ],
   // If you have a MailChimp list, find these in the generated embed forms at
