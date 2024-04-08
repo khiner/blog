@@ -5,7 +5,10 @@ import wood_plate from './assets/RealImpact_27_WoodPlate.png'
 
 export default (
   <div>
-    <i>Coming soon!</i>
+    <i>
+      Coming soon! See <Link href="https://github.com/khiner/mesh2audio">here</Link> for a demo video and sound examples
+      of an older version.
+    </i>
     <img
       style={{ width: '75%' }}
       src={wood_plate}
