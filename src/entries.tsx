@@ -24,7 +24,7 @@ import windowing_animation from './content/jupyter_notebooks/assets/windowing_an
 
 import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
 
-import mesh_editor_preview from './content/mesh_audio_editor/assets/RealImpact_27_WoodPlate.png'
+import mesh_editor_preview from './content/mesh_audio_editor/assets/RealImpact_CeramicPitcher.png'
 
 const entries = [
   {

@@ -16,6 +16,10 @@ export default {
       label: 'LinkedIn',
       href: 'https://www.linkedin.com/in/karl-hiner',
     },
+    {
+      label: 'Resume',
+      href: 'https://github.com/khiner/resume/blob/main/KarlHinerResume.pdf',
+    },
   ],
   // If you have a MailChimp list, find these in the generated embed forms at
   // https://us17.admin.mailchimp.com/lists/integration/embeddedcode

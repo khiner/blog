@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from '../Link'
 
-import wood_plate from './assets/RealImpact_27_WoodPlate.png'
+import preview_image from './assets/RealImpact_CeramicPitcher.png'
 
 export default (
   <div>
@@ -11,8 +11,8 @@ export default (
     </i>
     <img
       style={{ width: '75%' }}
-      src={wood_plate}
-      alt="Wooden plate mesh in the RealImpact mesh editor, with a listener position (reprecented by a cylinder) selected and the modal audio control panel open"
+      src={preview_image}
+      alt="Ceramic pitcher mesh in the RealImpact mesh editor, with modal audio control panel open"
     />
     <Link href="https://github.com/khiner/MeshEditor">Mesh Audio Editor</Link> is a mesh editor with support for
     converting meshes into modal physical audio models that can be struck at any vertex with the mouse (or excited by an
