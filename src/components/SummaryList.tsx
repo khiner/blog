@@ -7,8 +7,8 @@ import config from '../config'
 import parsedEntries from '../parsedEntries'
 
 const Panel = ({ entry }) => (
-  <Link to={entry.path} key={entry.path} className="panelLink">
-    <Card>
+  <Card>
+    <Link to={entry.path} key={entry.path} className="panelLink">
       <Card.Header>
         <div>
           <h1>{entry.summaryTitle || entry.title}</h1>
@@ -16,11 +16,11 @@ const Panel = ({ entry }) => (
           <h3 className="date">{entry.date}</h3>
         </div>
       </Card.Header>
-      <Card.Body>
-        <div className="mainContent">{entry.description}</div>
-      </Card.Body>
-    </Card>
-  </Link>
+    </Link>
+    <Card.Body>
+      <div className="mainContent">{entry.description}</div>
+    </Card.Body>
+  </Card>
 )
 
 export default (

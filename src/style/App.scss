@@ -260,17 +260,16 @@ body {
   }
 }
 
-a {
-  .card {
+.card {
+  a {
     &:hover {
-      background-color: #f6f6f6;
-
       .card-header {
         background-color: $primary-highlight;
       }
     }
   }
 }
+
 .navbar-brand.leaveLeftSpace {
   margin-left: 2em;
 }
