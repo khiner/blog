@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Link from './content/Link'
+
 import AlbumPreview from './content/albums/AlbumPreview'
 
 import make_noise_shared_system_image from './content/albums/assets/makenoise_shared_system.jpg'
@@ -521,10 +523,10 @@ const entries = [
         <p>
           Hi :) I haven't posted since 2020 but I've been working on lots of fun and intersting things! I'm busy
           finishing up my last semester of my Master's degree in Computational Science and Engineering at Georgia Tech.
-          I've been working hard on lots of things for two years, and will post them here soon! (and do a full redesign
-          shortly after that I hope, this one is from 2016/17 and looks/feels it O_o)
+          I've been working hard on lots of things for the past two years, and will post them here soon. In the
+          meantime, my <Link href="https://github.com/khiner">GitHub</Link> is the best place to see what I've been up
+          to.
         </p>
-        <p>In the meantime, my GitHub is the best place to see what I've been up to (see link in header).</p>
         <p>
           I am looking for interesting and exciting work opportunities after graduation, especially related to
           simulation, augmented and virtual realities, digital audio/graphics, creative digital media production
