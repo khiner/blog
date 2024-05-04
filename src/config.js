@@ -20,6 +20,14 @@ export default {
       label: 'Resume',
       href: 'https://github.com/khiner/resume/blob/main/KarlHinerResume.pdf',
     },
+    {
+      label: "Music I've made",
+      href: 'https://soundcloud.com/odangludo',
+    },
+    {
+      label: "Movie's I'm watching",
+      href: 'https://letterboxd.com/khiner',
+    },
   ],
   // If you have a MailChimp list, find these in the generated embed forms at
   // https://us17.admin.mailchimp.com/lists/integration/embeddedcode
