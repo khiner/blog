@@ -126,9 +126,9 @@ body {
   }
 }
 
+// Default dropdown toggle triangle is too wide and too high.
 .dropdown-toggle::after {
   vertical-align: 0.15em;
-  margin-left: 0.255em;
   border-top: 0.3em solid;
   border-right: 0.28em solid transparent;
   border-left: 0.28em solid transparent;
@@ -142,6 +142,7 @@ body {
   a {
     color: $text-color-light;
     text-decoration: none;
+    white-space: nowrap;
     &:hover {
       color: $text-color-dark;
     }
@@ -270,9 +271,6 @@ body {
   }
 }
 
-.navbar-brand.leaveLeftSpace {
-  margin-left: 2em;
-}
 .Showcase {
   background-color: rgb(255, 255, 255);
 }

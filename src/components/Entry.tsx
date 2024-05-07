@@ -30,15 +30,7 @@ export default React.memo(
 
     const isShowcase = type && type.toLowerCase() === 'showcase'
     const columnBreak = <div className="col-md-1 col-lg-2" />
-
-    let formattedTitle
-    if (config.siteName && title) {
-      formattedTitle = config.siteName + ' - ' + title
-    } else if (config.siteName) {
-      formattedTitle = config.siteName
-    } else if (title) {
-      formattedTitle = title
-    }
+    const formattedTitle = config.siteName && title ? `${config.siteName} - ${title}` : config.siteName || title
 
     return (
       <div>

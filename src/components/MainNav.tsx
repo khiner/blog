@@ -4,27 +4,22 @@ import { FaList } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 
 import config from '../config'
-
-import EntryNavItems from './EntryNavItems'
 import MailChimpEmailSignup from './MailChimpEmailSignup'
 
 export default ({ sidebarOpen, setSidebarOpen }) => (
-  <Navbar fixed="top" expand="md" variant="dark">
-    {config.entriesInSidebar && (
-      <FaList
-        className={`clickable${sidebarOpen ? ' active' : ''}`}
-        onClick={(event) => {
-          event.stopPropagation()
-          setSidebarOpen(!sidebarOpen)
-        }}
-      />
-    )}
-    <Navbar.Brand className={config.entriesInSidebar ? 'leaveLeftSpace' : ''}>
+  <Navbar fixed="top" expand="lg" variant="dark">
+    <FaList
+      className={`clickable${sidebarOpen ? ' active' : ''}`}
+      onClick={(event) => {
+        event.stopPropagation()
+        setSidebarOpen(!sidebarOpen)
+      }}
+    />
+    <Navbar.Brand style={{ marginLeft: '2em' }}>
       <Link to="/">{config.siteName}</Link>
     </Navbar.Brand>
     <Navbar.Toggle />
     <Navbar.Collapse className="justify-content-end">
-      {!config.entriesInSidebar && <EntryNavItems />}
       <Nav activeKey={location.pathname}>
         {config.topLevelLinks &&
           config.topLevelLinks.map((topLevelLink) => (

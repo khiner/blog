@@ -21,11 +21,11 @@ export default {
       href: 'https://github.com/khiner/resume/blob/main/KarlHinerResume.pdf',
     },
     {
-      label: "Music I've made",
+      label: 'SoundCloud',
       href: 'https://soundcloud.com/odangludo',
     },
     {
-      label: "Movie's I'm watching",
+      label: 'Letterboxd',
       href: 'https://letterboxd.com/khiner',
     },
   ],
@@ -35,7 +35,4 @@ export default {
   mailChimpFormAction:
     'https://karlhiner.us17.list-manage.com/subscribe/post?u=c0cc0feba9f4a6a66942e7edb&amp;id=7025b14ea8',
   mailChimpInputName: 'b_c0cc0feba9f4a6a66942e7edb_7025b14ea8',
-  // Should entries go in a collapsable sidebar instead of in the main nav?
-  // (Useful if you have many top-level entry sections)
-  entriesInSidebar: true,
 }

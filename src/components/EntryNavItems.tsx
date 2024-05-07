@@ -40,9 +40,9 @@ export default ({ onItemClick }) => (
             onItemClick={onItemClick}
           />
         )
-      } else {
-        return <EntryNavDropdownItem key={entry.title} entry={entry} onItemClick={onItemClick} />
       }
+
+      return <EntryNavDropdownItem key={entry.title} entry={entry} onItemClick={onItemClick} />
     })}
   </Nav>
 )

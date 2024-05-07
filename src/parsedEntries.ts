@@ -17,18 +17,14 @@ const findNestedTopLevelPathSegments = () =>
 
 const uniqueTopLevelPathSegments = findUniqueTopLevelPathSegments()
 const nestedTopLevelPathSegments = findNestedTopLevelPathSegments()
-const byTopLevelPathSegment = {}
-uniqueTopLevelPathSegments.forEach((topLevelPathSegment) => {
-  if (nestedTopLevelPathSegments.indexOf(topLevelPathSegment) !== -1) {
-    byTopLevelPathSegment[topLevelPathSegment] = entries.filter((entry) =>
-      stripSlashes(entry.path).startsWith(topLevelPathSegment),
-    )
-  } else {
-    byTopLevelPathSegment[topLevelPathSegment] = entries.find(
-      (entry) => stripSlashes(entry.path) === topLevelPathSegment,
-    )
-  }
-})
+const byTopLevelPathSegment = Object.fromEntries(
+  uniqueTopLevelPathSegments.map((topLevelPathSegment) => [
+    topLevelPathSegment,
+    nestedTopLevelPathSegments.includes(topLevelPathSegment)
+      ? entries.filter((entry) => stripSlashes(entry.path).startsWith(topLevelPathSegment))
+      : entries.find((entry) => stripSlashes(entry.path) === topLevelPathSegment),
+  ]),
+)
 
 const reverseChronological = entries
   .filter((entry) => entry.date)

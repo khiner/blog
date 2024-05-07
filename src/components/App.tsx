@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import MainNav from './MainNav'
 import MainContent from './MainContent'
 import Sidebar from './Sidebar'
-import config from '../config'
 
 import '../style/App.scss'
 
@@ -13,7 +12,7 @@ export default function App() {
 
   return (
     <div>
-      {config.entriesInSidebar && <Sidebar isOpen={sidebarOpen} setOpen={setSidebarOpen} />}
+      <Sidebar isOpen={sidebarOpen} setOpen={setSidebarOpen} />
       <div className={`transitionable${sidebarOpen ? ' opaque' : ''}`} onClick={() => setSidebarOpen(false)}>
         <MainNav sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <MainContent />
