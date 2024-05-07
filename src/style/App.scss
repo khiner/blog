@@ -27,7 +27,6 @@ $border-color: #e8e8e8;
 $navbar-light-brand-color: $text-color-light;
 $navbar-light-color: $text-color-light;
 $navbar-light-hover-color: $text-color-dark;
-$navbar-nav-link-padding-x: 1em;
 $card-cap-bg: $primary;
 $card-cap-color: $text-color-light;
 
@@ -139,20 +138,22 @@ body {
   color: $text-color-light;
   border-bottom: 1px $border-color solid;
   padding: 0.5rem 1rem;
+
   a {
     color: $text-color-light;
     text-decoration: none;
     white-space: nowrap;
+    padding-right: var(--bs-navbar-nav-link-padding-x);
+    padding-left: var(--bs-navbar-nav-link-padding-x);
+
     &:hover {
       color: $text-color-dark;
     }
   }
+
   .active {
     color: $navbar-light-hover-color;
   }
-}
-
-.navbar {
   .dropdown-menu {
     a {
       color: $text-color-dark;
@@ -346,13 +347,6 @@ body {
   ul li.active > a,
   a[aria-expanded='true'] {
     background-color: inherit;
-  }
-}
-
-@media (min-width: 768px) {
-  .navbar > .container .navbar-brand,
-  .navbar > .container-fluid .navbar-brand {
-    margin-left: 0px; // overriding a weird -15px from bootstrap :/
   }
 }
 
