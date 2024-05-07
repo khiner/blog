@@ -528,12 +528,6 @@ const entries = [
           to.
         </p>
         <p>
-          I am looking for interesting and exciting work opportunities after graduation, especially related to
-          simulation, augmented and virtual realities, digital audio/graphics, creative digital media production
-          applications/tools, and similar areas. If you are aware of any positions you think I would be a good fit for,
-          please let me know!
-        </p>
-        <p>
           Below is a screenshot of the project I'm currently working on - a mesh and rigid body physical audio model
           editor.
         </p>
