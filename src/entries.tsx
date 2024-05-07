@@ -2,8 +2,6 @@ import React from 'react'
 
 import Link from './content/Link'
 
-import AlbumPreview from './content/albums/AlbumPreview'
-
 import make_noise_shared_system_image from './content/albums/assets/makenoise_shared_system.jpg'
 import pluck_equation_image from './content/processing/assets/pluck_equation.jpg'
 import snow_globe_image from './content/processing/assets/snow_globe.png'
@@ -40,7 +38,6 @@ const entries = [
           A bunch of random tracks ranging from about 2006-2011. Playful bedroom experiments. Some are just goofy, some
           are more serious. Some good ideas, some not so much. All of them mastered terribly.
         </p>
-        <AlbumPreview title="Web Tracks 2006 - 2011" playlistId="3066212" />
       </div>
     ),
     contentPath: 'albums/WebTracks2006To2011',
@@ -54,7 +51,6 @@ const entries = [
     description: (
       <div>
         <p>Stream of consciousness frenetic sampling from musical sources.</p>
-        <AlbumPreview title="Calahjes & Lewps" playlistId="1425406" />
       </div>
     ),
     contentPath: 'albums/CalahjesAndLewps',
@@ -67,9 +63,8 @@ const entries = [
     date: 'Jan 27 2016',
     description: (
       <div>
-        <p>Modular synth patches, made mostly using the Make Noise Shared System.'</p>
+        <p>Modular synth patches, made mostly using the Make Noise Shared System.</p>
         <img src={make_noise_shared_system_image} alt="Make Noise Shared System" />
-        <AlbumPreview title="MakeNoise Shared System Jams" playlistId="63454085" />
       </div>
     ),
     contentPath: 'albums/MakeNoiseSharedSystemJams',
@@ -83,7 +78,6 @@ const entries = [
     description: (
       <div>
         <p>Piano compositions generated from a Markov chain given classical MIDI scores as input.</p>
-        <AlbumPreview title="MidiMarkov: Compose" playlistId="257076049" />
       </div>
     ),
     contentPath: 'albums/MidiMarkovCompose',
@@ -101,7 +95,6 @@ const entries = [
           Markov: Compose" album, these pieces introduce intentional MIDI errors to generate more experimental, ambient
           pieces.
         </p>
-        <AlbumPreview title="MidiMarkov: Decompose" playlistId="257110789" />
       </div>
     ),
     contentPath: 'albums/MidiMarkovDecompose',
@@ -118,7 +111,6 @@ const entries = [
           A collection of tracks I published spanning from 2012 to 2017. There isn't any cohesive theme. Special guests
           Andrew Knight (on Riders of the Night - the Raccoon Song) and pLiskin (on Elise and Paw).
         </p>
-        <AlbumPreview title="Web Tracks 2012 - 2017" playlistId="5017148" />
       </div>
     ),
     contentPath: 'albums/WebTracks2012To2017',
@@ -486,7 +478,6 @@ const entries = [
           result of training on simple single-instrument recordings. I wanted to explore how two popular audio
           generation models generalize to more complex and musically interesting audio.
         </p>
-        <AlbumPreview title="SampleRNN Dawn of Midi" playlistId="825451859" />
       </div>
     ),
     contentPath: 'music_generation/DeepModels',

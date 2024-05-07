@@ -8,8 +8,8 @@ function formatMathWhenContentIsReady() {
   const element = document.getElementById('loadedContent')
   if (element === null) {
     window.requestAnimationFrame(formatMathWhenContentIsReady)
-  } else if (window.MathJax) {
-    window.MathJax.typesetPromise([element]).catch((err) => {
+  } else {
+    window.MathJax?.typesetPromise?.([element]).catch((err) => {
       console.error('Error typesetting math:', err)
     })
   }
