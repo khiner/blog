@@ -506,21 +506,16 @@ const entries = [
   },
   {
     path: '/mesh_audio_editor',
-    title: 'Mesh Audio Editor (coming soon)',
-    subtitle: "I'm busy finishing up my last semester of my Master's at Georgia Tech.",
-    date: 'Apr 5 2024',
+    title: 'Mesh Audio Editor',
+    summaryTitle: 'Physical Audio Modeling of Passive Rigid Bodies',
+    subtitle: 'Real-time Interactive Audio Generation Using Linear Modal Analysis',
+    date: 'May 7 2024',
     description: (
       <div>
         <p>
-          Hi :) I haven't posted since 2020 but I've been working on lots of fun and intersting things! I'm busy
-          finishing up my last semester of my Master's degree in Computational Science and Engineering at Georgia Tech.
-          I've been working hard on lots of things for the past two years, and will post them here soon. In the
-          meantime, my <Link href="https://github.com/khiner">GitHub</Link> is the best place to see what I've been up
-          to.
-        </p>
-        <p>
-          Below is a screenshot of the project I'm currently working on - a mesh and rigid body physical audio model
-          editor.
+          I just finished my Master's in Computational Science and Engineering at Georgia Tech! One of the main projects
+          I worked on over this two-year period is an application for creating interactive real-time physical audio
+          models of 3D objects.
         </p>
         <img
           src={mesh_editor_preview}
