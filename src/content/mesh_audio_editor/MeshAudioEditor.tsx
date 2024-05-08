@@ -75,7 +75,7 @@ const ImpactGridItem = ({ name, meshSrc, realAudio, modalAudio }: ImpactGridItem
   <div
     style={{
       border: '1px solid #ccc',
-      padding: '10px',
+      padding: 10,
     }}
   >
     <div
@@ -90,8 +90,8 @@ const ImpactGridItem = ({ name, meshSrc, realAudio, modalAudio }: ImpactGridItem
       <h2
         style={{
           marginTop: '0',
-          marginBottom: '10px',
-          fontSize: '18px',
+          marginBottom: 10,
+          fontSize: 18,
           textAlign: 'center',
         }}
       >
@@ -100,10 +100,18 @@ const ImpactGridItem = ({ name, meshSrc, realAudio, modalAudio }: ImpactGridItem
       <img
         src={meshSrc}
         alt={`${name} Mesh`}
-        style={{ maxWidth: '440px', maxHeight: '440px', width: '100%', height: 'auto' }}
+        style={{ maxWidth: 440, maxHeight: 440, width: '100%', height: 'auto' }}
       />
-      {realAudio && <audio controls src={realAudio} style={audioStyle} aria-label="Real Impact Audio" />}
-      <audio controls src={modalAudio} style={audioStyle} aria-label="Modal Impact Audio" />
+      {realAudio && (
+        <div>
+          <div style={{ fontSize: 15 }}>Real audio:</div>
+          <audio controls src={realAudio} style={audioStyle} aria-label="Real impact audio" />
+        </div>
+      )}
+      <div>
+        {realAudio && <div style={{ fontSize: 15 }}>Synthesized audio:</div>}
+        <audio controls src={modalAudio} style={audioStyle} aria-label="Synthesized impact audio" />
+      </div>
     </div>
   </div>
 )
