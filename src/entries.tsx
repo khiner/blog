@@ -1,7 +1,5 @@
 import React from 'react'
 
-import Link from './content/Link'
-
 import make_noise_shared_system_image from './content/albums/assets/makenoise_shared_system.jpg'
 import pluck_equation_image from './content/processing/assets/pluck_equation.jpg'
 import snow_globe_image from './content/processing/assets/snow_globe.png'
@@ -24,7 +22,7 @@ import windowing_animation from './content/jupyter_notebooks/assets/windowing_an
 
 import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
 
-import mesh_editor_preview from './content/mesh_audio_editor/assets/RealImpact_CeramicPitcher.png'
+import mesh_editor_preview from './content/mesh_audio_editor/assets/images/RealImpact_CeramicPitcher.png'
 
 const entries = [
   {
