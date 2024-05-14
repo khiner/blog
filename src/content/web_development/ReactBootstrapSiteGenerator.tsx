@@ -12,12 +12,15 @@ function getBody() {
 
 function toggleNineties() {
   const body = getBody()
+  const decadeLabel = document.getElementById('decadeLabel')
+  if (!decadeLabel) return
+
   if (getBody().className === 'nineties') {
     body.className = ''
-    document.getElementById('decadeLabel').textContent = 'like the 90s'
+    decadeLabel.textContent = 'like the 90s'
   } else {
     body.className = 'nineties'
-    document.getElementById('decadeLabel').textContent = 'sane again'
+    decadeLabel.textContent = 'sane again'
   }
 }
 
