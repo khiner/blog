@@ -1,9 +1,9 @@
 import React from 'react'
 
 import make_noise_shared_system_image from './content/albums/assets/makenoise_shared_system.jpg'
-import pluck_equation_image from './content/processing/assets/pluck_equation.jpg'
+import string_pluck_image from './content/processing/assets/string_pluck.gif'
 import snow_globe_image from './content/processing/assets/snow_globe.png'
-import apparent_retrograde_motion_image from './content/processing/assets/apparent_retrograde_motion.png'
+import apparent_retrograde_motion_image from './content/processing/assets/apparent_retrograde_motion.gif'
 import mario_warped_image from './content/processing/assets/mario_warped.png'
 import bubble_wrap_preview_image from './content/processing/assets/bubble_wrap_preview.png'
 import beethovens_5th_image from './content/music_generation/assets/beethovens_5th.png'
@@ -124,7 +124,7 @@ const entries = [
     description: (
       <div>
         <p>Interactive model of plucked string motion.</p>
-        <img src={pluck_equation_image} alt="Equation for plucked string" />
+        <img src={string_pluck_image} alt="Short animation of plucked string" style={{ maxWidth: 720 }} />
       </div>
     ),
     contentPath: 'processing/StringPluck',
@@ -140,7 +140,7 @@ const entries = [
         <p>
           Some fun with edge detection. This simple effect, when used on images like cityscapes, looks like a blizzard.
         </p>
-        <img src={snow_globe_image} alt="Preview of Snow Globe sketch" />
+        <img src={snow_globe_image} alt="Preview of Snow Globe sketch" style={{ maxWidth: 900 }} />
       </div>
     ),
     contentPath: 'processing/SnowGlobe',
@@ -157,7 +157,11 @@ const entries = [
           Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies
           within its system, as observed from a particular vantage point.
         </p>
-        <img src={apparent_retrograde_motion_image} alt="Preview of Retrograde Motion sketch" />
+        <img
+          src={apparent_retrograde_motion_image}
+          alt="Preview of Retrograde Motion sketch"
+          style={{ maxWidth: 720 }}
+        />
       </div>
     ),
     contentPath: 'processing/RetrogradeMotion',

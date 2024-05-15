@@ -208,7 +208,7 @@ export default function sketch(p) {
       this.p = p
       this.neutralColor = 200
       this.hoverColor = 0
-      this.pressedColor = 'rgb(85, 170, 216)'
+      this.pressedColor = '#1e90ff'
       this.pressed = false
       this.x = x
       this.y = y

@@ -11,7 +11,7 @@ export default function sketch(p) {
   const FRAME_SAVE_FREQUENCY = 30
   const MAX_SAVED_STATES = 10
 
-  const BACKGROUND_COLOR_STR = 'rgb(85, 170, 216)'
+  const BACKGROUND_COLOR_STR = '#1e90ff'
   const FOREGROUND_COLOR_STR = 'rgb(221, 250, 252)'
   var backgroundColor
 

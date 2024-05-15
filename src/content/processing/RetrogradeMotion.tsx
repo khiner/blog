@@ -8,7 +8,7 @@ export default (
       Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies
       within its system, as observed from a particular vantage point.
     </h3>
-    <small>Earth's orbit speed relative to mars is slightly exaggerated to enhance the effect.</small>
+    <small>Earth's orbit speed relative to mars is exaggerated to enhance the effect.</small>
     <P5Wrapper sketch={retrograde_motion_sketch} />
   </div>
 )

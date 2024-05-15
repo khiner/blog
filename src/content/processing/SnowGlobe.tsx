@@ -10,8 +10,8 @@ export default (
       <br />
     </h2>
     <p>
-      This uses the Canny edge detection method. Canny is much more verbose and complex than some others like the Sobel
-      method, but has better results, especially on noisy images, and performs at about the same speed.
+      This uses the Canny edge detection method. Canny is more complex than some other methods like Sobel, but has
+      better results, especially on noisy images, and isn't much more expensive.
     </p>
     <ul>
       <li>Click on the image or use the SPACE key to start the effect.</li>
