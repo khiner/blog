@@ -1,29 +1,17 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import p5 from 'p5'
 
-export default class P5Wrapper extends React.Component {
-  componentDidMount() {
-    this.canvas = new p5(this.props.sketch, this.wrapper)
-    if (this.canvas.myCustomRedrawAccordingToNewPropsHandler) {
-      this.canvas.myCustomRedrawAccordingToNewPropsHandler(this.props)
-    }
-  }
+export default ({ sketch }) => {
+  const wrapperRef = useRef(null)
+  const canvasRef = useRef(null)
 
-  UNSAFE_componentWillReceiveProps(newprops) {
-    if (this.props.sketch !== newprops.sketch) {
-      this.wrapper.removeChild(this.wrapper.childNodes[0])
-      this.canvas = new p5(newprops.sketch, this.wrapper)
+  useEffect(() => {
+    canvasRef.current = new p5(sketch, wrapperRef.current)
+    canvasRef.current?.myCustomRedrawAccordingToNewPropsHandler?.({ sketch })
+    return () => {
+      canvasRef.current?.remove()
     }
-    if (this.canvas.myCustomRedrawAccordingToNewPropsHandler) {
-      this.canvas.myCustomRedrawAccordingToNewPropsHandler(newprops)
-    }
-  }
+  }, [sketch])
 
-  componentWillUnmount() {
-    this.canvas.remove()
-  }
-
-  render() {
-    return <div ref={(wrapper) => (this.wrapper = wrapper)} />
-  }
+  return <div ref={wrapperRef} />
 }
