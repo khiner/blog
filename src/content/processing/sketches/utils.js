@@ -4,14 +4,12 @@ export function getBackgroundColor() {
 }
 
 export function windowResized(p, heightRatio, onSizeChange) {
-  return function () {
+  return () => {
     const parentStyle = window.getComputedStyle(document.querySelector('.Showcase'))
-    const setupWidth =
-      parseFloat(parentStyle.width) - parseFloat(parentStyle.paddingLeft) - parseFloat(parentStyle.paddingRight)
-    const setupHeight = parseInt(setupWidth * heightRatio, 10)
-    p.resizeCanvas(setupWidth, setupHeight)
-    if (onSizeChange) {
-      onSizeChange()
-    }
+    const width = p.int(
+      parseFloat(parentStyle.width) - parseFloat(parentStyle.paddingLeft) - parseFloat(parentStyle.paddingRight),
+    )
+    p.resizeCanvas(width, p.int(width * heightRatio))
+    onSizeChange?.()
   }
 }

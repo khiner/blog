@@ -20,15 +20,15 @@ export default function sketch(p) {
   }
 
   function onSizeChange() {
-    image.resize(p.int(p.width), p.int(p.height))
+    image.resize(p.width, p.height)
     image.loadPixels()
 
-    let buffer = new jsfeat.matrix_t(p.int(p.width), p.int(p.height), jsfeat.U8C1_t)
-    jsfeat.imgproc.grayscale(image.pixels, p.int(p.width), p.int(p.height), buffer)
+    let buffer = new jsfeat.matrix_t(p.width, p.height, jsfeat.U8C1_t)
+    jsfeat.imgproc.grayscale(image.pixels, p.width, p.height, buffer)
     jsfeat.imgproc.gaussian_blur(buffer, buffer, 3, 0)
     jsfeat.imgproc.canny(buffer, buffer, 20, 50)
     edges = jsfeatToP5(buffer)
-    pixelMask = new Array(p.int(p.width) * p.int(p.height)).fill(false)
+    pixelMask = new Array(p.width * p.height).fill(false)
   }
 
   p.setup = () => {
@@ -64,12 +64,12 @@ export default function sketch(p) {
 
       shake()
       p.loadPixels()
-      for (let x = 0; x < p.int(p.width); x++) {
-        for (let y = 0; y < p.int(p.height); y++) {
-          if (pixelMask[y * p.int(p.width) + x]) {
+      for (let x = 0; x < p.width; x++) {
+        for (let y = 0; y < p.height; y++) {
+          if (pixelMask[y * p.width + x]) {
             for (let i = 0; i < DENSITY; i++) {
               for (let j = 0; j < DENSITY; j++) {
-                const idx = 4 * ((y * DENSITY + j) * p.int(p.width) * DENSITY + (x * DENSITY + i))
+                const idx = 4 * ((y * DENSITY + j) * p.width * DENSITY + (x * DENSITY + i))
                 p.pixels[idx] = foregroundColorArray[0]
                 p.pixels[idx + 1] = foregroundColorArray[1]
                 p.pixels[idx + 2] = foregroundColorArray[2]
@@ -107,9 +107,8 @@ export default function sketch(p) {
   // The mouse drops snow when held down.
   // Drop three 'snowflakes': one on the clicked pixel, one to the left, and one to the right.
   function mouseSnow() {
-    console.log(`mouseX: ${p.mouseX}, mouseY: ${p.mouseY}`)
-    const clickedPixel = p.int(p.mouseX) + p.int(p.mouseY) * p.int(p.width)
-    if (clickedPixel < 0 || clickedPixel >= p.int(p.width) * p.int(p.height)) return
+    const clickedPixel = p.int(p.mouseX + p.mouseY * p.width)
+    if (clickedPixel < 1 || clickedPixel >= p.width * p.height - 1) return
 
     for (let i = clickedPixel - 1; i <= clickedPixel + 1; i++) pixelMask[i] = true
   }
@@ -118,15 +117,15 @@ export default function sketch(p) {
   function shake() {
     if (!pixelMask) return
 
-    for (let x = 0; x < p.int(p.width); x++) {
-      for (let y = 0; y < p.int(p.height); y++) {
-        const pixel = y * p.int(p.width) + x
+    for (let x = 0; x < p.width; x++) {
+      for (let y = 0; y < p.height; y++) {
+        const pixel = y * p.width + x
         // Once an edge is colored white, it is locked, so ignore these pixels, and all empty ones
         if (!pixelMask[pixel] || edges.pixels[pixel * 4] === 255) continue
 
         const newX = p.int(p.constrain(x + p.int(p.random(-2, 2)), 0, p.width - 1))
         const newY = p.int(p.constrain(y + p.int(p.random(0, 2)), 0, p.height - 1))
-        const newPixel = newY * p.int(p.width) + newX
+        const newPixel = newY * p.width + newX
         // if the new space is empty, move the white pixel to a new location
         if (!pixelMask[newPixel]) {
           pixelMask[newPixel] = true
