@@ -21,8 +21,6 @@ export default function sketch(p) {
   var currState
   var pastStates = []
 
-  p.windowResized = windowResized(p, 1.0, onSizeChange)
-
   function onSizeChange() {
     if (sun != null && earth != null && mars != null) {
       sun.onSizeChange()
@@ -32,15 +30,15 @@ export default function sketch(p) {
     }
   }
 
-  function fadeColor(color, amount, limit) {
+  p.windowResized = windowResized(p, 1.0, onSizeChange)
+
+  const fadeColor = (color, amount, limit) => {
     let newAlpha = p.alpha(color) * amount
-    if (limit && newAlpha < 60) {
-      newAlpha = 60
-    }
+    if (limit && newAlpha < 60) newAlpha = 60
     return p.color(p.red(color), p.green(color), p.blue(color), newAlpha)
   }
 
-  p.setup = function () {
+  p.setup = () => {
     backgroundColor = p.color(BACKGROUND_COLOR_STR)
     parentColor = p.color(getBackgroundColor())
     p.createCanvas(600, 400)
@@ -79,10 +77,8 @@ export default function sketch(p) {
 
   let approaching = false
 
-  p.draw = function () {
-    if (!currState) {
-      return
-    }
+  p.draw = () => {
+    if (!currState) return
 
     p.background(parentColor)
 

@@ -5,28 +5,23 @@ import { getBackgroundColor, windowResized } from './utils'
 export default function sketch(p) {
   const DIMENSIONS = 2
   const AXIS_SECTIONS = 5
-  const TOTAL_SECTIONS = AXIS_SECTIONS * AXIS_SECTIONS
+  const SECTIONS = AXIS_SECTIONS * AXIS_SECTIONS
 
   let setupFinished = false
   let parentColor = 100
 
-  var halfWidth, halfHeight
   const imageSections = []
 
   var network
   var imageToggle, edgesToggle, verticesToggle, pauseToggle
   var toggles
 
-  p.windowResized = windowResized(p, 1, onSizeChange)
+  p.windowResized = windowResized(p, 1, () => {
+    network?.onSizeChange()
+  })
 
-  function onSizeChange() {
-    halfWidth = p.width / 2
-    halfHeight = p.height / 2
-    network.onSizeChange()
-  }
-
-  p.preload = function () {
-    p.loadImage(image_asset, function (img) {
+  p.preload = () => {
+    p.loadImage(image_asset, (img) => {
       img.loadPixels()
 
       let w = img.width / AXIS_SECTIONS
@@ -39,7 +34,7 @@ export default function sketch(p) {
     })
   }
 
-  p.setup = function () {
+  p.setup = () => {
     parentColor = p.color(getBackgroundColor())
     network = new Network()
 
@@ -61,13 +56,13 @@ export default function sketch(p) {
     pauseToggle = new Toggle(p.width - 400, 0, toggleDim, toggleDim, 'Pause').setEnabled(false)
     toggles = [imageToggle, edgesToggle, verticesToggle, pauseToggle]
 
-    cnv.mousePressed(function () {
+    cnv.mousePressed(() => {
       toggles.forEach((toggle) => {
         toggle.mousePressed()
       })
     })
 
-    cnv.mouseReleased(function () {
+    cnv.mouseReleased(() => {
       toggles.forEach((toggle) => {
         toggle.mouseReleased()
       })
@@ -76,15 +71,11 @@ export default function sketch(p) {
     setupFinished = true
   }
 
-  p.draw = function () {
-    if (!setupFinished) {
-      return
-    }
+  p.draw = () => {
+    if (!setupFinished) return
 
     p.background(parentColor)
-    if (!pauseToggle.enabled) {
-      network.step()
-    }
+    if (!pauseToggle.enabled) network.step()
     network.draw()
     toggles.forEach((toggle) => {
       toggle.draw()
@@ -100,12 +91,12 @@ export default function sketch(p) {
       this.positions = []
       this.velocities = []
 
-      for (let i = 0; i < TOTAL_SECTIONS; i++) {
+      for (let i = 0; i < SECTIONS; i++) {
         this.positions[i] = []
         this.velocities[i] = []
         this.weights[i] = []
 
-        for (let j = 0; j < TOTAL_SECTIONS; j++) {
+        for (let j = 0; j < SECTIONS; j++) {
           this.weights[i][j] = 0
         }
 
@@ -115,7 +106,7 @@ export default function sketch(p) {
         }
       }
 
-      this.viewCenter = this.positions[parseInt(TOTAL_SECTIONS / 2.0, 10)]
+      this.viewCenter = this.positions[p.int(SECTIONS / 2.0)]
 
       for (let row = 0; row < AXIS_SECTIONS; row++) {
         for (let col = 0; col < AXIS_SECTIONS; col++) {
@@ -128,7 +119,7 @@ export default function sketch(p) {
     }
 
     onSizeChange() {
-      for (let i = 0; i < TOTAL_SECTIONS; i++) {
+      for (let i = 0; i < SECTIONS; i++) {
         let row = parseInt(i / AXIS_SECTIONS, 10)
         let col = i % AXIS_SECTIONS
         this.positions[i][0] = p.width * (col / AXIS_SECTIONS) + p.random(-this.randomOffset, this.randomOffset)
@@ -141,8 +132,8 @@ export default function sketch(p) {
     }
 
     step() {
-      for (let i = 0; i < TOTAL_SECTIONS; i++) {
-        for (let j = 0; j < TOTAL_SECTIONS; j++) {
+      for (let i = 0; i < SECTIONS; i++) {
+        for (let j = 0; j < SECTIONS; j++) {
           if (this.weights[i][j] > 0) {
             for (let d = 0; d < DIMENSIONS; d++) {
               this.velocities[i][d] += (this.positions[j][d] - this.positions[i][d] - this.weights[i][j]) * this.k
@@ -151,8 +142,8 @@ export default function sketch(p) {
         }
       }
 
-      for (let i = 0; i < TOTAL_SECTIONS; i++) {
-        for (let j = 0; j < TOTAL_SECTIONS; j++) {
+      for (let i = 0; i < SECTIONS; i++) {
+        for (let j = 0; j < SECTIONS; j++) {
           for (let d = 0; d < DIMENSIONS; d++) {
             this.positions[i][d] += this.velocities[i][d]
           }
@@ -162,7 +153,7 @@ export default function sketch(p) {
 
     draw() {
       p.push()
-      p.translate(halfWidth - this.viewCenter[0], halfHeight - this.viewCenter[1])
+      p.translate(p.width / 2 - this.viewCenter[0], p.height / 2 - this.viewCenter[1])
 
       if (imageToggle.enabled) {
         let i = 0
@@ -181,10 +172,10 @@ export default function sketch(p) {
         }
       }
 
-      for (let i = 0; i < TOTAL_SECTIONS; i++) {
+      for (let i = 0; i < SECTIONS; i++) {
         p.stroke(0)
         if (edgesToggle.enabled) {
-          for (let j = i; j < TOTAL_SECTIONS; j++) {
+          for (let j = i; j < SECTIONS; j++) {
             if (this.weights[i][j] > 0) {
               p.line(this.positions[i][0], this.positions[i][1], this.positions[j][0], this.positions[j][1])
             }
@@ -231,9 +222,7 @@ export default function sketch(p) {
     }
 
     mousePressed() {
-      if (this.hovering()) {
-        this.pressed = true
-      }
+      if (this.hovering()) this.pressed = true
     }
 
     mouseReleased() {
@@ -253,9 +242,7 @@ export default function sketch(p) {
     }
 
     mouseReleased() {
-      if (this.hovering()) {
-        this.enabled = !this.enabled
-      }
+      if (this.hovering()) this.enabled = !this.enabled
     }
 
     getColor() {

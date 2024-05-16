@@ -19,7 +19,7 @@ export default function sketch(p) {
     image = p.loadImage(image_asset)
   }
 
-  function onSizeChange() {
+  const onSizeChange = () => {
     image.resize(p.width, p.height)
     image.loadPixels()
 
@@ -94,7 +94,7 @@ export default function sketch(p) {
   }
 
   // Drop snow from the top of the frame.
-  function snow() {
+  const snow = () => {
     if (!pixelMask) return
 
     for (let i = 0; i < snowRate; i++) {
@@ -104,7 +104,7 @@ export default function sketch(p) {
 
   // The mouse drops snow when held down.
   // Drop three 'snowflakes': one on the clicked pixel, one to the left, and one to the right.
-  function mouseSnow() {
+  const mouseSnow = () => {
     const clickedPixel = p.int(p.mouseX + p.mouseY * p.width)
     if (clickedPixel < 1 || clickedPixel >= p.width * p.height - 1) return
 
@@ -112,7 +112,7 @@ export default function sketch(p) {
   }
 
   // Move those white pixels!
-  function shake() {
+  const shake = () => {
     if (!pixelMask) return
 
     for (let x = 0; x < p.width; x++) {
@@ -135,7 +135,7 @@ export default function sketch(p) {
 
   // https://github.com/marrific/Computer-Vision-with-JS/blob/feaaef0e47b7f18f4fc55bdab8a0ca5ff648bafd/shared/utils.js
   // Convert grayscale jsfeat image to p5 rgba image.
-  function jsfeatToP5(src) {
+  const jsfeatToP5 = (src) => {
     let dst = p.createImage(src.cols, src.rows)
     dst.loadPixels()
     const n = src.data.length

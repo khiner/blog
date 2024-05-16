@@ -30,10 +30,10 @@ export default function sketch(p) {
     }
   }
 
-  p.setup = function () {
+  p.setup = () => {
     parentColor = p.color(getBackgroundColor())
     const canvas = p.createCanvas(600, 400)
-    canvas.mousePressed(function () {
+    canvas.mousePressed(() => {
       plucked = false
       t = 0
       amp = p.mouseY - p.height / 2
@@ -41,14 +41,14 @@ export default function sketch(p) {
       isMouseDragging = true
     })
 
-    canvas.mouseMoved(function () {
+    canvas.mouseMoved(() => {
       if (isMouseDragging) {
         d = p.mouseX
         amp = p.mouseY - p.height / 2
       }
     })
 
-    canvas.mouseReleased(function () {
+    canvas.mouseReleased(() => {
       precomputeHarmonics()
       plucked = true
       isMouseDragging = false
@@ -58,7 +58,7 @@ export default function sketch(p) {
     p.windowResized()
   }
 
-  p.draw = function () {
+  p.draw = () => {
     p.background(parentColor)
     p.noStroke()
     p.fill(BACKGROUND_COLOR_STR)

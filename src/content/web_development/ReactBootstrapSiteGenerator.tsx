@@ -6,16 +6,12 @@ import CodeBlock from '../CodeBlock'
 import rolling_your_own_cms from './assets/rolling_your_own_cms.jpg'
 import site_generator_demo from './assets/site_generator_demo.gif'
 
-function getBody() {
-  return document.getElementsByTagName('body')[0]
-}
-
-function toggleNineties() {
-  const body = getBody()
+const toggleNineties = () => {
   const decadeLabel = document.getElementById('decadeLabel')
   if (!decadeLabel) return
 
-  if (getBody().className === 'nineties') {
+  const body = document.getElementsByTagName('body')[0]
+  if (body.className === 'nineties') {
     body.className = ''
     decadeLabel.textContent = 'like the 90s'
   } else {

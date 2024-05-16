@@ -4,7 +4,7 @@ import { Card } from 'react-bootstrap'
 
 import config from '../config'
 
-function formatMathWhenContentIsReady() {
+const formatMathWhenContentIsReady = () => {
   const element = document.getElementById('loadedContent')
   if (element === null) {
     window.requestAnimationFrame(formatMathWhenContentIsReady)

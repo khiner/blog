@@ -1,6 +1,4 @@
-export function stripSlashes(str) {
-  return str.replace(/(^\/)/, '').replace(/(\/$)/, '')
-}
+export const stripSlashes = (str) => str.replace(/(^\/)/, '').replace(/(\/$)/, '')
 
 export const snakeCaseToTitle = (str) =>
   str
