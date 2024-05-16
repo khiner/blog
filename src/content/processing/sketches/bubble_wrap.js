@@ -17,8 +17,6 @@ export default function sketch(p) {
     })
   }
 
-  p.myCustomRedrawAccordingToNewPropsHandler = function (props) {}
-
   p.draw = function () {
     const color = parseInt(p.frameCount / 255, 10) % 2 === 0 ? p.frameCount % 255 : 255 - (p.frameCount % 255)
     p.background(color)

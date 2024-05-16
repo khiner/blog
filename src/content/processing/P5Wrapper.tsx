@@ -3,13 +3,11 @@ import p5 from 'p5'
 
 export default ({ sketch }) => {
   const wrapperRef = useRef(null)
-  const canvasRef = useRef(null)
 
   useEffect(() => {
-    canvasRef.current = new p5(sketch, wrapperRef.current)
-    canvasRef.current?.myCustomRedrawAccordingToNewPropsHandler?.({ sketch })
+    const canvas = new p5(sketch, wrapperRef.current)
     return () => {
-      canvasRef.current?.remove()
+      canvas.remove()
     }
   }, [sketch])
 

@@ -58,8 +58,6 @@ export default function sketch(p) {
     p.windowResized()
   }
 
-  p.myCustomRedrawAccordingToNewPropsHandler = function (props) {}
-
   p.draw = function () {
     p.background(parentColor)
     p.noStroke()

@@ -51,8 +51,6 @@ export default function sketch(p) {
     p.windowResized()
   }
 
-  p.myCustomRedrawAccordingToNewPropsHandler = (_) => {}
-
   p.draw = () => {
     if (image && imageSelectId === 0) {
       p.image(image, 0, 0)

@@ -77,8 +77,6 @@ export default function sketch(p) {
     currState = new SavedState(earth.pos, mars.pos)
   }
 
-  p.myCustomRedrawAccordingToNewPropsHandler = function (props) {}
-
   let approaching = false
 
   p.draw = function () {

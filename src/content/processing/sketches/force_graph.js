@@ -76,8 +76,6 @@ export default function sketch(p) {
     setupFinished = true
   }
 
-  p.myCustomRedrawAccordingToNewPropsHandler = function (props) {}
-
   p.draw = function () {
     if (!setupFinished) {
       return
