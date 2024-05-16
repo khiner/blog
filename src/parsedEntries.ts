@@ -3,9 +3,9 @@ import entries from './entries'
 import { stripSlashes } from './utils'
 
 // decorate all entries with full urls
-if (config.host) {
+if (config.origin) {
   entries.forEach((entry) => {
-    entry.url = `${stripSlashes(config.host)}/${stripSlashes(entry.path)}`
+    entry.url = `${stripSlashes(config.origin)}/${stripSlashes(entry.path)}`
   })
 }
 

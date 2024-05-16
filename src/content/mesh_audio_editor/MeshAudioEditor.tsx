@@ -135,7 +135,7 @@ export default (
       src={preview_image}
       alt="Ceramic pitcher mesh in the RealImpact mesh editor, with modal audio control panel open"
     />
-    <p>
+    <div>
       This is a continuation of a prior project,{' '}
       <Link href="https://github.com/khiner/mesh2audio">
         <i>Mesh2Audio</i>
@@ -146,44 +146,44 @@ export default (
         <i>Mesh2Faust</i>
       </Link>{' '}
       project, with the following major contributions:
-      <ul>
-        <li>
-          An OpenGL-based interface for axisymmetric mesh generation, immediate-mode Faust DSP parameter interface,
-          interactive vertex excitation, and more.
-        </li>
-        <li>
-          A from-scratch 2D axisymmetric FEM model implementation (by{' '}
-          <Link href="https://www.cc.gatech.edu/people/benjamin-wilfong">Ben Wilfong</Link>).
-        </li>
-        <li>Dramatically speeds up Finite Element and eigenvalue estimation.</li>
-        <li>
-          Lots of other improvements,{' '}
-          <Link href="https://github.com/grame-cncm/faust/pull/870">contributed to the Faust project</Link>.
-        </li>
-      </ul>
-    </p>
-    <p>
+    </div>
+    <ul>
+      <li>
+        An OpenGL-based interface for axisymmetric mesh generation, immediate-mode Faust DSP parameter interface,
+        interactive vertex excitation, and more.
+      </li>
+      <li>
+        A from-scratch 2D axisymmetric FEM model implementation (by{' '}
+        <Link href="https://www.cc.gatech.edu/people/benjamin-wilfong">Ben Wilfong</Link>).
+      </li>
+      <li>Dramatically speeds up Finite Element and eigenvalue estimation.</li>
+      <li>
+        Lots of other improvements,{' '}
+        <Link href="https://github.com/grame-cncm/faust/pull/870">contributed to the Faust project</Link>.
+      </li>
+    </ul>
+    <div>
       <i>Mesh Audio Editor</i> extends <i>Mesh2Audio</i> with the following major improvements and additions (with
       relevant parts also <Link href="https://github.com/grame-cncm/faust/pull/1019">contributed to Faust</Link>):
-      <ul>
-        <li>A complete rewrite of the interactive application from OpenGL to Vulkan with improved UI and UX.</li>
-        <li>
-          A comprehensive integrated <i>RealImpact</i> 3D dataset explorer supporting interactive listener position
-          selection, playback of impact sounds at recorded vertices, and comparison of real-world impact recordings with
-          modal model impacts.
-        </li>
-        <li>
-          Add damping to the modal FEM model, resulting in major improvements to physical realism, especially for
-          objects with short resonance durations.
-        </li>
-        <li>Extensive improvements and additions to mesh editing and debugging capabilities.</li>
-        <li>
-          Ability to create mesh primitives (cube, sphere, torus, cylinder, etc.) and generate modal audio models from
-          them.
-        </li>
-        <li>Improvements to eigenvalue estimation accuracy.</li>
-      </ul>
-    </p>
+    </div>
+    <ul>
+      <li>A complete rewrite of the interactive application from OpenGL to Vulkan with improved UI and UX.</li>
+      <li>
+        A comprehensive integrated <i>RealImpact</i> 3D dataset explorer supporting interactive listener position
+        selection, playback of impact sounds at recorded vertices, and comparison of real-world impact recordings with
+        modal model impacts.
+      </li>
+      <li>
+        Add damping to the modal FEM model, resulting in major improvements to physical realism, especially for objects
+        with short resonance durations.
+      </li>
+      <li>Extensive improvements and additions to mesh editing and debugging capabilities.</li>
+      <li>
+        Ability to create mesh primitives (cube, sphere, torus, cylinder, etc.) and generate modal audio models from
+        them.
+      </li>
+      <li>Improvements to eigenvalue estimation accuracy.</li>
+    </ul>
     <p>
       For details, see the accompanying{' '}
       <Link href="https://github.com/khiner/MeshEditor/blob/main/paper/PAMofPassiveRigidBodies.pdf">paper</Link> and{' '}

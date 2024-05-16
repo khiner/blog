@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import Helmet from 'react-helmet'
+import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { Card } from 'react-bootstrap'
 
 import config from '../config'
@@ -33,31 +33,35 @@ export default React.memo(
     const formattedTitle = config.siteName && title ? `${config.siteName} - ${title}` : config.siteName || title
 
     return (
-      <div>
-        <Helmet title={formattedTitle} />
-        {columnBreak}
-        <div className="container col-xs-12 col-md-10 col-lg-8">
-          {!isShowcase && (
-            <div id="mainContent" className="mainContent">
-              {title && <h1 className="title">{title}</h1>}
-              {subtitle && <h2 className="subtitle">{subtitle}</h2>}
-              {date && <h3 className="date">{date}</h3>}
-              {children}
-            </div>
-          )}
-          {isShowcase && (
-            <Card>
-              <Card.Header>
-                <Header title={title} date={date} />
-              </Card.Header>
-              <Card.Body>
-                <div className="mainContent Showcase">{children}</div>
-              </Card.Body>
-            </Card>
-          )}
+      <HelmetProvider>
+        <div>
+          <Helmet>
+            <title>{formattedTitle}</title>
+          </Helmet>
+          {columnBreak}
+          <div className="container col-xs-12 col-md-10 col-lg-8">
+            {!isShowcase && (
+              <div id="mainContent" className="mainContent">
+                {title && <h1 className="title">{title}</h1>}
+                {subtitle && <h2 className="subtitle">{subtitle}</h2>}
+                {date && <h3 className="date">{date}</h3>}
+                {children}
+              </div>
+            )}
+            {isShowcase && (
+              <Card>
+                <Card.Header>
+                  <Header title={title} date={date} />
+                </Card.Header>
+                <Card.Body>
+                  <div className="mainContent Showcase">{children}</div>
+                </Card.Body>
+              </Card>
+            )}
+          </div>
+          {columnBreak}
         </div>
-        {columnBreak}
-      </div>
+      </HelmetProvider>
     )
   },
   () => true,

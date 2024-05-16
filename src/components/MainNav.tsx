@@ -16,7 +16,7 @@ export default ({ sidebarOpen, setSidebarOpen }) => (
       }}
     />
     <Navbar.Brand style={{ marginLeft: '2em' }}>
-      <Link to="/">{config.siteName}</Link>
+      <Link to="/">{config.hostname}</Link>
     </Navbar.Brand>
     <Navbar.Toggle />
     <Navbar.Collapse className="justify-content-end">

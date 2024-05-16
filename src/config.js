@@ -1,9 +1,8 @@
 export default {
-  // `siteName` is used for the main site title in the nav, prepended to browser tab names for each route,
-  // and for titles in site metadata used by crawlers.
-  siteName: 'karlhiner.com',
-  // The full qualified hostname where this site will live.
-  host: 'https://karlhiner.com',
+  hostname: 'karlhiner.com',
+  origin: 'https://karlhiner.com',
+  // `siteName` is used for the main site title in the nav, and for titles in site metadata used by crawlers.
+  siteName: 'Karl Hiner',
   // Include this for a 'Contact' link on the right of the top nav.
   email: 'karl.hiner@gmail.com',
   // Optionally provide a list of { label: '...', href: '...' } pairs to display as simple links pulled right in the nav
