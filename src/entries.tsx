@@ -4,7 +4,7 @@ import make_noise_shared_system_image from './content/albums/assets/makenoise_sh
 import string_pluck_image from './content/processing/assets/string_pluck.gif'
 import snow_globe_image from './content/processing/assets/snow_globe.png'
 import apparent_retrograde_motion_image from './content/processing/assets/apparent_retrograde_motion.gif'
-import mario_warped_image from './content/processing/assets/mario_warped.png'
+import force_directed_graph_image from './content/processing/assets/force_directed_graph.gif'
 import bubble_wrap_preview_image from './content/processing/assets/bubble_wrap_preview.png'
 import beethovens_5th_image from './content/music_generation/assets/beethovens_5th.png'
 
@@ -175,7 +175,7 @@ const entries = [
     description: (
       <div>
         <p>Mapping a force-directed graph to an image for bouncy stretching and warping.</p>
-        <img src={mario_warped_image} alt="Mario warped with force-directed graph" style={{ width: '40%' }} />
+        <img src={force_directed_graph_image} alt="Force-directed graph moving Mario image" style={{ width: '40%' }} />
       </div>
     ),
     contentPath: 'processing/ForceGraph',

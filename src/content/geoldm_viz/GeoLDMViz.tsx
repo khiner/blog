@@ -1,5 +1,5 @@
 import React from 'react'
-import Link from '../Link'
+import Link from '../../components/Link'
 
 import preview_image from './assets/chain_animate.gif'
 
