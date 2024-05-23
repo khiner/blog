@@ -517,7 +517,7 @@ const entries = [
     path: '/mesh_audio_editor',
     title: 'Mesh Audio Editor',
     summaryTitle: 'Physical Audio Modeling of Passive Rigid Bodies',
-    subtitle: 'Real-time Interactive Audio Generation Using Linear Modal Analysis',
+    subtitle: 'Real-time interactive audio generation using linear modal analysis',
     date: 'May 7 2024',
     description: (
       <div>

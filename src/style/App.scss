@@ -324,8 +324,8 @@ body {
     color: $link-hover-color;
   }
 
-  .nav > .dropdown-item {
-    padding-left: 1em;
+  .nav > a {
+    padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
   }
 
   .dropdown-menu {
