@@ -1,4 +1,3 @@
-import React from 'react'
 import P5Wrapper from './P5Wrapper'
 
 import snow_globe_sketch from './sketches/snow_globe'

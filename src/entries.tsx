@@ -1,4 +1,4 @@
-import React from 'react'
+import Image from 'components/Image'
 
 import make_noise_shared_system_image from './content/albums/assets/makenoise_shared_system.jpg'
 import string_pluck_image from './content/processing/assets/string_pluck.gif'
@@ -7,7 +7,6 @@ import apparent_retrograde_motion_image from './content/processing/assets/appare
 import force_directed_graph_image from './content/processing/assets/force_directed_graph.gif'
 import bubble_wrap_preview_image from './content/processing/assets/bubble_wrap_preview.png'
 import beethovens_5th_image from './content/music_generation/assets/beethovens_5th.png'
-
 import accelerated_cpp_preview_image from './content/jupyter_notebooks/assets/accelerated_cpp_preview.png'
 import coding_the_matrix_preview_image from './content/jupyter_notebooks/assets/coding_the_matrix/coding_the_matrix_preview.png'
 import intro_to_digital_filters_preview_image from './content/jupyter_notebooks/assets/intro_to_digital_filters/two_pole_filter_animation.gif'
@@ -19,11 +18,8 @@ import python_crash_course_preview_image from './content/jupyter_notebooks/asset
 import python_for_data_analysis_preview_image from './content/jupyter_notebooks/assets/python_for_data_analysis_preview.png'
 import sound_machine_preview_image from './content/sound_machine/assets/sound_machine_short_demo.gif'
 import windowing_animation from './content/jupyter_notebooks/assets/windowing_animation.gif'
-
 import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
-
 import mesh_editor_preview from './content/mesh_audio_editor/assets/images/RealImpact_CeramicPitcher.png'
-
 import geoldm_preview_image from './content/geoldm_viz/assets/chain_animate.gif'
 
 const entries = [
@@ -64,7 +60,7 @@ const entries = [
     description: (
       <div>
         <p>Modular synth patches, made mostly using the Make Noise Shared System.</p>
-        <img src={make_noise_shared_system_image} alt="Make Noise Shared System" />
+        <Image src={make_noise_shared_system_image} alt="Make Noise Shared System" />
       </div>
     ),
     contentPath: 'albums/MakeNoiseSharedSystemJams',
@@ -124,7 +120,7 @@ const entries = [
     description: (
       <div>
         <p>Interactive model of plucked string motion.</p>
-        <img src={string_pluck_image} alt="Short animation of plucked string" style={{ maxWidth: 720 }} />
+        <Image src={string_pluck_image} alt="Short animation of plucked string" style={{ maxWidth: 720 }} />
       </div>
     ),
     contentPath: 'processing/StringPluck',
@@ -140,7 +136,7 @@ const entries = [
         <p>
           Some fun with edge detection. This simple effect, when used on images like cityscapes, looks like a blizzard.
         </p>
-        <img src={snow_globe_image} alt="Preview of Snow Globe sketch" style={{ maxWidth: 900 }} />
+        <Image src={snow_globe_image} alt="Preview of Snow Globe sketch" />
       </div>
     ),
     contentPath: 'processing/SnowGlobe',
@@ -157,7 +153,7 @@ const entries = [
           Retrograde motion is the apparent motion of a planet to move in a direction opposite to that of other bodies
           within its system, as observed from a particular vantage point.
         </p>
-        <img
+        <Image
           src={apparent_retrograde_motion_image}
           alt="Preview of Retrograde Motion sketch"
           style={{ maxWidth: 720 }}
@@ -175,7 +171,11 @@ const entries = [
     description: (
       <div>
         <p>Mapping a force-directed graph to an image for bouncy stretching and warping.</p>
-        <img src={force_directed_graph_image} alt="Force-directed graph moving Mario image" style={{ width: '40%' }} />
+        <Image
+          src={force_directed_graph_image}
+          alt="Force-directed graph moving Mario image"
+          style={{ maxWidth: 720 }}
+        />
       </div>
     ),
     contentPath: 'processing/ForceGraph',
@@ -191,7 +191,7 @@ const entries = [
           MidiMarkov is a command-line tool that uses a Markov process to generate MIDI streams based on a given folder
           of MIDI source material.
         </p>
-        <img src={beethovens_5th_image} alt="Section of Beethoven's 5th symphony melody" />
+        <Image src={beethovens_5th_image} alt="Section of Beethoven's 5th symphony melody" />
       </div>
     ),
     contentPath: 'music_generation/MidiMarkov',
@@ -211,8 +211,6 @@ const entries = [
           <iframe
             title="AutoSampler Demo"
             src="https://www.youtube.com/embed/IgO__9XJ2Cg?wmode=opaque&amp;enablejsapi=1"
-            scrolling="no"
-            frameBorder="0"
           />
         </div>
       </div>
@@ -228,7 +226,7 @@ const entries = [
     description: (
       <div>
         <p>A simple sketch with for trippy, colorful bubble patterns.</p>
-        <img src={bubble_wrap_preview_image} alt="Preview of Bubble Wrap sketch" />
+        <Image src={bubble_wrap_preview_image} alt="Preview of Bubble Wrap sketch" />
       </div>
     ),
     contentPath: 'processing/BubbleWrap',
@@ -246,10 +244,9 @@ const entries = [
           Matthes, including three projects: a "Space Invaders"-style game developed with PyGame, a data visualization
           project and a Django app.
         </p>
-        <img
+        <Image
           src={python_crash_course_preview_image}
           alt="Preview of random walk chart from Python Crash Course book"
-          style={{ width: '80%' }}
         />
       </div>
     ),
@@ -267,7 +264,11 @@ const entries = [
           I developed this Jupyter Notebook for a presentation on applying the DFT to timeseries data for seasonality
           detection.
         </p>
-        <img src={windowing_animation} alt="Animation of windowing's affect on the DFT with pure sinusoids" />
+        <Image
+          src={windowing_animation}
+          style={{ maxWidth: 720 }}
+          alt="Animation of windowing's affect on the DFT with pure sinusoids"
+        />
       </div>
     ),
     contentPath: 'jupyter_notebooks/DftTimeseries',
@@ -283,7 +284,7 @@ const entries = [
           <i>React Bootstrap Site Generator</i> is an npm package designed to make creating sites like this one super
           quick!
         </p>
-        <img src={site_generator_demo} alt="Demo gif of site generator" style={{ width: '50%' }} />
+        <Image src={site_generator_demo} alt="Demo gif of site generator" />
       </div>
     ),
     contentPath: 'web_development/ReactBootstrapSiteGenerator',
@@ -297,7 +298,7 @@ const entries = [
       <div>
         <p>BeatBot is an Android-native DAW for sample-based beat production.</p>
         <div className="videoWrapper">
-          <iframe title="BeatBot Demo" src="https://www.youtube.com/embed/XX6qeg30LSo" scrolling="no" frameBorder="0" />
+          <iframe title="BeatBot Demo" src="https://www.youtube.com/embed/XX6qeg30LSo" />
         </div>
       </div>
     ),
@@ -314,11 +315,7 @@ const entries = [
           This Jupyter notebook contains all code and corresponding output from the <i>Python for Data Analysis</i> book
           by Wes McKinney.
         </p>
-        <img
-          src={python_for_data_analysis_preview_image}
-          alt="Preview of chart from Python for Data Analysis book"
-          style={{ width: '80%' }}
-        />
+        <Image src={python_for_data_analysis_preview_image} alt="Preview of chart from Python for Data Analysis book" />
       </div>
     ),
     contentPath: 'jupyter_notebooks/PythonForDataAnalysis',
@@ -334,11 +331,7 @@ const entries = [
         <p>
           This set of Jupyter notebooks contains all code and exercises for the <i>Accelerated C++</i> book.
         </p>
-        <img
-          src={accelerated_cpp_preview_image}
-          alt="Preview of code from the Accelerated C++"
-          style={{ width: '80%' }}
-        />
+        <Image src={accelerated_cpp_preview_image} alt="Preview of code from the Accelerated C++" />
       </div>
     ),
     contentPath: 'jupyter_notebooks/AcceleratedCpp',
@@ -355,11 +348,7 @@ const entries = [
         <p>
           This set of Jupyter notebooks contains all code, problems and labs for the <i>Coding the Matrix</i> book.
         </p>
-        <img
-          src={coding_the_matrix_preview_image}
-          alt="An example of perspective transformation"
-          style={{ width: '80%' }}
-        />
+        <Image src={coding_the_matrix_preview_image} alt="An example of perspective transformation" />
       </div>
     ),
     contentPath: 'jupyter_notebooks/CodingTheMatrix',
@@ -377,10 +366,9 @@ const entries = [
           This Jupyter notebook contains implementations of many interesting topics from the <i>Musimathics Volume 1</i>{' '}
           book.
         </p>
-        <img
+        <Image
           src={musimathics_volume_1_preview_image}
           alt="Preview gif for Musimathics Volume 1 showing particle displacement in a tube"
-          style={{ width: '80%' }}
         />
       </div>
     ),
@@ -399,10 +387,9 @@ const entries = [
           Jupyter notebooks full of demonstrations and visualizations of many topics from the{' '}
           <i>Musimathics Volume 2</i> book.
         </p>
-        <img
+        <Image
           src={musimathics_volume_2_preview_image}
           alt="Preview gif for Musimathics Volume 2 showing a visualization of how the foureir transform works"
-          style={{ width: '80%' }}
         />
       </div>
     ),
@@ -420,10 +407,9 @@ const entries = [
           This set of Jupyter notebooks contains charts, visualizations, demonstrations and excercise solutions for each
           of the chapters in the <i>Mathematics of the DFT</i> book by Julius O. Smith III.
         </p>
-        <img
+        <Image
           src={mathematics_of_the_dft_preview_image}
           alt="Charts showing the equivalence of stretching in the time domain and repeating in the frequency domain"
-          style={{ width: '80%' }}
         />
       </div>
     ),
@@ -444,10 +430,9 @@ const entries = [
           mathy charts, animations and explorations, as well as solutions/attempts for (almost) every excercise.
         </p>
         <p>Also, I walk through a graphical method of interpretting and designing digital filters.</p>
-        <img
+        <Image
           src={intro_to_digital_filters_preview_image}
           alt="Animation showing a biquad filter's amplitude, phase and impulse responses as the poles are moved"
-          style={{ width: '80%' }}
         />
       </div>
     ),
@@ -465,7 +450,7 @@ const entries = [
           The beginning of an ongoing project to try and make a flexible, fast and fun music production and performance
           tool that I will actually use.
         </p>
-        <img src={sound_machine_preview_image} alt="preview of sound machine" style={{ width: '80%' }} />
+        <Image src={sound_machine_preview_image} alt="preview of sound machine" />
       </div>
     ),
     contentPath: 'sound_machine/SoundMachine',
@@ -498,10 +483,9 @@ const entries = [
           Continuing with Julius O. Smith III's audio DSP series, this set of Jupyter notebooks covers book III -{' '}
           <i>Physical Audio Signal Processing</i>.
         </p>
-        <img
+        <Image
           src={pasp_preview_image}
           alt="Animation showing digital waveguide delay lines with excitation scatter junction"
-          style={{ width: '80%' }}
         />
       </div>
     ),
@@ -520,10 +504,9 @@ const entries = [
           An interactive 3D visualizer for molecule chains generated by Geometric Latent Diffusion, using ImGui and
           OpenGL.
         </p>
-        <img
+        <Image
           src={geoldm_preview_image}
           alt="Animation showing a chain of molecules generated by Geometric Latent Diffusion"
-          style={{ width: '80%' }}
         />
       </div>
     ),
@@ -543,10 +526,9 @@ const entries = [
           I worked on over this two-year period is an application for creating interactive real-time physical audio
           models of 3D objects.
         </p>
-        <img
+        <Image
           src={mesh_editor_preview}
           alt="Wooden plate mesh in the RealImpact mesh editor, with a listener position (reprecented by a cylinder) selected and the modal audio control panel open"
-          style={{ width: '80%' }}
         />
       </div>
     ),

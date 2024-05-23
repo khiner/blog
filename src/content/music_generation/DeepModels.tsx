@@ -1,7 +1,5 @@
-import React from 'react'
-
 import CodeBlock from '../CodeBlock'
-import Link from '../Link'
+import Link from 'components/Link'
 import SoundCloudLink from '../SoundCloudLink'
 
 import samplernn_diagram from './assets/samplernn_diagram.png'
@@ -242,8 +240,6 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       title="rnn-playlist-1"
       width="100%"
       height="450"
-      scrolling="no"
-      frameBorder="no"
       allow="autoplay"
       src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/825469604&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=false&show_reposts=false&show_teaser=false&show_artwork=false"
       style={{ marginBottom: '1em' }}
@@ -252,8 +248,6 @@ $ python generate.py --wav_out_path=generated-bad-plus-give-with-silence-200kste
       title="rnn-playlist-2"
       width="100%"
       height="450"
-      scrolling="no"
-      frameBorder="no"
       allow="autoplay"
       src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/825451859&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=false&show_reposts=false&show_teaser=false&show_artwork=false"
       style={{ marginBottom: '1em' }}

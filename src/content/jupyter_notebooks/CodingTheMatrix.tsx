@@ -1,7 +1,5 @@
-import React from 'react'
-
-import Image from '../Image'
-import Link from '../Link'
+import Image from 'components/Image'
+import Link from 'components/Link'
 import { Python } from '../CodeBlock'
 
 import plot_complex_points from './assets/coding_the_matrix/plot_complex_points.png'

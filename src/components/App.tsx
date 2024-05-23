@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import MainNav from './MainNav'
 import MainContent from './MainContent'
 import Sidebar from './Sidebar'
 
-import '../style/App.scss'
+import 'style/App.scss'
 
 // TODO: only add mathJax for Jupyter notebooks (or somehow make a package.json dep instead)
 export default function App() {

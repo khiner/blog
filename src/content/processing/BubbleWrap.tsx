@@ -1,4 +1,3 @@
-import React from 'react'
 import P5Wrapper from './P5Wrapper'
 import bubble_wrap_sketch from './sketches/bubble_wrap'
 

@@ -1,8 +1,6 @@
-import React from 'react'
-
 import Audio from '../Audio'
-import Image from '../Image'
-import Link from '../Link'
+import Image from 'components/Image'
+import Link from 'components/Link'
 import { Python } from '../CodeBlock'
 
 import artificial_reverb from './assets/pasp/artificial_reverb.wav'

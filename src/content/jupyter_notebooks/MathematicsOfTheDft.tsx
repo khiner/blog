@@ -1,8 +1,6 @@
-import React from 'react'
-
 import { Python } from '../CodeBlock'
-import Image from '../Image'
-import Link from '../Link'
+import Image from 'components/Image'
+import Link from 'components/Link'
 
 import conv_adsr from './assets/mathematics_of_the_dft/conv_adsr.gif'
 import conv_matched_filter from './assets/mathematics_of_the_dft/conv_matched_filter.gif'

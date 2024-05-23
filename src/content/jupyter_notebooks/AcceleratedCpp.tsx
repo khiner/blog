@@ -1,7 +1,5 @@
-import React from 'react'
-
 import CodeBlock, { Cpp } from '../CodeBlock'
-import Link from '../Link'
+import Link from 'components/Link'
 
 import cpp_kernels_image from './assets/cpp_kernels.png'
 

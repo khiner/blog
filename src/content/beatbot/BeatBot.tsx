@@ -1,5 +1,4 @@
-import React from 'react'
-import Link from '../Link'
+import Link from 'components/Link'
 
 export default (
   <div>
@@ -16,11 +15,11 @@ export default (
       that it finally feels stable, does what it was designed to do, and I dare say is pretty fun!
     </p>
     <p>
-      <strike>
+      <s>
         <Link href="https://play.google.com/store/apps/details?id=com.odang.beatbot_android">
           Here is the Play Store link.
         </Link>
-      </strike>{' '}
+      </s>{' '}
       <i>(deprecated)</i>
     </p>
     <h3>Overview</h3>
@@ -45,7 +44,7 @@ export default (
     </p>
     <p>I hope you get some use out of it. Have fun!</p>
     <div className="videoWrapper">
-      <iframe title="BeatBot Demo" src="https://www.youtube.com/embed/XX6qeg30LSo" scrolling="no" frameBorder="0" />
+      <iframe title="BeatBot Demo" src="https://www.youtube.com/embed/XX6qeg30LSo" />
     </div>
   </div>
 )

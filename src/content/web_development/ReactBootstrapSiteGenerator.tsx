@@ -1,6 +1,5 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
-import ExternalLink from '../Link'
+import ExternalLink from 'components/Link'
 import CodeBlock from '../CodeBlock'
 
 import rolling_your_own_cms from './assets/rolling_your_own_cms.jpg'

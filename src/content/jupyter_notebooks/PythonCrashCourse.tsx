@@ -1,6 +1,4 @@
-import React from 'react'
-
-import Link from '../Link'
+import Link from 'components/Link'
 
 import python_crash_course_preview_image from './assets/python_crash_course_preview.png'
 import learning_log_screenshot_image from './assets/learning_log_screenshot.png'

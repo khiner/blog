@@ -1,7 +1,5 @@
-import React from 'react'
-
-import Link from '../Link'
-import Image from '../Image'
+import Link from 'components/Link'
+import Image from 'components/Image'
 import Audio from '../Audio'
 import Video from '../Video'
 import { Python } from '../CodeBlock'

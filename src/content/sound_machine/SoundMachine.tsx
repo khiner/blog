@@ -1,5 +1,4 @@
-import React from 'react'
-import Link from '../Link'
+import Link from 'components/Link'
 
 import preview from './assets/sound_machine_short_demo.gif'
 

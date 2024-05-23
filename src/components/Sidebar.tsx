@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { TimesIcon } from '../icons'
 import EntryNavItems from './EntryNavItems'
 

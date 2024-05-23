@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default ({ src, type = 'audio/wav' }) => (
   <audio controls={true}>
     <source src={src} type={type} />

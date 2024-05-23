@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 import { Card } from 'react-bootstrap'
 
-import config from '../config'
+import config from 'config'
 
 const formatMathWhenContentIsReady = () => {
   const element = document.getElementById('loadedContent')

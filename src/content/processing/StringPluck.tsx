@@ -1,4 +1,3 @@
-import React from 'react'
 import P5Wrapper from './P5Wrapper'
 
 import string_pluck_sketch from './sketches/string_pluck'

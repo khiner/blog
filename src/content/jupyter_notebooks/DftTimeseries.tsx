@@ -1,6 +1,5 @@
-import React from 'react'
-
-import Link from '../Link'
+import Link from 'components/Link'
+import Image from 'components/Image'
 
 import windowing_animation from './assets/windowing_animation.gif'
 import varying_dft_points_animation from './assets/varying_dft_points_animation.gif'
@@ -38,30 +37,28 @@ export default (
       soon, so there should be more DFT-related notebooks to come!
     </p>
     <p>Here are some of the animations built up in this notebook:</p>
-    <p>
-      <ul>
-        <li>
-          <p>
-            <i>Increasing the number of DFT points results in better reconstruction of the original series:</i>
-          </p>
-          <img src={varying_dft_points_animation} alt="Animation varying the number of DFT points" />
-        </li>
-        <li>
-          <p>
-            <i>The effects of windowing a pure sinusoid when the window is not an exact multiple of the period:</i>
-          </p>
-          <img src={windowing_animation} alt="Animation of windowing's affect on the DFT with pure sinusoids" />
-        </li>
-        <li>
-          <p>
-            <i>The effect of window size on frequency magnitude accuracy:</i>
-          </p>
-          <img
-            src={varying_window_size_animation}
-            alt="Animation of the effect of window size on frequency magnitude accuracy"
-          />
-        </li>
-      </ul>
-    </p>
+    <ul>
+      <li>
+        <p>
+          <i>Increasing the number of DFT points results in better reconstruction of the original series:</i>
+        </p>
+        <Image src={varying_dft_points_animation} alt="Animation varying the number of DFT points" />
+      </li>
+      <li>
+        <p>
+          <i>The effects of windowing a pure sinusoid when the window is not an exact multiple of the period:</i>
+        </p>
+        <Image src={windowing_animation} alt="Animation of windowing's affect on the DFT with pure sinusoids" />
+      </li>
+      <li>
+        <p>
+          <i>The effect of window size on frequency magnitude accuracy:</i>
+        </p>
+        <Image
+          src={varying_window_size_animation}
+          alt="Animation of the effect of window size on frequency magnitude accuracy"
+        />
+      </li>
+    </ul>
   </div>
 )

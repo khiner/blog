@@ -1,5 +1,5 @@
 import React from 'react'
-import Link from '../Link'
+import Link from 'components/Link'
 
 import preview_image from './assets/images/RealImpact_CeramicPitcher.png'
 
@@ -131,8 +131,8 @@ export default (
     </p>
 
     <img
-      style={{ width: '75%' }}
       src={preview_image}
+      style={{ maxWidth: 900 }}
       alt="Ceramic pitcher mesh in the RealImpact mesh editor, with modal audio control panel open"
     />
     <div>

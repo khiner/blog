@@ -1,10 +1,8 @@
-import React from 'react'
-
-import Link from '../Link'
+import Link from 'components/Link'
 import CodeBlock from '../CodeBlock'
 import beethovens_5th_image from './assets/beethovens_5th.png'
 import markov_recipe_image from './assets/markov_recipe.jpg'
-import Image from '../Image'
+import Image from 'components/Image'
 
 export default (
   <div>
@@ -52,8 +50,6 @@ $ ./midi_markov {track_name}`}
         title="-d -r 4731 -i midi_files/bach"
         width="100%"
         height="180"
-        scrolling="no"
-        frameBorder="no"
         src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/281748188&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true"
       />
     </p>
@@ -97,8 +93,6 @@ $ ./midi_markov {track_name}`}
         title="example-soundcloud2"
         width="100%"
         height="180"
-        scrolling="no"
-        frameBorder="no"
         src="https://w.soundcloud.com/player/?visual=true&amp;url=https%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F281731103&amp;show_artwork=true&amp;callback=YUI.Env.JSONP.yui_3_17_2_1_1473272933220_5098&amp;wmode=opaque"
       />
     </p>

@@ -1,10 +1,9 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { Card, Container, Row, Col } from 'react-bootstrap'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 
-import config from '../config'
-import parsedEntries from '../parsedEntries'
+import config from 'config'
+import parsedEntries from 'parsedEntries'
 
 const Panel = ({ entry }) => (
   <Card>

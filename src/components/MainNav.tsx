@@ -1,9 +1,8 @@
-import React from 'react'
 import { Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-import { ListIcon } from '../icons'
-import config from '../config'
+import { ListIcon } from 'icons'
+import config from 'config'
 import MailChimpEmailSignup from './MailChimpEmailSignup'
 
 export default ({ sidebarOpen, setSidebarOpen }) => (

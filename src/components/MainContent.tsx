@@ -3,9 +3,9 @@ import { Route, Routes } from 'react-router-dom'
 
 import SummaryList from './SummaryList'
 import Entry from './Entry'
-import { stripSlashes } from '../utils'
+import { stripSlashes } from 'utils'
 
-import parsedEntries from '../parsedEntries'
+import parsedEntries from 'parsedEntries'
 
 import loadable from '@loadable/component'
 

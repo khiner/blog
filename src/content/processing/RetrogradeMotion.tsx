@@ -1,4 +1,3 @@
-import React from 'react'
 import P5Wrapper from './P5Wrapper'
 import retrograde_motion_sketch from './sketches/retrograde_motion'
 

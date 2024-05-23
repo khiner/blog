@@ -1,6 +1,4 @@
-import React from 'react'
-
-import Link from '../Link'
+import Link from 'components/Link'
 
 export default (
   <div>
@@ -10,12 +8,7 @@ export default (
       action! (A simple sine tone is playing in addition to the instrument so you can hear what notes are being played.)
     </p>
     <div className="videoWrapper">
-      <iframe
-        title="AutoSampler Demo"
-        src="https://www.youtube.com/embed/IgO__9XJ2Cg?wmode=opaque&amp;enablejsapi=1"
-        scrolling="no"
-        frameBorder="0"
-      />
+      <iframe title="AutoSampler Demo" src="https://www.youtube.com/embed/IgO__9XJ2Cg?wmode=opaque&amp;enablejsapi=1" />
     </div>
     <p>
       I love sample-based music but one of the problems I often run into is getting stuck in habits, using the same
