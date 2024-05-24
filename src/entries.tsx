@@ -442,7 +442,7 @@ const entries = [
     type: 'article',
   },
   {
-    path: '/sound_machine/sound_machine',
+    path: '/sound_machine',
     title: 'Sound Machine',
     subtitle: 'Making a place to put audio-making things',
     date: 'Aug 25 2018',
