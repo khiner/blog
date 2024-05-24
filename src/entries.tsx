@@ -1,4 +1,5 @@
 import Image from 'components/Image'
+import Link from 'components/Link'
 
 import make_noise_shared_system_image from './content/albums/assets/makenoise_shared_system.jpg'
 import string_pluck_image from './content/processing/assets/string_pluck.gif'
@@ -21,6 +22,7 @@ import windowing_animation from './content/jupyter_notebooks/assets/windowing_an
 import site_generator_demo from './content/web_development/assets/site_generator_demo.gif'
 import mesh_editor_preview from './content/mesh_audio_editor/assets/images/RealImpact_CeramicPitcher.png'
 import geoldm_preview_image from './content/geoldm_viz/assets/chain_animate.gif'
+import drum_classification_preview_image from './content/drum_classification/assets/drum_classification.png'
 
 const entries = [
   {
@@ -511,6 +513,26 @@ const entries = [
       </div>
     ),
     contentPath: 'geoldm_viz/GeoLDMViz',
+    type: 'article',
+  },
+  {
+    path: '/drum_classification',
+    title: 'Drum Classification',
+    subtitle: "A drum classification model trained on Magenta's Expanded Groove MIDI Dataset",
+    date: 'Nov 25, 2023',
+    description: (
+      <div>
+        <p>
+          A PyTorch drum classification model trained on Magenta's{' '}
+          <Link href="https://magenta.tensorflow.org/datasets/e-gmd">Expanded Groove MIDI Dataset</Link>.
+        </p>
+        <Image
+          src={drum_classification_preview_image}
+          alt="Graphic of a kick drum audio waveform going into a neural network and coming out as a drum classification"
+        />
+      </div>
+    ),
+    contentPath: 'drum_classification/DrumClassification',
     type: 'article',
   },
   {
