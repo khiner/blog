@@ -6,7 +6,6 @@ import Sidebar from './Sidebar'
 
 import 'style/App.scss'
 
-// TODO: only add mathJax for Jupyter notebooks (or somehow make a package.json dep instead)
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
