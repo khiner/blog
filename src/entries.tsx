@@ -542,6 +542,19 @@ const entries = [
     contentPath: 'mesh_audio_editor/MeshAudioEditor',
     type: 'article',
   },
+  {
+    path: '/html_boundary_sims',
+    title: 'HTML Boundary Sims',
+    subtitle: 'Using HTML elements as boundary conditions for physics simulations',
+    date: 'May 26 2024',
+    description: (
+      <div>
+        <p>TODO</p>
+      </div>
+    ),
+    contentPath: 'web_development/HtmlBoundarySims',
+    type: 'article',
+  },
 ]
 
 export default entries

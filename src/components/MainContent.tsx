@@ -11,10 +11,10 @@ import loadable from '@loadable/component'
 
 const modules = import.meta.glob('../content/**/*.tsx')
 
-const LoadableEntry = (entry) => {
+const LoadableEntry = ({ contentPath }) => {
   const Loadable = loadable(
     async () => {
-      const imported = await modules[`../content/${entry.contentPath}.tsx`]()
+      const imported = await modules[`../content/${contentPath}.tsx`]()
       const Content = imported.default
       const element = React.isValidElement(Content) ? Content : <Content />
       return () => <div id="loadedContent">{element}</div>
