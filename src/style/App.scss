@@ -98,6 +98,11 @@ body {
 
   .contentWrapper {
     margin-top: 5rem;
+
+    img {
+      margin-top: 28px;
+      margin-bottom: 28px;
+    }
   }
 
   a {
@@ -111,11 +116,6 @@ body {
   h1 {
     font-size: 36px;
   }
-  img {
-    margin-top: 28px !important;
-    margin-bottom: 28px !important;
-  }
-
   .transitionable {
     transition: 0.3s;
     &.opaque {
