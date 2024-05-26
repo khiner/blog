@@ -25,7 +25,7 @@ const LoadableEntry = (entry) => {
 }
 
 export default () => (
-  <div className="contentWrapper">
+  <div className="content">
     <Routes>
       <Route exact path="/" element={SummaryList} />
       {parsedEntries.all.map((entry) => (

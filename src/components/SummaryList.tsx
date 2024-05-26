@@ -17,26 +17,28 @@ const Panel = ({ entry }) => (
       </Card.Header>
     </Link>
     <Card.Body>
-      <div className="mainContent">{entry.description}</div>
+      <div>{entry.description}</div>
     </Card.Body>
   </Card>
 )
 
 export default (
   <HelmetProvider>
-    <Container>
-      {config?.siteName && (
-        <Helmet>
-          <title>{config.siteName}</title>
-        </Helmet>
-      )}
-      <Row>
-        <Col className="justify-content-md-center">
-          {parsedEntries.reverseChronological.map((entry) => (
-            <Panel key={entry.title} entry={entry} />
-          ))}
-        </Col>
-      </Row>
-    </Container>
+    <div className="summary">
+      <Container className="summary">
+        {config?.siteName && (
+          <Helmet>
+            <title>{config.siteName}</title>
+          </Helmet>
+        )}
+        <Row>
+          <Col className="justify-content-md-center">
+            {parsedEntries.reverseChronological.map((entry) => (
+              <Panel key={entry.title} entry={entry} />
+            ))}
+          </Col>
+        </Row>
+      </Container>
+    </div>
   </HelmetProvider>
 )

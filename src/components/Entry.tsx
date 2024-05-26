@@ -41,7 +41,7 @@ export default React.memo(
           {columnBreak}
           <div className="container col-xs-12 col-md-10 col-lg-8">
             {!isShowcase && (
-              <div id="mainContent" className="mainContent">
+              <div className="entry">
                 {title && <h1 className="title">{title}</h1>}
                 {subtitle && <h2 className="subtitle">{subtitle}</h2>}
                 {date && <h3 className="date">{date}</h3>}
@@ -54,7 +54,7 @@ export default React.memo(
                   <Header title={title} date={date} />
                 </Card.Header>
                 <Card.Body>
-                  <div className="mainContent Showcase">{children}</div>
+                  <div className="entry Showcase">{children}</div>
                 </Card.Body>
               </Card>
             )}
