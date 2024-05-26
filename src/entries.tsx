@@ -32,10 +32,8 @@ const entries = [
     date: 'May 30 2011',
     description: (
       <div>
-        <p>
-          A bunch of random tracks ranging from about 2006-2011. Playful bedroom experiments. Some are just goofy, some
-          are more serious. Some good ideas, some not so much. All of them mastered terribly.
-        </p>
+        A bunch of random tracks ranging from about 2006-2011. Playful bedroom experiments. Some are just goofy, some
+        are more serious. Some good ideas, some not so much. All of them mastered terribly.
       </div>
     ),
     contentPath: 'albums/WebTracks2006To2011',
@@ -46,11 +44,7 @@ const entries = [
     summaryTitle: 'Album - Calahjes&Lewps',
     title: 'Calahjes&Lewps',
     date: 'Dec 22 2011',
-    description: (
-      <div>
-        <p>Stream of consciousness frenetic sampling from musical sources.</p>
-      </div>
-    ),
+    description: <div>Stream of consciousness frenetic sampling from musical sources.</div>,
     contentPath: 'albums/CalahjesAndLewps',
     type: 'article',
   },
@@ -73,11 +67,7 @@ const entries = [
     summaryTitle: 'Album - MIDI Markov: Compose',
     title: 'MIDI Markov: Compose',
     date: 'Sep 1 2016',
-    description: (
-      <div>
-        <p>Piano compositions generated from a Markov chain given classical MIDI scores as input.</p>
-      </div>
-    ),
+    description: <div>Piano compositions generated from a Markov chain given classical MIDI scores as input.</div>,
     contentPath: 'albums/MidiMarkovCompose',
     type: 'article',
   },
@@ -88,11 +78,8 @@ const entries = [
     date: 'Sep 2 2016',
     description: (
       <div>
-        <p>
-          Piano compositions generated from a Markov chain given classical MIDI scores as input. Unlike the "MIDI
-          Markov: Compose" album, these pieces introduce intentional MIDI errors to generate more experimental, ambient
-          pieces.
-        </p>
+        Piano compositions generated from a Markov chain given classical MIDI scores as input. Unlike the "MIDI Markov:
+        Compose" album, these pieces introduce intentional MIDI errors to generate more experimental, ambient pieces.
       </div>
     ),
     contentPath: 'albums/MidiMarkovDecompose',
@@ -105,10 +92,8 @@ const entries = [
     date: 'Nov 1 2017',
     description: (
       <div>
-        <p>
-          A collection of tracks I published spanning from 2012 to 2017. There isn't any cohesive theme. Special guests
-          Andrew Knight (on Riders of the Night - the Raccoon Song) and pLiskin (on Elise and Paw).
-        </p>
+        A collection of tracks I published spanning from 2012 to 2017. There isn't any cohesive theme. Special guests
+        Andrew Knight (on Riders of the Night - the Raccoon Song) and pLiskin (on Elise and Paw).
       </div>
     ),
     contentPath: 'albums/WebTracks2012To2017',
@@ -176,7 +161,7 @@ const entries = [
         <Image
           src={force_directed_graph_image}
           alt="Force-directed graph moving Mario image"
-          style={{ maxWidth: 720 }}
+          style={{ maxWidth: 650 }}
         />
       </div>
     ),

@@ -35,6 +35,31 @@ $link-hover-color: $primary-highlight;
 
 @import 'node_modules/bootstrap/scss/bootstrap';
 
+body {
+  font-family: 'Roboto';
+  font-weight: 400;
+
+  a {
+    cursor: pointer;
+    color: #121212;
+  }
+
+  small {
+    line-height: 1em;
+  }
+  h1 {
+    font-size: 36px;
+  }
+
+  img,
+  video,
+  iframe {
+    display: block;
+    margin: auto;
+    width: 100%;
+  }
+}
+
 code {
   color: inherit;
   a {
@@ -92,36 +117,27 @@ blockquote {
   }
 }
 
-body {
-  font-family: 'Roboto';
-  font-weight: 400;
+.transitionable {
+  transition: 0.3s;
+  &.opaque {
+    opacity: 0.5;
+  }
+}
+.content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 57px;
+  height: calc(100% - 57px);
 
-  .contentWrapper {
-    margin-top: 5rem;
+  img:not(:last-child) {
+    margin-top: 28px;
+    margin-bottom: 28px;
+  }
+}
 
-    img {
-      margin-top: 28px;
-      margin-bottom: 28px;
-    }
-  }
-
-  a {
-    cursor: pointer;
-    color: #121212;
-  }
-
-  small {
-    line-height: 1em;
-  }
-  h1 {
-    font-size: 36px;
-  }
-  .transitionable {
-    transition: 0.3s;
-    &.opaque {
-      opacity: 0.5;
-    }
-  }
+.summary {
+  background: #f8f8f8;
 }
 
 // Default dropdown toggle triangle is too wide and too high.
@@ -174,10 +190,18 @@ body {
   }
 }
 
-.mainContent {
+iframe.soundcloud-small {
+  display: inherit;
+  margin: inherit;
+  margin-bottom: 2em;
+  margin-top: 1em;
+}
+
+.entry {
   font-size: 17px;
   line-height: 29px;
-  margin-bottom: 20px;
+  margin-top: 1em;
+  margin-bottom: 1em;
 
   &.well {
     background-image: none;
@@ -186,19 +210,7 @@ body {
   a {
     text-decoration: underline;
   }
-  img,
-  video,
-  iframe {
-    display: block;
-    margin: auto;
-    width: 100%;
-  }
-  iframe.soundcloud-small {
-    display: inherit;
-    margin: inherit;
-    margin-bottom: 2em;
-    margin-top: 1em;
-  }
+
   pre {
     border: 0;
     background-color: transparent;
@@ -231,14 +243,20 @@ body {
     margin-bottom: 0.75rem;
   }
 }
+
 .panelLink {
   text-decoration: none;
 }
 
 .card {
-  margin-bottom: 2em;
-  .mainContent {
-    font-size: 18px;
+  margin: 1.5em;
+
+  a {
+    &:hover {
+      .card-header {
+        background-color: $primary-highlight;
+      }
+    }
   }
 
   .card-header {
@@ -259,15 +277,10 @@ body {
       font-style: italic;
     }
   }
-}
 
-.card {
-  a {
-    &:hover {
-      .card-header {
-        background-color: $primary-highlight;
-      }
-    }
+  .card-body {
+    font-size: 18px;
+    line-height: 29px;
   }
 }
 
@@ -285,14 +298,13 @@ body {
 
 .sidebar {
   position: fixed;
-  z-index: 1000000;
-  height: 100vh;
+  z-index: 10000;
+  top: 58px;
   background: #f8f8f8;
   border: 1px $border-color solid;
 
   &.show {
     left: 0px;
-    margin-top: -1em;
   }
 
   left: -250px;
@@ -366,7 +378,7 @@ body.nineties {
   -webkit-font-smoothing: none;
   background: #0000ff url('../assets/90s/microfab.gif') top left;
 
-  .mainContent {
+  .entry {
     color: #ffff00;
   }
 
