@@ -42,7 +42,9 @@
   },
   "dependencies": {
     "@loadable/component": "^5.16.4",
+    "@webgpu/types": "^0.1.40",
     "bootstrap": "^5.3.3",
+    "dat.gui": "^0.7.9",
     "jsfeat": "^0.0.8",
     "p5": "^1.9.4",
     "react": "^18.3.1",
