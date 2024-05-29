@@ -125,11 +125,6 @@ class Uniform {
     uniforms[name] = this
   }
 
-  setValue(value) {
-    settings[this.name] = value
-    this.needsUpdate = true
-  }
-
   // Update the GPU buffer if the value has changed
   update(queue: GPUQueue, value = null) {
     if (!this.needsUpdate && !this.alwaysUpdate && value == null) return
@@ -214,7 +209,6 @@ const settings = {
   vorticity: 2,
   pressure_iterations: 20,
   buffer_view: 'dye',
-  input_symmetry: 'none',
 
   raymarch_steps: 12,
   smoke_density: 40,
@@ -338,7 +332,7 @@ let velocity, velocity0, dye, dye0, divergence, divergence0, pressure, pressure0
 
 // Uniforms
 let uTime, uDt, uMouse, uGrid, uSimSpeed, uVelForce, uVelRadius, uVelDiff, uDyeForce, uDyeRad, uDyeDiff
-let uViscosity, uVorticity, uContainFluid, uSymmetry, uSmokeParameters, uRenderIntensity
+let uViscosity, uVorticity, uContainFluid, uSmokeParameters, uRenderIntensity
 
 // Programs
 let checkerProgram, updateDyeProgram, updateProgram, advectProgram, boundaryProgram, divergenceProgram
@@ -367,14 +361,14 @@ const initPrograms = () => {
   })
   updateDyeProgram = new Program({
     buffers: [dye, dye0],
-    uniforms: [uGrid, uMouse, uDyeForce, uDyeRad, uDyeDiff, uTime, uDt, uSymmetry],
+    uniforms: [uGrid, uMouse, uDyeForce, uDyeRad, uDyeDiff, uTime, uDt],
     dispatchX: settings.dye_w,
     dispatchY: settings.dye_h,
     shader: updateDyeShader,
   })
   updateProgram = new Program({
     buffers: [velocity, velocity0],
-    uniforms: [uGrid, uMouse, uVelForce, uVelRadius, uVelDiff, uDt, uTime, uSymmetry],
+    uniforms: [uGrid, uMouse, uVelForce, uVelRadius, uVelDiff, uDt, uTime],
     shader: updateVelocityShader,
   })
   advectProgram = new Program({
@@ -532,14 +526,6 @@ const main = async (canvas: HTMLCanvasElement) => {
   gui = new dat.GUI()
   gui.add(settings, 'pressure_iterations', 0, 50).name('Pressure Iterations')
 
-  const symmetryTypes = ['none', 'horizontal', 'vertical', 'both', 'center']
-  gui
-    .add(settings, 'input_symmetry', symmetryTypes)
-    .onChange((type: string) => {
-      uniforms.mouse_type.setValue(symmetryTypes.indexOf(type))
-    })
-    .name('Mouse Symmetry')
-
   gui.add(settings, 'reset').name('Clear canvas')
 
   smokeFolder = gui.addFolder('Smoke Parameters')
@@ -579,7 +565,8 @@ const main = async (canvas: HTMLCanvasElement) => {
     min: RENDER_MODES,
     size: 1,
     onChange: (val) => {
-      uniforms.render_intensity_multiplier.setValue([1, 1, 1, 100, 10, 1e6, 1][parseInt(val)])
+      settings.render_intensity_multiplier = [1, 1, 1, 100, 10, 1e6, 1][parseInt(val)]
+      uniforms.render_intensity_multiplier.needsUpdate = true
       if (val == 2) smokeFolder.show(), smokeFolder.open()
       else smokeFolder.hide()
     },
@@ -612,7 +599,6 @@ const main = async (canvas: HTMLCanvasElement) => {
   uViscosity = new Uniform('viscosity', { displayName: 'Viscosity', min: 0, max: 1 })
   uVorticity = new Uniform('vorticity', { displayName: 'Vorticity', min: 0, max: 10, step: 0.00001 })
   uContainFluid = new Uniform('contain_fluid', { displayName: 'Solid boundaries' })
-  uSymmetry = new Uniform('mouse_type', { value: 0 })
   uSmokeParameters = new Uniform('smoke_parameters', {
     value: [
       settings.raymarch_steps,

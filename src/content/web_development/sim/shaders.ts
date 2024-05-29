@@ -1,62 +1,21 @@
-const STRUCT_GRID_SIZE = `
-struct GridSize {
-  w : f32,
-  h : f32,
-  dyeW: f32,
-  dyeH: f32,
-  dx : f32,
-  rdx : f32,
-  dyeRdx : f32
-}`
+const StructGridSize = `struct GridSize { w : f32, h : f32, dyeW: f32, dyeH: f32, dx : f32, rdx : f32, dyeRdx : f32 }`
+const StructMouse = `struct Mouse { pos: vec2<f32>, vel: vec2<f32> }`
 
-const STRUCT_MOUSE = `
-struct Mouse {
-  pos: vec2<f32>,
-  vel: vec2<f32>,
-}`
-
-// Initialize the pos and index variables and target only interior cells
-const COMPUTE_START = `
+// Initialize the pos and index variables and target the cells in the given grid
+const createComputeStart = (w: [string, string], h: [string, string]) => `
 var pos = vec2<f32>(global_id.xy);
-if (pos.x == 0 || pos.y == 0 || pos.x >= uGrid.w - 1 || pos.y >= uGrid.h - 1) {
+if (pos.x <= ${w[0]} || pos.y <= ${h[0]} || pos.x >= ${w[1]} || pos.y >= ${h[1]}) {
   return;
 }
-
 let index = ID(pos.x, pos.y);`
-
-const COMPUTE_START_DYE = `
-var pos = vec2<f32>(global_id.xy);
-if (pos.x == 0 || pos.y == 0 || pos.x >= uGrid.dyeW - 1 || pos.y >= uGrid.dyeH - 1) {
-  return;
-}
-
-let index = ID(pos.x, pos.y);`
-
-// Initialize the pos and index variables and target all cells
-const COMPUTE_START_ALL = `
-var pos = vec2<f32>(global_id.xy);
-if (pos.x >= uGrid.w || pos.y >= uGrid.h) {
-  return;
-}
-
-let index = ID(pos.x, pos.y);`
-
-const SPLAT_CODE = `
-var m = uMouse.pos;
-var v = uMouse.vel*2.;
-
-var splat = createSplat(p, m, v, uRadius);
-if (uSymmetry == 1. || uSymmetry == 3.) {splat += createSplat(p, vec2(1. - m.x, m.y), v * vec2(-1., 1.), uRadius);}
-if (uSymmetry == 2. || uSymmetry == 3.) {splat += createSplat(p, vec2(m.x, 1. - m.y), v * vec2(1., -1.), uRadius);}
-if (uSymmetry == 3. || uSymmetry == 4.) {splat += createSplat(p, vec2(1. - m.x, 1. - m.y), v * vec2(-1., -1.), uRadius);}`
+const ComputeStartInterior = createComputeStart(['0', 'uGrid.w - 1'], ['0', 'uGrid.h - 1'])
+const ComputeStartDye = createComputeStart(['0', 'uGrid.dyeW - 1'], ['0', 'uGrid.dyeH - 1'])
+const ComputeStartAll = createComputeStart(['-1', 'uGrid.w'], ['-1', 'uGrid.h'])
 
 export const updateVelocityShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
+${StructMouse}
 
-struct Mouse {
-  pos: vec2<f32>,
-  vel: vec2<f32>,
-}
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
 @group(0) @binding(1) var<storage, read> y_in : array<f32>;
 @group(0) @binding(2) var<storage, read_write> x_out : array<f32>;
@@ -68,7 +27,6 @@ struct Mouse {
 @group(0) @binding(8) var<uniform> uDiffusion : f32;
 @group(0) @binding(9) var<uniform> uDt : f32;
 @group(0) @binding(10) var<uniform> uTime : f32;
-@group(0) @binding(11) var<uniform> uSymmetry : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
 fn inBetween(x : f32, lower : f32, upper : f32) -> bool {
@@ -83,32 +41,24 @@ fn createSplat(pos : vec2<f32>, splatPos : vec2<f32>, vel : vec2<f32>, radius : 
   p.x *= uGrid.w / uGrid.h;
   var v = vel;
   v.x *= uGrid.w / uGrid.h;
-  var splat = exp(-dot(p, p) / radius) * v;
-  return splat;
+  return exp(-dot(p, p) / radius) * v;
 }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-    ${COMPUTE_START}
+    ${ComputeStartInterior}
 
     let tmpT = uTime;
     var p = pos/vec2(uGrid.w, uGrid.h);
-
-    ${SPLAT_CODE}
-    
-    splat *= uForce * uDt * 200.;
-
+    var splat = createSplat(p, uMouse.pos,  uMouse.vel*2., uRadius) * uForce * uDt * 200.;
     x_out[index] = x_in[index]*uDiffusion + splat.x;
     y_out[index] = y_in[index]*uDiffusion + splat.y;
 }`
 
 export const updateDyeShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
+${StructMouse}
 
-struct Mouse {
-  pos: vec2<f32>,
-  vel: vec2<f32>,
-}
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
 @group(0) @binding(1) var<storage, read> y_in : array<f32>;
 @group(0) @binding(2) var<storage, read> z_in : array<f32>;
@@ -122,7 +72,6 @@ struct Mouse {
 @group(0) @binding(10) var<uniform> uDiffusion : f32;
 @group(0) @binding(11) var<uniform> uTime : f32;
 @group(0) @binding(12) var<uniform> uDt : f32;
-@group(0) @binding(13) var<uniform> uSymmetry : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.dyeW); }
 fn inBetween(x : f32, lower : f32, upper : f32) -> bool {
@@ -147,16 +96,13 @@ fn createSplat(pos : vec2<f32>, splatPos : vec2<f32>, vel : vec2<f32>, radius : 
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-    ${COMPUTE_START_DYE}
+    ${ComputeStartDye}
 
     let col_incr = 0.15;
     let col_start = palette(uTime/8., vec3(1), vec3(0.5), vec3(1), vec3(0, col_incr, col_incr*2.));
 
     var p = pos/vec2(uGrid.dyeW, uGrid.dyeH);
-
-    ${SPLAT_CODE}
-
-    splat *= col_start * uForce * uDt * 100.;
+    var splat = createSplat(p, uMouse.pos,  uMouse.vel*2., uRadius) * col_start * uForce * uDt * 100.;
 
     x_out[index] = max(0., x_in[index]*uDiffusion + splat.x);
     y_out[index] = max(0., y_in[index]*uDiffusion + splat.y);
@@ -164,7 +110,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 }`
 
 export const advectShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
 @group(0) @binding(1) var<storage, read> y_in : array<f32>;
@@ -180,7 +126,7 @@ fn in(x : f32, y : f32) -> vec2<f32> { let id = ID(x, y); return vec2(x_in[id], 
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-    ${COMPUTE_START}
+    ${ComputeStartInterior}
     
     var x = pos.x - uDt * uGrid.rdx * x_vel[index];
     var y = pos.y - uDt * uGrid.rdx * y_vel[index];
@@ -210,7 +156,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 }`
 
 export const advectDyeShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
 @group(0) @binding(1) var<storage, read> y_in : array<f32>;
@@ -257,7 +203,7 @@ fn vel_bilerp(x0 : f32, y0 : f32) -> vec2<f32> {
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-    ${COMPUTE_START_DYE}
+    ${ComputeStartDye}
 
     let V = vel_bilerp(pos.x, pos.y);
 
@@ -290,7 +236,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 }`
 
 export const divergenceShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_vel : array<f32>;
 @group(0) @binding(1) var<storage, read> y_vel : array<f32>;
@@ -302,7 +248,7 @@ fn vel(x : f32, y : f32) -> vec2<f32> { let id = ID(x, y); return vec2(x_vel[id]
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-  ${COMPUTE_START}
+  ${ComputeStartInterior}
 
   let L = vel(pos.x - 1, pos.y).x;
   let R = vel(pos.x + 1, pos.y).x;
@@ -313,7 +259,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 }`
 
 export const pressureShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> pres_in : array<f32>;
 @group(0) @binding(1) var<storage, read> div : array<f32>;
@@ -325,7 +271,7 @@ fn in(x : f32, y : f32) -> f32 { let id = ID(x, y); return pres_in[id]; }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-  ${COMPUTE_START}
+  ${ComputeStartInterior}
         
   let L = pos - vec2(1, 0);
   let R = pos + vec2(1, 0);
@@ -346,7 +292,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 }`
 
 export const gradientSubtractShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> pressure : array<f32>;
 @group(0) @binding(1) var<storage, read> x_vel : array<f32>;
@@ -360,8 +306,7 @@ fn pres(x : f32, y : f32) -> f32 { let id = ID(x, y); return pressure[id]; }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-
-  ${COMPUTE_START}
+  ${ComputeStartInterior}
 
   let L = pos - vec2(1, 0);
   let R = pos + vec2(1, 0);
@@ -381,7 +326,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 }`
 
 export const vorticityShader = `      
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_vel : array<f32>;
 @group(0) @binding(1) var<storage, read> y_vel : array<f32>;
@@ -393,7 +338,7 @@ fn vel(x : f32, y : f32) -> vec2<f32> { let id = ID(x, y); return vec2(x_vel[id]
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-  ${COMPUTE_START}
+  ${ComputeStartInterior}
 
   let Ly = vel(pos.x - 1, pos.y).y;
   let Ry = vel(pos.x + 1, pos.y).y;
@@ -404,7 +349,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 }`
 
 export const vorticityConfinmentShader = `      
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_vel_in : array<f32>;
 @group(0) @binding(1) var<storage, read> y_vel_in : array<f32>;
@@ -420,7 +365,7 @@ fn vort(x : f32, y : f32) -> f32 { let id = ID(x, y); return vorticity[id]; }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-  ${COMPUTE_START}
+  ${ComputeStartInterior}
 
   let L = vort(pos.x - 1, pos.y);
   let R = vort(pos.x + 1, pos.y);
@@ -441,7 +386,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 }`
 
 export const clearPressureShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
 @group(0) @binding(1) var<storage, read_write> x_out : array<f32>;
@@ -452,13 +397,13 @@ fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-  ${COMPUTE_START_ALL}
+  ${ComputeStartAll}
 
   x_out[index] = x_in[index]*uVisc;
 }`
 
 export const boundaryShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
 @group(0) @binding(1) var<storage, read> y_in : array<f32>;
@@ -471,7 +416,7 @@ fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-  ${COMPUTE_START_ALL}
+  ${ComputeStartAll}
 
   // disable scale to disable contained bounds
   var scaleX = 1.;
@@ -492,7 +437,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 }`
 
 export const boundaryPressureShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
 @group(0) @binding(1) var<storage, read_write> x_out : array<f32>;
@@ -502,7 +447,7 @@ fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-  ${COMPUTE_START_ALL}
+  ${ComputeStartAll}
 
   if (pos.x == 0) { pos.x += 1; }
   else if (pos.x == uGrid.w - 1) { pos.x -= 1; }
@@ -513,7 +458,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 }`
 
 export const checkerboardShader = `
-${STRUCT_GRID_SIZE}
+${StructGridSize}
 
 @group(0) @binding(0) var<storage, read_write> x_out : array<f32>;
 @group(0) @binding(1) var<storage, read_write> y_out : array<f32>;
@@ -553,7 +498,7 @@ fn fbm(p_ : vec3<f32>, octaveNum : i32) -> vec2<f32> {
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
-  ${COMPUTE_START_DYE}
+  ${ComputeStartDye}
 
   var uv = pos/vec2(uGrid.dyeW, uGrid.dyeH);
   var zoom = 4.;
@@ -575,8 +520,8 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 // 3D Smoke Rendering inspired from @xjorma's shader:
 // https://www.shadertoy.com/view/WlVyRV
 export const renderShader = `
-${STRUCT_GRID_SIZE}
-${STRUCT_MOUSE}
+${StructGridSize}
+${StructMouse}
 
 struct VertexOut {
   @builtin(position) position : vec4<f32>,
