@@ -525,7 +525,7 @@ fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.dyeW); }
 
 fn noise(p_ : vec3<f32>) -> f32 {
   var p = p_;
-	var ip=floor(p);
+  var ip=floor(p);
   p-=ip; 
   var s=vec3(7.,157.,113.);
   var h=vec4(0.,s.y, s.z,s.y+s.z)+dot(ip,s);
@@ -539,16 +539,16 @@ fn noise(p_ : vec3<f32>) -> f32 {
 
 fn fbm(p_ : vec3<f32>, octaveNum : i32) -> vec2<f32> {
   var p=p_;
-	var acc = vec2(0.);	
-	var freq = 1.0;
-	var amp = 0.5;
+  var acc = vec2(0.);	
+  var freq = 1.0;
+  var amp = 0.5;
   var shift = vec3(100.);
-	for (var i = 0; i < octaveNum; i++) {
-		acc += vec2(noise(p), noise(p + vec3(0.,0.,10.))) * amp;
+  for (var i = 0; i < octaveNum; i++) {
+    acc += vec2(noise(p), noise(p + vec3(0.,0.,10.))) * amp;
     p = p * 2.0 + shift;
     amp *= 0.5;
-	}
-	return acc;
+  }
+  return acc;
 }
 
 @compute @workgroup_size(8, 8)
@@ -560,17 +560,12 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 
   var smallNoise = fbm(vec3(uv.x*zoom*2., uv.y*zoom*2., uTime+2.145), 7) - .5;
   var bigNoise = fbm(vec3(uv.x*zoom, uv.y*zoom, uTime*.1+30.), 7) - .5;
-
-  var noise = max(length(bigNoise) * 0.035, 0.);
-  var noise2 = max(length(smallNoise) * 0.035, 0.);
-
-  noise = noise + noise2 * .05;
+  var noise =  max(length(bigNoise) * 0.035, 0.) +  max(length(smallNoise) * 0.035, 0.) * .05;
 
   var czoom = 4.;
   var n = fbm(vec3(uv.x*czoom, uv.y*czoom, uTime*.1+63.1), 7)*.75+.25;
   var n2 = fbm(vec3(uv.x*czoom, uv.y*czoom, uTime*.1+23.4), 7)*.75+.25;
-  // var col = 6.*vec3(n.x, n.y, n2.x);
-  
+
   var col = vec3(1.);
   x_out[index] += noise * col.x;
   y_out[index] += noise * col.y;
@@ -620,7 +615,7 @@ fn vertex_main(@location(0) position: vec4<f32>) -> VertexOut
 
 fn hash12(p: vec2<f32>) -> f32
 {
-	var p3: vec3<f32>  = fract(vec3(p.xyx) * .1031);
+  var p3: vec3<f32>  = fract(vec3(p.xyx) * .1031);
   p3 += dot(p3, p3.yzx + 33.33);
   return fract((p3.x + p3.y) * p3.z);
 }
@@ -690,7 +685,6 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32>
       let g = fieldY[id];
       let b = fieldZ[id];
       var col = vec3(r, g, b);
-
       if (isRenderingDye > 1.) {
         if (r < 0.) {col = mix(vec3(0.), vec3(0., 0., 1.), abs(r));}
         else {col = mix(vec3(0.), vec3(1., 0., 0.), r);}
@@ -701,8 +695,6 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32>
 
     var uv: vec2<f32> = fragData.uv * 2. - 1.;
     uv.x *= uGrid.dyeW / uGrid.dyeH;
-    // let rd: vec3<f32> = normalize(vec3(uv, -1));
-    // let ro: vec3<f32> = vec3(0,0,1);   
 
     let theta = -1.5708;
     let phi = 3.141592 + 0.0001;// - (uMouse.pos.y - .5);
@@ -733,7 +725,6 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32>
       let dyeColor: vec3<f32> = getDye(p);
       let height: f32 = getLevel(dyeColor) * smokeData.smokeHeight;
       let smple: f32 = min(max(0., height - p.z), fogSlice);
-
       if (smple > .0001) {
         var shadow: f32 = 1.;
 
@@ -742,7 +733,6 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32>
         }
 
         let dens: f32 = smple*smokeData.smokeDensity;
-
         col += shadow * dens * transmittance * dyeColor;
         transmittance *= 1. - dens;	
       } 
