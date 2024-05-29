@@ -26,11 +26,7 @@ class DynamicBuffer {
   h: number
   buffers: GPUBuffer[]
 
-  constructor({
-    dims = 1, // Number of dimensions
-    w = settings.grid_w, // Buffer width
-    h = settings.grid_h, // Buffer height
-  } = {}) {
+  constructor({ dims = 1, w = settings.grid_w, h = settings.grid_h } = {}) {
     this.dims = dims
     this.bufferSize = w * h * 4
     this.w = w
@@ -43,11 +39,9 @@ class DynamicBuffer {
     )
   }
 
-  // Copy each buffer to another DynamicBuffer's buffers.
-  // If the dimensions don't match, the last non-empty dimension will be copied instead
-  copyTo(buffer: DynamicBuffer, commandEncoder: GPUCommandEncoder) {
+  copyTo(buffer: DynamicBuffer, command: GPUCommandEncoder) {
     for (let i = 0; i < Math.max(this.dims, buffer.dims); i++) {
-      commandEncoder.copyBufferToBuffer(
+      command.copyBufferToBuffer(
         this.buffers[Math.min(i, this.buffers.length - 1)],
         0,
         buffer.buffers[Math.min(i, buffer.buffers.length - 1)],
@@ -57,11 +51,8 @@ class DynamicBuffer {
     }
   }
 
-  // Reset all the buffers
   clear(queue: GPUQueue) {
-    for (let i = 0; i < this.dims; i++) {
-      queue.writeBuffer(this.buffers[i], 0, new Float32Array(this.w * this.h))
-    }
+    this.buffers.forEach((buffer) => queue.writeBuffer(buffer, 0, new Float32Array(this.w * this.h)))
   }
 }
 
@@ -73,7 +64,7 @@ interface UniformProps {
   step?: number
   onChange?: (v: number) => void
   displayName?: string
-  addToGUI?: boolean
+  gui?: any
 }
 
 class Uniform {
@@ -83,10 +74,7 @@ class Uniform {
   alwaysUpdate: boolean
   buffer: GPUBuffer
 
-  constructor(
-    name: string,
-    { size, value, min, max, step, onChange, displayName, addToGUI = true }: UniformProps = {},
-  ) {
+  constructor(name: string, { size, value, min, max, step, onChange, displayName, gui = null }: UniformProps = {}) {
     this.name = name
     this.size = size ?? (Array.isArray(value) ? value.length : 1)
     this.needsUpdate = false
@@ -95,7 +83,7 @@ class Uniform {
       if (settings[name] == null) {
         settings[name] = value ?? 0
         this.alwaysUpdate = true
-      } else if (addToGUI) {
+      } else if (gui) {
         gui
           .add(settings, name, min, max, step)
           .onChange((v) => {
@@ -125,7 +113,6 @@ class Uniform {
     uniforms[name] = this
   }
 
-  // Update the GPU buffer if the value has changed
   update(queue: GPUQueue, value = null) {
     if (!this.needsUpdate && !this.alwaysUpdate && value == null) return
 
@@ -135,21 +122,13 @@ class Uniform {
   }
 }
 
-// A `Program` encompasses a shader module, compute pipeline, and bind group.
 class Program {
   computePipeline: any
   bindGroup: any
   dispatchX: number
   dispatchY: number
-  constructor({
-    buffers = [], // Storage buffers
-    uniforms = [], // Uniform buffers
-    shader, // WGSL Compute Shader as a string
-    dispatchX = settings.grid_w, // Dispatch workers width
-    dispatchY = settings.grid_h, // Dispatch workers height
-  }) {
-    // Create the shader module using the WGSL string and use it
-    // to create a compute pipeline with 'auto' binding layout
+
+  constructor({ buffers = [], uniforms = [], shader, dispatchX = settings.grid_w, dispatchY = settings.grid_h }) {
     this.computePipeline = device.createComputePipeline({
       layout: 'auto',
       compute: {
@@ -157,31 +136,21 @@ class Program {
         entryPoint: 'main',
       },
     })
-
-    // Concat the buffer & uniforms and format the entries to the right WebGPU format
-    let entries = buffers
-      .map((b) => b.buffers)
-      .flat()
-      .map((buffer) => ({ buffer }))
-    entries.push(...uniforms.map(({ buffer }) => ({ buffer })))
-    entries = entries.map((e, i) => ({
-      binding: i,
-      resource: e,
-    }))
-
     this.bindGroup = device.createBindGroup({
-      layout: this.computePipeline.getBindGroupLayout(0 /* index */),
-      entries: entries,
+      layout: this.computePipeline.getBindGroupLayout(0),
+      entries: [
+        ...buffers.flatMap((b) => b.buffers).map((buffer) => ({ buffer })),
+        ...uniforms.map(({ buffer }) => ({ buffer })),
+      ].map((e, i) => ({ binding: i, resource: e })),
     })
     this.dispatchX = dispatchX
     this.dispatchY = dispatchY
   }
 
-  // Dispatch the compute pipeline to the GPU
-  dispatch(passEncoder) {
-    passEncoder.setPipeline(this.computePipeline)
-    passEncoder.setBindGroup(0, this.bindGroup)
-    passEncoder.dispatchWorkgroups(Math.ceil(this.dispatchX / 8), Math.ceil(this.dispatchY / 8))
+  dispatch(pass: GPUComputePassEncoder) {
+    pass.setPipeline(this.computePipeline)
+    pass.setBindGroup(0, this.bindGroup)
+    pass.dispatchWorkgroups(Math.ceil(this.dispatchX / 8), Math.ceil(this.dispatchY / 8))
   }
 }
 
@@ -259,10 +228,7 @@ class RenderProgram {
       },
     ]
 
-    const shaderModule = device.createShaderModule({
-      code: renderShader,
-    })
-
+    const shaderModule = device.createShaderModule({ code: renderShader })
     this.renderPipeline = device.createRenderPipeline({
       layout: 'auto',
       vertex: {
@@ -273,11 +239,7 @@ class RenderProgram {
       fragment: {
         module: shaderModule,
         entryPoint: 'fragment_main',
-        targets: [
-          {
-            format: presentationFormat,
-          },
-        ],
+        targets: [{ format: navigator.gpu.getPreferredCanvasFormat() }],
       },
       primitive: {
         topology: 'triangle-list',
@@ -287,22 +249,20 @@ class RenderProgram {
     // The r,g,b buffer containing the data to render
     this.buffer = new DynamicBuffer({ dims: 3, w: settings.dye_w, h: settings.dye_h })
 
-    const entries = [
-      ...this.buffer.buffers,
-      uniforms.gridSize.buffer,
-      uniforms.time.buffer,
-      uniforms.mouseInfos.buffer,
-      uniforms.render_mode.buffer,
-      uniforms.render_intensity_multiplier.buffer,
-      uniforms.smoke_parameters.buffer,
-    ].map((b, i) => ({
-      binding: i,
-      resource: { buffer: b },
-    }))
-
     this.renderBindGroup = device.createBindGroup({
       layout: this.renderPipeline.getBindGroupLayout(0),
-      entries,
+      entries: [
+        ...this.buffer.buffers,
+        uniforms.gridSize.buffer,
+        uniforms.time.buffer,
+        uniforms.mouseInfos.buffer,
+        uniforms.render_mode.buffer,
+        uniforms.render_intensity_multiplier.buffer,
+        uniforms.smoke_parameters.buffer,
+      ].map((b, i) => ({
+        binding: i,
+        resource: { buffer: b },
+      })),
     })
 
     this.renderPassDescriptor = {
@@ -318,179 +278,7 @@ class RenderProgram {
   }
 }
 
-let gui, smokeFolder
-let device, presentationFormat
-
-const mouseInfos = {
-  current: null,
-  last: null,
-  velocity: null,
-}
-
-// Buffers
-let velocity, velocity0, dye, dye0, divergence, divergence0, pressure, pressure0, vorticity
-
-// Uniforms
-let uTime, uDt, uMouse, uGrid, uSimSpeed, uVelForce, uVelRadius, uVelDiff, uDyeForce, uDyeRad, uDyeDiff
-let uViscosity, uVorticity, uContainFluid, uSmokeParameters, uRenderIntensity
-
-// Programs
-let checkerProgram, updateDyeProgram, updateProgram, advectProgram, boundaryProgram, divergenceProgram
-let boundaryDivProgram, pressureProgram, boundaryPressureProgram, gradientSubtractProgram, advectDyeProgram
-let clearPressureProgram, vorticityProgram, vorticityConfinmentProgram, renderProgram
-
-const initBuffers = () => {
-  velocity = new DynamicBuffer({ dims: 2 })
-  velocity0 = new DynamicBuffer({ dims: 2 })
-  dye = new DynamicBuffer({ dims: 3, w: settings.dye_w, h: settings.dye_h })
-  dye0 = new DynamicBuffer({ dims: 3, w: settings.dye_w, h: settings.dye_h })
-  divergence = new DynamicBuffer()
-  divergence0 = new DynamicBuffer()
-  pressure = new DynamicBuffer()
-  pressure0 = new DynamicBuffer()
-  vorticity = new DynamicBuffer()
-}
-
-const initPrograms = () => {
-  checkerProgram = new Program({
-    buffers: [dye],
-    shader: checkerboardShader,
-    dispatchX: settings.dye_w,
-    dispatchY: settings.dye_h,
-    uniforms: [uGrid, uTime],
-  })
-  updateDyeProgram = new Program({
-    buffers: [dye, dye0],
-    uniforms: [uGrid, uMouse, uDyeForce, uDyeRad, uDyeDiff, uTime, uDt],
-    dispatchX: settings.dye_w,
-    dispatchY: settings.dye_h,
-    shader: updateDyeShader,
-  })
-  updateProgram = new Program({
-    buffers: [velocity, velocity0],
-    uniforms: [uGrid, uMouse, uVelForce, uVelRadius, uVelDiff, uDt, uTime],
-    shader: updateVelocityShader,
-  })
-  advectProgram = new Program({
-    buffers: [velocity0, velocity0, velocity],
-    uniforms: [uGrid, uDt],
-    shader: advectShader,
-  })
-  boundaryProgram = new Program({
-    buffers: [velocity, velocity0],
-    uniforms: [uGrid, uContainFluid],
-    shader: boundaryShader,
-  })
-  divergenceProgram = new Program({
-    buffers: [velocity0, divergence0],
-    uniforms: [uGrid],
-    shader: divergenceShader,
-  })
-  boundaryDivProgram = new Program({
-    buffers: [divergence0, divergence],
-    uniforms: [uGrid],
-    shader: boundaryPressureShader,
-  })
-  pressureProgram = new Program({
-    buffers: [pressure, divergence, pressure0],
-    uniforms: [uGrid],
-    shader: pressureShader,
-  })
-  boundaryPressureProgram = new Program({
-    buffers: [pressure0, pressure],
-    uniforms: [uGrid],
-    shader: boundaryPressureShader,
-  })
-  gradientSubtractProgram = new Program({
-    buffers: [pressure, velocity0, velocity],
-    uniforms: [uGrid],
-    shader: gradientSubtractShader,
-  })
-  advectDyeProgram = new Program({
-    buffers: [dye0, velocity0, dye],
-    uniforms: [uGrid, uDt],
-    dispatchX: settings.dye_w,
-    dispatchY: settings.dye_h,
-    shader: advectDyeShader,
-  })
-  clearPressureProgram = new Program({
-    buffers: [pressure, pressure0],
-    uniforms: [uGrid, uViscosity],
-    shader: clearPressureShader,
-  })
-  vorticityProgram = new Program({
-    buffers: [velocity, vorticity],
-    uniforms: [uGrid],
-    shader: vorticityShader,
-  })
-  vorticityConfinmentProgram = new Program({
-    buffers: [velocity, vorticity, velocity0],
-    uniforms: [uGrid, uDt, uVorticity],
-    shader: vorticityConfinmentShader,
-  })
-
-  renderProgram = new RenderProgram()
-}
-
-const onMouseMove = (e, canvas: HTMLCanvasElement) => {
-  const { width, height } = canvas.getBoundingClientRect()
-
-  if (!mouseInfos.current) mouseInfos.current = []
-  mouseInfos.current[0] = e.offsetX / width
-  mouseInfos.current[1] = 1 - e.offsetY / height // y position needs to be inverted
-}
-
-const onWebGPUDetectionError = (error) => {
-  console.log('Could not initialize WebGPU: ' + error)
-  document.querySelector('.webgpu-not-supported').style.visibility = 'visible'
-  return false
-}
-
-// Init buffer & canvas dimensions to fit the screen while keeping the aspect ratio
-// and downscaling the dimensions if they exceed the browsers capabilities
-const initSizes = (canvas: HTMLCanvasElement) => {
-  const aspectRatio = window.innerWidth / window.innerHeight
-  const maxBufferSize = device.limits.maxStorageBufferBindingSize
-  const maxCanvasSize = device.limits.maxTextureDimension2D
-
-  const getPreferredDimensions = (size: number) => {
-    let w, h
-    // Fit to screen while keeping the aspect ratio
-    if (window.innerHeight < window.innerWidth) {
-      w = Math.floor(size * aspectRatio)
-      h = size
-    } else {
-      w = size
-      h = Math.floor(size / aspectRatio)
-    }
-
-    // Downscale if necessary to prevent buffer/canvas size overflow
-    let downRatio = 1
-    if (w * h * 4 >= maxBufferSize) downRatio = Math.sqrt(maxBufferSize / (w * h * 4))
-    if (w > maxCanvasSize) downRatio = maxCanvasSize / w
-    else if (h > maxCanvasSize) downRatio = maxCanvasSize / h
-
-    return {
-      w: Math.floor(w * downRatio),
-      h: Math.floor(h * downRatio),
-    }
-  }
-
-  const gridSize = getPreferredDimensions(settings.grid_size)
-  settings.grid_w = gridSize.w
-  settings.grid_h = gridSize.h
-
-  const dyeSize = getPreferredDimensions(settings.dye_size)
-  settings.dye_w = dyeSize.w
-  settings.dye_h = dyeSize.h
-
-  settings.rdx = settings.grid_size * 4
-  settings.dyeRdx = settings.dye_size * 4
-  settings.dx = 1 / settings.rdx
-
-  canvas.width = settings.dye_w
-  canvas.height = settings.dye_h
-}
+let device
 
 const RENDER_MODES = {
   Classic: 0,
@@ -514,33 +302,76 @@ const main = async (canvas: HTMLCanvasElement) => {
   const context = canvas.getContext('webgpu')
   if (!context) throw 'Canvas does not support WebGPU'
 
-  canvas.addEventListener('mousemove', (e) => onMouseMove(e, canvas))
-  presentationFormat = navigator.gpu.getPreferredCanvasFormat()
-  context.configure({
-    device,
-    format: presentationFormat,
-    usage: GPUTextureUsage.RENDER_ATTACHMENT,
-    alphaMode: 'opaque',
-  })
+  // Buffers
+  let velocity, velocity0, dye, dye0, divergence, divergence0, pressure, pressure0, vorticity
+  const initBuffers = () => {
+    velocity = new DynamicBuffer({ dims: 2 })
+    velocity0 = new DynamicBuffer({ dims: 2 })
+    dye = new DynamicBuffer({ dims: 3, w: settings.dye_w, h: settings.dye_h })
+    dye0 = new DynamicBuffer({ dims: 3, w: settings.dye_w, h: settings.dye_h })
+    divergence = new DynamicBuffer()
+    divergence0 = new DynamicBuffer()
+    pressure = new DynamicBuffer()
+    pressure0 = new DynamicBuffer()
+    vorticity = new DynamicBuffer()
+  }
 
-  gui = new dat.GUI()
-  gui.add(settings, 'pressure_iterations', 0, 50).name('Pressure Iterations')
+  const onWebGPUDetectionError = (error) => {
+    console.log('Could not initialize WebGPU: ' + error)
+    document.querySelector('.webgpu-not-supported').style.visibility = 'visible'
+    return false
+  }
 
-  gui.add(settings, 'reset').name('Clear canvas')
+  // Init buffer & canvas dimensions to fit the screen while keeping the aspect ratio
+  // and downscaling the dimensions if they exceed the browsers capabilities
+  const initSizes = (canvas: HTMLCanvasElement) => {
+    const aspectRatio = window.innerWidth / window.innerHeight
+    const maxBufferSize = device.limits.maxStorageBufferBindingSize
+    const maxCanvasSize = device.limits.maxTextureDimension2D
 
-  smokeFolder = gui.addFolder('Smoke Parameters')
-  smokeFolder.add(settings, 'raymarch_steps', 5, 20, 1).name('3D resolution')
-  smokeFolder.add(settings, 'light_height', 0.5, 1, 0.001).name('Light Elevation')
-  smokeFolder.add(settings, 'light_intensity', 0, 1, 0.001).name('Light Intensity')
-  smokeFolder.add(settings, 'light_falloff', 0.5, 10, 0.001).name('Light Falloff')
-  smokeFolder.add(settings, 'enable_shadows').name('Enable Shadows')
-  smokeFolder.add(settings, 'shadow_intensity', 0, 50, 0.001).name('Shadow Intensity')
-  smokeFolder.hide()
+    const getPreferredDimensions = (size: number) => {
+      let w, h
+      // Fit to screen while keeping the aspect ratio
+      if (window.innerHeight < window.innerWidth) {
+        w = Math.floor(size * aspectRatio)
+        h = size
+      } else {
+        w = size
+        h = Math.floor(size / aspectRatio)
+      }
+
+      // Downscale if necessary to prevent buffer/canvas size overflow
+      let downRatio = 1
+      if (w * h * 4 >= maxBufferSize) downRatio = Math.sqrt(maxBufferSize / (w * h * 4))
+      if (w > maxCanvasSize) downRatio = maxCanvasSize / w
+      else if (h > maxCanvasSize) downRatio = maxCanvasSize / h
+
+      return {
+        w: Math.floor(w * downRatio),
+        h: Math.floor(h * downRatio),
+      }
+    }
+
+    const gridSize = getPreferredDimensions(settings.grid_size)
+    settings.grid_w = gridSize.w
+    settings.grid_h = gridSize.h
+
+    const dyeSize = getPreferredDimensions(settings.dye_size)
+    settings.dye_w = dyeSize.w
+    settings.dye_h = dyeSize.h
+
+    settings.rdx = settings.grid_size * 4
+    settings.dyeRdx = settings.dye_size * 4
+    settings.dx = 1 / settings.rdx
+
+    canvas.width = settings.dye_w
+    canvas.height = settings.dye_h
+  }
 
   const onSizeChange = () => {
     initSizes(canvas)
     initBuffers()
-    initPrograms()
+    programs = createPrograms()
     uniforms.gridSize.needsUpdate = [
       settings.grid_w,
       settings.grid_h,
@@ -551,7 +382,6 @@ const main = async (canvas: HTMLCanvasElement) => {
       settings.dyeRdx,
     ]
   }
-
   let resizeTimeout
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout)
@@ -559,8 +389,16 @@ const main = async (canvas: HTMLCanvasElement) => {
   })
 
   initSizes(canvas)
+  const gui = new dat.GUI()
+  gui.add(settings, 'pressure_iterations', 0, 50).name('Pressure Iterations')
+  gui.add(settings, 'reset').name('Clear canvas')
+  gui.add(settings, 'grid_size', SIMULATION_GRID_SIZES).name('Sim. Resolution').onChange(onSizeChange)
+  gui.add(settings, 'dye_size', DYE_GRID_SIZES).name('Render Resolution').onChange(onSizeChange)
 
+  // Uniforms
+  new Uniform('render_intensity_multiplier', { value: 1 })
   new Uniform('render_mode', {
+    gui,
     displayName: 'Render Mode',
     min: RENDER_MODES,
     size: 1,
@@ -571,50 +409,150 @@ const main = async (canvas: HTMLCanvasElement) => {
       else smokeFolder.hide()
     },
   })
-  gui.add(settings, 'grid_size', SIMULATION_GRID_SIZES).name('Sim. Resolution').onChange(onSizeChange)
-  gui.add(settings, 'dye_size', DYE_GRID_SIZES).name('Render Resolution').onChange(onSizeChange)
+  new Uniform('sim_speed', { min: 0.1, max: 20 })
+  const uTime = new Uniform('time'),
+    uDt = new Uniform('dt'),
+    uMouse = new Uniform('mouseInfos', { size: 4 }),
+    uGrid = new Uniform('gridSize', {
+      gui,
+      size: 7,
+      value: [
+        settings.grid_w,
+        settings.grid_h,
+        settings.dye_w,
+        settings.dye_h,
+        settings.dx,
+        settings.rdx,
+        settings.dyeRdx,
+      ],
+    }),
+    uVelForce = new Uniform('velocity_add_intensity', { gui, displayName: 'Velocity Force', min: 0, max: 0.5 }),
+    uVelRadius = new Uniform('velocity_add_radius', { gui, displayName: 'Velocity Radius', min: 0, max: 0.001 }),
+    uVelDiff = new Uniform('velocity_diffusion', { gui, displayName: 'Velocity Diffusion', min: 0.95, max: 1 }),
+    uDyeForce = new Uniform('dye_add_intensity', { gui, displayName: 'Dye Intensity', min: 0, max: 10 }),
+    uDyeRad = new Uniform('dye_add_radius', { gui, displayName: 'Dye Radius', min: 0, max: 0.01 }),
+    uDyeDiff = new Uniform('dye_diffusion', { gui, displayName: 'Dye Diffusion', min: 0.95, max: 1 }),
+    uViscosity = new Uniform('viscosity', { gui, displayName: 'Viscosity', min: 0, max: 1 }),
+    uVorticity = new Uniform('vorticity', { gui, displayName: 'Vorticity', min: 0, max: 10 }),
+    uContainFluid = new Uniform('contain_fluid', { gui, displayName: 'Solid boundaries' }),
+    uSmokeParameters = new Uniform('smoke_parameters', {
+      gui,
+      value: [
+        settings.raymarch_steps,
+        settings.smoke_density,
+        settings.enable_shadows,
+        settings.shadow_intensity,
+        settings.smoke_height,
+        settings.light_height,
+        settings.light_intensity,
+        settings.light_falloff,
+      ],
+    })
 
-  uTime = new Uniform('time')
-  uDt = new Uniform('dt')
-  uMouse = new Uniform('mouseInfos', { size: 4 })
-  uGrid = new Uniform('gridSize', {
-    size: 7,
-    value: [
-      settings.grid_w,
-      settings.grid_h,
-      settings.dye_w,
-      settings.dye_h,
-      settings.dx,
-      settings.rdx,
-      settings.dyeRdx,
-    ],
+  const createPrograms = () => ({
+    checker: new Program({
+      buffers: [dye],
+      shader: checkerboardShader,
+      dispatchX: settings.dye_w,
+      dispatchY: settings.dye_h,
+      uniforms: [uGrid, uTime],
+    }),
+    updateDye: new Program({
+      buffers: [dye, dye0],
+      uniforms: [uGrid, uMouse, uDyeForce, uDyeRad, uDyeDiff, uTime, uDt],
+      dispatchX: settings.dye_w,
+      dispatchY: settings.dye_h,
+      shader: updateDyeShader,
+    }),
+    update: new Program({
+      buffers: [velocity, velocity0],
+      uniforms: [uGrid, uMouse, uVelForce, uVelRadius, uVelDiff, uDt, uTime],
+      shader: updateVelocityShader,
+    }),
+    advect: new Program({
+      buffers: [velocity0, velocity0, velocity],
+      uniforms: [uGrid, uDt],
+      shader: advectShader,
+    }),
+    boundary: new Program({
+      buffers: [velocity, velocity0],
+      uniforms: [uGrid, uContainFluid],
+      shader: boundaryShader,
+    }),
+    divergence: new Program({
+      buffers: [velocity0, divergence0],
+      uniforms: [uGrid],
+      shader: divergenceShader,
+    }),
+    boundaryDiv: new Program({
+      buffers: [divergence0, divergence],
+      uniforms: [uGrid],
+      shader: boundaryPressureShader,
+    }),
+    pressure: new Program({
+      buffers: [pressure, divergence, pressure0],
+      uniforms: [uGrid],
+      shader: pressureShader,
+    }),
+    boundaryPressure: new Program({
+      buffers: [pressure0, pressure],
+      uniforms: [uGrid],
+      shader: boundaryPressureShader,
+    }),
+    gradientSubtract: new Program({
+      buffers: [pressure, velocity0, velocity],
+      uniforms: [uGrid],
+      shader: gradientSubtractShader,
+    }),
+    advectDye: new Program({
+      buffers: [dye0, velocity0, dye],
+      uniforms: [uGrid, uDt],
+      dispatchX: settings.dye_w,
+      dispatchY: settings.dye_h,
+      shader: advectDyeShader,
+    }),
+    clearPressure: new Program({
+      buffers: [pressure, pressure0],
+      uniforms: [uGrid, uViscosity],
+      shader: clearPressureShader,
+    }),
+    vorticity: new Program({
+      buffers: [velocity, vorticity],
+      uniforms: [uGrid],
+      shader: vorticityShader,
+    }),
+    vorticityConfinment: new Program({
+      buffers: [velocity, vorticity, velocity0],
+      uniforms: [uGrid, uDt, uVorticity],
+      shader: vorticityConfinmentShader,
+    }),
+    render: new RenderProgram(),
   })
-  uSimSpeed = new Uniform('sim_speed', { min: 0.1, max: 20, addToGUI: false })
-  uVelForce = new Uniform('velocity_add_intensity', { displayName: 'Velocity Force', min: 0, max: 0.5 })
-  uVelRadius = new Uniform('velocity_add_radius', { displayName: 'Velocity Radius', min: 0, max: 0.001, step: 0.00001 })
-  uVelDiff = new Uniform('velocity_diffusion', { displayName: 'Velocity Diffusion', min: 0.95, max: 1, step: 0.00001 })
-  uDyeForce = new Uniform('dye_add_intensity', { displayName: 'Dye Intensity', min: 0, max: 10 })
-  uDyeRad = new Uniform('dye_add_radius', { displayName: 'Dye Radius', min: 0, max: 0.01, step: 0.00001 })
-  uDyeDiff = new Uniform('dye_diffusion', { displayName: 'Dye Diffusion', min: 0.95, max: 1, step: 0.00001 })
-  uViscosity = new Uniform('viscosity', { displayName: 'Viscosity', min: 0, max: 1 })
-  uVorticity = new Uniform('vorticity', { displayName: 'Vorticity', min: 0, max: 10, step: 0.00001 })
-  uContainFluid = new Uniform('contain_fluid', { displayName: 'Solid boundaries' })
-  uSmokeParameters = new Uniform('smoke_parameters', {
-    value: [
-      settings.raymarch_steps,
-      settings.smoke_density,
-      settings.enable_shadows,
-      settings.shadow_intensity,
-      settings.smoke_height,
-      settings.light_height,
-      settings.light_intensity,
-      settings.light_falloff,
-    ],
+
+  const mouseInfos = { current: null, last: null, velocity: null }
+  canvas.addEventListener('mousemove', (e: MouseEvent) => {
+    const { width, height } = canvas.getBoundingClientRect()
+    mouseInfos.current = [e.offsetX / width, 1 - e.offsetY / height]
   })
-  uRenderIntensity = new Uniform('render_intensity_multiplier', { value: 1 })
+
+  context.configure({
+    device,
+    format: navigator.gpu.getPreferredCanvasFormat(),
+    usage: GPUTextureUsage.RENDER_ATTACHMENT,
+    alphaMode: 'opaque',
+  })
+
+  const smokeFolder = gui.addFolder('Smoke Parameters')
+  smokeFolder.add(settings, 'raymarch_steps', 5, 20, 1).name('3D resolution')
+  smokeFolder.add(settings, 'light_height', 0.5, 1, 0.001).name('Light Elevation')
+  smokeFolder.add(settings, 'light_intensity', 0, 1, 0.001).name('Light Intensity')
+  smokeFolder.add(settings, 'light_falloff', 0.5, 10, 0.001).name('Light Falloff')
+  smokeFolder.add(settings, 'enable_shadows').name('Enable Shadows')
+  smokeFolder.add(settings, 'shadow_intensity', 0, 50, 0.001).name('Shadow Intensity')
+  smokeFolder.hide()
 
   initBuffers()
-  initPrograms()
+  let programs = createPrograms()
 
   settings.reset = () => {
     velocity.clear(device.queue)
@@ -654,51 +592,50 @@ const main = async (canvas: HTMLCanvasElement) => {
       settings.light_falloff,
     ])
 
+    const simulationPrograms = [
+      settings.render_mode >= 1 && settings.render_mode <= 3 ? programs.checker : null,
+      // Add velocity and dye at the mouse position.
+      programs.updateDye,
+      programs.update,
+      // Advect the velocity field through itself.
+      programs.advect,
+      programs.boundary,
+      // Compute the divergence.
+      programs.divergence,
+      programs.boundaryDiv,
+      // Solve the jacobi-pressure equation.
+      ...Array.from({ length: settings.pressure_iterations }, () => [
+        programs.pressure,
+        programs.boundaryPressure,
+      ]).flat(),
+      // Subtract the pressure from the velocity field.
+      programs.gradientSubtract,
+      programs.clearPressure,
+      // Compute & apply vorticity confinment.
+      programs.vorticity,
+      programs.vorticityConfinment,
+      // Advect the dye through the velocity field.
+      programs.advectDye,
+    ]
     const command = device.createCommandEncoder()
-
-    // Fluid simulation step
     const computePass = command.beginComputePass()
-    if (settings.render_mode >= 1 && settings.render_mode <= 3) checkerProgram.dispatch(computePass)
-    // Add velocity and dye at the mouse position
-    updateDyeProgram.dispatch(computePass)
-    updateProgram.dispatch(computePass)
-    // Advect the velocity field through itself
-    advectProgram.dispatch(computePass)
-    boundaryProgram.dispatch(computePass) // boundary conditions
-    // Compute the divergence
-    divergenceProgram.dispatch(computePass)
-    boundaryDivProgram.dispatch(computePass) // boundary conditions
-    // Solve the jacobi-pressure equation
-    for (let i = 0; i < settings.pressure_iterations; i++) {
-      pressureProgram.dispatch(computePass)
-      boundaryPressureProgram.dispatch(computePass) // boundary conditions
-    }
-    // Subtract the pressure from the velocity field
-    gradientSubtractProgram.dispatch(computePass)
-    clearPressureProgram.dispatch(computePass)
-    // Compute & apply vorticity confinment
-    vorticityProgram.dispatch(computePass)
-    vorticityConfinmentProgram.dispatch(computePass)
-    // Advect the dye through the velocity field
-    advectDyeProgram.dispatch(computePass)
+    simulationPrograms.forEach((program) => program?.dispatch(computePass))
     computePass.end()
 
     velocity0.copyTo(velocity, command)
     pressure0.copyTo(pressure, command)
-    if (settings.render_mode == 3) velocity.copyTo(renderProgram.buffer, command)
-    else if (settings.render_mode == 4) divergence.copyTo(renderProgram.buffer, command)
-    else if (settings.render_mode == 5) pressure.copyTo(renderProgram.buffer, command)
-    else if (settings.render_mode == 6) vorticity.copyTo(renderProgram.buffer, command)
-    else dye.copyTo(renderProgram.buffer, command)
+    const renderBuffer = programs.render.buffer
+    if (settings.render_mode == 3) velocity.copyTo(renderBuffer, command)
+    else if (settings.render_mode == 4) divergence.copyTo(renderBuffer, command)
+    else if (settings.render_mode == 5) pressure.copyTo(renderBuffer, command)
+    else if (settings.render_mode == 6) vorticity.copyTo(renderBuffer, command)
+    else dye.copyTo(renderBuffer, command)
 
-    renderProgram.renderPassDescriptor.colorAttachments[0].view = canvas
-      .getContext('webgpu')
-      .getCurrentTexture()
-      .createView()
-    const renderPass = command.beginRenderPass(renderProgram.renderPassDescriptor)
-    renderPass.setPipeline(renderProgram.renderPipeline)
-    renderPass.setBindGroup(0, renderProgram.renderBindGroup)
-    renderPass.setVertexBuffer(0, renderProgram.vertexBuffer)
+    programs.render.renderPassDescriptor.colorAttachments[0].view = context.getCurrentTexture().createView()
+    const renderPass = command.beginRenderPass(programs.render.renderPassDescriptor)
+    renderPass.setPipeline(programs.render.renderPipeline)
+    renderPass.setBindGroup(0, programs.render.renderBindGroup)
+    renderPass.setVertexBuffer(0, programs.render.vertexBuffer)
     renderPass.draw(6)
     renderPass.end()
     device.queue.submit([command.finish()])
