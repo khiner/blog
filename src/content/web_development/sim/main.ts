@@ -18,20 +18,23 @@ import {
   renderShader,
 } from './shaders'
 
-// Manages a buffer for each dimension.
-class DynamicBuffer {
-  dims: number
-  bufferSize: number
+interface Dimension {
   w: number
   h: number
+}
+
+// Manages a buffer for each dimension.
+class DynamicBuffer {
+  nDims: number
+  dim: Dimension
+  bufferSize: number
   buffers: GPUBuffer[]
 
-  constructor({ dims = 1, w = settings.grid_w, h = settings.grid_h } = {}) {
-    this.dims = dims
-    this.bufferSize = w * h * 4
-    this.w = w
-    this.h = h
-    this.buffers = Array.from({ length: dims }, () =>
+  constructor({ nDims = 1, dim = settings.grid_dim } = {}) {
+    this.nDims = nDims
+    this.dim = dim
+    this.bufferSize = dim.w * dim.h * 4
+    this.buffers = Array.from({ length: nDims }, () =>
       device.createBuffer({
         size: this.bufferSize,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
@@ -40,7 +43,7 @@ class DynamicBuffer {
   }
 
   copyTo(buffer: DynamicBuffer, command: GPUCommandEncoder) {
-    for (let i = 0; i < Math.max(this.dims, buffer.dims); i++) {
+    for (let i = 0; i < Math.max(this.nDims, buffer.nDims); i++) {
       command.copyBufferToBuffer(
         this.buffers[Math.min(i, this.buffers.length - 1)],
         0,
@@ -52,7 +55,7 @@ class DynamicBuffer {
   }
 
   clear(queue: GPUQueue) {
-    this.buffers.forEach((buffer) => queue.writeBuffer(buffer, 0, new Float32Array(this.w * this.h)))
+    this.buffers.forEach((buffer) => queue.writeBuffer(buffer, 0, new Float32Array(this.dim.w * this.dim.h)))
   }
 }
 
@@ -122,45 +125,12 @@ class Uniform {
   }
 }
 
-class Program {
-  computePipeline: any
-  bindGroup: any
-  dispatchX: number
-  dispatchY: number
-
-  constructor({ buffers = [], uniforms = [], shader, dispatchX = settings.grid_w, dispatchY = settings.grid_h }) {
-    this.computePipeline = device.createComputePipeline({
-      layout: 'auto',
-      compute: {
-        module: device.createShaderModule({ code: shader }),
-        entryPoint: 'main',
-      },
-    })
-    this.bindGroup = device.createBindGroup({
-      layout: this.computePipeline.getBindGroupLayout(0),
-      entries: [
-        ...buffers.flatMap((b) => b.buffers).map((buffer) => ({ buffer })),
-        ...uniforms.map(({ buffer }) => ({ buffer })),
-      ].map((e, i) => ({ binding: i, resource: e })),
-    })
-    this.dispatchX = dispatchX
-    this.dispatchY = dispatchY
-  }
-
-  dispatch(pass: GPUComputePassEncoder) {
-    pass.setPipeline(this.computePipeline)
-    pass.setBindGroup(0, this.bindGroup)
-    pass.dispatchWorkgroups(Math.ceil(this.dispatchX / 8), Math.ceil(this.dispatchY / 8))
-  }
-}
-
 const uniforms: Record<string, Uniform> = {}
 
 const settings = {
   render_mode: 0,
   grid_size: 128,
-  grid_w: 1024,
-  grid_h: 1024,
+  grid_dim: { w: 1024, h: 1024 },
   reset: () => {},
 
   dye_size: 1024,
@@ -172,8 +142,7 @@ const settings = {
   dye_add_intensity: 1,
   dye_add_radius: 0.001,
   dye_diffusion: 0.98,
-  dye_w: 1024,
-  dye_h: 1024,
+  dye_dim: { w: 1024, h: 1024 },
   viscosity: 0.8,
   vorticity: 2,
   pressure_iterations: 20,
@@ -187,95 +156,6 @@ const settings = {
   light_height: 1,
   light_intensity: 1,
   light_falloff: 1,
-}
-
-// Renders 3 (r, g, b) storage buffers to the canvas
-class RenderProgram {
-  vertexBuffer: any
-  renderPipeline: any
-  buffer: any
-  renderBindGroup: any
-  renderPassDescriptor: {
-    colorAttachments: {
-      clearValue: { r: number; g: number; b: number; a: number }
-      loadOp: GPULoadOp
-      storeOp: GPUStoreOp
-      view: GPUTextureView | null
-    }[]
-  }
-  constructor() {
-    const vertices = new Float32Array([-1, -1, 0, 1, -1, 1, 0, 1, 1, -1, 0, 1, 1, -1, 0, 1, -1, 1, 0, 1, 1, 1, 0, 1])
-
-    this.vertexBuffer = device.createBuffer({
-      size: vertices.byteLength,
-      usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
-    })
-    new Float32Array(this.vertexBuffer.getMappedRange()).set(vertices)
-    this.vertexBuffer.unmap()
-
-    const vertexBuffersDescriptors = [
-      {
-        attributes: [
-          {
-            shaderLocation: 0,
-            offset: 0,
-            format: 'float32x4',
-          },
-        ],
-        arrayStride: 16,
-        stepMode: 'vertex',
-      },
-    ]
-
-    const shaderModule = device.createShaderModule({ code: renderShader })
-    this.renderPipeline = device.createRenderPipeline({
-      layout: 'auto',
-      vertex: {
-        module: shaderModule,
-        entryPoint: 'vertex_main',
-        buffers: vertexBuffersDescriptors,
-      },
-      fragment: {
-        module: shaderModule,
-        entryPoint: 'fragment_main',
-        targets: [{ format: navigator.gpu.getPreferredCanvasFormat() }],
-      },
-      primitive: {
-        topology: 'triangle-list',
-      },
-    })
-
-    // The r,g,b buffer containing the data to render
-    this.buffer = new DynamicBuffer({ dims: 3, w: settings.dye_w, h: settings.dye_h })
-
-    this.renderBindGroup = device.createBindGroup({
-      layout: this.renderPipeline.getBindGroupLayout(0),
-      entries: [
-        ...this.buffer.buffers,
-        uniforms.gridSize.buffer,
-        uniforms.time.buffer,
-        uniforms.mouseInfos.buffer,
-        uniforms.render_mode.buffer,
-        uniforms.render_intensity_multiplier.buffer,
-        uniforms.smoke_parameters.buffer,
-      ].map((b, i) => ({
-        binding: i,
-        resource: { buffer: b },
-      })),
-    })
-
-    this.renderPassDescriptor = {
-      colorAttachments: [
-        {
-          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-          loadOp: 'clear',
-          storeOp: 'store',
-          view: null,
-        },
-      ],
-    }
-  }
 }
 
 let device
@@ -305,10 +185,10 @@ const main = async (canvas: HTMLCanvasElement) => {
   // Buffers
   let velocity, velocity0, dye, dye0, divergence, divergence0, pressure, pressure0, vorticity
   const initBuffers = () => {
-    velocity = new DynamicBuffer({ dims: 2 })
-    velocity0 = new DynamicBuffer({ dims: 2 })
-    dye = new DynamicBuffer({ dims: 3, w: settings.dye_w, h: settings.dye_h })
-    dye0 = new DynamicBuffer({ dims: 3, w: settings.dye_w, h: settings.dye_h })
+    velocity = new DynamicBuffer({ nDims: 2 })
+    velocity0 = new DynamicBuffer({ nDims: 2 })
+    dye = new DynamicBuffer({ nDims: 3, dim: settings.dye_dim })
+    dye0 = new DynamicBuffer({ nDims: 3, dim: settings.dye_dim })
     divergence = new DynamicBuffer()
     divergence0 = new DynamicBuffer()
     pressure = new DynamicBuffer()
@@ -353,19 +233,17 @@ const main = async (canvas: HTMLCanvasElement) => {
     }
 
     const gridSize = getPreferredDimensions(settings.grid_size)
-    settings.grid_w = gridSize.w
-    settings.grid_h = gridSize.h
+    settings.grid_dim = { w: gridSize.w, h: gridSize.h }
 
     const dyeSize = getPreferredDimensions(settings.dye_size)
-    settings.dye_w = dyeSize.w
-    settings.dye_h = dyeSize.h
+    settings.dye_dim = { w: dyeSize.w, h: dyeSize.h }
 
     settings.rdx = settings.grid_size * 4
     settings.dyeRdx = settings.dye_size * 4
     settings.dx = 1 / settings.rdx
 
-    canvas.width = settings.dye_w
-    canvas.height = settings.dye_h
+    canvas.width = settings.dye_dim.w
+    canvas.height = settings.dye_dim.h
   }
 
   const onSizeChange = () => {
@@ -373,10 +251,10 @@ const main = async (canvas: HTMLCanvasElement) => {
     initBuffers()
     programs = createPrograms()
     uniforms.gridSize.needsUpdate = [
-      settings.grid_w,
-      settings.grid_h,
-      settings.dye_w,
-      settings.dye_h,
+      settings.grid_dim.w,
+      settings.grid_dim.h,
+      settings.dye_dim.w,
+      settings.dye_dim.h,
       settings.dx,
       settings.rdx,
       settings.dyeRdx,
@@ -417,10 +295,10 @@ const main = async (canvas: HTMLCanvasElement) => {
       gui,
       size: 7,
       value: [
-        settings.grid_w,
-        settings.grid_h,
-        settings.dye_w,
-        settings.dye_h,
+        settings.grid_dim.w,
+        settings.grid_dim.h,
+        settings.dye_dim.w,
+        settings.dye_dim.h,
         settings.dx,
         settings.rdx,
         settings.dyeRdx,
@@ -449,85 +327,116 @@ const main = async (canvas: HTMLCanvasElement) => {
       ],
     })
 
-  const createPrograms = () => ({
-    checker: new Program({
-      buffers: [dye],
-      shader: checkerboardShader,
-      dispatchX: settings.dye_w,
-      dispatchY: settings.dye_h,
-      uniforms: [uGrid, uTime],
-    }),
-    updateDye: new Program({
-      buffers: [dye, dye0],
-      uniforms: [uGrid, uMouse, uDyeForce, uDyeRad, uDyeDiff, uTime, uDt],
-      dispatchX: settings.dye_w,
-      dispatchY: settings.dye_h,
-      shader: updateDyeShader,
-    }),
-    update: new Program({
-      buffers: [velocity, velocity0],
-      uniforms: [uGrid, uMouse, uVelForce, uVelRadius, uVelDiff, uDt, uTime],
-      shader: updateVelocityShader,
-    }),
-    advect: new Program({
-      buffers: [velocity0, velocity0, velocity],
-      uniforms: [uGrid, uDt],
-      shader: advectShader,
-    }),
-    boundary: new Program({
-      buffers: [velocity, velocity0],
-      uniforms: [uGrid, uContainFluid],
-      shader: boundaryShader,
-    }),
-    divergence: new Program({
-      buffers: [velocity0, divergence0],
-      uniforms: [uGrid],
-      shader: divergenceShader,
-    }),
-    boundaryDiv: new Program({
-      buffers: [divergence0, divergence],
-      uniforms: [uGrid],
-      shader: boundaryPressureShader,
-    }),
-    pressure: new Program({
-      buffers: [pressure, divergence, pressure0],
-      uniforms: [uGrid],
-      shader: pressureShader,
-    }),
-    boundaryPressure: new Program({
-      buffers: [pressure0, pressure],
-      uniforms: [uGrid],
-      shader: boundaryPressureShader,
-    }),
-    gradientSubtract: new Program({
-      buffers: [pressure, velocity0, velocity],
-      uniforms: [uGrid],
-      shader: gradientSubtractShader,
-    }),
-    advectDye: new Program({
-      buffers: [dye0, velocity0, dye],
-      uniforms: [uGrid, uDt],
-      dispatchX: settings.dye_w,
-      dispatchY: settings.dye_h,
-      shader: advectDyeShader,
-    }),
-    clearPressure: new Program({
-      buffers: [pressure, pressure0],
-      uniforms: [uGrid, uViscosity],
-      shader: clearPressureShader,
-    }),
-    vorticity: new Program({
-      buffers: [velocity, vorticity],
-      uniforms: [uGrid],
-      shader: vorticityShader,
-    }),
-    vorticityConfinment: new Program({
-      buffers: [velocity, vorticity, velocity0],
-      uniforms: [uGrid, uDt, uVorticity],
-      shader: vorticityConfinmentShader,
-    }),
-    render: new RenderProgram(),
-  })
+  // Renders 3 (r, g, b) storage buffers to the canvas
+  const createRenderProgram = () => {
+    const shaderModule = device.createShaderModule({ code: renderShader })
+    const vertices = new Float32Array([-1, -1, 0, 1, -1, 1, 0, 1, 1, -1, 0, 1, 1, -1, 0, 1, -1, 1, 0, 1, 1, 1, 0, 1])
+    const vertexBuffer = device.createBuffer({
+      size: vertices.byteLength,
+      usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+      mappedAtCreation: true,
+    })
+    new Float32Array(vertexBuffer.getMappedRange()).set(vertices)
+    vertexBuffer.unmap()
+
+    const pipeline = device.createRenderPipeline({
+      layout: 'auto',
+      vertex: {
+        module: shaderModule,
+        entryPoint: 'vertex_main',
+        buffers: [
+          {
+            attributes: [{ shaderLocation: 0, offset: 0, format: 'float32x4' }],
+            arrayStride: 16,
+            stepMode: 'vertex',
+          },
+        ],
+      },
+      fragment: {
+        module: shaderModule,
+        entryPoint: 'fragment_main',
+        targets: [{ format: navigator.gpu.getPreferredCanvasFormat() }],
+      },
+      primitive: { topology: 'triangle-list' },
+    })
+    const buffer = new DynamicBuffer({ nDims: 3, dim: settings.dye_dim })
+
+    return {
+      pipeline,
+      vertexBuffer,
+      buffer, // rgb dye buffer
+      bindGroup: device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [
+          ...buffer.buffers,
+          uniforms.gridSize.buffer,
+          uniforms.time.buffer,
+          uniforms.mouseInfos.buffer,
+          uniforms.render_mode.buffer,
+          uniforms.render_intensity_multiplier.buffer,
+          uniforms.smoke_parameters.buffer,
+        ].map((buffer, binding) => ({ binding, resource: { buffer } })),
+      }),
+      passDescriptor: {
+        colorAttachments: [{ clearValue: { r: 0, g: 0, b: 0, a: 1 }, loadOp: 'clear', storeOp: 'store', view: null }],
+      },
+    }
+  }
+
+  const createPrograms = () => {
+    const program = (buffers, uniforms, shader) => {
+      const pipeline = device.createComputePipeline({
+        layout: 'auto',
+        compute: { module: device.createShaderModule({ code: shader }), entryPoint: 'main' },
+      })
+      return {
+        pipeline,
+        bindGroup: device.createBindGroup({
+          layout: pipeline.getBindGroupLayout(0),
+          entries: [
+            ...buffers.flatMap((b) => b.buffers).map((buffer) => ({ buffer })),
+            ...uniforms.map(({ buffer }) => ({ buffer })),
+          ].map((resource, binding) => ({ resource, binding })),
+        }),
+        dim: buffers[0].dim,
+      }
+    }
+
+    // Pressure programs are used multiple times.
+    const pressureProgram = program([pressure, divergence, pressure0], [uGrid], pressureShader),
+      boundaryPressureProgram = program([pressure0, pressure], [uGrid], boundaryPressureShader)
+
+    const { render_mode, pressure_iterations } = settings
+    return {
+      compute: [
+        ...(render_mode >= 1 && render_mode <= 3 ? [program([dye], [uGrid, uTime], checkerboardShader)] : []),
+        // Add dye and velocity at the mouse position.
+        program([dye, dye0], [uGrid, uMouse, uDyeForce, uDyeRad, uDyeDiff, uTime, uDt], updateDyeShader),
+        program(
+          [velocity, velocity0],
+          [uGrid, uMouse, uVelForce, uVelRadius, uVelDiff, uDt, uTime],
+          updateVelocityShader,
+        ),
+        // Advect the velocity field through itself.
+        program([velocity0, velocity0, velocity], [uGrid, uDt], advectShader),
+        program([velocity, velocity0], [uGrid, uContainFluid], boundaryShader),
+        // Compute the divergence.
+        program([velocity0, divergence0], [uGrid], divergenceShader),
+        program([divergence0, divergence], [uGrid], boundaryPressureShader),
+        // Solve the jacobi-pressure equation.
+        ...Array.from({ length: pressure_iterations }, () => [pressureProgram, boundaryPressureProgram]).flat(),
+        // Subtract the pressure from the velocity field.
+        program([pressure, velocity0, velocity], [uGrid], gradientSubtractShader),
+        program([pressure, pressure0], [uGrid, uViscosity], clearPressureShader),
+        // Compute & apply vorticity confinment.
+        program([velocity, vorticity], [uGrid], vorticityShader),
+        program([velocity, vorticity, velocity0], [uGrid, uDt, uVorticity], vorticityConfinmentShader),
+        // Advect the dye through the velocity field.
+        program([dye0, velocity0, dye], [uGrid, uDt], advectDyeShader),
+      ],
+      render: createRenderProgram(),
+    }
+  }
 
   const mouseInfos = { current: null, last: null, velocity: null }
   canvas.addEventListener('mousemove', (e: MouseEvent) => {
@@ -592,50 +501,29 @@ const main = async (canvas: HTMLCanvasElement) => {
       settings.light_falloff,
     ])
 
-    const simulationPrograms = [
-      settings.render_mode >= 1 && settings.render_mode <= 3 ? programs.checker : null,
-      // Add velocity and dye at the mouse position.
-      programs.updateDye,
-      programs.update,
-      // Advect the velocity field through itself.
-      programs.advect,
-      programs.boundary,
-      // Compute the divergence.
-      programs.divergence,
-      programs.boundaryDiv,
-      // Solve the jacobi-pressure equation.
-      ...Array.from({ length: settings.pressure_iterations }, () => [
-        programs.pressure,
-        programs.boundaryPressure,
-      ]).flat(),
-      // Subtract the pressure from the velocity field.
-      programs.gradientSubtract,
-      programs.clearPressure,
-      // Compute & apply vorticity confinment.
-      programs.vorticity,
-      programs.vorticityConfinment,
-      // Advect the dye through the velocity field.
-      programs.advectDye,
-    ]
     const command = device.createCommandEncoder()
     const computePass = command.beginComputePass()
-    simulationPrograms.forEach((program) => program?.dispatch(computePass))
+    programs.compute.forEach(({ pipeline, bindGroup, dim: { w, h } }) => {
+      computePass.setPipeline(pipeline)
+      computePass.setBindGroup(0, bindGroup)
+      computePass.dispatchWorkgroups(Math.ceil(w / 8), Math.ceil(h / 8))
+    })
     computePass.end()
 
+    const { render } = programs
     velocity0.copyTo(velocity, command)
     pressure0.copyTo(pressure, command)
-    const renderBuffer = programs.render.buffer
-    if (settings.render_mode == 3) velocity.copyTo(renderBuffer, command)
-    else if (settings.render_mode == 4) divergence.copyTo(renderBuffer, command)
-    else if (settings.render_mode == 5) pressure.copyTo(renderBuffer, command)
-    else if (settings.render_mode == 6) vorticity.copyTo(renderBuffer, command)
-    else dye.copyTo(renderBuffer, command)
+    if (settings.render_mode == 3) velocity.copyTo(render.buffer, command)
+    else if (settings.render_mode == 4) divergence.copyTo(render.buffer, command)
+    else if (settings.render_mode == 5) pressure.copyTo(render.buffer, command)
+    else if (settings.render_mode == 6) vorticity.copyTo(render.buffer, command)
+    else dye.copyTo(render.buffer, command)
 
-    programs.render.renderPassDescriptor.colorAttachments[0].view = context.getCurrentTexture().createView()
-    const renderPass = command.beginRenderPass(programs.render.renderPassDescriptor)
-    renderPass.setPipeline(programs.render.renderPipeline)
-    renderPass.setBindGroup(0, programs.render.renderBindGroup)
-    renderPass.setVertexBuffer(0, programs.render.vertexBuffer)
+    render.passDescriptor.colorAttachments[0].view = context.getCurrentTexture().createView()
+    const renderPass = command.beginRenderPass(render.passDescriptor)
+    renderPass.setPipeline(render.pipeline)
+    renderPass.setBindGroup(0, render.bindGroup)
+    renderPass.setVertexBuffer(0, render.vertexBuffer)
     renderPass.draw(6)
     renderPass.end()
     device.queue.submit([command.finish()])
