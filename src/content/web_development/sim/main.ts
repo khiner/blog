@@ -171,7 +171,7 @@ let settings = {
   grid_size: 128,
   grid_w: 1024,
   grid_h: 1024,
-  reset: function () {},
+  reset: () => {},
 
   dye_size: 1024,
   sim_speed: 5,
@@ -267,7 +267,6 @@ class RenderProgram {
     // The r,g,b buffer containing the data to render
     this.buffer = new DynamicBuffer({ dims: 3, w: settings.dye_w, h: settings.dye_h })
 
-    // Uniforms
     const entries = [
       ...this.buffer.buffers,
       globalUniforms.gridSize.buffer,
@@ -299,7 +298,7 @@ class RenderProgram {
   }
 
   // Dispatch a draw command to render on the canvas
-  dispatch(commandEncoder, canvas) {
+  dispatch(commandEncoder: GPUCommandEncoder, canvas: HTMLCanvasElement) {
     this.renderPassDescriptor.colorAttachments[0].view = canvas.getContext('webgpu').getCurrentTexture().createView()
 
     const renderPassEncoder = commandEncoder.beginRenderPass(this.renderPassDescriptor)
@@ -332,7 +331,7 @@ let checkerProgram, updateDyeProgram, updateProgram, advectProgram, boundaryProg
 let boundaryDivProgram, pressureProgram, boundaryPressureProgram, gradientSubtractProgram, advectDyeProgram
 let clearPressureProgram, vorticityProgram, vorticityConfinmentProgram, renderProgram
 
-function initBuffers() {
+const initBuffers = () => {
   velocity = new DynamicBuffer({ dims: 2 })
   velocity0 = new DynamicBuffer({ dims: 2 })
 
@@ -348,66 +347,7 @@ function initBuffers() {
   vorticity = new DynamicBuffer()
 }
 
-// Useful classes for cleaner understanding of the input and output buffers
-// used in the declarations of programs & fluid simulation steps
-
-class AdvectProgram extends Program {
-  constructor({ in_quantity, in_velocity, out_quantity, uniforms, shader = advectShader, ...props }) {
-    uniforms ??= [globalUniforms.gridSize]
-    super({ buffers: [in_quantity, in_velocity, out_quantity], uniforms, shader, ...props })
-  }
-}
-
-class DivergenceProgram extends Program {
-  constructor({ in_velocity, out_divergence, uniforms, shader = divergenceShader }) {
-    uniforms ??= [globalUniforms.gridSize]
-    super({ buffers: [in_velocity, out_divergence], uniforms, shader })
-  }
-}
-
-class PressureProgram extends Program {
-  constructor({ in_pressure, in_divergence, out_pressure, uniforms, shader = pressureShader }) {
-    uniforms ??= [globalUniforms.gridSize]
-    super({ buffers: [in_pressure, in_divergence, out_pressure], uniforms, shader })
-  }
-}
-
-class GradientSubtractProgram extends Program {
-  constructor({ in_pressure, in_velocity, out_velocity, uniforms, shader = gradientSubtractShader }) {
-    uniforms ??= [globalUniforms.gridSize]
-    super({ buffers: [in_pressure, in_velocity, out_velocity], uniforms, shader })
-  }
-}
-
-class BoundaryProgram extends Program {
-  constructor({ in_quantity, out_quantity, uniforms, shader = boundaryShader }) {
-    uniforms ??= [globalUniforms.gridSize]
-    super({ buffers: [in_quantity, out_quantity], uniforms, shader })
-  }
-}
-
-class UpdateProgram extends Program {
-  constructor({ in_quantity, out_quantity, uniforms, shader = updateVelocityShader, ...props }) {
-    uniforms ??= [globalUniforms.gridSize]
-    super({ buffers: [in_quantity, out_quantity], uniforms, shader, ...props })
-  }
-}
-
-class VorticityProgram extends Program {
-  constructor({ in_velocity, out_vorticity, uniforms, shader = vorticityShader, ...props }) {
-    uniforms ??= [globalUniforms.gridSize]
-    super({ buffers: [in_velocity, out_vorticity], uniforms, shader, ...props })
-  }
-}
-
-class VorticityConfinmentProgram extends Program {
-  constructor({ in_velocity, in_vorticity, out_velocity, uniforms, shader = vorticityConfinmentShader, ...props }) {
-    uniforms ??= [globalUniforms.gridSize]
-    super({ buffers: [in_velocity, in_vorticity, out_velocity], uniforms, shader, ...props })
-  }
-}
-
-function initUniforms(canvas) {
+const initUniforms = (canvas: HTMLCanvasElement) => {
   uRenderMode = new Uniform('render_mode', {
     displayName: 'Render Mode',
     size: 1,
@@ -468,7 +408,7 @@ function initUniforms(canvas) {
   uRenderIntensity = new Uniform('render_intensity_multiplier', { value: 1 })
 }
 
-function initPrograms(canvas) {
+const initPrograms = () => {
   checkerProgram = new Program({
     buffers: [dye],
     shader: checkerboardShader,
@@ -476,97 +416,80 @@ function initPrograms(canvas) {
     dispatchY: settings.dye_h,
     uniforms: [grid, time],
   })
-
-  updateDyeProgram = new UpdateProgram({
-    in_quantity: dye,
-    out_quantity: dye0,
+  updateDyeProgram = new Program({
+    buffers: [dye, dye0],
     uniforms: [grid, mouse, dye_force, dye_radius, dye_diff, time, dt, uSymmetry],
     dispatchX: settings.dye_w,
     dispatchY: settings.dye_h,
     shader: updateDyeShader,
   })
-
-  updateProgram = new UpdateProgram({
-    in_quantity: velocity,
-    out_quantity: velocity0,
+  updateProgram = new Program({
+    buffers: [velocity, velocity0],
     uniforms: [grid, mouse, vel_force, vel_radius, vel_diff, dt, time, uSymmetry],
+    shader: updateVelocityShader,
   })
-
-  advectProgram = new AdvectProgram({
-    in_quantity: velocity0,
-    in_velocity: velocity0,
-    out_quantity: velocity,
+  advectProgram = new Program({
+    buffers: [velocity0, velocity0, velocity],
     uniforms: [grid, dt],
+    shader: advectShader,
   })
-
-  boundaryProgram = new BoundaryProgram({
-    in_quantity: velocity,
-    out_quantity: velocity0,
+  boundaryProgram = new Program({
+    buffers: [velocity, velocity0],
     uniforms: [grid, containFluid],
+    shader: boundaryShader,
   })
-
-  divergenceProgram = new DivergenceProgram({
-    in_velocity: velocity0,
-    out_divergence: divergence0,
+  divergenceProgram = new Program({
+    buffers: [velocity0, divergence0],
+    uniforms: [grid],
+    shader: divergenceShader,
   })
-
-  boundaryDivProgram = new BoundaryProgram({
-    in_quantity: divergence0,
-    out_quantity: divergence,
+  boundaryDivProgram = new Program({
+    buffers: [divergence0, divergence],
+    uniforms: [grid],
     shader: boundaryPressureShader,
   })
-
-  pressureProgram = new PressureProgram({
-    in_pressure: pressure,
-    in_divergence: divergence,
-    out_pressure: pressure0,
+  pressureProgram = new Program({
+    buffers: [pressure, divergence, pressure0],
+    uniforms: [grid],
+    shader: pressureShader,
   })
-
-  boundaryPressureProgram = new BoundaryProgram({
-    in_quantity: pressure0,
-    out_quantity: pressure,
+  boundaryPressureProgram = new Program({
+    buffers: [pressure0, pressure],
+    uniforms: [grid],
     shader: boundaryPressureShader,
   })
-
-  gradientSubtractProgram = new GradientSubtractProgram({
-    in_pressure: pressure,
-    in_velocity: velocity0,
-    out_velocity: velocity,
+  gradientSubtractProgram = new Program({
+    buffers: [pressure, velocity0, velocity],
+    uniforms: [grid],
+    shader: gradientSubtractShader,
   })
-
-  advectDyeProgram = new AdvectProgram({
-    in_quantity: dye0,
-    in_velocity: velocity,
-    out_quantity: dye,
+  advectDyeProgram = new Program({
+    buffers: [dye0, velocity0, dye],
     uniforms: [grid, dt],
     dispatchX: settings.dye_w,
     dispatchY: settings.dye_h,
     shader: advectDyeShader,
   })
-
-  clearPressureProgram = new UpdateProgram({
-    in_quantity: pressure,
-    out_quantity: pressure0,
+  clearPressureProgram = new Program({
+    buffers: [pressure, pressure0],
     uniforms: [grid, viscosity],
     shader: clearPressureShader,
   })
-
-  vorticityProgram = new VorticityProgram({
-    in_velocity: velocity,
-    out_vorticity: vorticity,
+  vorticityProgram = new Program({
+    buffers: [velocity, vorticity],
+    uniforms: [grid],
+    shader: vorticityShader,
   })
-
-  vorticityConfinmentProgram = new VorticityConfinmentProgram({
-    in_velocity: velocity,
-    in_vorticity: vorticity,
-    out_velocity: velocity0,
+  vorticityConfinmentProgram = new Program({
+    buffers: [velocity, vorticity, velocity0],
     uniforms: [grid, dt, uVorticity],
+    shader: vorticityConfinmentShader,
   })
 
   renderProgram = new RenderProgram()
 }
 
-function onMouseMove(e, canvas: HTMLCanvasElement) {
+const onMouseMove = (e, canvas: HTMLCanvasElement) => {
   const { width, height } = canvas.getBoundingClientRect()
 
   if (!mouseInfos.current) mouseInfos.current = []
@@ -574,72 +497,22 @@ function onMouseMove(e, canvas: HTMLCanvasElement) {
   mouseInfos.current[1] = 1 - e.offsetY / height // y position needs to be inverted
 }
 
-function onWebGPUDetectionError(error) {
+const onWebGPUDetectionError = (error) => {
   console.log('Could not initialize WebGPU: ' + error)
   document.querySelector('.webgpu-not-supported').style.visibility = 'visible'
   return false
 }
 
-// Init the WebGPU context by checking first if everything is supported.
-// Returns true on init success, false otherwise.
-async function initContext(canvas: HTMLCanvasElement) {
-  if (navigator.gpu == null) throw 'WebGPU NOT Supported'
-
-  const adapter = await navigator.gpu.requestAdapter()
-  if (!adapter) throw 'No adapter found'
-
-  device = await adapter.requestDevice()
-
-  const context = canvas.getContext('webgpu')
-  if (!context) throw 'Canvas does not support WebGPU'
-
-  // If we got here, WebGPU is supported.
-  canvas.addEventListener('mousemove', (e) => onMouseMove(e, canvas))
-  gui = new dat.GUI()
-  presentationFormat = navigator.gpu.getPreferredCanvasFormat(adapter)
-  context.configure({
-    device,
-    format: presentationFormat,
-    usage: GPUTextureUsage.RENDER_ATTACHMENT,
-    alphaMode: 'opaque',
-  })
-
-  initSizes(canvas)
-
-  let resizeTimeout
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout)
-    resizeTimeout = setTimeout(() => refreshSizes(canvas), 150)
-  })
-
-  return true
-}
-
-function refreshSizes(canvas) {
-  initSizes(canvas)
-  initBuffers()
-  initPrograms(canvas)
-  globalUniforms.gridSize.needsUpdate = [
-    settings.grid_w,
-    settings.grid_h,
-    settings.dye_w,
-    settings.dye_h,
-    settings.dx,
-    settings.rdx,
-    settings.dyeRdx,
-  ]
-}
-
 // Init buffer & canvas dimensions to fit the screen while keeping the aspect ratio
 // and downscaling the dimensions if they exceed the browsers capabilities
-function initSizes(canvas) {
+const initSizes = (canvas: HTMLCanvasElement) => {
   const aspectRatio = window.innerWidth / window.innerHeight
   const maxBufferSize = device.limits.maxStorageBufferBindingSize
   const maxCanvasSize = device.limits.maxTextureDimension2D
 
-  // Fit to screen while keeping the aspect ratio
-  const getPreferredDimensions = (size) => {
+  const getPreferredDimensions = (size: number) => {
     let w, h
+    // Fit to screen while keeping the aspect ratio
     if (window.innerHeight < window.innerWidth) {
       w = Math.floor(size * aspectRatio)
       h = size
@@ -648,16 +521,9 @@ function initSizes(canvas) {
       h = Math.floor(size / aspectRatio)
     }
 
-    return getValidDimensions(w, h)
-  }
-
-  // Downscale if necessary to prevent crashes
-  const getValidDimensions = (w, h) => {
+    // Downscale if necessary to prevent buffer/canvas size overflow
     let downRatio = 1
-    // Prevent buffer size overflow
     if (w * h * 4 >= maxBufferSize) downRatio = Math.sqrt(maxBufferSize / (w * h * 4))
-
-    // Prevent canvas size overflow
     if (w > maxCanvasSize) downRatio = maxCanvasSize / w
     else if (h > maxCanvasSize) downRatio = maxCanvasSize / h
 
@@ -667,22 +533,18 @@ function initSizes(canvas) {
     }
   }
 
-  // Calculate simulation buffer dimensions
-  let gridSize = getPreferredDimensions(settings.grid_size)
+  const gridSize = getPreferredDimensions(settings.grid_size)
   settings.grid_w = gridSize.w
   settings.grid_h = gridSize.h
 
-  // Calculate dye & canvas buffer dimensions
-  let dyeSize = getPreferredDimensions(settings.dye_size)
+  const dyeSize = getPreferredDimensions(settings.dye_size)
   settings.dye_w = dyeSize.w
   settings.dye_h = dyeSize.h
 
-  // Useful values for the simulation
   settings.rdx = settings.grid_size * 4
   settings.dyeRdx = settings.dye_size * 4
   settings.dx = 1 / settings.rdx
 
-  // Resize the canvas
   canvas.width = settings.dye_w
   canvas.height = settings.dye_h
 }
@@ -699,14 +561,14 @@ const RENDER_MODES = {
 const SIMULATION_GRID_SIZES = [32, 64, 128, 256, 512, 1024]
 const DYE_GRID_SIZES = [128, 256, 512, 1024, 2048]
 
-function initGUI() {
+const initGUI = () => {
   gui.add(settings, 'pressure_iterations', 0, 50).name('Pressure Iterations')
 
-  const symmetry_types = ['none', 'horizontal', 'vertical', 'both', 'center']
+  const symmetryTypes = ['none', 'horizontal', 'vertical', 'both', 'center']
   gui
-    .add(settings, 'input_symmetry', symmetry_types)
+    .add(settings, 'input_symmetry', symmetryTypes)
     .onChange((type) => {
-      let index = symmetry_types.indexOf(type)
+      let index = symmetryTypes.indexOf(type)
       globalUniforms.mouse_type.setValue(index)
     })
     .name('Mouse Symmetry')
@@ -723,52 +585,83 @@ function initGUI() {
   smokeFolder.hide()
 }
 
-async function main(canvas: HTMLCanvasElement) {
-  // Init buffers, uniforms and programs
+const main = async (canvas: HTMLCanvasElement) => {
+  if (navigator.gpu == null) throw 'WebGPU NOT Supported'
+
+  const adapter = await navigator.gpu.requestAdapter()
+  if (!adapter) throw 'No adapter found'
+
+  device = await adapter.requestDevice()
+  const context = canvas.getContext('webgpu')
+  if (!context) throw 'Canvas does not support WebGPU'
+
+  canvas.addEventListener('mousemove', (e) => onMouseMove(e, canvas))
+  gui = new dat.GUI()
+  presentationFormat = navigator.gpu.getPreferredCanvasFormat()
+  context.configure({
+    device,
+    format: presentationFormat,
+    usage: GPUTextureUsage.RENDER_ATTACHMENT,
+    alphaMode: 'opaque',
+  })
+
+  initSizes(canvas)
+
+  let resizeTimeout
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout)
+    resizeTimeout = setTimeout(() => {
+      initSizes(canvas)
+      initBuffers()
+      initPrograms()
+      globalUniforms.gridSize.needsUpdate = [
+        settings.grid_w,
+        settings.grid_h,
+        settings.dye_w,
+        settings.dye_h,
+        settings.dx,
+        settings.rdx,
+        settings.dyeRdx,
+      ]
+    }, 150)
+  })
+
   initBuffers()
   initUniforms(canvas)
-  initPrograms(canvas)
+  initPrograms()
 
-  // Simulation reset
-  function reset() {
+  settings.reset = () => {
     velocity.clear(device.queue)
     dye.clear(device.queue)
     pressure.clear(device.queue)
 
     settings.time = 0
   }
-  settings.reset = reset
 
   // Fluid simulation step
-  function dispatchComputePipeline(passEncoder) {
+  const dispatchComputePipeline = (passEncoder: GPURenderPassEncoder) => {
     if (settings.render_mode >= 1 && settings.render_mode <= 3) checkerProgram.dispatch(passEncoder)
 
     // Add velocity and dye at the mouse position
     updateDyeProgram.dispatch(passEncoder)
     updateProgram.dispatch(passEncoder)
-
     // Advect the velocity field through itself
     advectProgram.dispatch(passEncoder)
     boundaryProgram.dispatch(passEncoder) // boundary conditions
-
     // Compute the divergence
     divergenceProgram.dispatch(passEncoder)
     boundaryDivProgram.dispatch(passEncoder) // boundary conditions
-
     // Solve the jacobi-pressure equation
     for (let i = 0; i < settings.pressure_iterations; i++) {
       pressureProgram.dispatch(passEncoder)
       boundaryPressureProgram.dispatch(passEncoder) // boundary conditions
     }
-
     // Subtract the pressure from the velocity field
     gradientSubtractProgram.dispatch(passEncoder)
     clearPressureProgram.dispatch(passEncoder)
-
     // Compute & apply vorticity confinment
     vorticityProgram.dispatch(passEncoder)
     vorticityConfinmentProgram.dispatch(passEncoder)
-
     // Advect the dye through the velocity field
     advectDyeProgram.dispatch(passEncoder)
   }
@@ -776,19 +669,16 @@ async function main(canvas: HTMLCanvasElement) {
   let lastFrame = performance.now()
 
   // Render loop
-  async function step() {
+  const step = () => {
     requestAnimationFrame(step)
 
-    // Update time
     const now = performance.now()
     settings.dt = Math.min(1 / 60, (now - lastFrame) / 1000) * settings.sim_speed
     settings.time += dt
     lastFrame = now
 
-    // Update uniforms
     Object.values(globalUniforms).forEach((u) => u.update(device.queue))
 
-    // Update custom uniform
     if (mouseInfos.current) {
       mouseInfos.velocity = mouseInfos.last
         ? [mouseInfos.current[0] - mouseInfos.last[0], mouseInfos.current[1] - mouseInfos.last[1]]
@@ -807,7 +697,6 @@ async function main(canvas: HTMLCanvasElement) {
       settings.light_falloff,
     ])
 
-    // Compute fluid
     const commandEncoder = device.createCommandEncoder()
     const passEncoder = commandEncoder.beginComputePass()
     dispatchComputePipeline(passEncoder)
@@ -822,16 +711,12 @@ async function main(canvas: HTMLCanvasElement) {
     else if (settings.render_mode == 6) vorticity.copyTo(renderProgram.buffer, commandEncoder)
     else dye.copyTo(renderProgram.buffer, commandEncoder)
 
-    // Draw fluid
     renderProgram.dispatch(commandEncoder, canvas)
-
-    // Send commands to the GPU
-    const gpuCommands = commandEncoder.finish()
-    device.queue.submit([gpuCommands])
+    device.queue.submit([commandEncoder.finish()])
   }
 
   initGUI()
   step()
 }
 
-export { initContext, main }
+export { main }

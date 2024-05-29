@@ -5,12 +5,8 @@ import { initContext, main } from './sim/main'
 export default () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   useEffect(() => {
-    if (canvasRef.current) {
-      // todo catch error
-      initContext(canvasRef.current).then(() => {
-        main(canvasRef.current)
-      })
-    }
+    // todo catch error
+    if (canvasRef.current) main(canvasRef.current)
   }, [])
 
   return (
