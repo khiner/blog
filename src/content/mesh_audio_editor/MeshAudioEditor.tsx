@@ -97,11 +97,7 @@ const ImpactGridItem = ({ name, meshSrc, realAudio, modalAudio }: ImpactGridItem
       >
         {name}
       </h2>
-      <img
-        src={meshSrc}
-        alt={`${name} Mesh`}
-        style={{ maxWidth: 440, maxHeight: 440, width: '100%', height: 'auto' }}
-      />
+      <img src={meshSrc} alt={`${name} Mesh`} style={{ maxWidth: 400, width: '100%', height: 'auto' }} />
       {realAudio && (
         <div>
           <div style={{ fontSize: 15 }}>Real audio:</div>
