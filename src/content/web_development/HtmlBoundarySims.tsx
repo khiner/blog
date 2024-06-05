@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react'
 
-import { initContext, main } from './sim/main'
+import { main } from './sim/main'
 
 export default () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)

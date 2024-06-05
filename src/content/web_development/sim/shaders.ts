@@ -12,7 +12,7 @@ const ComputeStartInterior = createComputeStart(['0', 'uGrid.w - 1'], ['0', 'uGr
 const ComputeStartDye = createComputeStart(['0', 'uGrid.dyeW - 1'], ['0', 'uGrid.dyeH - 1'])
 const ComputeStartAll = createComputeStart(['-1', 'uGrid.w'], ['-1', 'uGrid.h'])
 
-export const updateVelocityShader = `
+const updateVelocity = `
 ${StructGridSize}
 ${StructMouse}
 
@@ -55,7 +55,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     y_out[index] = y_in[index]*uDiffusion + splat.y;
 }`
 
-export const updateDyeShader = `
+const updateDye = `
 ${StructGridSize}
 ${StructMouse}
 
@@ -109,7 +109,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     z_out[index] = max(0., z_in[index]*uDiffusion + splat.z);
 }`
 
-export const advectShader = `
+const advect = `
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
@@ -155,7 +155,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     y_out[index] = bilerp.y;
 }`
 
-export const advectDyeShader = `
+const advectDye = `
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
@@ -235,7 +235,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     z_out[index] = bilerp.z;
 }`
 
-export const divergenceShader = `
+const divergence = `
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_vel : array<f32>;
@@ -258,7 +258,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   div[index] = 0.5 * uGrid.rdx * ((R - L) + (T - B));
 }`
 
-export const pressureShader = `
+const pressure = `
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> pres_in : array<f32>;
@@ -291,7 +291,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   pres_out[index] = (Lx + Rx + Bx + Tx + alpha * bC) * rBeta;
 }`
 
-export const gradientSubtractShader = `
+const gradientSubtract = `
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> pressure : array<f32>;
@@ -325,7 +325,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   y_out[index] = finalY;
 }`
 
-export const vorticityShader = `      
+const vorticity = `      
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_vel : array<f32>;
@@ -348,7 +348,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   vorticity[index] = 0.5 * uGrid.rdx * ((Ry - Ly) - (Tx - Bx));
 }`
 
-export const vorticityConfinmentShader = `      
+const vorticityConfinment = `      
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_vel_in : array<f32>;
@@ -385,7 +385,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   y_vel_out[index] = y_vel_in[index] + force.y;
 }`
 
-export const clearPressureShader = `
+const clearPressure = `
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
@@ -402,7 +402,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   x_out[index] = x_in[index]*uVisc;
 }`
 
-export const boundaryShader = `
+const boundary = `
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
@@ -436,7 +436,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   y_out[index] = y_in[ID(pos.x, pos.y)] * scaleY;
 }`
 
-export const boundaryPressureShader = `
+const boundaryPressure = `
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
@@ -457,7 +457,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   x_out[index] = x_in[ID(pos.x, pos.y)];
 }`
 
-export const checkerboardShader = `
+const checkerboard = `
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read_write> x_out : array<f32>;
@@ -519,7 +519,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 
 // 3D Smoke Rendering inspired from @xjorma's shader:
 // https://www.shadertoy.com/view/WlVyRV
-export const renderShader = `
+const render = `
 ${StructGridSize}
 ${StructMouse}
 
@@ -685,3 +685,20 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32>
 
     return vec4(mix(bgCol, col, 1. - transmittance), 1);
 }`
+
+export default {
+  advect,
+  advectDye,
+  boundary,
+  boundaryPressure,
+  checkerboard,
+  clearPressure,
+  divergence,
+  gradientSubtract,
+  pressure,
+  render,
+  updateVelocity,
+  updateDye,
+  vorticity,
+  vorticityConfinment,
+}
