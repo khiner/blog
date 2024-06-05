@@ -49,7 +49,7 @@ interface UniformProps {
   max?: number
   step?: number
   onChange?: (v: number) => void
-  displayName?: string
+  label?: string
   gui?: any
 }
 
@@ -71,8 +71,6 @@ enum RenderMode {
   Vorticity,
 }
 
-const uniforms: Record<string, Uniform> = {}
-
 const settings = {
   render_mode: 0,
   grid_size: 128,
@@ -82,11 +80,11 @@ const settings = {
   dye_size: 1024,
   sim_speed: 5,
   contain_fluid: true,
-  velocity_add_intensity: 0.2,
-  velocity_add_radius: 0.0002,
+  velocity_force: 0.2,
+  velocity_radius: 0.0002,
   velocity_diffusion: 0.9999,
-  dye_add_intensity: 1,
-  dye_add_radius: 0.001,
+  dye_intensity: 1,
+  dye_radius: 0.001,
   dye_diffusion: 0.98,
   dye_dim: { w: 1024, h: 1024 },
   viscosity: 0.8,
@@ -183,11 +181,13 @@ const main = async (canvas: HTMLCanvasElement) => {
     }
   }
 
+  const uniforms: Record<string, Uniform> = {}
+
   const onSizeChange = () => {
     initSizes(canvas)
     buffers = initBuffers()
     programs = createPrograms()
-    uniforms.gridSize.needsUpdate = [
+    uniforms.grid_size.needsUpdate = [
       settings.grid_dim.w,
       settings.grid_dim.h,
       settings.dye_dim.w,
@@ -218,54 +218,6 @@ const main = async (canvas: HTMLCanvasElement) => {
   smokeFolder.add(settings, 'shadow_intensity', 0, 50, 0.001).name('Shadow Intensity')
   smokeFolder.hide()
 
-  // Uniforms
-  const createUniform = (
-    name: string,
-    { size, value, min, max, step, onChange, displayName, gui = null }: UniformProps = {},
-  ): Uniform => {
-    const uniform: Uniform = {
-      name,
-      size: size ?? (Array.isArray(value) ? value.length : 1),
-      needsUpdate: false,
-      alwaysUpdate: false,
-      buffer: null,
-    }
-
-    if (uniform.size === 1) {
-      if (settings[name] == null) {
-        settings[name] = value ?? 0
-        uniform.alwaysUpdate = true
-      } else if (gui) {
-        gui
-          .add(settings, name, min, max, step)
-          .onChange((v) => {
-            onChange?.(v)
-            uniform.needsUpdate = true
-          })
-          .name(displayName ?? name)
-      }
-    }
-
-    if (uniform.size === 1 || value != null) {
-      uniform.buffer = device.createBuffer({
-        size: uniform.size * 4,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true,
-      })
-
-      new Float32Array(uniform.buffer.getMappedRange()).set(new Float32Array(value ?? [settings[name]]))
-      uniform.buffer.unmap()
-    } else {
-      uniform.buffer = device.createBuffer({
-        size: uniform.size * 4,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      })
-    }
-
-    uniforms[name] = uniform
-    return uniform
-  }
-
   const updateUniform = (uniform: Uniform, queue: GPUQueue, value = null) => {
     if (!uniform.needsUpdate && !uniform.alwaysUpdate && value == null) return
 
@@ -280,34 +232,42 @@ const main = async (canvas: HTMLCanvasElement) => {
     uniform.needsUpdate = false
   }
 
-  createUniform('render_intensity_multiplier', { value: 1 })
-  createUniform('render_mode', {
-    gui,
-    displayName: 'Render Mode',
-    min: {
-      Classic: RenderMode.Classic,
-      'Smoke 2D': RenderMode.Smoke2D,
-      'Smoke 3D + Shadows': RenderMode.Smoke3D,
-      'Debug - Velocity': RenderMode.Velocity,
-      'Debug - Divergence': RenderMode.Divergence,
-      'Debug - Pressure': RenderMode.Pressure,
-      'Debug - Vorticity': RenderMode.Vorticity,
-    },
-    size: 1,
-    onChange: (val) => {
-      settings.render_intensity_multiplier = [1, 1, 1, 100, 10, 1e6, 1][parseInt(val)]
-      uniforms.render_intensity_multiplier.needsUpdate = true
-      if (val == 2) smokeFolder.show(), smokeFolder.open()
-      else smokeFolder.hide()
-    },
-  })
-  createUniform('sim_speed', { min: 0.1, max: 20 })
-  const uTime = createUniform('time'),
-    uDt = createUniform('dt'),
-    uMouse = createUniform('mouseInfos', { size: 4 }),
-    uGrid = createUniform('gridSize', {
+  const uniformProps: Record<string, UniformProps> = {
+    render_intensity_multiplier: { value: 1 },
+    render_mode: {
       gui,
-      size: 7,
+      label: 'Render Mode',
+      min: {
+        Classic: RenderMode.Classic,
+        'Smoke 2D': RenderMode.Smoke2D,
+        'Smoke 3D + Shadows': RenderMode.Smoke3D,
+        'Debug - Velocity': RenderMode.Velocity,
+        'Debug - Divergence': RenderMode.Divergence,
+        'Debug - Pressure': RenderMode.Pressure,
+        'Debug - Vorticity': RenderMode.Vorticity,
+      },
+      value: 0,
+      onChange: (val) => {
+        settings.render_intensity_multiplier = [1, 1, 1, 100, 10, 1e6, 1][parseInt(val)]
+        uniforms.render_intensity_multiplier.needsUpdate = true
+        if (val == RenderMode.Smoke3D) smokeFolder.show(), smokeFolder.open()
+        else smokeFolder.hide()
+      },
+    },
+    time: {},
+    dt: {},
+    sim_speed: { min: 0.1, max: 20 },
+    velocity_force: { label: 'Velocity Force', min: 0, max: 0.5 },
+    velocity_radius: { label: 'Velocity Radius', min: 0, max: 0.001 },
+    velocity_diffusion: { label: 'Velocity Diffusion', min: 0.95, max: 1 },
+    dye_intensity: { label: 'Dye Intensity', min: 0, max: 10 },
+    dye_radius: { label: 'Dye Radius', min: 0, max: 0.01 },
+    dye_diffusion: { label: 'Dye Diffusion', min: 0.95, max: 1 },
+    viscosity_amount: { label: 'Viscosity', min: 0, max: 1 },
+    vorticity_amount: { label: 'Vorticity', min: 0, max: 10 },
+    contain_fluid: { label: 'Solid boundaries' },
+    mouse: { size: 4 },
+    grid_size: {
       value: [
         settings.grid_dim.w,
         settings.grid_dim.h,
@@ -317,18 +277,8 @@ const main = async (canvas: HTMLCanvasElement) => {
         settings.rdx,
         settings.dyeRdx,
       ],
-    }),
-    uVelForce = createUniform('velocity_add_intensity', { gui, displayName: 'Velocity Force', min: 0, max: 0.5 }),
-    uVelRadius = createUniform('velocity_add_radius', { gui, displayName: 'Velocity Radius', min: 0, max: 0.001 }),
-    uVelDiff = createUniform('velocity_diffusion', { gui, displayName: 'Velocity Diffusion', min: 0.95, max: 1 }),
-    uDyeForce = createUniform('dye_add_intensity', { gui, displayName: 'Dye Intensity', min: 0, max: 10 }),
-    uDyeRad = createUniform('dye_add_radius', { gui, displayName: 'Dye Radius', min: 0, max: 0.01 }),
-    uDyeDiff = createUniform('dye_diffusion', { gui, displayName: 'Dye Diffusion', min: 0.95, max: 1 }),
-    uViscosity = createUniform('viscosity', { gui, displayName: 'Viscosity', min: 0, max: 1 }),
-    uVorticity = createUniform('vorticity', { gui, displayName: 'Vorticity', min: 0, max: 10 }),
-    uContainFluid = createUniform('contain_fluid', { gui, displayName: 'Solid boundaries' }),
-    uSmokeParameters = createUniform('smoke_parameters', {
-      gui,
+    },
+    smoke_parameters: {
       value: [
         settings.raymarch_steps,
         settings.smoke_density,
@@ -339,7 +289,47 @@ const main = async (canvas: HTMLCanvasElement) => {
         settings.light_intensity,
         settings.light_falloff,
       ],
-    })
+    },
+  }
+  Object.entries(uniformProps).forEach(([name, { size, value, min, max, step, onChange, label }]) => {
+    const uniformSize = size ?? (Array.isArray(value) ? value.length : 1)
+    let needsUpdate = false
+    let alwaysUpdate = false
+    let buffer: GPUBuffer
+
+    if (uniformSize === 1) {
+      if (settings[name] == null) {
+        settings[name] = value ?? 0
+        alwaysUpdate = true
+      } else if (label) {
+        gui
+          .add(settings, name, min, max, step)
+          .onChange((v) => {
+            onChange?.(v)
+            needsUpdate = true
+          })
+          .name(label ?? name)
+      }
+    }
+
+    if (uniformSize === 1 || value != null) {
+      buffer = device.createBuffer({
+        size: uniformSize * 4,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        mappedAtCreation: true,
+      })
+
+      new Float32Array(buffer.getMappedRange()).set(new Float32Array(value ?? [settings[name]]))
+      buffer.unmap()
+    } else {
+      buffer = device.createBuffer({
+        size: uniformSize * 4,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      })
+    }
+
+    uniforms[name] = { name, size: uniformSize, needsUpdate, alwaysUpdate, buffer }
+  })
 
   // Renders 3 (r, g, b) storage buffers to the canvas
   const createRenderProgram = () => {
@@ -383,9 +373,9 @@ const main = async (canvas: HTMLCanvasElement) => {
         layout: pipeline.getBindGroupLayout(0),
         entries: [
           ...dyeBuffer.buffers,
-          uniforms.gridSize.buffer,
+          uniforms.grid_size.buffer,
           uniforms.time.buffer,
-          uniforms.mouseInfos.buffer,
+          uniforms.mouse.buffer,
           uniforms.render_mode.buffer,
           uniforms.render_intensity_multiplier.buffer,
           uniforms.smoke_parameters.buffer,
@@ -417,46 +407,61 @@ const main = async (canvas: HTMLCanvasElement) => {
     }
 
     const { velocity, velocity0, dye, dye0, divergence, divergence0, pressure, pressure0, vorticity } = buffers
+    const {
+      grid_size,
+      mouse,
+      time,
+      dt,
+      velocity_force,
+      velocity_radius,
+      velocity_diffusion,
+      dye_intensity,
+      dye_radius,
+      dye_diffusion,
+      contain_fluid,
+      viscosity_amount,
+      vorticity_amount,
+    } = uniforms
     // Pressure programs are used multiple times.
-    const pressureProgram = program([pressure, divergence, pressure0], [uGrid], shaders.pressure),
-      boundaryPressureProgram = program([pressure0, pressure], [uGrid], shaders.boundaryPressure)
+    const pressureProgram = program([pressure, divergence, pressure0], [grid_size], shaders.pressure),
+      boundaryPressureProgram = program([pressure0, pressure], [grid_size], shaders.boundaryPressure)
 
     const { render_mode, pressure_iterations } = settings
     return {
       compute: [
-        ...(render_mode >= 1 && render_mode <= 3 ? [program([dye], [uGrid, uTime], shaders.checkerboard)] : []),
+        ...(render_mode >= 1 && render_mode <= 3 ? [program([dye], [grid_size, time], shaders.checkerboard)] : []),
         // Add dye and velocity at the mouse position.
-        program([dye, dye0], [uGrid, uMouse, uDyeForce, uDyeRad, uDyeDiff, uTime, uDt], shaders.updateDye),
+        program([dye, dye0], [grid_size, mouse, dye_intensity, dye_radius, dye_diffusion, time, dt], shaders.updateDye),
         program(
           [velocity, velocity0],
-          [uGrid, uMouse, uVelForce, uVelRadius, uVelDiff, uDt, uTime],
+          [grid_size, mouse, velocity_force, velocity_radius, velocity_diffusion, dt, time],
           shaders.updateVelocity,
         ),
         // Advect the velocity field through itself.
-        program([velocity0, velocity0, velocity], [uGrid, uDt], shaders.advect),
-        program([velocity, velocity0], [uGrid, uContainFluid], shaders.boundary),
+        program([velocity0, velocity0, velocity], [grid_size, dt], shaders.advect),
+        program([velocity, velocity0], [grid_size, contain_fluid], shaders.boundary),
         // Compute the divergence.
-        program([velocity0, divergence0], [uGrid], shaders.divergence),
-        program([divergence0, divergence], [uGrid], shaders.boundaryPressure),
+        program([velocity0, divergence0], [grid_size], shaders.divergence),
+        program([divergence0, divergence], [grid_size], shaders.boundaryPressure),
         // Solve the jacobi-pressure equation.
         ...Array.from({ length: pressure_iterations }, () => [pressureProgram, boundaryPressureProgram]).flat(),
         // Subtract the pressure from the velocity field.
-        program([pressure, velocity0, velocity], [uGrid], shaders.gradientSubtract),
-        program([pressure, pressure0], [uGrid, uViscosity], shaders.clearPressure),
+        program([pressure, velocity0, velocity], [grid_size], shaders.gradientSubtract),
+        program([pressure, pressure0], [grid_size, viscosity_amount], shaders.clearPressure),
         // Compute & apply vorticity confinment.
-        program([velocity, vorticity], [uGrid], shaders.vorticity),
-        program([velocity, vorticity, velocity0], [uGrid, uDt, uVorticity], shaders.vorticityConfinment),
+        program([velocity, vorticity], [grid_size], shaders.vorticity),
+        program([velocity, vorticity, velocity0], [grid_size, dt, vorticity_amount], shaders.vorticityConfinment),
         // Advect the dye through the velocity field.
-        program([dye0, velocity0, dye], [uGrid, uDt], shaders.advectDye),
+        program([dye0, velocity0, dye], [grid_size, dt], shaders.advectDye),
       ],
       render: createRenderProgram(),
     }
   }
 
-  const mouseInfos = { current: null, last: null, velocity: null }
+  const mouseInfo = { pos: null, last: null, velocity: null }
   canvas.addEventListener('mousemove', (e: MouseEvent) => {
     const { width, height } = canvas.getBoundingClientRect()
-    mouseInfos.current = [e.offsetX / width, 1 - e.offsetY / height]
+    mouseInfo.pos = [e.offsetX / width, 1 - e.offsetY / height]
   })
 
   context.configure({
@@ -489,14 +494,14 @@ const main = async (canvas: HTMLCanvasElement) => {
 
     Object.values(uniforms).forEach((u) => updateUniform(u, device.queue))
 
-    if (mouseInfos.current) {
-      mouseInfos.velocity = mouseInfos.last
-        ? [mouseInfos.current[0] - mouseInfos.last[0], mouseInfos.current[1] - mouseInfos.last[1]]
+    if (mouseInfo.pos) {
+      mouseInfo.velocity = mouseInfo.last
+        ? [mouseInfo.pos[0] - mouseInfo.last[0], mouseInfo.pos[1] - mouseInfo.last[1]]
         : [0, 0]
-      updateUniform(uMouse, device.queue, [...mouseInfos.current, ...mouseInfos.velocity])
-      mouseInfos.last = [...mouseInfos.current]
+      updateUniform(uniforms.mouse, device.queue, [...mouseInfo.pos, ...mouseInfo.velocity])
+      mouseInfo.last = [...mouseInfo.pos]
     }
-    updateUniform(uSmokeParameters, device.queue, [
+    updateUniform(uniforms.smoke_parameters, device.queue, [
       settings.raymarch_steps,
       settings.smoke_density,
       settings.enable_shadows,
