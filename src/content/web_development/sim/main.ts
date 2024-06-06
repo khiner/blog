@@ -55,12 +55,6 @@ interface UniformProps {
   gui?: any
 }
 
-interface Uniform {
-  name: string
-  alwaysUpdate: boolean
-  buffer: GPUBuffer
-}
-
 enum RenderMode {
   Classic,
   Smoke2D,
@@ -151,7 +145,7 @@ const main = async (canvas: HTMLCanvasElement) => {
     }
   }
 
-  const uniforms: Record<string, Uniform> = {}
+  const uniformBuffers: Record<string, GPUBuffer> = {}
 
   const onSizeChange = () => {
     initSizes(canvas)
@@ -213,15 +207,15 @@ const main = async (canvas: HTMLCanvasElement) => {
     },
     time: {},
     dt: {},
-    sim_speed: { min: 0.1, max: 20 },
+    sim_speed: { label: 'Sim Speed', min: 0.1, max: 20 },
     velocity_force: { label: 'Velocity Force', min: 0, max: 0.5 },
     velocity_radius: { label: 'Velocity Radius', min: 0, max: 0.001 },
     velocity_diffusion: { label: 'Velocity Diffusion', min: 0.95, max: 1 },
     dye_intensity: { label: 'Dye Intensity', min: 0, max: 10 },
     dye_radius: { label: 'Dye Radius', min: 0, max: 0.01 },
     dye_diffusion: { label: 'Dye Diffusion', min: 0.95, max: 1 },
-    viscosity_amount: { label: 'Viscosity', min: 0, max: 1 },
-    vorticity_amount: { label: 'Vorticity', min: 0, max: 10 },
+    viscosity: { label: 'Viscosity', min: 0, max: 1 },
+    vorticity: { label: 'Vorticity', min: 0, max: 10 },
     contain_fluid: { label: 'Solid boundaries' },
     mouse: { size: 4 },
     grid_size: {
@@ -250,8 +244,6 @@ const main = async (canvas: HTMLCanvasElement) => {
   }
   Object.entries(uniformProps).forEach(([name, { size, value, min, max, step, onChange, label }]) => {
     const uniformSize = size ?? value?.length ?? 1
-    const alwaysUpdate = uniformSize === 1 && settings[name] == null
-
     if (uniformSize === 1) {
       if (settings[name] == null) {
         settings[name] = value ?? 0
@@ -277,7 +269,7 @@ const main = async (canvas: HTMLCanvasElement) => {
       buffer.unmap()
     }
 
-    uniforms[name] = { name, alwaysUpdate, buffer }
+    uniformBuffers[name] = buffer
   })
 
   // Renders 3 (r, g, b) storage buffers to the canvas
@@ -322,12 +314,12 @@ const main = async (canvas: HTMLCanvasElement) => {
         layout: pipeline.getBindGroupLayout(0),
         entries: [
           ...dyeBuffer.buffers,
-          uniforms.grid_size.buffer,
-          uniforms.time.buffer,
-          uniforms.mouse.buffer,
-          uniforms.render_mode.buffer,
-          uniforms.render_intensity_multiplier.buffer,
-          uniforms.smoke_parameters.buffer,
+          uniformBuffers.grid_size,
+          uniformBuffers.time,
+          uniformBuffers.mouse,
+          uniformBuffers.render_mode,
+          uniformBuffers.render_intensity_multiplier,
+          uniformBuffers.smoke_parameters,
         ].map((buffer, binding) => ({ binding, resource: { buffer } })),
       }),
       passDescriptor: {
@@ -337,7 +329,7 @@ const main = async (canvas: HTMLCanvasElement) => {
   }
 
   const createPrograms = () => {
-    const program = (buffers: DynamicBuffer[], uniforms: Uniform[], shader: string) => {
+    const program = (buffers: DynamicBuffer[], uniformBuffers: GPUBuffer[], shader: string) => {
       const pipeline = device.createComputePipeline({
         layout: 'auto',
         compute: { module: device.createShaderModule({ code: shader }), entryPoint: 'main' },
@@ -346,7 +338,7 @@ const main = async (canvas: HTMLCanvasElement) => {
         pipeline,
         bindGroup: device.createBindGroup({
           layout: pipeline.getBindGroupLayout(0),
-          entries: [...buffers.flatMap((b) => b.buffers), ...uniforms.map((u) => u.buffer)].map((buffer, binding) => ({
+          entries: [...buffers.flatMap((b) => b.buffers), ...uniformBuffers].map((buffer, binding) => ({
             binding,
             resource: { buffer },
           })),
@@ -368,9 +360,9 @@ const main = async (canvas: HTMLCanvasElement) => {
       dye_radius,
       dye_diffusion,
       contain_fluid,
-      viscosity_amount,
-      vorticity_amount,
-    } = uniforms
+      viscosity: viscosity_value,
+      vorticity: vorticity_value,
+    } = uniformBuffers
     // Pressure programs are used multiple times.
     const pressureProgram = program([pressure, divergence, pressure0], [grid_size], shaders.pressure),
       boundaryPressureProgram = program([pressure0, pressure], [grid_size], shaders.boundaryPressure)
@@ -396,10 +388,10 @@ const main = async (canvas: HTMLCanvasElement) => {
         ...Array.from({ length: pressure_iterations }, () => [pressureProgram, boundaryPressureProgram]).flat(),
         // Subtract the pressure from the velocity field.
         program([pressure, velocity0, velocity], [grid_size], shaders.gradientSubtract),
-        program([pressure, pressure0], [grid_size, viscosity_amount], shaders.clearPressure),
+        program([pressure, pressure0], [grid_size, viscosity_value], shaders.clearPressure),
         // Compute and apply vorticity confinment.
         program([velocity, vorticity], [grid_size], shaders.vorticity),
-        program([velocity, vorticity, velocity0], [grid_size, dt, vorticity_amount], shaders.vorticityConfinment),
+        program([velocity, vorticity, velocity0], [grid_size, dt, vorticity_value], shaders.vorticityConfinment),
         // Advect the dye through the velocity field.
         program([dye0, velocity0, dye], [grid_size, dt], shaders.advectDye),
       ],
@@ -455,13 +447,12 @@ const main = async (canvas: HTMLCanvasElement) => {
       uniformUpdateValues.mouse = [...mouseInfo.pos, ...mouseInfo.velocity]
     }
     Object.entries(uniformUpdateValues).forEach(([name, value]) => {
-      updateBuffer(uniforms[name].buffer, value)
+      updateBuffer(uniformBuffers[name], value)
       delete uniformUpdateValues[name]
     })
-    Object.values(uniforms)
-      .filter((u) => u.alwaysUpdate)
-      .forEach((u) => updateBuffer(u.buffer, [parseFloat(settings[u.name])]))
-    updateBuffer(uniforms.smoke_parameters.buffer, [
+    updateBuffer(uniformBuffers.dt, [parseFloat(settings.dt)])
+    updateBuffer(uniformBuffers.time, [parseFloat(settings.time)])
+    updateBuffer(uniformBuffers.smoke_parameters, [
       settings.raymarch_steps,
       settings.smoke_density,
       settings.enable_shadows ? 1 : 0,
