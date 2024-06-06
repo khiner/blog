@@ -16,22 +16,18 @@ const updateVelocity = `
 ${StructGridSize}
 ${StructMouse}
 
-@group(0) @binding(0) var<storage, read> x_in : array<f32>;
-@group(0) @binding(1) var<storage, read> y_in : array<f32>;
-@group(0) @binding(2) var<storage, read_write> x_out : array<f32>;
-@group(0) @binding(3) var<storage, read_write> y_out : array<f32>;
-@group(0) @binding(4) var<uniform> uGrid: GridSize;
-@group(0) @binding(5) var<uniform> uMouse: Mouse;
-@group(0) @binding(6) var<uniform> uForce : f32;
-@group(0) @binding(7) var<uniform> uRadius : f32;
-@group(0) @binding(8) var<uniform> uDiffusion : f32;
-@group(0) @binding(9) var<uniform> uDt : f32;
-@group(0) @binding(10) var<uniform> uTime : f32;
+@group(0) @binding(0) var<storage, read> v_in : array<vec2<f32>>;
+@group(0) @binding(1) var<storage, read_write> v_out : array<vec2<f32>>;
+@group(0) @binding(2) var<uniform> uGrid: GridSize;
+@group(0) @binding(3) var<uniform> uMouse: Mouse;
+@group(0) @binding(4) var<uniform> uForce : f32;
+@group(0) @binding(5) var<uniform> uRadius : f32;
+@group(0) @binding(6) var<uniform> uDiffusion : f32;
+@group(0) @binding(7) var<uniform> uDt : f32;
+@group(0) @binding(8) var<uniform> uTime : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
-fn inBetween(x : f32, lower : f32, upper : f32) -> bool {
-  return x > lower && x < upper;
-}
+fn inBetween(x : f32, lower : f32, upper : f32) -> bool { return x > lower && x < upper; }
 fn inBounds(pos : vec2<f32>, xMin : f32, xMax : f32, yMin: f32, yMax : f32) -> bool {
   return inBetween(pos.x, xMin * uGrid.w, xMax * uGrid.w) && inBetween(pos.y, yMin * uGrid.h, yMax * uGrid.h);
 }
@@ -49,10 +45,9 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     ${ComputeStartInterior}
 
     let tmpT = uTime;
-    var p = pos/vec2(uGrid.w, uGrid.h);
+    var p = pos / vec2(uGrid.w, uGrid.h);
     var splat = createSplat(p, uMouse.pos,  uMouse.vel*2., uRadius) * uForce * uDt * 200.;
-    x_out[index] = x_in[index]*uDiffusion + splat.x;
-    y_out[index] = y_in[index]*uDiffusion + splat.y;
+    v_out[index] = v_in[index]*uDiffusion + splat;
 }`
 
 const updateDye = `
@@ -74,9 +69,7 @@ ${StructMouse}
 @group(0) @binding(12) var<uniform> uDt : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.dyeW); }
-fn inBetween(x : f32, lower : f32, upper : f32) -> bool {
-  return x > lower && x < upper;
-}
+fn inBetween(x : f32, lower : f32, upper : f32) -> bool { return x > lower && x < upper; }
 fn inBounds(pos : vec2<f32>, xMin : f32, xMax : f32, yMin: f32, yMax : f32) -> bool {
   return inBetween(pos.x, xMin * uGrid.dyeW, xMax * uGrid.dyeW) && inBetween(pos.y, yMin * uGrid.dyeH, yMax * uGrid.dyeH);
 }
@@ -101,8 +94,8 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     let col_incr = 0.15;
     let col_start = palette(uTime/8., vec3(1), vec3(0.5), vec3(1), vec3(0, col_incr, col_incr*2.));
 
-    var p = pos/vec2(uGrid.dyeW, uGrid.dyeH);
-    var splat = createSplat(p, uMouse.pos,  uMouse.vel*2., uRadius) * col_start * uForce * uDt * 100.;
+    var p = pos / vec2(uGrid.dyeW, uGrid.dyeH);
+    var splat = createSplat(p, uMouse.pos, uMouse.vel*2., uRadius) * col_start * uForce * uDt * 100.;
 
     x_out[index] = max(0., x_in[index]*uDiffusion + splat.x);
     y_out[index] = max(0., y_in[index]*uDiffusion + splat.y);
@@ -112,47 +105,35 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 const advect = `
 ${StructGridSize}
 
-@group(0) @binding(0) var<storage, read> x_in : array<f32>;
-@group(0) @binding(1) var<storage, read> y_in : array<f32>;
-@group(0) @binding(2) var<storage, read> x_vel : array<f32>;
-@group(0) @binding(3) var<storage, read> y_vel : array<f32>;
-@group(0) @binding(4) var<storage, read_write> x_out : array<f32>;
-@group(0) @binding(5) var<storage, read_write> y_out : array<f32>;
-@group(0) @binding(6) var<uniform> uGrid : GridSize;
-@group(0) @binding(7) var<uniform> uDt : f32;
+@group(0) @binding(0) var<storage, read> p_in : array<vec2<f32>>;
+@group(0) @binding(1) var<storage, read> v_in : array<vec2<f32>>;
+@group(0) @binding(2) var<storage, read_write> p_out : array<vec2<f32>>;
+@group(0) @binding(3) var<uniform> uGrid : GridSize;
+@group(0) @binding(4) var<uniform> uDt : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
-fn in(x : f32, y : f32) -> vec2<f32> { let id = ID(x, y); return vec2(x_in[id], y_in[id]); }
+fn in(x : f32, y : f32) -> vec2<f32> { return p_in[ID(x, y)]; }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     ${ComputeStartInterior}
-    
-    var x = pos.x - uDt * uGrid.rdx * x_vel[index];
-    var y = pos.y - uDt * uGrid.rdx * y_vel[index];
 
-    if (x < 0) { x = 0; }
-    else if (x >= uGrid.w - 1) { x = uGrid.w - 1; }
-    if (y < 0) { y = 0; }
-    else if (y >= uGrid.h - 1) { y = uGrid.h - 1; }
+    var p = pos - uDt * uGrid.rdx * v_in[index];
+    if (p.x < 0) { p.x = 0; }
+    else if (p.x >= uGrid.w - 1) { p.x = uGrid.w - 1; }
+    if (p.y < 0) { p.y = 0; }
+    else if (p.y >= uGrid.h - 1) { p.y = uGrid.h - 1; }
 
-    let x1 = floor(x);
-    let y1 = floor(y);
-    let x2 = x1 + 1;
-    let y2 = y1 + 1;
+    let p1 = floor(p);
+    let p2 = p1 + 1;
 
-    let TL = in(x1, y2);
-    let TR = in(x2, y2);
-    let BL = in(x1, y1);
-    let BR = in(x2, y1);
+    let TL = in(p1.x, p2.y);
+    let TR = in(p2.x, p2.y);
+    let BL = in(p1.x, p1.y);
+    let BR = in(p2.x, p1.y);
 
-    let xMod = fract(x);
-    let yMod = fract(y);
-    
-    let bilerp = mix( mix(BL, BR, xMod), mix(TL, TR, xMod), yMod );
-
-    x_out[index] = bilerp.x;
-    y_out[index] = bilerp.y;
+    let m = vec2(fract(p.x), fract(p.y));
+    p_out[index] = mix(mix(BL, BR, m.x), mix(TL, TR, m.x), m.y);
 }`
 
 const advectDye = `
@@ -161,74 +142,58 @@ ${StructGridSize}
 @group(0) @binding(0) var<storage, read> x_in : array<f32>;
 @group(0) @binding(1) var<storage, read> y_in : array<f32>;
 @group(0) @binding(2) var<storage, read> z_in : array<f32>;
-@group(0) @binding(3) var<storage, read> x_vel : array<f32>;
-@group(0) @binding(4) var<storage, read> y_vel : array<f32>;
-@group(0) @binding(5) var<storage, read_write> x_out : array<f32>;
-@group(0) @binding(6) var<storage, read_write> y_out : array<f32>;
-@group(0) @binding(7) var<storage, read_write> z_out : array<f32>;
-@group(0) @binding(8) var<uniform> uGrid : GridSize;
-@group(0) @binding(9) var<uniform> uDt : f32;
+@group(0) @binding(3) var<storage, read> v_in : array<vec2<f32>>;
+@group(0) @binding(4) var<storage, read_write> x_out : array<f32>;
+@group(0) @binding(5) var<storage, read_write> y_out : array<f32>;
+@group(0) @binding(6) var<storage, read_write> z_out : array<f32>;
+@group(0) @binding(7) var<uniform> uGrid : GridSize;
+@group(0) @binding(8) var<uniform> uDt : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.dyeW); }
 fn in(x : f32, y : f32) -> vec3<f32> { let id = ID(x, y); return vec3(x_in[id], y_in[id], z_in[id]); }
 fn vel(x : f32, y : f32) -> vec2<f32> { 
   let id = u32(i32(x) + i32(y) * i32(uGrid.w));
-  return vec2(x_vel[id], y_vel[id]);
+  return v_in[id];
 }
 
 fn vel_bilerp(x0 : f32, y0 : f32) -> vec2<f32> {
     var x = x0 * uGrid.w / uGrid.dyeW;
     var y = y0 * uGrid.h / uGrid.dyeH;
-
     if (x < 0) { x = 0; }
     else if (x >= uGrid.w - 1) { x = uGrid.w - 1; }
     if (y < 0) { y = 0; }
     else if (y >= uGrid.h - 1) { y = uGrid.h - 1; }
 
-    let x1 = floor(x);
-    let y1 = floor(y);
-    let x2 = x1 + 1;
-    let y2 = y1 + 1;
+    let p1 = vec2(floor(x), floor(y));
+    let p2 = p1 + 1;
+    let TL = vel(p1.x, p2.y);
+    let TR = vel(p2.x, p2.y);
+    let BL = vel(p1.x, p1.y);
+    let BR = vel(p2.x, p1.y);
 
-    let TL = vel(x1, y2);
-    let TR = vel(x2, y2);
-    let BL = vel(x1, y1);
-    let BR = vel(x2, y1);
-
-    let xMod = fract(x);
-    let yMod = fract(y);
-
-    return mix( mix(BL, BR, xMod), mix(TL, TR, xMod), yMod );
+    let m = vec2(fract(x), fract(y));
+    return mix( mix(BL, BR, m.x), mix(TL, TR, m.x), m.y );
 }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     ${ComputeStartDye}
 
-    let V = vel_bilerp(pos.x, pos.y);
+    var p = pos - uDt * uGrid.dyeRdx * vel_bilerp(pos.x, pos.y);
+    if (p.x < 0) { p.x = 0; }
+    else if (p.x >= uGrid.dyeW - 1) { p.x = uGrid.dyeW - 1; }
+    if (p.y < 0) { p.y = 0; }
+    else if (p.y >= uGrid.dyeH - 1) { p.y = uGrid.dyeH - 1; }
 
-    var x = pos.x - uDt * uGrid.dyeRdx * V.x;
-    var y = pos.y - uDt * uGrid.dyeRdx * V.y;
+    let p1 = floor(p);
+    let p2 = p1 + 1;
+    let TL = in(p1.x, p2.y);
+    let TR = in(p2.x, p2.y);
+    let BL = in(p1.x, p1.y);
+    let BR = in(p2.x, p1.y);
 
-    if (x < 0) { x = 0; }
-    else if (x >= uGrid.dyeW - 1) { x = uGrid.dyeW - 1; }
-    if (y < 0) { y = 0; }
-    else if (y >= uGrid.dyeH - 1) { y = uGrid.dyeH - 1; }
-
-    let x1 = floor(x);
-    let y1 = floor(y);
-    let x2 = x1 + 1;
-    let y2 = y1 + 1;
-
-    let TL = in(x1, y2);
-    let TR = in(x2, y2);
-    let BL = in(x1, y1);
-    let BR = in(x2, y1);
-
-    let xMod = fract(x);
-    let yMod = fract(y);
-
-    let bilerp = mix( mix(BL, BR, xMod), mix(TL, TR, xMod), yMod );
+    let m = fract(p);
+    let bilerp = mix(mix(BL, BR, m.x), mix(TL, TR, m.x), m.y);
 
     x_out[index] = bilerp.x;
     y_out[index] = bilerp.y;
@@ -238,13 +203,12 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 const divergence = `
 ${StructGridSize}
 
-@group(0) @binding(0) var<storage, read> x_vel : array<f32>;
-@group(0) @binding(1) var<storage, read> y_vel : array<f32>;
-@group(0) @binding(2) var<storage, read_write> div : array<f32>;
-@group(0) @binding(3) var<uniform> uGrid : GridSize;
+@group(0) @binding(0) var<storage, read> v_in : array<vec2<f32>>;
+@group(0) @binding(1) var<storage, read_write> div : array<f32>;
+@group(0) @binding(2) var<uniform> uGrid : GridSize;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
-fn vel(x : f32, y : f32) -> vec2<f32> { let id = ID(x, y); return vec2(x_vel[id], y_vel[id]); }
+fn vel(x : f32, y : f32) -> vec2<f32> { return v_in[ID(x, y)]; }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
@@ -272,7 +236,7 @@ fn in(x : f32, y : f32) -> f32 { let id = ID(x, y); return pres_in[id]; }
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   ${ComputeStartInterior}
-        
+
   let L = pos - vec2(1, 0);
   let R = pos + vec2(1, 0);
   let B = pos - vec2(0, 1);
@@ -284,7 +248,6 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   let Tx = in(T.x, T.y);
 
   let bC = div[index];
-
   let alpha = -(uGrid.dx * uGrid.dx);
   let rBeta = .25;
 
@@ -295,11 +258,9 @@ const gradientSubtract = `
 ${StructGridSize}
 
 @group(0) @binding(0) var<storage, read> pressure : array<f32>;
-@group(0) @binding(1) var<storage, read> x_vel : array<f32>;
-@group(0) @binding(2) var<storage, read> y_vel : array<f32>;
-@group(0) @binding(3) var<storage, read_write> x_out : array<f32>;
-@group(0) @binding(4) var<storage, read_write> y_out : array<f32>;
-@group(0) @binding(5) var<uniform> uGrid : GridSize;
+@group(0) @binding(1) var<storage, read> v_in : array<vec2<f32>>;
+@group(0) @binding(2) var<storage, read_write> v_out : array<vec2<f32>>;
+@group(0) @binding(3) var<uniform> uGrid : GridSize;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
 fn pres(x : f32, y : f32) -> f32 { let id = ID(x, y); return pressure[id]; }
@@ -318,23 +279,18 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   let yB = pres(B.x, B.y);
   let yT = pres(T.x, T.y);
   
-  let finalX = x_vel[index] - .5 * uGrid.rdx * (xR - xL);
-  let finalY = y_vel[index] - .5 * uGrid.rdx * (yT - yB);
-
-  x_out[index] = finalX;
-  y_out[index] = finalY;
+  v_out[index] = v_in[index] - .5 * uGrid.rdx * vec2(xR - xL, yT - yB);
 }`
 
-const vorticity = `      
+const vorticity = `
 ${StructGridSize}
 
-@group(0) @binding(0) var<storage, read> x_vel : array<f32>;
-@group(0) @binding(1) var<storage, read> y_vel : array<f32>;
-@group(0) @binding(2) var<storage, read_write> vorticity : array<f32>;
-@group(0) @binding(3) var<uniform> uGrid : GridSize;
+@group(0) @binding(0) var<storage, read> v_in : array<vec2<f32>>;
+@group(0) @binding(1) var<storage, read_write> vorticity : array<f32>;
+@group(0) @binding(2) var<uniform> uGrid : GridSize;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
-fn vel(x : f32, y : f32) -> vec2<f32> { let id = ID(x, y); return vec2(x_vel[id], y_vel[id]); }
+fn vel(x : f32, y : f32) -> vec2<f32> { return v_in[ID(x, y)]; }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
@@ -348,17 +304,15 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   vorticity[index] = 0.5 * uGrid.rdx * ((Ry - Ly) - (Tx - Bx));
 }`
 
-const vorticityConfinment = `      
+const vorticityConfinment = `
 ${StructGridSize}
 
-@group(0) @binding(0) var<storage, read> x_vel_in : array<f32>;
-@group(0) @binding(1) var<storage, read> y_vel_in : array<f32>;
-@group(0) @binding(2) var<storage, read> vorticity : array<f32>;
-@group(0) @binding(3) var<storage, read_write> x_vel_out : array<f32>;
-@group(0) @binding(4) var<storage, read_write> y_vel_out : array<f32>;
-@group(0) @binding(5) var<uniform> uGrid : GridSize;
-@group(0) @binding(6) var<uniform> uDt : f32;
-@group(0) @binding(7) var<uniform> uVorticity : f32;
+@group(0) @binding(0) var<storage, read> v_in : array<vec2<f32>>;
+@group(0) @binding(1) var<storage, read> vorticity : array<f32>;
+@group(0) @binding(2) var<storage, read_write> v_out : array<vec2<f32>>;
+@group(0) @binding(3) var<uniform> uGrid : GridSize;
+@group(0) @binding(4) var<uniform> uDt : f32;
+@group(0) @binding(5) var<uniform> uVorticity : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
 fn vort(x : f32, y : f32) -> f32 { let id = ID(x, y); return vorticity[id]; }
@@ -381,8 +335,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   force = force / sqrt(magSqr);
   force *= uGrid.dx * uVorticity * uDt * C * vec2(1, -1);
 
-  x_vel_out[index] = x_vel_in[index] + force.x;
-  y_vel_out[index] = y_vel_in[index] + force.y;
+  v_out[index] = v_in[index] + force;
 }`
 
 const clearPressure = `
@@ -405,12 +358,10 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 const boundary = `
 ${StructGridSize}
 
-@group(0) @binding(0) var<storage, read> x_in : array<f32>;
-@group(0) @binding(1) var<storage, read> y_in : array<f32>;
-@group(0) @binding(2) var<storage, read_write> x_out : array<f32>;
-@group(0) @binding(3) var<storage, read_write> y_out : array<f32>;
-@group(0) @binding(4) var<uniform> uGrid : GridSize;
-@group(0) @binding(5) var<uniform> containFluid : f32;
+@group(0) @binding(0) var<storage, read> p_in : array<vec2<f32>>;
+@group(0) @binding(1) var<storage, read_write> p_out : array<vec2<f32>>;
+@group(0) @binding(2) var<uniform> uGrid : GridSize;
+@group(0) @binding(3) var<uniform> containFluid : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
 
@@ -419,21 +370,16 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   ${ComputeStartAll}
 
   // disable scale to disable contained bounds
-  var scaleX = 1.;
-  var scaleY = 1.;
+  var scale = vec2(1.);
 
-  if (pos.x == 0) { pos.x += 1; scaleX = -1.; }
-  else if (pos.x == uGrid.w - 1) { pos.x -= 1; scaleX = -1.; }
-  if (pos.y == 0) { pos.y += 1; scaleY = -1.; }
-  else if (pos.y == uGrid.h - 1) { pos.y -= 1; scaleY = -1.; }
+  if (pos.x == 0) { pos.x += 1; scale.x = -1.; }
+  else if (pos.x == uGrid.w - 1) { pos.x -= 1; scale.x = -1.; }
+  if (pos.y == 0) { pos.y += 1; scale.y = -1.; }
+  else if (pos.y == uGrid.h - 1) { pos.y -= 1; scale.y = -1.; }
 
-  if (containFluid == 0.) {
-    scaleX = 1.;
-    scaleY = 1.;
-  }
+  if (containFluid == 0.) { scale = vec2(1.); }
 
-  x_out[index] = x_in[ID(pos.x, pos.y)] * scaleX;
-  y_out[index] = y_in[ID(pos.x, pos.y)] * scaleY;
+  p_out[index] = p_in[ID(pos.x, pos.y)] * scale;
 }`
 
 const boundaryPressure = `
@@ -470,27 +416,27 @@ fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.dyeW); }
 
 fn noise(p_ : vec3<f32>) -> f32 {
   var p = p_;
-  var ip=floor(p);
-  p-=ip; 
-  var s=vec3(7.,157.,113.);
-  var h=vec4(0.,s.y, s.z,s.y+s.z)+dot(ip,s);
-  p=p*p*(3. - 2.*p); 
-  h=mix(fract(sin(h)*43758.5),fract(sin(h+s.x)*43758.5),p.x);
-  var r=mix(h.xz,h.yw,p.y);
+  var ip = floor(p);
+  p -= ip; 
+  var s = vec3(7.,157.,113.);
+  var h = vec4(0., s.y, s.z, s.y+s.z) + dot(ip, s);
+  p = p * p * (3 - 2*p); 
+  h = mix(fract(sin(h) * 43758.5), fract(sin(h + s.x)*43758.5), p.x);
+  var r = mix(h.xz, h.yw, p.y);
   h.x = r.x;
   h.y = r.y;
-  return mix(h.x,h.y,p.z); 
+  return mix(h.x, h.y, p.z); 
 }
 
 fn fbm(p_ : vec3<f32>, octaveNum : i32) -> vec2<f32> {
-  var p=p_;
+  var p = p_;
   var acc = vec2(0.);	
   var freq = 1.0;
   var amp = 0.5;
   var shift = vec3(100.);
   for (var i = 0; i < octaveNum; i++) {
-    acc += vec2(noise(p), noise(p + vec3(0.,0.,10.))) * amp;
-    p = p * 2.0 + shift;
+    acc += vec2(noise(p), noise(p + vec3(0, 0, 10))) * amp;
+    p = 2*p + shift;
     amp *= 0.5;
   }
   return acc;
@@ -500,7 +446,7 @@ fn fbm(p_ : vec3<f32>, octaveNum : i32) -> vec2<f32> {
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   ${ComputeStartDye}
 
-  var uv = pos/vec2(uGrid.dyeW, uGrid.dyeH);
+  var uv = pos / vec2(uGrid.dyeW, uGrid.dyeH);
   var zoom = 4.;
 
   var smallNoise = fbm(vec3(uv.x*zoom*2., uv.y*zoom*2., uTime+2.145), 7) - .5;
@@ -550,30 +496,25 @@ struct SmokeData {
 @group(0) @binding(8) var<uniform> smokeData : SmokeData;
 
 @vertex
-fn vertex_main(@location(0) position: vec4<f32>) -> VertexOut
-{
+fn vertex_main(@location(0) position: vec4<f32>) -> VertexOut {
     var output : VertexOut;
     output.position = position;
     output.uv = position.xy*.5+.5;
     return output;
 }
 
-fn hash12(p: vec2<f32>) -> f32
-{
+fn hash12(p: vec2<f32>) -> f32 {
   var p3: vec3<f32>  = fract(vec3(p.xyx) * .1031);
   p3 += dot(p3, p3.yzx + 33.33);
   return fract((p3.x + p3.y) * p3.z);
 }
 
-fn getDye(pos : vec3<f32>) -> vec3<f32>
-{
+fn getDye(pos : vec3<f32>) -> vec3<f32> {
   var uv = pos.xy;
   uv.x *= uGrid.h / uGrid.w;
   uv = uv * 0.5 + 0.5;
 
-  if(max(uv.x, uv.y) > 1. || min(uv.x, uv.y) < 0.) {
-      return vec3(0);
-  }
+  if(max(uv.x, uv.y) > 1. || min(uv.x, uv.y) < 0.) { return vec3(0); }
 
   uv = floor(uv*vec2(uGrid.dyeW, uGrid.dyeH));
   let id = u32(uv.x + uv.y * uGrid.dyeW);
@@ -581,14 +522,11 @@ fn getDye(pos : vec3<f32>) -> vec3<f32>
   return vec3(fieldX[id], fieldY[id], fieldZ[id]);
 }
 
-fn getLevel(dye: vec3<f32>) -> f32
-{
-  return max(dye.r, max(dye.g, dye.b));
-}
+fn getLevel(dye: vec3<f32>) -> f32 { return max(dye.r, max(dye.g, dye.b)); }
 
 fn getMousePos() -> vec2<f32> {
   var pos = uMouse.pos;
-  pos = (pos - .5) * 2.;
+  pos = 2 * (pos - .5);
   pos.x *= uGrid.w / uGrid.h;
   return pos;
 }
@@ -596,13 +534,11 @@ fn getMousePos() -> vec2<f32> {
 fn getShadow(p: vec3<f32>, lightPos: vec3<f32>, fogSlice: f32) -> f32 {
   let lightDir: vec3<f32> = normalize(lightPos - p);
   let lightDist: f32 = pow(max(0., dot(lightPos - p, lightPos - p) - smokeData.lightIntensity + 1.), smokeData.lightFalloff);
-  var shadowDist: f32 = 0.;
+  var shadowDist: f32 = 0;
   
   for (var i: f32 = 1.; i <= smokeData.raymarchSteps; i += 1.) {
       let sp: vec3<f32> = p + mix(0., lightDist*smokeData.smokeHeight, i / smokeData.raymarchSteps) * lightDir;
-      if (sp.z > smokeData.smokeHeight) {
-        break;
-      }
+      if (sp.z > smokeData.smokeHeight) { break; }
 
       let height: f32 = getLevel(getDye(sp)) * smokeData.smokeHeight;
       shadowDist += min(max(0., height - sp.z), fogSlice);

@@ -15,13 +15,15 @@ class DynamicBuffer {
   nDims: number
   dim: Dimension
   buffers: GPUBuffer[]
+  numFloats?: number
 
-  constructor(device: GPUDevice, nDims: number, dim: Dimension) {
+  constructor(device: GPUDevice, nDims: number, dim: Dimension, numFloats = 1) {
     this.nDims = nDims
     this.dim = dim
+    this.numFloats = numFloats
     this.buffers = Array.from({ length: nDims }, () =>
       device.createBuffer({
-        size: dim.w * dim.h * FLOAT_BYTES,
+        size: dim.w * dim.h * FLOAT_BYTES * numFloats,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
       }),
     )
@@ -34,13 +36,15 @@ class DynamicBuffer {
         0,
         buffer.buffers[Math.min(i, buffer.buffers.length - 1)],
         0,
-        this.dim.w * this.dim.h * FLOAT_BYTES,
+        this.dim.w * this.dim.h * FLOAT_BYTES * this.numFloats,
       )
     }
   }
 
   clear(queue: GPUQueue) {
-    this.buffers.forEach((buffer) => queue.writeBuffer(buffer, 0, new Float32Array(this.dim.w * this.dim.h)))
+    this.buffers.forEach((buffer) =>
+      queue.writeBuffer(buffer, 0, new Float32Array(this.dim.w * this.dim.h * this.numFloats)),
+    )
   }
 }
 
@@ -133,8 +137,8 @@ const main = async (canvas: HTMLCanvasElement) => {
   const initBuffers = () => {
     const { grid_dim, dye_dim } = settings
     return {
-      velocity: new DynamicBuffer(device, 2, grid_dim),
-      velocity0: new DynamicBuffer(device, 2, grid_dim),
+      velocity: new DynamicBuffer(device, 1, grid_dim, 2),
+      velocity0: new DynamicBuffer(device, 1, grid_dim, 2),
       dye: new DynamicBuffer(device, 3, dye_dim),
       dye0: new DynamicBuffer(device, 3, dye_dim),
       divergence: new DynamicBuffer(device, 1, grid_dim),
