@@ -1,35 +1,40 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 import { main } from './sim/main'
 
 export default () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
   useEffect(() => {
-    // todo catch error
-    if (canvasRef.current) main(canvasRef.current)
+    const runMain = async () => {
+      if (canvasRef.current) {
+        try {
+          await main(canvasRef.current)
+        } catch (e) {
+          setErrorMessage(e.message)
+        }
+      }
+    }
+
+    runMain()
   }, [])
 
   return (
     <div>
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-        }}
-      ></canvas>
-      {/* <div className="webgpu-not-supported">
-        <p>
-          WebGPU doesn't appear to be enabled / supported on this browser. <br />
-          Check if your browser has any update available!
-        </p>
-        <a href="https://developer.chrome.com/en/docs/web-platform/webgpu/#use">
-          https://developer.chrome.com/en/docs/web-platform/webgpu/#use
-        </a>
-      </div> */}
+      {!errorMessage && (
+        <canvas
+          ref={canvasRef}
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+        ></canvas>
+      )}
+      {errorMessage && (
+        <div style={{ padding: 10 }}>
+          <p>
+            WebGPU is not supported on this browser. <i>Error: {errorMessage}</i>
+          </p>
+        </div>
+      )}
     </div>
   )
 }

@@ -103,20 +103,14 @@ const settings = {
 }
 
 const main = async (canvas: HTMLCanvasElement) => {
-  if (navigator.gpu == null) throw 'WebGPU NOT Supported'
+  if (navigator.gpu == null) throw new Error('WebGPU NOT Supported')
 
   const adapter = await navigator.gpu.requestAdapter()
-  if (!adapter) throw 'No adapter found'
+  if (!adapter) throw new Error('No adapter found')
 
   const device = await adapter.requestDevice()
   const context = canvas.getContext('webgpu')
-  if (!context) throw 'Canvas does not support WebGPU'
-
-  const onWebGPUDetectionError = (error) => {
-    console.log('Could not initialize WebGPU: ' + error)
-    document.querySelector('.webgpu-not-supported').style.visibility = 'visible'
-    return false
-  }
+  if (!context) throw new Error('Canvas does not support WebGPU')
 
   const initSizes = (canvas: HTMLCanvasElement) => {
     const scaleDims = (size: number) => {
