@@ -14,7 +14,7 @@ class DynamicBuffer {
   dim: Dimension
   buffers: GPUBuffer[]
 
-  constructor({ nDims, dim }: { nDims: number; dim: Dimension }) {
+  constructor(device: GPUDevice, nDims: number, dim: Dimension) {
     this.nDims = nDims
     this.dim = dim
     this.buffers = Array.from({ length: nDims }, () =>
@@ -102,15 +102,13 @@ const settings = {
   light_falloff: 1,
 }
 
-let device
-
 const main = async (canvas: HTMLCanvasElement) => {
   if (navigator.gpu == null) throw 'WebGPU NOT Supported'
 
   const adapter = await navigator.gpu.requestAdapter()
   if (!adapter) throw 'No adapter found'
 
-  device = await adapter.requestDevice()
+  const device = await adapter.requestDevice()
   const context = canvas.getContext('webgpu')
   if (!context) throw 'Canvas does not support WebGPU'
 
@@ -120,42 +118,19 @@ const main = async (canvas: HTMLCanvasElement) => {
     return false
   }
 
-  // Init buffer & canvas dimensions to fit the screen while keeping the aspect ratio
-  // and downscaling the dimensions if they exceed the browsers capabilities
   const initSizes = (canvas: HTMLCanvasElement) => {
-    const aspectRatio = window.innerWidth / window.innerHeight
-    const maxBufferSize = device.limits.maxStorageBufferBindingSize
-    const maxCanvasSize = device.limits.maxTextureDimension2D
-
-    const getPreferredDimensions = (size: number) => {
-      let w, h
-      // Fit to screen while keeping the aspect ratio
-      if (window.innerHeight < window.innerWidth) {
-        w = Math.floor(size * aspectRatio)
-        h = size
-      } else {
-        w = size
-        h = Math.floor(size / aspectRatio)
-      }
-
-      // Downscale if necessary to prevent buffer/canvas size overflow
-      let downRatio = 1
-      if (w * h * 4 >= maxBufferSize) downRatio = Math.sqrt(maxBufferSize / (w * h * 4))
-      if (w > maxCanvasSize) downRatio = maxCanvasSize / w
-      else if (h > maxCanvasSize) downRatio = maxCanvasSize / h
-
-      return {
-        w: Math.floor(w * downRatio),
-        h: Math.floor(h * downRatio),
-      }
+    const scaleDims = (size: number) => {
+      // Fit to screen while keeping the aspect ratio.
+      const aspectRatio = window.innerWidth / window.innerHeight
+      const maxCanvasSize = device.limits.maxTextureDimension2D
+      const dim = aspectRatio > 1 ? { w: size * aspectRatio, h: size } : { w: size, h: size / aspectRatio }
+      // Downscale if necessary to prevent canvas size overflow.
+      const ratio = dim.w > maxCanvasSize ? maxCanvasSize / dim.w : dim.h > maxCanvasSize ? maxCanvasSize / dim.h : 1
+      return { w: Math.floor(dim.w * ratio), h: Math.floor(dim.h * ratio) }
     }
 
-    const gridSize = getPreferredDimensions(settings.grid_size)
-    settings.grid_dim = { w: gridSize.w, h: gridSize.h }
-
-    const dyeSize = getPreferredDimensions(settings.dye_size)
-    settings.dye_dim = { w: dyeSize.w, h: dyeSize.h }
-
+    settings.grid_dim = scaleDims(settings.grid_size)
+    settings.dye_dim = scaleDims(settings.dye_size)
     settings.rdx = settings.grid_size * 4
     settings.dyeRdx = settings.dye_size * 4
     settings.dx = 1 / settings.rdx
@@ -168,16 +143,17 @@ const main = async (canvas: HTMLCanvasElement) => {
 
   // Buffers
   const initBuffers = () => {
+    const { grid_dim, dye_dim } = settings
     return {
-      velocity: new DynamicBuffer({ nDims: 2, dim: settings.grid_dim }),
-      velocity0: new DynamicBuffer({ nDims: 2, dim: settings.grid_dim }),
-      dye: new DynamicBuffer({ nDims: 3, dim: settings.dye_dim }),
-      dye0: new DynamicBuffer({ nDims: 3, dim: settings.dye_dim }),
-      divergence: new DynamicBuffer({ nDims: 1, dim: settings.grid_dim }),
-      divergence0: new DynamicBuffer({ nDims: 1, dim: settings.grid_dim }),
-      pressure: new DynamicBuffer({ nDims: 1, dim: settings.grid_dim }),
-      pressure0: new DynamicBuffer({ nDims: 1, dim: settings.grid_dim }),
-      vorticity: new DynamicBuffer({ nDims: 1, dim: settings.grid_dim }),
+      velocity: new DynamicBuffer(device, 2, grid_dim),
+      velocity0: new DynamicBuffer(device, 2, grid_dim),
+      dye: new DynamicBuffer(device, 3, dye_dim),
+      dye0: new DynamicBuffer(device, 3, dye_dim),
+      divergence: new DynamicBuffer(device, 1, grid_dim),
+      divergence0: new DynamicBuffer(device, 1, grid_dim),
+      pressure: new DynamicBuffer(device, 1, grid_dim),
+      pressure0: new DynamicBuffer(device, 1, grid_dim),
+      vorticity: new DynamicBuffer(device, 1, grid_dim),
     }
   }
 
@@ -293,42 +269,34 @@ const main = async (canvas: HTMLCanvasElement) => {
   }
   Object.entries(uniformProps).forEach(([name, { size, value, min, max, step, onChange, label }]) => {
     const uniformSize = size ?? (Array.isArray(value) ? value.length : 1)
-    let needsUpdate = false
-    let alwaysUpdate = false
-    let buffer: GPUBuffer
+    const alwaysUpdate = uniformSize === 1 && settings[name] == null
 
     if (uniformSize === 1) {
       if (settings[name] == null) {
         settings[name] = value ?? 0
-        alwaysUpdate = true
       } else if (label) {
         gui
           .add(settings, name, min, max, step)
           .onChange((v) => {
             onChange?.(v)
-            needsUpdate = true
+            uniforms[name].needsUpdate = true
           })
-          .name(label ?? name)
+          .name(label)
       }
     }
 
-    if (uniformSize === 1 || value != null) {
-      buffer = device.createBuffer({
-        size: uniformSize * 4,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true,
-      })
-
+    const mappedAtCreation = uniformSize === 1 || value != null
+    const buffer = device.createBuffer({
+      size: uniformSize * 4,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      mappedAtCreation,
+    })
+    if (mappedAtCreation) {
       new Float32Array(buffer.getMappedRange()).set(new Float32Array(value ?? [settings[name]]))
       buffer.unmap()
-    } else {
-      buffer = device.createBuffer({
-        size: uniformSize * 4,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      })
     }
 
-    uniforms[name] = { name, size: uniformSize, needsUpdate, alwaysUpdate, buffer }
+    uniforms[name] = { name, size: uniformSize, alwaysUpdate, needsUpdate: false, buffer }
   })
 
   // Renders 3 (r, g, b) storage buffers to the canvas
@@ -363,7 +331,7 @@ const main = async (canvas: HTMLCanvasElement) => {
       },
       primitive: { topology: 'triangle-list' },
     })
-    const dyeBuffer = new DynamicBuffer({ nDims: 3, dim: settings.dye_dim })
+    const dyeBuffer = new DynamicBuffer(device, 3, settings.dye_dim)
 
     return {
       pipeline,
@@ -448,7 +416,7 @@ const main = async (canvas: HTMLCanvasElement) => {
         // Subtract the pressure from the velocity field.
         program([pressure, velocity0, velocity], [grid_size], shaders.gradientSubtract),
         program([pressure, pressure0], [grid_size, viscosity_amount], shaders.clearPressure),
-        // Compute & apply vorticity confinment.
+        // Compute and apply vorticity confinment.
         program([velocity, vorticity], [grid_size], shaders.vorticity),
         program([velocity, vorticity, velocity0], [grid_size, dt, vorticity_amount], shaders.vorticityConfinment),
         // Advect the dye through the velocity field.
@@ -472,6 +440,7 @@ const main = async (canvas: HTMLCanvasElement) => {
   })
 
   buffers = initBuffers()
+
   let programs = createPrograms()
 
   settings.reset = () => {
@@ -521,9 +490,10 @@ const main = async (canvas: HTMLCanvasElement) => {
     })
     computePass.end()
 
-    const { render } = programs
     buffers.velocity0.copyTo(buffers.velocity, command)
     buffers.pressure0.copyTo(buffers.pressure, command)
+    const { render } = programs
+    // todo why can't this be pulled out of the render loop?
     const bufferForRenderMode: Record<RenderMode, DynamicBuffer> = {
       [RenderMode.Classic]: buffers.dye,
       [RenderMode.Smoke2D]: buffers.dye,
