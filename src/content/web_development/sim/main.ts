@@ -8,6 +8,8 @@ interface Dimension {
   h: number
 }
 
+const FLOAT_BYTES = 4
+
 // Manages a buffer for each dimension.
 class DynamicBuffer {
   nDims: number
@@ -19,7 +21,7 @@ class DynamicBuffer {
     this.dim = dim
     this.buffers = Array.from({ length: nDims }, () =>
       device.createBuffer({
-        size: dim.w * dim.h * 4,
+        size: dim.w * dim.h * FLOAT_BYTES,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
       }),
     )
@@ -32,7 +34,7 @@ class DynamicBuffer {
         0,
         buffer.buffers[Math.min(i, buffer.buffers.length - 1)],
         0,
-        this.dim.w * this.dim.h * 4,
+        this.dim.w * this.dim.h * FLOAT_BYTES,
       )
     }
   }
@@ -44,7 +46,7 @@ class DynamicBuffer {
 
 interface UniformProps {
   size?: number
-  value?: number | number[]
+  value?: number[]
   min?: number
   max?: number
   step?: number
@@ -55,8 +57,6 @@ interface UniformProps {
 
 interface Uniform {
   name: string
-  size: number
-  needsUpdate: boolean | number[]
   alwaysUpdate: boolean
   buffer: GPUBuffer
 }
@@ -157,7 +157,7 @@ const main = async (canvas: HTMLCanvasElement) => {
     initSizes(canvas)
     buffers = initBuffers()
     programs = createPrograms()
-    uniforms.grid_size.needsUpdate = [
+    uniformUpdateValues.grid_size = [
       settings.grid_dim.w,
       settings.grid_dim.h,
       settings.dye_dim.w,
@@ -188,22 +188,10 @@ const main = async (canvas: HTMLCanvasElement) => {
   smokeFolder.add(settings, 'shadow_intensity', 0, 50, 0.001).name('Shadow Intensity')
   smokeFolder.hide()
 
-  const updateUniform = (uniform: Uniform, queue: GPUQueue, value = null) => {
-    if (!uniform.needsUpdate && !uniform.alwaysUpdate && value == null) return
-
-    if (typeof uniform.needsUpdate !== 'boolean') value = uniform.needsUpdate
-    queue.writeBuffer(
-      uniform.buffer,
-      0,
-      new Float32Array(value ?? [parseFloat(settings[uniform.name])]),
-      0,
-      uniform.size,
-    )
-    uniform.needsUpdate = false
-  }
+  const uniformUpdateValues: Record<string, number[]> = {}
 
   const uniformProps: Record<string, UniformProps> = {
-    render_intensity_multiplier: { value: 1 },
+    render_intensity_multiplier: { value: [1] },
     render_mode: {
       gui,
       label: 'Render Mode',
@@ -216,10 +204,9 @@ const main = async (canvas: HTMLCanvasElement) => {
         'Debug - Pressure': RenderMode.Pressure,
         'Debug - Vorticity': RenderMode.Vorticity,
       },
-      value: 0,
+      value: [0],
       onChange: (val) => {
-        settings.render_intensity_multiplier = [1, 1, 1, 100, 10, 1e6, 1][parseInt(val)]
-        uniforms.render_intensity_multiplier.needsUpdate = true
+        uniformUpdateValues.render_intensity_multiplier = [[1, 1, 1, 100, 10, 1e6, 1][parseInt(val)]]
         if (val == RenderMode.Smoke3D) smokeFolder.show(), smokeFolder.open()
         else smokeFolder.hide()
       },
@@ -262,7 +249,7 @@ const main = async (canvas: HTMLCanvasElement) => {
     },
   }
   Object.entries(uniformProps).forEach(([name, { size, value, min, max, step, onChange, label }]) => {
-    const uniformSize = size ?? (Array.isArray(value) ? value.length : 1)
+    const uniformSize = size ?? value?.length ?? 1
     const alwaysUpdate = uniformSize === 1 && settings[name] == null
 
     if (uniformSize === 1) {
@@ -273,7 +260,7 @@ const main = async (canvas: HTMLCanvasElement) => {
           .add(settings, name, min, max, step)
           .onChange((v) => {
             onChange?.(v)
-            uniforms[name].needsUpdate = true
+            uniformUpdateValues[name] = [v]
           })
           .name(label)
       }
@@ -281,7 +268,7 @@ const main = async (canvas: HTMLCanvasElement) => {
 
     const mappedAtCreation = uniformSize === 1 || value != null
     const buffer = device.createBuffer({
-      size: uniformSize * 4,
+      size: uniformSize * FLOAT_BYTES,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       mappedAtCreation,
     })
@@ -290,7 +277,7 @@ const main = async (canvas: HTMLCanvasElement) => {
       buffer.unmap()
     }
 
-    uniforms[name] = { name, size: uniformSize, alwaysUpdate, needsUpdate: false, buffer }
+    uniforms[name] = { name, alwaysUpdate, buffer }
   })
 
   // Renders 3 (r, g, b) storage buffers to the canvas
@@ -313,7 +300,7 @@ const main = async (canvas: HTMLCanvasElement) => {
         buffers: [
           {
             attributes: [{ shaderLocation: 0, offset: 0, format: 'float32x4' }],
-            arrayStride: 16,
+            arrayStride: 4 * FLOAT_BYTES,
             stepMode: 'vertex',
           },
         ],
@@ -437,12 +424,17 @@ const main = async (canvas: HTMLCanvasElement) => {
 
   let programs = createPrograms()
 
+  const { queue } = device
   settings.reset = () => {
-    buffers.velocity.clear(device.queue)
-    buffers.dye.clear(device.queue)
-    buffers.pressure.clear(device.queue)
+    buffers.velocity.clear(queue)
+    buffers.dye.clear(queue)
+    buffers.pressure.clear(queue)
 
     settings.time = 0
+  }
+
+  const updateBuffer = (buffer: GPUBuffer, value: number[]) => {
+    queue.writeBuffer(buffer, 0, new Float32Array(value), 0, buffer.size / FLOAT_BYTES)
   }
 
   let lastFrame = performance.now()
@@ -455,19 +447,24 @@ const main = async (canvas: HTMLCanvasElement) => {
     settings.time += settings.dt
     lastFrame = now
 
-    Object.values(uniforms).forEach((u) => updateUniform(u, device.queue))
-
     if (mouseInfo.pos) {
       mouseInfo.velocity = mouseInfo.last
         ? [mouseInfo.pos[0] - mouseInfo.last[0], mouseInfo.pos[1] - mouseInfo.last[1]]
         : [0, 0]
-      updateUniform(uniforms.mouse, device.queue, [...mouseInfo.pos, ...mouseInfo.velocity])
       mouseInfo.last = [...mouseInfo.pos]
+      uniformUpdateValues.mouse = [...mouseInfo.pos, ...mouseInfo.velocity]
     }
-    updateUniform(uniforms.smoke_parameters, device.queue, [
+    Object.entries(uniformUpdateValues).forEach(([name, value]) => {
+      updateBuffer(uniforms[name].buffer, value)
+      delete uniformUpdateValues[name]
+    })
+    Object.values(uniforms)
+      .filter((u) => u.alwaysUpdate)
+      .forEach((u) => updateBuffer(u.buffer, [parseFloat(settings[u.name])]))
+    updateBuffer(uniforms.smoke_parameters.buffer, [
       settings.raymarch_steps,
       settings.smoke_density,
-      settings.enable_shadows,
+      settings.enable_shadows ? 1 : 0,
       settings.shadow_intensity,
       settings.smoke_height,
       settings.light_height,
@@ -506,7 +503,7 @@ const main = async (canvas: HTMLCanvasElement) => {
     renderPass.setVertexBuffer(0, render.vertexBuffer)
     renderPass.draw(6)
     renderPass.end()
-    device.queue.submit([command.finish()])
+    queue.submit([command.finish()])
   }
 
   step()
