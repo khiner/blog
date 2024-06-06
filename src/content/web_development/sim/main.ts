@@ -10,42 +10,9 @@ interface Dimension {
 
 const FLOAT_BYTES = 4
 
-// Manages a buffer for each dimension.
-class DynamicBuffer {
-  nDims: number
+interface Buffer {
   dim: Dimension
-  buffers: GPUBuffer[]
-  numFloats?: number
-
-  constructor(device: GPUDevice, nDims: number, dim: Dimension, numFloats = 1) {
-    this.nDims = nDims
-    this.dim = dim
-    this.numFloats = numFloats
-    this.buffers = Array.from({ length: nDims }, () =>
-      device.createBuffer({
-        size: dim.w * dim.h * FLOAT_BYTES * numFloats,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
-      }),
-    )
-  }
-
-  copyTo(buffer: DynamicBuffer, command: GPUCommandEncoder) {
-    for (let i = 0; i < Math.max(this.nDims, buffer.nDims); i++) {
-      command.copyBufferToBuffer(
-        this.buffers[Math.min(i, this.buffers.length - 1)],
-        0,
-        buffer.buffers[Math.min(i, buffer.buffers.length - 1)],
-        0,
-        this.dim.w * this.dim.h * FLOAT_BYTES * this.numFloats,
-      )
-    }
-  }
-
-  clear(queue: GPUQueue) {
-    this.buffers.forEach((buffer) =>
-      queue.writeBuffer(buffer, 0, new Float32Array(this.dim.w * this.dim.h * this.numFloats)),
-    )
-  }
+  buffer: GPUBuffer
 }
 
 interface UniformProps {
@@ -63,14 +30,10 @@ enum RenderMode {
   Classic,
   Smoke2D,
   Smoke3D,
-  Velocity,
-  Divergence,
-  Pressure,
-  Vorticity,
 }
 
 const settings = {
-  render_mode: 0,
+  render_mode: RenderMode.Classic,
   grid_size: 128,
   grid_dim: { w: 1024, h: 1024 },
   reset: () => {},
@@ -131,26 +94,29 @@ const main = async (canvas: HTMLCanvasElement) => {
     canvas.height = settings.dye_dim.h
   }
 
-  let buffers: Record<string, DynamicBuffer>
-
-  // Buffers
+  const createBuffer = (dim: Dimension, floatsPerElement = 1): Buffer => ({
+    dim,
+    buffer: device.createBuffer({
+      size: dim.w * dim.h * floatsPerElement * FLOAT_BYTES,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+    }),
+  })
   const initBuffers = () => {
     const { grid_dim, dye_dim } = settings
     return {
-      velocity: new DynamicBuffer(device, 1, grid_dim, 2),
-      velocity0: new DynamicBuffer(device, 1, grid_dim, 2),
-      dye: new DynamicBuffer(device, 3, dye_dim),
-      dye0: new DynamicBuffer(device, 3, dye_dim),
-      divergence: new DynamicBuffer(device, 1, grid_dim),
-      divergence0: new DynamicBuffer(device, 1, grid_dim),
-      pressure: new DynamicBuffer(device, 1, grid_dim),
-      pressure0: new DynamicBuffer(device, 1, grid_dim),
-      vorticity: new DynamicBuffer(device, 1, grid_dim),
+      velocity: createBuffer(grid_dim, 2),
+      velocity0: createBuffer(grid_dim, 2),
+      dye: createBuffer(dye_dim, 4),
+      dye0: createBuffer(dye_dim, 4),
+      divergence: createBuffer(grid_dim),
+      divergence0: createBuffer(grid_dim),
+      pressure: createBuffer(grid_dim),
+      pressure0: createBuffer(grid_dim),
+      vorticity: createBuffer(grid_dim),
     }
   }
 
-  const uniformBuffers: Record<string, GPUBuffer> = {}
-
+  let buffers: Record<string, Buffer>
   const onSizeChange = () => {
     initSizes(canvas)
     buffers = initBuffers()
@@ -197,10 +163,6 @@ const main = async (canvas: HTMLCanvasElement) => {
         Classic: RenderMode.Classic,
         'Smoke 2D': RenderMode.Smoke2D,
         'Smoke 3D + Shadows': RenderMode.Smoke3D,
-        'Debug - Velocity': RenderMode.Velocity,
-        'Debug - Divergence': RenderMode.Divergence,
-        'Debug - Pressure': RenderMode.Pressure,
-        'Debug - Vorticity': RenderMode.Vorticity,
       },
       value: [0],
       onChange: (val) => {
@@ -246,6 +208,8 @@ const main = async (canvas: HTMLCanvasElement) => {
       ],
     },
   }
+
+  const uniformBuffers: Record<string, GPUBuffer> = {}
   Object.entries(uniformProps).forEach(([name, { size, value, min, max, step, onChange, label }]) => {
     const uniformSize = size ?? value?.length ?? 1
     if (uniformSize === 1) {
@@ -276,7 +240,6 @@ const main = async (canvas: HTMLCanvasElement) => {
     uniformBuffers[name] = buffer
   })
 
-  // Renders 3 (r, g, b) storage buffers to the canvas
   const createRenderProgram = () => {
     const shaderModule = device.createShaderModule({ code: shaders.render })
     const vertices = new Float32Array([-1, -1, 0, 1, -1, 1, 0, 1, 1, -1, 0, 1, 1, -1, 0, 1, -1, 1, 0, 1, 1, 1, 0, 1])
@@ -308,18 +271,18 @@ const main = async (canvas: HTMLCanvasElement) => {
       },
       primitive: { topology: 'triangle-list' },
     })
-    const dyeBuffer = new DynamicBuffer(device, 3, settings.dye_dim)
+
+    const renderBuffer = createBuffer(settings.dye_dim, 4)
 
     return {
       pipeline,
       vertexBuffer,
-      buffer: dyeBuffer,
+      buffer: renderBuffer,
       bindGroup: device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          ...dyeBuffer.buffers,
+          renderBuffer.buffer,
           uniformBuffers.grid_size,
-          uniformBuffers.time,
           uniformBuffers.mouse,
           uniformBuffers.render_mode,
           uniformBuffers.render_intensity_multiplier,
@@ -333,7 +296,7 @@ const main = async (canvas: HTMLCanvasElement) => {
   }
 
   const createPrograms = () => {
-    const program = (buffers: DynamicBuffer[], uniformBuffers: GPUBuffer[], shader: string) => {
+    const program = (buffers: Buffer[], uniformBuffers: GPUBuffer[], shader: string) => {
       const pipeline = device.createComputePipeline({
         layout: 'auto',
         compute: { module: device.createShaderModule({ code: shader }), entryPoint: 'main' },
@@ -342,7 +305,7 @@ const main = async (canvas: HTMLCanvasElement) => {
         pipeline,
         bindGroup: device.createBindGroup({
           layout: pipeline.getBindGroupLayout(0),
-          entries: [...buffers.flatMap((b) => b.buffers), ...uniformBuffers].map((buffer, binding) => ({
+          entries: [...buffers.map(({ buffer }) => buffer), ...uniformBuffers].map((buffer, binding) => ({
             binding,
             resource: { buffer },
           })),
@@ -416,24 +379,27 @@ const main = async (canvas: HTMLCanvasElement) => {
     alphaMode: 'opaque',
   })
 
-  buffers = initBuffers()
-
-  let programs = createPrograms()
-
   const { queue } = device
   settings.reset = () => {
-    buffers.velocity.clear(queue)
-    buffers.dye.clear(queue)
-    buffers.pressure.clear(queue)
-
+    // Clear dynamic buffers.
+    const { velocity, dye, pressure } = buffers
+    for (const { buffer } of [velocity, dye, pressure]) {
+      queue.writeBuffer(buffer, 0, new Float32Array(buffer.size / FLOAT_BYTES))
+    }
     settings.time = 0
   }
 
   const updateBuffer = (buffer: GPUBuffer, value: number[]) => {
     queue.writeBuffer(buffer, 0, new Float32Array(value), 0, buffer.size / FLOAT_BYTES)
   }
+  const copyBuffer = (command: GPUCommandEncoder, from: GPUBuffer, to: GPUBuffer) => {
+    command.copyBufferToBuffer(from, 0, to, 0, from.size)
+  }
 
+  buffers = initBuffers()
+  let programs = createPrograms()
   let lastFrame = performance.now()
+
   // Render loop
   const step = () => {
     requestAnimationFrame(step)
@@ -476,20 +442,10 @@ const main = async (canvas: HTMLCanvasElement) => {
     })
     computePass.end()
 
-    buffers.velocity0.copyTo(buffers.velocity, command)
-    buffers.pressure0.copyTo(buffers.pressure, command)
     const { render } = programs
-    // todo why can't this be pulled out of the render loop?
-    const bufferForRenderMode: Record<RenderMode, DynamicBuffer> = {
-      [RenderMode.Classic]: buffers.dye,
-      [RenderMode.Smoke2D]: buffers.dye,
-      [RenderMode.Smoke3D]: buffers.dye,
-      [RenderMode.Velocity]: buffers.velocity,
-      [RenderMode.Divergence]: buffers.divergence,
-      [RenderMode.Pressure]: buffers.pressure,
-      [RenderMode.Vorticity]: buffers.vorticity,
-    }
-    bufferForRenderMode[settings.render_mode].copyTo(render.buffer, command)
+    copyBuffer(command, buffers.velocity0.buffer, buffers.velocity.buffer)
+    copyBuffer(command, buffers.pressure0.buffer, buffers.pressure.buffer)
+    copyBuffer(command, buffers.dye.buffer, render.buffer.buffer)
 
     render.passDescriptor.colorAttachments[0].view = context.getCurrentTexture().createView()
     const renderPass = command.beginRenderPass(render.passDescriptor)

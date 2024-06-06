@@ -47,26 +47,22 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     let tmpT = uTime;
     var p = pos / vec2(uGrid.w, uGrid.h);
     var splat = createSplat(p, uMouse.pos,  uMouse.vel*2., uRadius) * uForce * uDt * 200.;
-    v_out[index] = v_in[index]*uDiffusion + splat;
+    v_out[index] = v_in[index] * uDiffusion + splat;
 }`
 
 const updateDye = `
 ${StructGridSize}
 ${StructMouse}
 
-@group(0) @binding(0) var<storage, read> x_in : array<f32>;
-@group(0) @binding(1) var<storage, read> y_in : array<f32>;
-@group(0) @binding(2) var<storage, read> z_in : array<f32>;
-@group(0) @binding(3) var<storage, read_write> x_out : array<f32>;
-@group(0) @binding(4) var<storage, read_write> y_out : array<f32>;
-@group(0) @binding(5) var<storage, read_write> z_out : array<f32>;
-@group(0) @binding(6) var<uniform> uGrid: GridSize;
-@group(0) @binding(7) var<uniform> uMouse: Mouse;
-@group(0) @binding(8) var<uniform> uForce : f32;
-@group(0) @binding(9) var<uniform> uRadius : f32;
-@group(0) @binding(10) var<uniform> uDiffusion : f32;
-@group(0) @binding(11) var<uniform> uTime : f32;
-@group(0) @binding(12) var<uniform> uDt : f32;
+@group(0) @binding(0) var<storage, read> dye_in : array<vec4<f32>>;
+@group(0) @binding(1) var<storage, read_write> dye_out : array<vec4<f32>>;
+@group(0) @binding(2) var<uniform> uGrid: GridSize;
+@group(0) @binding(3) var<uniform> uMouse: Mouse;
+@group(0) @binding(4) var<uniform> uForce : f32;
+@group(0) @binding(5) var<uniform> uRadius : f32;
+@group(0) @binding(6) var<uniform> uDiffusion : f32;
+@group(0) @binding(7) var<uniform> uTime : f32;
+@group(0) @binding(8) var<uniform> uDt : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.dyeW); }
 fn inBetween(x : f32, lower : f32, upper : f32) -> bool { return x > lower && x < upper; }
@@ -75,7 +71,7 @@ fn inBounds(pos : vec2<f32>, xMin : f32, xMax : f32, yMin: f32, yMax : f32) -> b
 }
 // cosine based palette, 4 vec3 params
 fn palette(t : f32, a : vec3<f32>, b : vec3<f32>, c : vec3<f32>, d : vec3<f32> ) -> vec3<f32> {
-    return a + b*cos( 6.28318*(c*t+d) );
+    return a + b*cos(6.28318*(c*t+d));
 }
 
 fn createSplat(pos : vec2<f32>, splatPos : vec2<f32>, vel : vec2<f32>, radius : f32) -> vec3<f32> {
@@ -92,14 +88,10 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     ${ComputeStartDye}
 
     let col_incr = 0.15;
-    let col_start = palette(uTime/8., vec3(1), vec3(0.5), vec3(1), vec3(0, col_incr, col_incr*2.));
-
+    let col_start = palette(uTime/8., vec3(1), vec3(0.5), vec3(1), vec3(0, col_incr, 2*col_incr));
     var p = pos / vec2(uGrid.dyeW, uGrid.dyeH);
-    var splat = createSplat(p, uMouse.pos, uMouse.vel*2., uRadius) * col_start * uForce * uDt * 100.;
-
-    x_out[index] = max(0., x_in[index]*uDiffusion + splat.x);
-    y_out[index] = max(0., y_in[index]*uDiffusion + splat.y);
-    z_out[index] = max(0., z_in[index]*uDiffusion + splat.z);
+    var splat = 100 * createSplat(p, uMouse.pos, 2*uMouse.vel, uRadius) * col_start * uForce * uDt;
+    dye_out[index] = vec4(dye_in[index].rgb * uDiffusion + splat, 1);
 }`
 
 const advect = `
@@ -139,26 +131,19 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 const advectDye = `
 ${StructGridSize}
 
-@group(0) @binding(0) var<storage, read> x_in : array<f32>;
-@group(0) @binding(1) var<storage, read> y_in : array<f32>;
-@group(0) @binding(2) var<storage, read> z_in : array<f32>;
-@group(0) @binding(3) var<storage, read> v_in : array<vec2<f32>>;
-@group(0) @binding(4) var<storage, read_write> x_out : array<f32>;
-@group(0) @binding(5) var<storage, read_write> y_out : array<f32>;
-@group(0) @binding(6) var<storage, read_write> z_out : array<f32>;
-@group(0) @binding(7) var<uniform> uGrid : GridSize;
-@group(0) @binding(8) var<uniform> uDt : f32;
+@group(0) @binding(0) var<storage, read> dye_in : array<vec4<f32>>;
+@group(0) @binding(1) var<storage, read> v_in : array<vec2<f32>>;
+@group(0) @binding(2) var<storage, read_write> dye_out : array<vec4<f32>>;
+@group(0) @binding(3) var<uniform> uGrid : GridSize;
+@group(0) @binding(4) var<uniform> uDt : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.dyeW); }
-fn in(x : f32, y : f32) -> vec3<f32> { let id = ID(x, y); return vec3(x_in[id], y_in[id], z_in[id]); }
-fn vel(x : f32, y : f32) -> vec2<f32> { 
-  let id = u32(i32(x) + i32(y) * i32(uGrid.w));
-  return v_in[id];
-}
+fn in(x : f32, y : f32) -> vec3<f32> { return dye_in[ID(x, y)].rgb; }
+fn vel(x : f32, y : f32) -> vec2<f32> {  return v_in[u32(i32(x) + i32(y) * i32(uGrid.w))]; }
 
-fn vel_bilerp(x0 : f32, y0 : f32) -> vec2<f32> {
-    var x = x0 * uGrid.w / uGrid.dyeW;
-    var y = y0 * uGrid.h / uGrid.dyeH;
+fn vel_bilerp(p : vec2<f32>) -> vec2<f32> {
+    var x = p.x * uGrid.w / uGrid.dyeW;
+    var y = p.y * uGrid.h / uGrid.dyeH;
     if (x < 0) { x = 0; }
     else if (x >= uGrid.w - 1) { x = uGrid.w - 1; }
     if (y < 0) { y = 0; }
@@ -172,14 +157,14 @@ fn vel_bilerp(x0 : f32, y0 : f32) -> vec2<f32> {
     let BR = vel(p2.x, p1.y);
 
     let m = vec2(fract(x), fract(y));
-    return mix( mix(BL, BR, m.x), mix(TL, TR, m.x), m.y );
+    return mix(mix(BL, BR, m.x), mix(TL, TR, m.x), m.y);
 }
 
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     ${ComputeStartDye}
 
-    var p = pos - uDt * uGrid.dyeRdx * vel_bilerp(pos.x, pos.y);
+    var p = pos - uDt * uGrid.dyeRdx * vel_bilerp(pos);
     if (p.x < 0) { p.x = 0; }
     else if (p.x >= uGrid.dyeW - 1) { p.x = uGrid.dyeW - 1; }
     if (p.y < 0) { p.y = 0; }
@@ -193,11 +178,7 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
     let BR = in(p2.x, p1.y);
 
     let m = fract(p);
-    let bilerp = mix(mix(BL, BR, m.x), mix(TL, TR, m.x), m.y);
-
-    x_out[index] = bilerp.x;
-    y_out[index] = bilerp.y;
-    z_out[index] = bilerp.z;
+    dye_out[index] = vec4(mix(mix(BL, BR, m.x), mix(TL, TR, m.x), m.y), 1);
 }`
 
 const divergence = `
@@ -327,9 +308,8 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   let T = vort(pos.x, pos.y + 1);
   let C = vorticity[index];
 
-  var force = 0.5 * uGrid.rdx * vec2(abs(T) - abs(B), abs(R) - abs(L));
-
   let epsilon = 2.4414e-4;
+  var force = 0.5 * uGrid.rdx * vec2(abs(T) - abs(B), abs(R) - abs(L));
   let magSqr = max(epsilon, dot(force, force));
 
   force = force / sqrt(magSqr);
@@ -341,8 +321,8 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 const clearPressure = `
 ${StructGridSize}
 
-@group(0) @binding(0) var<storage, read> x_in : array<f32>;
-@group(0) @binding(1) var<storage, read_write> x_out : array<f32>;
+@group(0) @binding(0) var<storage, read> p_in : array<f32>;
+@group(0) @binding(1) var<storage, read_write> p_out : array<f32>;
 @group(0) @binding(2) var<uniform> uGrid : GridSize;
 @group(0) @binding(3) var<uniform> uVisc : f32;
 
@@ -352,7 +332,7 @@ fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   ${ComputeStartAll}
 
-  x_out[index] = x_in[index]*uVisc;
+  p_out[index] = p_in[index]*uVisc;
 }`
 
 const boundary = `
@@ -369,9 +349,7 @@ fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.w); }
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   ${ComputeStartAll}
 
-  // disable scale to disable contained bounds
-  var scale = vec2(1.);
-
+  var scale = vec2(1.); // disable scale to disable contained bounds
   if (pos.x == 0) { pos.x += 1; scale.x = -1.; }
   else if (pos.x == uGrid.w - 1) { pos.x -= 1; scale.x = -1.; }
   if (pos.y == 0) { pos.y += 1; scale.y = -1.; }
@@ -406,11 +384,9 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 const checkerboard = `
 ${StructGridSize}
 
-@group(0) @binding(0) var<storage, read_write> x_out : array<f32>;
-@group(0) @binding(1) var<storage, read_write> y_out : array<f32>;
-@group(0) @binding(2) var<storage, read_write> z_out : array<f32>;
-@group(0) @binding(3) var<uniform> uGrid : GridSize;
-@group(0) @binding(4) var<uniform> uTime : f32;
+@group(0) @binding(0) var<storage, read_write> col_out : array<vec4<f32>>;
+@group(0) @binding(1) var<uniform> uGrid : GridSize;
+@group(0) @binding(2) var<uniform> uTime : f32;
 
 fn ID(x : f32, y : f32) -> u32 { return u32(x + y * uGrid.dyeW); }
 
@@ -448,19 +424,11 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
 
   var uv = pos / vec2(uGrid.dyeW, uGrid.dyeH);
   var zoom = 4.;
-
   var smallNoise = fbm(vec3(uv.x*zoom*2., uv.y*zoom*2., uTime+2.145), 7) - .5;
   var bigNoise = fbm(vec3(uv.x*zoom, uv.y*zoom, uTime*.1+30.), 7) - .5;
-  var noise =  max(length(bigNoise) * 0.035, 0.) +  max(length(smallNoise) * 0.035, 0.) * .05;
+  var noise = max(length(bigNoise) * 0.035, 0.) + max(length(smallNoise) * 0.035, 0.) * .05;
 
-  var czoom = 4.;
-  var n = fbm(vec3(uv.x*czoom, uv.y*czoom, uTime*.1+63.1), 7)*.75+.25;
-  var n2 = fbm(vec3(uv.x*czoom, uv.y*czoom, uTime*.1+23.4), 7)*.75+.25;
-
-  var col = vec3(1.);
-  x_out[index] += noise * col.x;
-  y_out[index] += noise * col.y;
-  z_out[index] += noise * col.z;
+  col_out[index] += noise * vec4(1.);
 }`
 
 // 3D Smoke Rendering inspired from @xjorma's shader:
@@ -485,15 +453,12 @@ struct SmokeData {
   lightFalloff: f32,
 }
 
-@group(0) @binding(0) var<storage, read> fieldX : array<f32>;
-@group(0) @binding(1) var<storage, read> fieldY : array<f32>;
-@group(0) @binding(2) var<storage, read> fieldZ : array<f32>;
-@group(0) @binding(3) var<uniform> uGrid : GridSize;
-@group(0) @binding(4) var<uniform> uTime : f32;
-@group(0) @binding(5) var<uniform> uMouse : Mouse;
-@group(0) @binding(6) var<uniform> isRenderingDye : f32;
-@group(0) @binding(7) var<uniform> multiplier : f32;
-@group(0) @binding(8) var<uniform> smokeData : SmokeData;
+@group(0) @binding(0) var<storage, read> field : array<vec4<f32>>;
+@group(0) @binding(1) var<uniform> uGrid : GridSize;
+@group(0) @binding(2) var<uniform> uMouse : Mouse;
+@group(0) @binding(3) var<uniform> renderMode : f32; // 0: Classic, 1: Smoke2D, 2: Smoke3D
+@group(0) @binding(4) var<uniform> multiplier : f32;
+@group(0) @binding(5) var<uniform> smokeData : SmokeData;
 
 @vertex
 fn vertex_main(@location(0) position: vec4<f32>) -> VertexOut {
@@ -510,16 +475,13 @@ fn hash12(p: vec2<f32>) -> f32 {
 }
 
 fn getDye(pos : vec3<f32>) -> vec3<f32> {
-  var uv = pos.xy;
-  uv.x *= uGrid.h / uGrid.w;
-  uv = uv * 0.5 + 0.5;
-
-  if(max(uv.x, uv.y) > 1. || min(uv.x, uv.y) < 0.) { return vec3(0); }
+  var uv = vec2(pos.x * uGrid.h / uGrid.w, pos.y) * 0.5 + 0.5;
+  if (max(uv.x, uv.y) > 1 || min(uv.x, uv.y) < 0) { return vec3f(0); }
 
   uv = floor(uv*vec2(uGrid.dyeW, uGrid.dyeH));
   let id = u32(uv.x + uv.y * uGrid.dyeW);
 
-  return vec3(fieldX[id], fieldY[id], fieldZ[id]);
+  return field[id].rgb;
 }
 
 fn getLevel(dye: vec3<f32>) -> f32 { return max(dye.r, max(dye.g, dye.b)); }
@@ -535,7 +497,6 @@ fn getShadow(p: vec3<f32>, lightPos: vec3<f32>, fogSlice: f32) -> f32 {
   let lightDir: vec3<f32> = normalize(lightPos - p);
   let lightDist: f32 = pow(max(0., dot(lightPos - p, lightPos - p) - smokeData.lightIntensity + 1.), smokeData.lightFalloff);
   var shadowDist: f32 = 0;
-  
   for (var i: f32 = 1.; i <= smokeData.raymarchSteps; i += 1.) {
       let sp: vec3<f32> = p + mix(0., lightDist*smokeData.smokeHeight, i / smokeData.raymarchSteps) * lightDir;
       if (sp.z > smokeData.smokeHeight) { break; }
@@ -548,37 +509,23 @@ fn getShadow(p: vec3<f32>, lightPos: vec3<f32>, fogSlice: f32) -> f32 {
 }
 
 @fragment
-fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32>
-{
-    var w = uGrid.dyeW;
-    var h = uGrid.dyeH;
-
-    if (isRenderingDye != 2.) {
-      if (isRenderingDye > 1.) {
-        w = uGrid.w;
-        h = uGrid.h;
-      }
-
-      let fuv = vec2<f32>((floor(fragData.uv*vec2(w, h))));
-      let id = u32(fuv.x + fuv.y * w);
-
-      let r = fieldX[id] + uTime * 0. + uMouse.pos.x * 0.;
-      let g = fieldY[id];
-      let b = fieldZ[id];
-      var col = vec3(r, g, b);
-      if (isRenderingDye > 1.) {
-        if (r < 0.) {col = mix(vec3(0.), vec3(0., 0., 1.), abs(r));}
-        else {col = mix(vec3(0.), vec3(1., 0., 0.), r);}
-      }
-
+fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32> {
+    if (renderMode != 2) {
+      let dim = vec2(uGrid.dyeW, uGrid.dyeH);
+      let fuv = floor(fragData.uv * dim);
+      let col = field[u32(fuv.x + fuv.y * dim.x)].rgb;
       return vec4(col * multiplier, 1);
     }
 
+    // Smoke 3D
+
+    let w = uGrid.dyeW;
+    let h = uGrid.dyeH;
     var uv: vec2<f32> = fragData.uv * 2. - 1.;
     uv.x *= uGrid.dyeW / uGrid.dyeH;
 
     let theta = -1.5708;
-    let phi = 3.141592 + 0.0001;// - (uMouse.pos.y - .5);
+    let phi = 3.141592 + 0.0001; // - (uMouse.pos.y - .5);
     let parralax = 20.;
     var ro: vec3<f32> = parralax * vec3(sin(phi)*cos(theta),cos(phi),sin(phi)*sin(theta));
     let cw = normalize(-ro);
@@ -590,14 +537,14 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32>
 
     let bgCol: vec3<f32> = vec3(0,0,0);
     let fogSlice = smokeData.smokeHeight / smokeData.raymarchSteps;
-    
+
     let near: f32 = (smokeData.smokeHeight - ro.z) / rd.z;
     let far: f32  = -ro.z / rd.z;
-    
+
     let m = getMousePos();
     let lightPos: vec3<f32> = vec3(m, smokeData.lightHeight);
-    
-    var transmittance: f32 = 1.;
+
+    var transmittance: f32 = 1;
     var col: vec3<f32> = vec3(0.35,0.35,0.35) * 0.;
 
     for (var i: f32 = 0.; i <= smokeData.raymarchSteps; i += 1.) {
@@ -607,15 +554,10 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32>
       let height: f32 = getLevel(dyeColor) * smokeData.smokeHeight;
       let smple: f32 = min(max(0., height - p.z), fogSlice);
       if (smple > .0001) {
-        var shadow: f32 = 1.;
-
-        if (smokeData.enableShadows > 0.) {
-          shadow = getShadow(p, lightPos, fogSlice);
-        }
-
-        let dens: f32 = smple*smokeData.smokeDensity;
+        var shadow: f32 = select(1., getShadow(p, lightPos, fogSlice), smokeData.enableShadows > 0);
+        let dens: f32 = smple * smokeData.smokeDensity;
         col += shadow * dens * transmittance * dyeColor;
-        transmittance *= 1. - dens;	
+        transmittance *= 1 - dens;
       } 
     }
 
