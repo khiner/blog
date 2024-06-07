@@ -1,24 +1,12 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef } from 'react'
 
-import { main } from './sim/main'
+import { useFluidSimEffect } from './fluid_sim/useFluidSimEffect'
+import { useGpuDevice } from './useGpuDevice'
 
 export default () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  useEffect(() => {
-    const runMain = async () => {
-      if (canvasRef.current) {
-        try {
-          await main(canvasRef.current)
-        } catch (e) {
-          setErrorMessage(e.message)
-        }
-      }
-    }
-
-    runMain()
-  }, [])
+  const { device, errorMessage } = useGpuDevice(canvasRef)
+  useFluidSimEffect(canvasRef, device)
 
   return (
     <div>

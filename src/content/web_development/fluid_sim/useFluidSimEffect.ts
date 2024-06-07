@@ -1,3 +1,4 @@
+import { useEffect, useRef, RefObject } from 'react'
 import * as dat from 'dat.gui'
 import * as _webgpu from '@webgpu/types'
 
@@ -7,8 +8,6 @@ interface Dimension {
   w: number
   h: number
 }
-
-const FLOAT_BYTES = 4
 
 interface Buffer {
   dim: Dimension
@@ -21,9 +20,9 @@ interface UniformProps {
   min?: number
   max?: number
   step?: number
-  onChange?: (v: number) => void
   label?: string
   gui?: any
+  onChange?: (v: number) => void
 }
 
 enum RenderMode {
@@ -32,55 +31,51 @@ enum RenderMode {
   Smoke3D,
 }
 
-const settings = {
-  render_mode: RenderMode.Classic,
-  grid_size: 128,
-  grid_dim: { w: 1024, h: 1024 },
-  reset: () => {},
+const FLOAT_BYTES = 4
 
-  dye_size: 1024,
-  sim_speed: 5,
-  contain_fluid: true,
-  velocity_force: 0.2,
-  velocity_radius: 0.0002,
-  velocity_diffusion: 0.9999,
-  dye_intensity: 1,
-  dye_radius: 0.001,
-  dye_diffusion: 0.98,
-  dye_dim: { w: 1024, h: 1024 },
-  viscosity: 0.8,
-  vorticity: 2,
-  pressure_iterations: 20,
-  buffer_view: 'dye',
-
-  raymarch_steps: 12,
-  smoke_density: 40,
-  enable_shadows: true,
-  shadow_intensity: 25,
-  smoke_height: 0.2,
-  light_height: 1,
-  light_intensity: 1,
-  light_falloff: 1,
-}
-
-const main = async (canvas: HTMLCanvasElement) => {
-  if (navigator.gpu == null) throw new Error('WebGPU NOT Supported')
-
-  const adapter = await navigator.gpu.requestAdapter()
-  if (!adapter) throw new Error('No adapter found')
-
-  const device = await adapter.requestDevice()
+const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => {
   const context = canvas.getContext('webgpu')
   if (!context) throw new Error('Canvas does not support WebGPU')
 
-  const initSizes = (canvas: HTMLCanvasElement) => {
+  const settings = {
+    render_mode: RenderMode.Classic,
+    grid_size: 128,
+    grid_dim: { w: 1024, h: 1024 },
+    reset: () => {},
+
+    dye_size: 1024,
+    sim_speed: 5,
+    contain_fluid: true,
+    velocity_force: 0.2,
+    velocity_radius: 0.0002,
+    velocity_diffusion: 0.9999,
+    dye_intensity: 1,
+    dye_radius: 0.001,
+    dye_diffusion: 0.98,
+    dye_dim: { w: 1024, h: 1024 },
+    viscosity: 0.8,
+    vorticity: 2,
+    pressure_iterations: 20,
+    buffer_view: 'dye',
+
+    raymarch_steps: 12,
+    smoke_density: 40,
+    enable_shadows: true,
+    shadow_intensity: 25,
+    smoke_height: 0.2,
+    light_height: 1,
+    light_intensity: 1,
+    light_falloff: 1,
+  }
+
+  const initSizes = () => {
     const scaleDims = (size: number) => {
       // Fit to screen while keeping the aspect ratio.
       const aspectRatio = window.innerWidth / window.innerHeight
-      const maxCanvasSize = device.limits.maxTextureDimension2D
+      const maxSize = device.limits.maxTextureDimension2D
       const dim = aspectRatio > 1 ? { w: size * aspectRatio, h: size } : { w: size, h: size / aspectRatio }
       // Downscale if necessary to prevent canvas size overflow.
-      const ratio = dim.w > maxCanvasSize ? maxCanvasSize / dim.w : dim.h > maxCanvasSize ? maxCanvasSize / dim.h : 1
+      const ratio = dim.w > maxSize ? maxSize / dim.w : dim.h > maxSize ? maxSize / dim.h : 1
       return { w: Math.floor(dim.w * ratio), h: Math.floor(dim.h * ratio) }
     }
 
@@ -101,7 +96,7 @@ const main = async (canvas: HTMLCanvasElement) => {
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
     }),
   })
-  const initBuffers = () => {
+  const createBuffers = () => {
     const { grid_dim, dye_dim } = settings
     return {
       velocity: createBuffer(grid_dim, 2),
@@ -118,8 +113,8 @@ const main = async (canvas: HTMLCanvasElement) => {
 
   let buffers: Record<string, Buffer>
   const onSizeChange = () => {
-    initSizes(canvas)
-    buffers = initBuffers()
+    initSizes()
+    buffers = createBuffers()
     programs = createPrograms()
     uniformUpdateValues.grid_size = [
       settings.grid_dim.w,
@@ -137,8 +132,7 @@ const main = async (canvas: HTMLCanvasElement) => {
     resizeTimeout = setTimeout(onSizeChange, 150)
   })
 
-  initSizes(canvas)
-  const gui = new dat.GUI()
+  initSizes()
   gui.add(settings, 'pressure_iterations', 0, 50).name('Pressure Iterations')
   gui.add(settings, 'reset').name('Clear canvas')
   gui.add(settings, 'grid_size', [32, 64, 128, 256, 512, 1024]).name('Sim. Resolution').onChange(onSizeChange)
@@ -396,7 +390,7 @@ const main = async (canvas: HTMLCanvasElement) => {
     command.copyBufferToBuffer(from, 0, to, 0, from.size)
   }
 
-  buffers = initBuffers()
+  buffers = createBuffers()
   let programs = createPrograms()
   let lastFrame = performance.now()
 
@@ -460,4 +454,21 @@ const main = async (canvas: HTMLCanvasElement) => {
   step()
 }
 
-export { main }
+const useFluidSimEffect = (canvasRef: RefObject<HTMLCanvasElement>, device: GPUDevice | null) => {
+  const guiRef = useRef<any>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas || !device) return
+
+    guiRef.current = new dat.GUI()
+    runFluidSim(canvas, device, guiRef.current)
+
+    return () => {
+      guiRef.current?.destroy()
+      guiRef.current = null
+    }
+  }, [canvasRef, device])
+}
+
+export { useFluidSimEffect }
