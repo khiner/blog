@@ -88,8 +88,7 @@ fn createSplat(pos : vec2f, splatPos : vec2f, vel : vec2f, radius : f32) -> vec3
   p.x *= uGrid.w / uGrid.h;
   var v = vel;
   v.x *= uGrid.w / uGrid.h;
-  var splat = exp(-dot(p, p) / radius) * length(v);
-  return vec3(splat);
+  return vec3(exp(-dot(p, p) / radius) * length(v));
 }
 
 ${MainDye}
@@ -121,14 +120,13 @@ ${MainInterior}
   else if (p.y >= uGrid.h - 1) { p.y = uGrid.h - 1; }
 
   let p1 = floor(p);
-  let p2 = p1 + 1;
-  let TL = in(vec2(p1.x, p2.y));
-  let TR = in(p2);
-  let BL = in(p1);
-  let BR = in(vec2(p2.x, p1.y));
+  let TL = p1 + vec2(0, 1);
+  let TR = p1 + 1;
+  let BL = p1;
+  let BR = p1 + vec2(1, 0);
 
   let m = fract(p);
-  p_out[index] = mix(mix(BL, BR, m.x), mix(TL, TR, m.x), m.y);
+  p_out[index] = mix(mix(in(BL), in(BR), m.x), mix(in(TL), in(TR), m.x), m.y);
 }`
 
 const advectDye = `
@@ -145,23 +143,21 @@ ${createBindings(
 fn in(p : vec2f) -> vec3f { return dye_in[ID(p)].rgb; }
 fn vel(v : vec2f) -> vec2f {  return v_in[u32(i32(v.x) + i32(v.y) * i32(uGrid.w))]; }
 
-fn vel_bilerp(p : vec2f) -> vec2f {
-  var x = p.x * uGrid.w / uGrid.dyeW;
-  var y = p.y * uGrid.h / uGrid.dyeH;
-  if (x < 0) { x = 0; }
-  else if (x >= uGrid.w - 1) { x = uGrid.w - 1; }
-  if (y < 0) { y = 0; }
-  else if (y >= uGrid.h - 1) { y = uGrid.h - 1; }
+fn vel_bilerp(_p : vec2f) -> vec2f {
+  var p = _p * vec2(uGrid.w, uGrid.h) / vec2(uGrid.dyeW, uGrid.dyeH);
+  if (p.x < 0) { p.x = 0; }
+  else if (p.x >= uGrid.w - 1) { p.x = uGrid.w - 1; }
+  if (p.y < 0) { p.y = 0; }
+  else if (p.y >= uGrid.h - 1) { p.y = uGrid.h - 1; }
 
-  let p1 = floor(vec2(x, y));
-  let p2 = p1 + 1;
-  let TL = vel(vec2(p1.x, p2.y));
-  let TR = vel(p2);
-  let BL = vel(p1);
-  let BR = vel(vec2(p2.x, p1.y));
+  let p1 = floor(p);
+  let TL = p1 + vec2(0, 1);
+  let TR = p1 + 1;
+  let BL = p1;
+  let BR = p1 + vec2(1, 0);
 
-  let m = vec2(fract(x), fract(y));
-  return mix(mix(BL, BR, m.x), mix(TL, TR, m.x), m.y);
+  let m = fract(p);
+  return mix(mix(vel(BL), vel(BR), m.x), mix(vel(TL), vel(TR), m.x), m.y);
 }
 
 ${MainDye}
@@ -172,14 +168,13 @@ ${MainDye}
   else if (p.y >= uGrid.dyeH - 1) { p.y = uGrid.dyeH - 1; }
 
   let p1 = floor(p);
-  let p2 = p1 + 1;
-  let TL = in(vec2(p1.x, p2.y));
-  let TR = in(p2);
-  let BL = in(p1);
-  let BR = in(vec2(p2.x, p1.y));
+  let TL = p1 + vec2(0, 1);
+  let TR = p1 + 1;
+  let BL = p1;
+  let BR = p1 + vec2(1, 0);
 
   let m = fract(p);
-  dye_out[index] = vec4(mix(mix(BL, BR, m.x), mix(TL, TR, m.x), m.y), 1);
+  dye_out[index] = vec4(mix(mix(in(BL), in(BR), m.x), mix(in(TL), in(TR), m.x), m.y), 1);
 }`
 
 const divergence = `
@@ -194,12 +189,12 @@ ${createBindings(
 fn vel(v : vec2f) -> vec2f { return v_in[ID(v)]; }
 
 ${MainInterior}
-  let L = vel(vec2(pos.x - 1, pos.y)).x;
-  let R = vel(vec2(pos.x + 1, pos.y)).x;
-  let B = vel(vec2(pos.x, pos.y - 1)).y;
-  let T = vel(vec2(pos.x, pos.y + 1)).y;
+  let L = pos - vec2(1, 0);
+  let R = pos + vec2(1, 0);
+  let B = pos - vec2(0, 1);
+  let T = pos + vec2(0, 1);
 
-  div[index] = 0.5 * uGrid.rdx * ((R - L) + (T - B));
+  div[index] = 0.5 * uGrid.rdx * ((vel(R).x - vel(L).x) + (vel(T).y - vel(B).y));
 }`
 
 const pressure = `
@@ -258,12 +253,12 @@ ${createBindings(
 fn vel(p : vec2f) -> vec2f { return v_in[ID(p)]; }
 
 ${MainInterior}
-  let Ly = vel(vec2(pos.x - 1, pos.y)).y;
-  let Ry = vel(vec2(pos.x + 1, pos.y)).y;
-  let Bx = vel(vec2(pos.x, pos.y - 1)).x;
-  let Tx = vel(vec2(pos.x, pos.y + 1)).x;
+  let L = pos - vec2(1, 0);
+  let R = pos + vec2(1, 0);
+  let B = pos - vec2(0, 1);
+  let T = pos + vec2(0, 1);
 
-  vorticity[index] = 0.5 * uGrid.rdx * ((Ry - Ly) - (Tx - Bx));
+  vorticity[index] = 0.5 * uGrid.rdx * ((vel(R).y - vel(L).y) - (vel(T).x - vel(B).x));
 }`
 
 const vorticityConfinment = `
@@ -281,16 +276,15 @@ ${createBindings(
 fn vort(p : vec2f) -> f32 { return vorticity[ID(p)]; }
 
 ${MainInterior}
-  let L = vort(vec2(pos.x - 1, pos.y));
-  let R = vort(vec2(pos.x + 1, pos.y));
-  let B = vort(vec2(pos.x, pos.y - 1));
-  let T = vort(vec2(pos.x, pos.y + 1));
-  let C = vorticity[index];
+  let L = pos - vec2(1, 0);
+  let R = pos + vec2(1, 0);
+  let B = pos - vec2(0, 1);
+  let T = pos + vec2(0, 1);
 
   let epsilon = 2.4414e-4;
-  var force = 0.5 * uGrid.rdx * vec2(abs(T) - abs(B), abs(R) - abs(L));
+  var force = 0.5 * uGrid.rdx * vec2(abs(vort(T)) - abs(vort(B)), abs(vort(R)) - abs(vort(L)));
   force /= max(epsilon, dot(force, force));
-  force *= uGrid.dx * uVorticity * uDt * C * vec2(1, -1);
+  force *= uGrid.dx * uVorticity * uDt * vorticity[index] * vec2(1, -1);
 
   v_out[index] = v_in[index] + force;
 }`
