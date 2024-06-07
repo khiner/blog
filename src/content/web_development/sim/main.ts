@@ -342,7 +342,7 @@ const main = async (canvas: HTMLCanvasElement) => {
         program([dye, dye0], [grid_size, mouse, dye_intensity, dye_radius, dye_diffusion, time, dt], shaders.updateDye),
         program(
           [velocity, velocity0],
-          [grid_size, mouse, velocity_force, velocity_radius, velocity_diffusion, dt, time],
+          [grid_size, mouse, velocity_force, velocity_radius, velocity_diffusion, dt],
           shaders.updateVelocity,
         ),
         // Advect the velocity field through itself.
