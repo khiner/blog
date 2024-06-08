@@ -34,9 +34,7 @@ enum RenderMode {
 const FLOAT_BYTES = 4
 
 const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => {
-  const { canvas } = context
-
-  const settings = {
+  const props = {
     renderMode: RenderMode.Classic,
     gridSize: 128,
     dyeSize: 1024,
@@ -63,8 +61,9 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     lightFalloff: 1,
   }
   let gridDim: Dimension
-  let dye_dim: Dimension
+  let dyeDim: Dimension
 
+  const { canvas } = context
   const createBuffer = (dim: Dimension, floatsPerElement = 1): Buffer => ({
     dim,
     buffer: device.createBuffer({
@@ -75,8 +74,8 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
   const createBuffers = () => ({
     velocity: createBuffer(gridDim, 2),
     velocity0: createBuffer(gridDim, 2),
-    dye: createBuffer(dye_dim, 4),
-    dye0: createBuffer(dye_dim, 4),
+    dye: createBuffer(dyeDim, 4),
+    dye0: createBuffer(dyeDim, 4),
     divergence: createBuffer(gridDim),
     divergence0: createBuffer(gridDim),
     pressure: createBuffer(gridDim),
@@ -101,11 +100,11 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
       return { w: Math.floor(dim.w * ratio), h: Math.floor(dim.h * ratio) }
     }
 
-    gridDim = scaleDims(settings.gridSize)
-    dye_dim = scaleDims(settings.dyeSize)
+    gridDim = scaleDims(props.gridSize)
+    dyeDim = scaleDims(props.dyeSize)
 
-    canvas.width = dye_dim.w
-    canvas.height = dye_dim.h
+    canvas.width = dyeDim.w
+    canvas.height = dyeDim.h
   }
 
   let buffers: Record<string, Buffer>
@@ -116,24 +115,24 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     uniformUpdateValues.gridSize = [
       gridDim.w,
       gridDim.h,
-      dye_dim.w,
-      dye_dim.h,
-      1 / (settings.gridSize * 4),
-      settings.gridSize * 4,
-      settings.dyeSize * 4,
+      dyeDim.w,
+      dyeDim.h,
+      1 / (props.gridSize * 4),
+      props.gridSize * 4,
+      props.dyeSize * 4,
     ]
   }
 
   const onSmokeParameterChange = () => {
     uniformUpdateValues.smokeParams = [
-      settings.raymarchSteps,
-      settings.smokeDensity,
-      settings.enableShadows ? 1 : 0,
-      settings.shadowIntensity,
-      settings.smokeHeight,
-      settings.lightHeight,
-      settings.lightIntensity,
-      settings.lightFalloff,
+      props.raymarchSteps,
+      props.smokeDensity,
+      props.enableShadows ? 1 : 0,
+      props.shadowIntensity,
+      props.smokeHeight,
+      props.lightHeight,
+      props.lightIntensity,
+      props.lightFalloff,
     ]
   }
 
@@ -169,7 +168,7 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
       primitive: { topology: 'triangle-list' },
     })
 
-    const renderBuffer = createBuffer(dye_dim, 4)
+    const renderBuffer = createBuffer(dyeDim, 4)
 
     return {
       pipeline,
@@ -230,7 +229,7 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     const pressureProgram = program([pressure, divergence, pressure0], [gridSize], shaders.pressure),
       boundaryPressureProgram = program([pressure0, pressure], [gridSize], shaders.boundaryPressure)
 
-    const { renderMode, pressureIterations } = settings
+    const { renderMode, pressureIterations } = props
     return {
       compute: [
         ...(renderMode >= 1 && renderMode <= 3 ? [program([dye], [gridSize, time], shaders.checkerboard)] : []),
@@ -304,23 +303,23 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
       value: [
         gridDim.w,
         gridDim.h,
-        dye_dim.w,
-        dye_dim.h,
-        1 / (settings.gridSize * 4),
-        settings.gridSize * 4,
-        settings.dyeSize * 4,
+        dyeDim.w,
+        dyeDim.h,
+        1 / (props.gridSize * 4),
+        props.gridSize * 4,
+        props.dyeSize * 4,
       ],
     },
     smokeParams: {
       value: [
-        settings.raymarchSteps,
-        settings.smokeDensity,
-        settings.enableShadows ? 1 : 0,
-        settings.shadowIntensity,
-        settings.smokeHeight,
-        settings.lightHeight,
-        settings.lightIntensity,
-        settings.lightFalloff,
+        props.raymarchSteps,
+        props.smokeDensity,
+        props.enableShadows ? 1 : 0,
+        props.shadowIntensity,
+        props.smokeHeight,
+        props.lightHeight,
+        props.lightIntensity,
+        props.lightFalloff,
       ],
     },
   }
@@ -330,7 +329,7 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     const uniformSize = size ?? value?.length ?? 1
     if (label) {
       gui
-        .add(settings, name, min, max, step)
+        .add(props, name, min, max, step)
         .onChange((v) => {
           onChange?.(v)
           uniformUpdateValues[name] = [v]
@@ -345,7 +344,7 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
       mappedAtCreation,
     })
     if (mappedAtCreation) {
-      new Float32Array(buffer.getMappedRange()).set(new Float32Array(value ?? [settings[name] ?? 0]))
+      new Float32Array(buffer.getMappedRange()).set(new Float32Array(value ?? [props[name] ?? 0]))
       buffer.unmap()
     }
 
@@ -388,24 +387,24 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     time = 0
   }
 
-  gui.add(settings, 'pressureIterations', 0, 50).name('Pressure Iterations')
-  // gui.add(settings, 'reset').name('Clear').onChange(reset)
-  gui.add(settings, 'gridSize', [32, 64, 128, 256, 512, 1024]).name('Sim Resolution').onChange(onSizeChange)
-  gui.add(settings, 'dyeSize', [128, 256, 512, 1024, 2048]).name('Render Resolution').onChange(onSizeChange)
+  gui.add(props, 'pressureIterations', 0, 50).name('Pressure Iterations')
+  // gui.add(props, 'reset').name('Clear').onChange(reset)
+  gui.add(props, 'gridSize', [32, 64, 128, 256, 512, 1024]).name('Sim Resolution').onChange(onSizeChange)
+  gui.add(props, 'dyeSize', [128, 256, 512, 1024, 2048]).name('Render Resolution').onChange(onSizeChange)
   const smokeFolder = gui.addFolder('Smoke Parameters')
-  smokeFolder.add(settings, 'raymarchSteps', 5, 20, 1).name('3D resolution').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'lightHeight', 0.5, 1, 0.001).name('Light Elevation').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'lightIntensity', 0, 1, 0.001).name('Light Intensity').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'lightFalloff', 0.5, 10, 0.001).name('Light Falloff').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'enableShadows').name('Enable Shadows').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'shadowIntensity', 0, 50, 0.001).name('Shadow Intensity').onChange(onSmokeParameterChange)
+  smokeFolder.add(props, 'raymarchSteps', 5, 20, 1).name('3D resolution').onChange(onSmokeParameterChange)
+  smokeFolder.add(props, 'lightHeight', 0.5, 1, 0.001).name('Light Elevation').onChange(onSmokeParameterChange)
+  smokeFolder.add(props, 'lightIntensity', 0, 1, 0.001).name('Light Intensity').onChange(onSmokeParameterChange)
+  smokeFolder.add(props, 'lightFalloff', 0.5, 10, 0.001).name('Light Falloff').onChange(onSmokeParameterChange)
+  smokeFolder.add(props, 'enableShadows').name('Enable Shadows').onChange(onSmokeParameterChange)
+  smokeFolder.add(props, 'shadowIntensity', 0, 50, 0.001).name('Shadow Intensity').onChange(onSmokeParameterChange)
   smokeFolder.hide()
   // Render loop
   const step = () => {
     requestAnimationFrame(step)
 
     const now = performance.now()
-    dt = Math.min(1 / 60, (now - lastFrame) / 1000) * settings.simSpeed
+    dt = Math.min(1 / 60, (now - lastFrame) / 1000) * props.simSpeed
     time += dt
     lastFrame = now
 
