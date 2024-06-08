@@ -1,4 +1,4 @@
-const StructGridSize = `struct GridSize { w : f32, h : f32, dyeW: f32, dyeH: f32, dx : f32, rdx : f32, dyeRdx : f32 }`
+const StructGridSize = `struct GridSize { w : f32, h : f32, dyeW: f32, dyeH: f32, rdx : f32, dyeRdx : f32 }`
 const StructMouse = `struct Mouse { pos: vec2f, vel: vec2f }`
 
 const createIdFunction = (w: string) => `fn ID(p : vec2f) -> u32 { return u32(p.x + p.y * ${w}); }`
@@ -215,9 +215,7 @@ ${MainInterior}
   let B = pos - vec2(0, 1);
   let T = pos + vec2(0, 1);
 
-  let bC = div[index];
-  let alpha = -(uGrid.dx * uGrid.dx);
-  pres_out[index] = (in(L) + in(R) + in(B) + in(T) + alpha * bC) * 0.25;
+  pres_out[index] = (in(L) + in(R) + in(B) + in(T) - div[index] / (uGrid.rdx * uGrid.rdx)) * 0.25;
 }`
 
 const gradientSubtract = `
@@ -283,10 +281,9 @@ ${MainInterior}
 
   let epsilon = 2.4414e-4;
   var force = 0.5 * uGrid.rdx * vec2(abs(vort(T)) - abs(vort(B)), abs(vort(R)) - abs(vort(L)));
-  force /= max(epsilon, dot(force, force));
-  force *= uGrid.dx * uVorticity * uDt * vorticity[index] * vec2(1, -1);
+  force *= (uVorticity * uDt * vorticity[index] / (uGrid.rdx * max(epsilon, dot(force, force))));
 
-  v_out[index] = v_in[index] + force;
+  v_out[index] = v_in[index] + force * vec2(1, -1);
 }`
 
 const clearPressure = `

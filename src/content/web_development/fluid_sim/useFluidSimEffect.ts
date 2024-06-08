@@ -111,10 +111,7 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     initSizes()
     buffers = createBuffers()
     programs = createPrograms()
-    updateQueue.push([
-      'gridSize',
-      [gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, 1 / (props.gridSize * 4), props.gridSize * 4, props.dyeSize * 4],
-    ])
+    updateQueue.push(['gridSize', [gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]])
   }
 
   const onSmokeParamChange = () => {
@@ -272,15 +269,7 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     time: createUniformBuffer([0]),
     dt: createUniformBuffer([0]),
     mouse: createUniformBuffer([0, 0, 0, 0]),
-    gridSize: createUniformBuffer([
-      gridDim.w,
-      gridDim.h,
-      dyeDim.w,
-      dyeDim.h,
-      1 / (props.gridSize * 4),
-      props.gridSize * 4,
-      props.dyeSize * 4,
-    ]),
+    gridSize: createUniformBuffer([gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]),
     smokeParams: createUniformBuffer([
       props.raymarchSteps,
       props.smokeDensity,
