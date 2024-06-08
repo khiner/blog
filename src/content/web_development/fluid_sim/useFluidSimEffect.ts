@@ -38,33 +38,33 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
   if (!context) throw new Error('Canvas does not support WebGPU')
 
   const settings = {
-    render_mode: RenderMode.Classic,
-    grid_size: 128,
-    dye_size: 1024,
+    renderMode: RenderMode.Classic,
+    gridSize: 128,
+    dyeSize: 1024,
     reset: () => {},
 
-    sim_speed: 5,
-    contain_fluid: true,
-    velocity_force: 0.2,
-    velocity_radius: 0.0002,
-    velocity_diffusion: 0.9999,
-    dye_intensity: 1,
-    dye_radius: 0.001,
-    dye_diffusion: 0.98,
+    simSpeed: 5,
+    containFluid: true,
+    velocityForce: 0.2,
+    velocityRadius: 0.0002,
+    velocityDiffusion: 0.9999,
+    dyeIntensity: 1,
+    dyeRadius: 0.001,
+    dyeDiffusion: 0.98,
     viscosity: 0.8,
     vorticity: 2,
-    pressure_iterations: 20,
+    pressureIterations: 20,
 
-    raymarch_steps: 12,
-    smoke_density: 40,
-    enable_shadows: true,
-    shadow_intensity: 25,
-    smoke_height: 0.2,
-    light_height: 1,
-    light_intensity: 1,
-    light_falloff: 1,
+    raymarchSteps: 12,
+    smokeDensity: 40,
+    enableShadows: true,
+    shadowIntensity: 25,
+    smokeHeight: 0.2,
+    lightHeight: 1,
+    lightIntensity: 1,
+    lightFalloff: 1,
   }
-  let grid_dim: Dimension
+  let gridDim: Dimension
   let dye_dim: Dimension
 
   const createBuffer = (dim: Dimension, floatsPerElement = 1): Buffer => ({
@@ -75,15 +75,15 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     }),
   })
   const createBuffers = () => ({
-    velocity: createBuffer(grid_dim, 2),
-    velocity0: createBuffer(grid_dim, 2),
+    velocity: createBuffer(gridDim, 2),
+    velocity0: createBuffer(gridDim, 2),
     dye: createBuffer(dye_dim, 4),
     dye0: createBuffer(dye_dim, 4),
-    divergence: createBuffer(grid_dim),
-    divergence0: createBuffer(grid_dim),
-    pressure: createBuffer(grid_dim),
-    pressure0: createBuffer(grid_dim),
-    vorticity: createBuffer(grid_dim),
+    divergence: createBuffer(gridDim),
+    divergence0: createBuffer(gridDim),
+    pressure: createBuffer(gridDim),
+    pressure0: createBuffer(gridDim),
+    vorticity: createBuffer(gridDim),
   })
   const copyBuffer = (command: GPUCommandEncoder, from: GPUBuffer, to: GPUBuffer) => {
     command.copyBufferToBuffer(from, 0, to, 0, from.size)
@@ -103,8 +103,8 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
       return { w: Math.floor(dim.w * ratio), h: Math.floor(dim.h * ratio) }
     }
 
-    grid_dim = scaleDims(settings.grid_size)
-    dye_dim = scaleDims(settings.dye_size)
+    gridDim = scaleDims(settings.gridSize)
+    dye_dim = scaleDims(settings.dyeSize)
 
     canvas.width = dye_dim.w
     canvas.height = dye_dim.h
@@ -115,41 +115,41 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     initSizes()
     buffers = createBuffers()
     programs = createPrograms()
-    uniformUpdateValues.grid_size = [
-      grid_dim.w,
-      grid_dim.h,
+    uniformUpdateValues.gridSize = [
+      gridDim.w,
+      gridDim.h,
       dye_dim.w,
       dye_dim.h,
-      1 / (settings.grid_size * 4),
-      settings.grid_size * 4,
-      settings.dye_size * 4,
+      1 / (settings.gridSize * 4),
+      settings.gridSize * 4,
+      settings.dyeSize * 4,
     ]
   }
 
   const onSmokeParameterChange = () => {
-    uniformUpdateValues.smoke_parameters = [
-      settings.raymarch_steps,
-      settings.smoke_density,
-      settings.enable_shadows ? 1 : 0,
-      settings.shadow_intensity,
-      settings.smoke_height,
-      settings.light_height,
-      settings.light_intensity,
-      settings.light_falloff,
+    uniformUpdateValues.smokeParams = [
+      settings.raymarchSteps,
+      settings.smokeDensity,
+      settings.enableShadows ? 1 : 0,
+      settings.shadowIntensity,
+      settings.smokeHeight,
+      settings.lightHeight,
+      settings.lightIntensity,
+      settings.lightFalloff,
     ]
   }
 
-  gui.add(settings, 'pressure_iterations', 0, 50).name('Pressure Iterations')
+  gui.add(settings, 'pressureIterations', 0, 50).name('Pressure Iterations')
   gui.add(settings, 'reset').name('Clear')
-  gui.add(settings, 'grid_size', [32, 64, 128, 256, 512, 1024]).name('Sim. Resolution').onChange(onSizeChange)
-  gui.add(settings, 'dye_size', [128, 256, 512, 1024, 2048]).name('Render Resolution').onChange(onSizeChange)
+  gui.add(settings, 'gridSize', [32, 64, 128, 256, 512, 1024]).name('Sim Resolution').onChange(onSizeChange)
+  gui.add(settings, 'dyeSize', [128, 256, 512, 1024, 2048]).name('Render Resolution').onChange(onSizeChange)
   const smokeFolder = gui.addFolder('Smoke Parameters')
-  smokeFolder.add(settings, 'raymarch_steps', 5, 20, 1).name('3D resolution').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'light_height', 0.5, 1, 0.001).name('Light Elevation').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'light_intensity', 0, 1, 0.001).name('Light Intensity').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'light_falloff', 0.5, 10, 0.001).name('Light Falloff').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'enable_shadows').name('Enable Shadows').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'shadow_intensity', 0, 50, 0.001).name('Shadow Intensity').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'raymarchSteps', 5, 20, 1).name('3D resolution').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'lightHeight', 0.5, 1, 0.001).name('Light Elevation').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'lightIntensity', 0, 1, 0.001).name('Light Intensity').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'lightFalloff', 0.5, 10, 0.001).name('Light Falloff').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'enableShadows').name('Enable Shadows').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'shadowIntensity', 0, 50, 0.001).name('Shadow Intensity').onChange(onSmokeParameterChange)
   smokeFolder.hide()
 
   const createRenderProgram = () => {
@@ -194,11 +194,11 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
         layout: pipeline.getBindGroupLayout(0),
         entries: [
           renderBuffer.buffer,
-          uniformBuffers.grid_size,
+          uniformBuffers.gridSize,
           uniformBuffers.mouse,
-          uniformBuffers.render_mode,
-          uniformBuffers.render_intensity_multiplier,
-          uniformBuffers.smoke_parameters,
+          uniformBuffers.renderMode,
+          uniformBuffers.renderIntensity,
+          uniformBuffers.smokeParams,
         ].map((buffer, binding) => ({ binding, resource: { buffer } })),
       }),
       passDescriptor: {
@@ -228,51 +228,51 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
 
     const { velocity, velocity0, dye, dye0, divergence, divergence0, pressure, pressure0, vorticity } = buffers
     const {
-      grid_size,
+      gridSize,
       mouse,
       time,
       dt,
-      velocity_force,
-      velocity_radius,
-      velocity_diffusion,
-      dye_intensity,
-      dye_radius,
-      dye_diffusion,
-      contain_fluid,
+      velocityForce,
+      velocityRadius,
+      velocityDiffusion,
+      dyeIntensity,
+      dyeRadius,
+      dyeDiffusion,
+      containFluid,
       viscosity: viscosity_value,
       vorticity: vorticity_value,
     } = uniformBuffers
     // Pressure programs are used multiple times.
-    const pressureProgram = program([pressure, divergence, pressure0], [grid_size], shaders.pressure),
-      boundaryPressureProgram = program([pressure0, pressure], [grid_size], shaders.boundaryPressure)
+    const pressureProgram = program([pressure, divergence, pressure0], [gridSize], shaders.pressure),
+      boundaryPressureProgram = program([pressure0, pressure], [gridSize], shaders.boundaryPressure)
 
-    const { render_mode, pressure_iterations } = settings
+    const { renderMode, pressureIterations } = settings
     return {
       compute: [
-        ...(render_mode >= 1 && render_mode <= 3 ? [program([dye], [grid_size, time], shaders.checkerboard)] : []),
+        ...(renderMode >= 1 && renderMode <= 3 ? [program([dye], [gridSize, time], shaders.checkerboard)] : []),
         // Add dye and velocity at the mouse position.
-        program([dye, dye0], [grid_size, mouse, dye_intensity, dye_radius, dye_diffusion, time, dt], shaders.updateDye),
+        program([dye, dye0], [gridSize, mouse, dyeIntensity, dyeRadius, dyeDiffusion, time, dt], shaders.updateDye),
         program(
           [velocity, velocity0],
-          [grid_size, mouse, velocity_force, velocity_radius, velocity_diffusion, dt],
+          [gridSize, mouse, velocityForce, velocityRadius, velocityDiffusion, dt],
           shaders.updateVelocity,
         ),
         // Advect the velocity field through itself.
-        program([velocity0, velocity0, velocity], [grid_size, dt], shaders.advect),
-        program([velocity, velocity0], [grid_size, contain_fluid], shaders.boundary),
+        program([velocity0, velocity0, velocity], [gridSize, dt], shaders.advect),
+        program([velocity, velocity0], [gridSize, containFluid], shaders.boundary),
         // Compute the divergence.
-        program([velocity0, divergence0], [grid_size], shaders.divergence),
-        program([divergence0, divergence], [grid_size], shaders.boundaryPressure),
+        program([velocity0, divergence0], [gridSize], shaders.divergence),
+        program([divergence0, divergence], [gridSize], shaders.boundaryPressure),
         // Solve the jacobi-pressure equation.
-        ...Array.from({ length: pressure_iterations }, () => [pressureProgram, boundaryPressureProgram]).flat(),
+        ...Array.from({ length: pressureIterations }, () => [pressureProgram, boundaryPressureProgram]).flat(),
         // Subtract the pressure from the velocity field.
-        program([pressure, velocity0, velocity], [grid_size], shaders.gradientSubtract),
-        program([pressure, pressure0], [grid_size, viscosity_value], shaders.clearPressure),
+        program([pressure, velocity0, velocity], [gridSize], shaders.gradientSubtract),
+        program([pressure, pressure0], [gridSize, viscosity_value], shaders.clearPressure),
         // Compute and apply vorticity confinment.
-        program([velocity, vorticity], [grid_size], shaders.vorticity),
-        program([velocity, vorticity, velocity0], [grid_size, dt, vorticity_value], shaders.vorticityConfinment),
+        program([velocity, vorticity], [gridSize], shaders.vorticity),
+        program([velocity, vorticity, velocity0], [gridSize, dt, vorticity_value], shaders.vorticityConfinment),
         // Advect the dye through the velocity field.
-        program([dye0, velocity0, dye], [grid_size, dt], shaders.advectDye),
+        program([dye0, velocity0, dye], [gridSize, dt], shaders.advectDye),
       ],
       render: createRenderProgram(),
     }
@@ -289,8 +289,8 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
 
   const uniformUpdateValues: Record<string, number[]> = {}
   const uniformProps: Record<string, UniformProps> = {
-    render_intensity_multiplier: { value: [1] },
-    render_mode: {
+    renderIntensity: { value: [1] },
+    renderMode: {
       gui,
       label: 'Render Mode',
       min: {
@@ -300,45 +300,45 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
       },
       value: [0],
       onChange: (val) => {
-        uniformUpdateValues.render_intensity_multiplier = [[1, 1, 1, 100, 10, 1e6, 1][parseInt(val)]]
+        uniformUpdateValues.renderIntensity = [[1, 1, 1, 100, 10, 1e6, 1][parseInt(val)]]
         if (val == RenderMode.Smoke3D) smokeFolder.show(), smokeFolder.open()
         else smokeFolder.hide()
       },
     },
     time: {},
     dt: {},
-    sim_speed: { label: 'Sim Speed', min: 0.1, max: 20 },
-    velocity_force: { label: 'Velocity Force', min: 0, max: 0.5 },
-    velocity_radius: { label: 'Velocity Radius', min: 0, max: 0.001 },
-    velocity_diffusion: { label: 'Velocity Diffusion', min: 0.95, max: 1 },
-    dye_intensity: { label: 'Dye Intensity', min: 0, max: 10 },
-    dye_radius: { label: 'Dye Radius', min: 0, max: 0.01 },
-    dye_diffusion: { label: 'Dye Diffusion', min: 0.95, max: 1 },
+    simSpeed: { label: 'Sim Speed', min: 0.1, max: 20 },
+    velocityForce: { label: 'Velocity Force', min: 0, max: 0.5 },
+    velocityRadius: { label: 'Velocity Radius', min: 0, max: 0.001 },
+    velocityDiffusion: { label: 'Velocity Diffusion', min: 0.95, max: 1 },
+    dyeIntensity: { label: 'Dye Intensity', min: 0, max: 10 },
+    dyeRadius: { label: 'Dye Radius', min: 0, max: 0.01 },
+    dyeDiffusion: { label: 'Dye Diffusion', min: 0.95, max: 1 },
     viscosity: { label: 'Viscosity', min: 0, max: 1 },
     vorticity: { label: 'Vorticity', min: 0, max: 10 },
-    contain_fluid: { label: 'Solid boundaries' },
+    containFluid: { label: 'Solid boundaries' },
     mouse: { size: 4 },
-    grid_size: {
+    gridSize: {
       value: [
-        grid_dim.w,
-        grid_dim.h,
+        gridDim.w,
+        gridDim.h,
         dye_dim.w,
         dye_dim.h,
-        1 / (settings.grid_size * 4),
-        settings.grid_size * 4,
-        settings.dye_size * 4,
+        1 / (settings.gridSize * 4),
+        settings.gridSize * 4,
+        settings.dyeSize * 4,
       ],
     },
-    smoke_parameters: {
+    smokeParams: {
       value: [
-        settings.raymarch_steps,
-        settings.smoke_density,
-        settings.enable_shadows ? 1 : 0,
-        settings.shadow_intensity,
-        settings.smoke_height,
-        settings.light_height,
-        settings.light_intensity,
-        settings.light_falloff,
+        settings.raymarchSteps,
+        settings.smokeDensity,
+        settings.enableShadows ? 1 : 0,
+        settings.shadowIntensity,
+        settings.smokeHeight,
+        settings.lightHeight,
+        settings.lightIntensity,
+        settings.lightFalloff,
       ],
     },
   }
@@ -411,7 +411,7 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     requestAnimationFrame(step)
 
     const now = performance.now()
-    dt = Math.min(1 / 60, (now - lastFrame) / 1000) * settings.sim_speed
+    dt = Math.min(1 / 60, (now - lastFrame) / 1000) * settings.simSpeed
     time += dt
     lastFrame = now
 
