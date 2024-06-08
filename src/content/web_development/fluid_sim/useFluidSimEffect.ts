@@ -64,8 +64,8 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     light_intensity: 1,
     light_falloff: 1,
   }
-  let grid_dim = { w: 1024, h: 1024 }
-  let dye_dim = { w: 1024, h: 1024 }
+  let grid_dim: Dimension
+  let dye_dim: Dimension
 
   const createBuffer = (dim: Dimension, floatsPerElement = 1): Buffer => ({
     dim,
@@ -85,6 +85,12 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     pressure0: createBuffer(grid_dim),
     vorticity: createBuffer(grid_dim),
   })
+  const copyBuffer = (command: GPUCommandEncoder, from: GPUBuffer, to: GPUBuffer) => {
+    command.copyBufferToBuffer(from, 0, to, 0, from.size)
+  }
+  const updateBuffer = (buffer: GPUBuffer, value: number[]) => {
+    device.queue.writeBuffer(buffer, 0, new Float32Array(value), 0, buffer.size / FLOAT_BYTES)
+  }
 
   const initSizes = () => {
     const scaleDims = (size: number) => {
@@ -119,109 +125,32 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
       settings.dye_size * 4,
     ]
   }
-  let resizeTimeout
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout)
-    resizeTimeout = setTimeout(onSizeChange, 150)
-  })
 
-  initSizes()
+  const onSmokeParameterChange = () => {
+    uniformUpdateValues.smoke_parameters = [
+      settings.raymarch_steps,
+      settings.smoke_density,
+      settings.enable_shadows ? 1 : 0,
+      settings.shadow_intensity,
+      settings.smoke_height,
+      settings.light_height,
+      settings.light_intensity,
+      settings.light_falloff,
+    ]
+  }
+
   gui.add(settings, 'pressure_iterations', 0, 50).name('Pressure Iterations')
   gui.add(settings, 'reset').name('Clear')
   gui.add(settings, 'grid_size', [32, 64, 128, 256, 512, 1024]).name('Sim. Resolution').onChange(onSizeChange)
   gui.add(settings, 'dye_size', [128, 256, 512, 1024, 2048]).name('Render Resolution').onChange(onSizeChange)
   const smokeFolder = gui.addFolder('Smoke Parameters')
-  smokeFolder.add(settings, 'raymarch_steps', 5, 20, 1).name('3D resolution')
-  smokeFolder.add(settings, 'light_height', 0.5, 1, 0.001).name('Light Elevation')
-  smokeFolder.add(settings, 'light_intensity', 0, 1, 0.001).name('Light Intensity')
-  smokeFolder.add(settings, 'light_falloff', 0.5, 10, 0.001).name('Light Falloff')
-  smokeFolder.add(settings, 'enable_shadows').name('Enable Shadows')
-  smokeFolder.add(settings, 'shadow_intensity', 0, 50, 0.001).name('Shadow Intensity')
+  smokeFolder.add(settings, 'raymarch_steps', 5, 20, 1).name('3D resolution').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'light_height', 0.5, 1, 0.001).name('Light Elevation').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'light_intensity', 0, 1, 0.001).name('Light Intensity').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'light_falloff', 0.5, 10, 0.001).name('Light Falloff').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'enable_shadows').name('Enable Shadows').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'shadow_intensity', 0, 50, 0.001).name('Shadow Intensity').onChange(onSmokeParameterChange)
   smokeFolder.hide()
-
-  const uniformUpdateValues: Record<string, number[]> = {}
-
-  const uniformProps: Record<string, UniformProps> = {
-    render_intensity_multiplier: { value: [1] },
-    render_mode: {
-      gui,
-      label: 'Render Mode',
-      min: {
-        Classic: RenderMode.Classic,
-        'Smoke 2D': RenderMode.Smoke2D,
-        'Smoke 3D + Shadows': RenderMode.Smoke3D,
-      },
-      value: [0],
-      onChange: (val) => {
-        uniformUpdateValues.render_intensity_multiplier = [[1, 1, 1, 100, 10, 1e6, 1][parseInt(val)]]
-        if (val == RenderMode.Smoke3D) smokeFolder.show(), smokeFolder.open()
-        else smokeFolder.hide()
-      },
-    },
-    time: {},
-    dt: {},
-    sim_speed: { label: 'Sim Speed', min: 0.1, max: 20 },
-    velocity_force: { label: 'Velocity Force', min: 0, max: 0.5 },
-    velocity_radius: { label: 'Velocity Radius', min: 0, max: 0.001 },
-    velocity_diffusion: { label: 'Velocity Diffusion', min: 0.95, max: 1 },
-    dye_intensity: { label: 'Dye Intensity', min: 0, max: 10 },
-    dye_radius: { label: 'Dye Radius', min: 0, max: 0.01 },
-    dye_diffusion: { label: 'Dye Diffusion', min: 0.95, max: 1 },
-    viscosity: { label: 'Viscosity', min: 0, max: 1 },
-    vorticity: { label: 'Vorticity', min: 0, max: 10 },
-    contain_fluid: { label: 'Solid boundaries' },
-    mouse: { size: 4 },
-    grid_size: {
-      value: [
-        grid_dim.w,
-        grid_dim.h,
-        dye_dim.w,
-        dye_dim.h,
-        1 / (settings.grid_size * 4),
-        settings.grid_size * 4,
-        settings.dye_size * 4,
-      ],
-    },
-    smoke_parameters: {
-      value: [
-        settings.raymarch_steps,
-        settings.smoke_density,
-        settings.enable_shadows ? 1 : 0,
-        settings.shadow_intensity,
-        settings.smoke_height,
-        settings.light_height,
-        settings.light_intensity,
-        settings.light_falloff,
-      ],
-    },
-  }
-
-  const uniformBuffers: Record<string, GPUBuffer> = {}
-  Object.entries(uniformProps).forEach(([name, { size, value, min, max, step, onChange, label }]) => {
-    const uniformSize = size ?? value?.length ?? 1
-    if (label) {
-      gui
-        .add(settings, name, min, max, step)
-        .onChange((v) => {
-          onChange?.(v)
-          uniformUpdateValues[name] = [v]
-        })
-        .name(label)
-    }
-
-    const mappedAtCreation = uniformSize === 1 || value != null
-    const buffer = device.createBuffer({
-      size: uniformSize * FLOAT_BYTES,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      mappedAtCreation,
-    })
-    if (mappedAtCreation) {
-      new Float32Array(buffer.getMappedRange()).set(new Float32Array(value ?? [settings[name] ?? 0]))
-      buffer.unmap()
-    }
-
-    uniformBuffers[name] = buffer
-  })
 
   const createRenderProgram = () => {
     const shaderModule = device.createShaderModule({ code: shaders.render })
@@ -349,12 +278,6 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     }
   }
 
-  const mouseInfo = { pos: null, last: null, velocity: null }
-  canvas.addEventListener('mousemove', (e: MouseEvent) => {
-    const { width, height } = canvas.getBoundingClientRect()
-    mouseInfo.pos = [e.offsetX / width, 1 - e.offsetY / height]
-  })
-
   context.configure({
     device,
     format: navigator.gpu.getPreferredCanvasFormat(),
@@ -362,12 +285,101 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     alphaMode: 'opaque',
   })
 
-  const copyBuffer = (command: GPUCommandEncoder, from: GPUBuffer, to: GPUBuffer) => {
-    command.copyBufferToBuffer(from, 0, to, 0, from.size)
+  initSizes()
+
+  const uniformUpdateValues: Record<string, number[]> = {}
+  const uniformProps: Record<string, UniformProps> = {
+    render_intensity_multiplier: { value: [1] },
+    render_mode: {
+      gui,
+      label: 'Render Mode',
+      min: {
+        Classic: RenderMode.Classic,
+        'Smoke 2D': RenderMode.Smoke2D,
+        'Smoke 3D + Shadows': RenderMode.Smoke3D,
+      },
+      value: [0],
+      onChange: (val) => {
+        uniformUpdateValues.render_intensity_multiplier = [[1, 1, 1, 100, 10, 1e6, 1][parseInt(val)]]
+        if (val == RenderMode.Smoke3D) smokeFolder.show(), smokeFolder.open()
+        else smokeFolder.hide()
+      },
+    },
+    time: {},
+    dt: {},
+    sim_speed: { label: 'Sim Speed', min: 0.1, max: 20 },
+    velocity_force: { label: 'Velocity Force', min: 0, max: 0.5 },
+    velocity_radius: { label: 'Velocity Radius', min: 0, max: 0.001 },
+    velocity_diffusion: { label: 'Velocity Diffusion', min: 0.95, max: 1 },
+    dye_intensity: { label: 'Dye Intensity', min: 0, max: 10 },
+    dye_radius: { label: 'Dye Radius', min: 0, max: 0.01 },
+    dye_diffusion: { label: 'Dye Diffusion', min: 0.95, max: 1 },
+    viscosity: { label: 'Viscosity', min: 0, max: 1 },
+    vorticity: { label: 'Vorticity', min: 0, max: 10 },
+    contain_fluid: { label: 'Solid boundaries' },
+    mouse: { size: 4 },
+    grid_size: {
+      value: [
+        grid_dim.w,
+        grid_dim.h,
+        dye_dim.w,
+        dye_dim.h,
+        1 / (settings.grid_size * 4),
+        settings.grid_size * 4,
+        settings.dye_size * 4,
+      ],
+    },
+    smoke_parameters: {
+      value: [
+        settings.raymarch_steps,
+        settings.smoke_density,
+        settings.enable_shadows ? 1 : 0,
+        settings.shadow_intensity,
+        settings.smoke_height,
+        settings.light_height,
+        settings.light_intensity,
+        settings.light_falloff,
+      ],
+    },
   }
-  const updateBuffer = (buffer: GPUBuffer, value: number[]) => {
-    device.queue.writeBuffer(buffer, 0, new Float32Array(value), 0, buffer.size / FLOAT_BYTES)
-  }
+
+  const uniformBuffers: Record<string, GPUBuffer> = {}
+  Object.entries(uniformProps).forEach(([name, { size, value, min, max, step, onChange, label }]) => {
+    const uniformSize = size ?? value?.length ?? 1
+    if (label) {
+      gui
+        .add(settings, name, min, max, step)
+        .onChange((v) => {
+          onChange?.(v)
+          uniformUpdateValues[name] = [v]
+        })
+        .name(label)
+    }
+
+    const mappedAtCreation = uniformSize === 1 || value != null
+    const buffer = device.createBuffer({
+      size: uniformSize * FLOAT_BYTES,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      mappedAtCreation,
+    })
+    if (mappedAtCreation) {
+      new Float32Array(buffer.getMappedRange()).set(new Float32Array(value ?? [settings[name] ?? 0]))
+      buffer.unmap()
+    }
+
+    uniformBuffers[name] = buffer
+  })
+
+  const mouseInfo = { pos: null, last: null, velocity: null }
+  canvas.addEventListener('mousemove', (e: MouseEvent) => {
+    const { width, height } = canvas.getBoundingClientRect()
+    mouseInfo.pos = [e.offsetX / width, 1 - e.offsetY / height]
+  })
+  let resizeTimeout
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout)
+    resizeTimeout = setTimeout(onSizeChange, 150)
+  })
 
   buffers = createBuffers()
   let programs = createPrograms()
@@ -400,22 +412,12 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
       mouseInfo.last = [...mouseInfo.pos]
       uniformUpdateValues.mouse = [...mouseInfo.pos, ...mouseInfo.velocity]
     }
+    updateBuffer(uniformBuffers.dt, [dt])
+    updateBuffer(uniformBuffers.time, [time])
     Object.entries(uniformUpdateValues).forEach(([name, value]) => {
       updateBuffer(uniformBuffers[name], value)
       delete uniformUpdateValues[name]
     })
-    updateBuffer(uniformBuffers.dt, [dt])
-    updateBuffer(uniformBuffers.time, [time])
-    updateBuffer(uniformBuffers.smoke_parameters, [
-      settings.raymarch_steps,
-      settings.smoke_density,
-      settings.enable_shadows ? 1 : 0,
-      settings.shadow_intensity,
-      settings.smoke_height,
-      settings.light_height,
-      settings.light_intensity,
-      settings.light_falloff,
-    ])
 
     const command = device.createCommandEncoder()
     const computePass = command.beginComputePass()
