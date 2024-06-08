@@ -415,7 +415,6 @@ ${createBindings(
   ['uniform', 'uGrid', 'GridSize'],
   ['uniform', 'uMouse', 'Mouse'],
   ['uniform', 'renderMode', 'f32'], // 0: Classic, 1: Smoke2D, 2: Smoke3D
-  ['uniform', 'multiplier', 'f32'],
   ['uniform', 'smokeData', 'SmokeData'],
 )}
 
@@ -457,8 +456,7 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32> {
   if (renderMode != 2) {
     let dim = vec2(uGrid.dyeW, uGrid.dyeH);
     let fuv = floor(fragData.uv * dim);
-    let col = field[u32(fuv.x + fuv.y * dim.x)].rgb;
-    return vec4(col * multiplier, 1);
+    return field[u32(fuv.x + fuv.y * dim.x)];
   }
 
   // Smoke 3D

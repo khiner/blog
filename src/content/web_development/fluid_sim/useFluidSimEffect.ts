@@ -33,15 +33,13 @@ enum RenderMode {
 
 const FLOAT_BYTES = 4
 
-const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => {
-  const context = canvas.getContext('webgpu')
-  if (!context) throw new Error('Canvas does not support WebGPU')
+const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => {
+  const { canvas } = context
 
   const settings = {
     renderMode: RenderMode.Classic,
     gridSize: 128,
     dyeSize: 1024,
-    reset: () => {},
 
     simSpeed: 5,
     containFluid: true,
@@ -139,19 +137,6 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     ]
   }
 
-  gui.add(settings, 'pressureIterations', 0, 50).name('Pressure Iterations')
-  gui.add(settings, 'reset').name('Clear')
-  gui.add(settings, 'gridSize', [32, 64, 128, 256, 512, 1024]).name('Sim Resolution').onChange(onSizeChange)
-  gui.add(settings, 'dyeSize', [128, 256, 512, 1024, 2048]).name('Render Resolution').onChange(onSizeChange)
-  const smokeFolder = gui.addFolder('Smoke Parameters')
-  smokeFolder.add(settings, 'raymarchSteps', 5, 20, 1).name('3D resolution').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'lightHeight', 0.5, 1, 0.001).name('Light Elevation').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'lightIntensity', 0, 1, 0.001).name('Light Intensity').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'lightFalloff', 0.5, 10, 0.001).name('Light Falloff').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'enableShadows').name('Enable Shadows').onChange(onSmokeParameterChange)
-  smokeFolder.add(settings, 'shadowIntensity', 0, 50, 0.001).name('Shadow Intensity').onChange(onSmokeParameterChange)
-  smokeFolder.hide()
-
   const createRenderProgram = () => {
     const shaderModule = device.createShaderModule({ code: shaders.render })
     const vertices = new Float32Array([-1, -1, 0, 1, -1, 1, 0, 1, 1, -1, 0, 1, 1, -1, 0, 1, -1, 1, 0, 1, 1, 1, 0, 1])
@@ -197,7 +182,6 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
           uniformBuffers.gridSize,
           uniformBuffers.mouse,
           uniformBuffers.renderMode,
-          uniformBuffers.renderIntensity,
           uniformBuffers.smokeParams,
         ].map((buffer, binding) => ({ binding, resource: { buffer } })),
       }),
@@ -289,7 +273,6 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
 
   const uniformUpdateValues: Record<string, number[]> = {}
   const uniformProps: Record<string, UniformProps> = {
-    renderIntensity: { value: [1] },
     renderMode: {
       gui,
       label: 'Render Mode',
@@ -300,7 +283,6 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
       },
       value: [0],
       onChange: (val) => {
-        uniformUpdateValues.renderIntensity = [[1, 1, 1, 100, 10, 1e6, 1][parseInt(val)]]
         if (val == RenderMode.Smoke3D) smokeFolder.show(), smokeFolder.open()
         else smokeFolder.hide()
       },
@@ -377,7 +359,7 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
   let mouseMoveTimeout: number
   canvas.addEventListener('mousemove', (e: MouseEvent) => {
     clearTimeout(mouseMoveTimeout)
-    const { width, height } = canvas.getBoundingClientRect()
+    const { width, height } = (canvas as HTMLCanvasElement).getBoundingClientRect()
     const mousePos = [e.offsetX / width, 1 - e.offsetY / height]
     const mouseVelocity = prevMousePos ? [mousePos[0] - prevMousePos[0], mousePos[1] - prevMousePos[1]] : [0, 0]
     prevMousePos = [mousePos[0], mousePos[1]]
@@ -397,7 +379,7 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
   let dt = 0.0
   let time = 0.0
 
-  settings.reset = () => {
+  const reset = () => {
     // Clear dynamic buffers.
     const { velocity, dye, pressure } = buffers
     for (const { buffer } of [velocity, dye, pressure]) {
@@ -406,6 +388,18 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     time = 0
   }
 
+  gui.add(settings, 'pressureIterations', 0, 50).name('Pressure Iterations')
+  // gui.add(settings, 'reset').name('Clear').onChange(reset)
+  gui.add(settings, 'gridSize', [32, 64, 128, 256, 512, 1024]).name('Sim Resolution').onChange(onSizeChange)
+  gui.add(settings, 'dyeSize', [128, 256, 512, 1024, 2048]).name('Render Resolution').onChange(onSizeChange)
+  const smokeFolder = gui.addFolder('Smoke Parameters')
+  smokeFolder.add(settings, 'raymarchSteps', 5, 20, 1).name('3D resolution').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'lightHeight', 0.5, 1, 0.001).name('Light Elevation').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'lightIntensity', 0, 1, 0.001).name('Light Intensity').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'lightFalloff', 0.5, 10, 0.001).name('Light Falloff').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'enableShadows').name('Enable Shadows').onChange(onSmokeParameterChange)
+  smokeFolder.add(settings, 'shadowIntensity', 0, 50, 0.001).name('Shadow Intensity').onChange(onSmokeParameterChange)
+  smokeFolder.hide()
   // Render loop
   const step = () => {
     requestAnimationFrame(step)
@@ -458,7 +452,10 @@ const useFluidSimEffect = (canvasRef: RefObject<HTMLCanvasElement>, device: GPUD
 
     guiRef.current = new dat.GUI()
     try {
-      runFluidSim(canvas, device, guiRef.current)
+      const context = canvas.getContext('webgpu')
+      if (!context) throw new Error('Canvas does not support WebGPU')
+
+      runFluidSim(context, device, guiRef.current)
     } catch (e) {
       console.error(e)
     }
