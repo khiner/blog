@@ -370,12 +370,22 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     uniformBuffers[name] = buffer
   })
 
-  const mouseInfo = { pos: null, last: null, velocity: null }
+  let prevMousePos: [number, number] | null = null
+  const onMouseStopMoving = () => {
+    uniformUpdateValues.mouse = [...prevMousePos, 0, 0]
+  }
+  let mouseMoveTimeout: number
   canvas.addEventListener('mousemove', (e: MouseEvent) => {
+    clearTimeout(mouseMoveTimeout)
     const { width, height } = canvas.getBoundingClientRect()
-    mouseInfo.pos = [e.offsetX / width, 1 - e.offsetY / height]
+    const mousePos = [e.offsetX / width, 1 - e.offsetY / height]
+    const mouseVelocity = prevMousePos ? [mousePos[0] - prevMousePos[0], mousePos[1] - prevMousePos[1]] : [0, 0]
+    prevMousePos = [mousePos[0], mousePos[1]]
+
+    uniformUpdateValues.mouse = [...mousePos, ...mouseVelocity]
+    mouseMoveTimeout = setTimeout(onMouseStopMoving, 100)
   })
-  let resizeTimeout
+  let resizeTimeout: number
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout)
     resizeTimeout = setTimeout(onSizeChange, 150)
@@ -405,13 +415,6 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     time += dt
     lastFrame = now
 
-    if (mouseInfo.pos) {
-      mouseInfo.velocity = mouseInfo.last
-        ? [mouseInfo.pos[0] - mouseInfo.last[0], mouseInfo.pos[1] - mouseInfo.last[1]]
-        : [0, 0]
-      mouseInfo.last = [...mouseInfo.pos]
-      uniformUpdateValues.mouse = [...mouseInfo.pos, ...mouseInfo.velocity]
-    }
     updateBuffer(uniformBuffers.dt, [dt])
     updateBuffer(uniformBuffers.time, [time])
     Object.entries(uniformUpdateValues).forEach(([name, value]) => {
