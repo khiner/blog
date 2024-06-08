@@ -314,13 +314,13 @@ ${createBindings(
 )}
 
 ${MainFull}
-  var scale = vec2f(1); // disable scale to disable contained bounds
-  if (pos.x == 0) { pos.x += 1; scale.x = -1.; }
-  else if (pos.x == uGrid.w - 1) { pos.x -= 1; scale.x = -1.; }
-  if (pos.y == 0) { pos.y += 1; scale.y = -1.; }
-  else if (pos.y == uGrid.h - 1) { pos.y -= 1; scale.y = -1.; }
-
-  if (containFluid == 0.) { scale = vec2(1.); }
+  var scale = vec2f(1);
+  if (containFluid != 0) {
+    if (pos.x == 0) { pos.x += 1; scale.x = -1.; }
+    else if (pos.x == uGrid.w - 1) { pos.x -= 1; scale.x = -1.; }
+    if (pos.y == 0) { pos.y += 1; scale.y = -1.; }
+    else if (pos.y == uGrid.h - 1) { pos.y -= 1; scale.y = -1.; }
+  }
 
   p_out[index] = p_in[ID(pos)] * scale;
 }`

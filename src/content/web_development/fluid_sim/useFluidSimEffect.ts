@@ -40,10 +40,9 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
   const settings = {
     render_mode: RenderMode.Classic,
     grid_size: 128,
-    grid_dim: { w: 1024, h: 1024 },
+    dye_size: 1024,
     reset: () => {},
 
-    dye_size: 1024,
     sim_speed: 5,
     contain_fluid: true,
     velocity_force: 0.2,
@@ -52,11 +51,9 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     dye_intensity: 1,
     dye_radius: 0.001,
     dye_diffusion: 0.98,
-    dye_dim: { w: 1024, h: 1024 },
     viscosity: 0.8,
     vorticity: 2,
     pressure_iterations: 20,
-    buffer_view: 'dye',
 
     raymarch_steps: 12,
     smoke_density: 40,
@@ -67,6 +64,27 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     light_intensity: 1,
     light_falloff: 1,
   }
+  let grid_dim = { w: 1024, h: 1024 }
+  let dye_dim = { w: 1024, h: 1024 }
+
+  const createBuffer = (dim: Dimension, floatsPerElement = 1): Buffer => ({
+    dim,
+    buffer: device.createBuffer({
+      size: dim.w * dim.h * floatsPerElement * FLOAT_BYTES,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+    }),
+  })
+  const createBuffers = () => ({
+    velocity: createBuffer(grid_dim, 2),
+    velocity0: createBuffer(grid_dim, 2),
+    dye: createBuffer(dye_dim, 4),
+    dye0: createBuffer(dye_dim, 4),
+    divergence: createBuffer(grid_dim),
+    divergence0: createBuffer(grid_dim),
+    pressure: createBuffer(grid_dim),
+    pressure0: createBuffer(grid_dim),
+    vorticity: createBuffer(grid_dim),
+  })
 
   const initSizes = () => {
     const scaleDims = (size: number) => {
@@ -79,36 +97,11 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
       return { w: Math.floor(dim.w * ratio), h: Math.floor(dim.h * ratio) }
     }
 
-    settings.grid_dim = scaleDims(settings.grid_size)
-    settings.dye_dim = scaleDims(settings.dye_size)
-    settings.rdx = settings.grid_size * 4
-    settings.dyeRdx = settings.dye_size * 4
-    settings.dx = 1 / settings.rdx
+    grid_dim = scaleDims(settings.grid_size)
+    dye_dim = scaleDims(settings.dye_size)
 
-    canvas.width = settings.dye_dim.w
-    canvas.height = settings.dye_dim.h
-  }
-
-  const createBuffer = (dim: Dimension, floatsPerElement = 1): Buffer => ({
-    dim,
-    buffer: device.createBuffer({
-      size: dim.w * dim.h * floatsPerElement * FLOAT_BYTES,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
-    }),
-  })
-  const createBuffers = () => {
-    const { grid_dim, dye_dim } = settings
-    return {
-      velocity: createBuffer(grid_dim, 2),
-      velocity0: createBuffer(grid_dim, 2),
-      dye: createBuffer(dye_dim, 4),
-      dye0: createBuffer(dye_dim, 4),
-      divergence: createBuffer(grid_dim),
-      divergence0: createBuffer(grid_dim),
-      pressure: createBuffer(grid_dim),
-      pressure0: createBuffer(grid_dim),
-      vorticity: createBuffer(grid_dim),
-    }
+    canvas.width = dye_dim.w
+    canvas.height = dye_dim.h
   }
 
   let buffers: Record<string, Buffer>
@@ -117,13 +110,13 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     buffers = createBuffers()
     programs = createPrograms()
     uniformUpdateValues.grid_size = [
-      settings.grid_dim.w,
-      settings.grid_dim.h,
-      settings.dye_dim.w,
-      settings.dye_dim.h,
-      settings.dx,
-      settings.rdx,
-      settings.dyeRdx,
+      grid_dim.w,
+      grid_dim.h,
+      dye_dim.w,
+      dye_dim.h,
+      1 / (settings.grid_size * 4),
+      settings.grid_size * 4,
+      settings.dye_size * 4,
     ]
   }
   let resizeTimeout
@@ -134,7 +127,7 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
 
   initSizes()
   gui.add(settings, 'pressure_iterations', 0, 50).name('Pressure Iterations')
-  gui.add(settings, 'reset').name('Clear canvas')
+  gui.add(settings, 'reset').name('Clear')
   gui.add(settings, 'grid_size', [32, 64, 128, 256, 512, 1024]).name('Sim. Resolution').onChange(onSizeChange)
   gui.add(settings, 'dye_size', [128, 256, 512, 1024, 2048]).name('Render Resolution').onChange(onSizeChange)
   const smokeFolder = gui.addFolder('Smoke Parameters')
@@ -180,13 +173,13 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     mouse: { size: 4 },
     grid_size: {
       value: [
-        settings.grid_dim.w,
-        settings.grid_dim.h,
-        settings.dye_dim.w,
-        settings.dye_dim.h,
-        settings.dx,
-        settings.rdx,
-        settings.dyeRdx,
+        grid_dim.w,
+        grid_dim.h,
+        dye_dim.w,
+        dye_dim.h,
+        1 / (settings.grid_size * 4),
+        settings.grid_size * 4,
+        settings.dye_size * 4,
       ],
     },
     smoke_parameters: {
@@ -206,18 +199,14 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
   const uniformBuffers: Record<string, GPUBuffer> = {}
   Object.entries(uniformProps).forEach(([name, { size, value, min, max, step, onChange, label }]) => {
     const uniformSize = size ?? value?.length ?? 1
-    if (uniformSize === 1) {
-      if (settings[name] == null) {
-        settings[name] = value ?? 0
-      } else if (label) {
-        gui
-          .add(settings, name, min, max, step)
-          .onChange((v) => {
-            onChange?.(v)
-            uniformUpdateValues[name] = [v]
-          })
-          .name(label)
-      }
+    if (label) {
+      gui
+        .add(settings, name, min, max, step)
+        .onChange((v) => {
+          onChange?.(v)
+          uniformUpdateValues[name] = [v]
+        })
+        .name(label)
     }
 
     const mappedAtCreation = uniformSize === 1 || value != null
@@ -227,7 +216,7 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
       mappedAtCreation,
     })
     if (mappedAtCreation) {
-      new Float32Array(buffer.getMappedRange()).set(new Float32Array(value ?? [settings[name]]))
+      new Float32Array(buffer.getMappedRange()).set(new Float32Array(value ?? [settings[name] ?? 0]))
       buffer.unmap()
     }
 
@@ -266,7 +255,7 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
       primitive: { topology: 'triangle-list' },
     })
 
-    const renderBuffer = createBuffer(settings.dye_dim, 4)
+    const renderBuffer = createBuffer(dye_dim, 4)
 
     return {
       pipeline,
@@ -373,34 +362,35 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     alphaMode: 'opaque',
   })
 
-  const { queue } = device
-  settings.reset = () => {
-    // Clear dynamic buffers.
-    const { velocity, dye, pressure } = buffers
-    for (const { buffer } of [velocity, dye, pressure]) {
-      queue.writeBuffer(buffer, 0, new Float32Array(buffer.size / FLOAT_BYTES))
-    }
-    settings.time = 0
-  }
-
-  const updateBuffer = (buffer: GPUBuffer, value: number[]) => {
-    queue.writeBuffer(buffer, 0, new Float32Array(value), 0, buffer.size / FLOAT_BYTES)
-  }
   const copyBuffer = (command: GPUCommandEncoder, from: GPUBuffer, to: GPUBuffer) => {
     command.copyBufferToBuffer(from, 0, to, 0, from.size)
+  }
+  const updateBuffer = (buffer: GPUBuffer, value: number[]) => {
+    device.queue.writeBuffer(buffer, 0, new Float32Array(value), 0, buffer.size / FLOAT_BYTES)
   }
 
   buffers = createBuffers()
   let programs = createPrograms()
   let lastFrame = performance.now()
+  let dt = 0.0
+  let time = 0.0
+
+  settings.reset = () => {
+    // Clear dynamic buffers.
+    const { velocity, dye, pressure } = buffers
+    for (const { buffer } of [velocity, dye, pressure]) {
+      device.queue.writeBuffer(buffer, 0, new Float32Array(buffer.size / FLOAT_BYTES))
+    }
+    time = 0
+  }
 
   // Render loop
   const step = () => {
     requestAnimationFrame(step)
 
     const now = performance.now()
-    settings.dt = Math.min(1 / 60, (now - lastFrame) / 1000) * settings.sim_speed
-    settings.time += settings.dt
+    dt = Math.min(1 / 60, (now - lastFrame) / 1000) * settings.sim_speed
+    time += dt
     lastFrame = now
 
     if (mouseInfo.pos) {
@@ -414,8 +404,8 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
       updateBuffer(uniformBuffers[name], value)
       delete uniformUpdateValues[name]
     })
-    updateBuffer(uniformBuffers.dt, [parseFloat(settings.dt)])
-    updateBuffer(uniformBuffers.time, [parseFloat(settings.time)])
+    updateBuffer(uniformBuffers.dt, [dt])
+    updateBuffer(uniformBuffers.time, [time])
     updateBuffer(uniformBuffers.smoke_parameters, [
       settings.raymarch_steps,
       settings.smoke_density,
@@ -448,7 +438,7 @@ const runFluidSim = (canvas: HTMLCanvasElement, device: GPUDevice, gui: any) => 
     renderPass.setVertexBuffer(0, render.vertexBuffer)
     renderPass.draw(6)
     renderPass.end()
-    queue.submit([command.finish()])
+    device.queue.submit([command.finish()])
   }
 
   step()
