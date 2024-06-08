@@ -111,28 +111,26 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     initSizes()
     buffers = createBuffers()
     programs = createPrograms()
-    uniformUpdateValues.gridSize = [
-      gridDim.w,
-      gridDim.h,
-      dyeDim.w,
-      dyeDim.h,
-      1 / (props.gridSize * 4),
-      props.gridSize * 4,
-      props.dyeSize * 4,
-    ]
+    updateQueue.push([
+      'gridSize',
+      [gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, 1 / (props.gridSize * 4), props.gridSize * 4, props.dyeSize * 4],
+    ])
   }
 
   const onSmokeParamChange = () => {
-    uniformUpdateValues.smokeParams = [
-      props.raymarchSteps,
-      props.smokeDensity,
-      props.enableShadows ? 1 : 0,
-      props.shadowIntensity,
-      props.smokeHeight,
-      props.lightHeight,
-      props.lightIntensity,
-      props.lightFalloff,
-    ]
+    updateQueue.push([
+      'smokeParams',
+      [
+        props.raymarchSteps,
+        props.smokeDensity,
+        props.enableShadows ? 1 : 0,
+        props.shadowIntensity,
+        props.smokeHeight,
+        props.lightHeight,
+        props.lightIntensity,
+        props.lightFalloff,
+      ],
+    ])
   }
 
   const createRenderProgram = () => {
@@ -311,10 +309,11 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     uniformBuffers[key] = createUniformBuffer([props[key]])
   }
 
-  const uniformUpdateValues: Record<string, number[]> = {}
+  let updateQueue: [string, number[]][] = []
+
   let prevMousePos: [number, number] | null = null
   const onMouseStopMoving = () => {
-    uniformUpdateValues.mouse = [...prevMousePos, 0, 0]
+    updateQueue.push(['mouse', [...prevMousePos, 0, 0]])
   }
   let mouseMoveTimeout: number
   canvas.addEventListener('mousemove', (e: MouseEvent) => {
@@ -324,7 +323,7 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     const mouseVelocity = prevMousePos ? [mousePos[0] - prevMousePos[0], mousePos[1] - prevMousePos[1]] : [0, 0]
     prevMousePos = [mousePos[0], mousePos[1]]
 
-    uniformUpdateValues.mouse = [...mousePos, ...mouseVelocity]
+    updateQueue.push(['mouse', [...mousePos, ...mouseVelocity]])
     mouseMoveTimeout = setTimeout(onMouseStopMoving, 100)
   })
   let resizeTimeout: number
@@ -352,7 +351,7 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     gui
       .add(props, key, min, max)
       .name(label)
-      .onChange((val) => (uniformUpdateValues[key] = [val]))
+      .onChange((val) => updateQueue.push([key, [val]]))
   }
 
   // gui.add(props, 'reset').name('Clear').onChange(reset)
@@ -364,7 +363,7 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     })
     .name('Render Mode')
     .onChange((val) => {
-      uniformUpdateValues.renderMode = [val]
+      updateQueue.push(['renderMode', [val]])
       if (val == RenderMode.Smoke3D) smokeFolder.show(), smokeFolder.open()
       else smokeFolder.hide()
     })
@@ -402,10 +401,10 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
 
     updateUniformBuffer(uniformBuffers.dt, [dt])
     updateUniformBuffer(uniformBuffers.time, [time])
-    Object.entries(uniformUpdateValues).forEach(([name, value]) => {
+    while (updateQueue.length) {
+      const [name, value] = updateQueue.shift()!
       updateUniformBuffer(uniformBuffers[name], value)
-      delete uniformUpdateValues[name]
-    })
+    }
 
     const command = device.createCommandEncoder()
     const computePass = command.beginComputePass()
