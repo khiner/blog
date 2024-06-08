@@ -462,7 +462,11 @@ const useFluidSimEffect = (canvasRef: RefObject<HTMLCanvasElement>, device: GPUD
     if (!canvas || !device) return
 
     guiRef.current = new dat.GUI()
-    runFluidSim(canvas, device, guiRef.current)
+    try {
+      runFluidSim(canvas, device, guiRef.current)
+    } catch (e) {
+      console.error(e)
+    }
 
     return () => {
       guiRef.current?.destroy()
