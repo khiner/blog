@@ -1,5 +1,4 @@
-import { useEffect, useRef, RefObject } from 'react'
-import * as dat from 'dat.gui'
+import { RefObject, useEffect, useState } from 'react'
 import * as _webgpu from '@webgpu/types'
 
 import shaders from './shaders'
@@ -22,7 +21,8 @@ enum RenderMode {
 
 const FLOAT_BYTES = 4
 
-const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => {
+const runFluidSim = (context: GPUCanvasContext, device: GPUDevice) => {
+  // todo next up: these will be passed in as props from top-level, also passed to/managed by the control pane
   const props = {
     gridSize: 128,
     dyeSize: 1024,
@@ -38,7 +38,8 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     dyeDiffusion: 0.98,
     viscosity: 0.8,
     vorticity: 2,
-
+  }
+  const smokeProps = {
     raymarchSteps: 12,
     smokeDensity: 40,
     enableShadows: true,
@@ -48,6 +49,7 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     lightIntensity: 1,
     lightFalloff: 1,
   }
+
   let gridDim: Dimension
   let dyeDim: Dimension
 
@@ -112,22 +114,6 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     buffers = createBuffers()
     programs = createPrograms()
     updateQueue.push(['gridSize', [gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]])
-  }
-
-  const onSmokeParamChange = () => {
-    updateQueue.push([
-      'smokeParams',
-      [
-        props.raymarchSteps,
-        props.smokeDensity,
-        props.enableShadows ? 1 : 0,
-        props.shadowIntensity,
-        props.smokeHeight,
-        props.lightHeight,
-        props.lightIntensity,
-        props.lightFalloff,
-      ],
-    ])
   }
 
   const createRenderProgram = () => {
@@ -271,21 +257,20 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     mouse: createUniformBuffer([0, 0, 0, 0]),
     gridSize: createUniformBuffer([gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]),
     smokeParams: createUniformBuffer([
-      props.raymarchSteps,
-      props.smokeDensity,
-      props.enableShadows ? 1 : 0,
-      props.shadowIntensity,
-      props.smokeHeight,
-      props.lightHeight,
-      props.lightIntensity,
-      props.lightFalloff,
+      smokeProps.raymarchSteps,
+      smokeProps.smokeDensity,
+      smokeProps.enableShadows ? 1 : 0,
+      smokeProps.shadowIntensity,
+      smokeProps.smokeHeight,
+      smokeProps.lightHeight,
+      smokeProps.lightIntensity,
+      smokeProps.lightFalloff,
     ]),
   }
 
   for (const key of [
     'renderMode',
     'containFluid',
-    'simSpeed',
     'velocityForce',
     'velocityRadius',
     'velocityDiffusion',
@@ -321,14 +306,34 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     resizeTimeout = setTimeout(onSizeChange, 150)
   })
 
-  buffers = createBuffers()
-  let programs = createPrograms()
-  let lastFrame = performance.now()
-  let dt = 0.0
-  let time = 0.0
+  const onPropChange = (key, val) => {
+    if (key in props) props[key] = val
+    else if (key in smokeProps) smokeProps[key] = val
+
+    // Check if the prop has an associated uniform buffer.
+    if (key == 'simSpeed') return
+
+    const isSmokeParam = key in smokeProps
+    const isGridParam = key == 'gridSize' || key == 'dyeSize'
+    const uniformKey = isSmokeParam ? 'smokeParams' : isGridParam ? 'gridSize' : key
+    const uniformValues = isSmokeParam
+      ? [
+          smokeProps.raymarchSteps,
+          smokeProps.smokeDensity,
+          smokeProps.enableShadows ? 1 : 0,
+          smokeProps.shadowIntensity,
+          smokeProps.smokeHeight,
+          smokeProps.lightHeight,
+          smokeProps.lightIntensity,
+          smokeProps.lightFalloff,
+        ]
+      : isGridParam
+        ? [gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]
+        : [val]
+    updateQueue.push([uniformKey, uniformValues])
+  }
 
   const reset = () => {
-    // Clear dynamic buffers.
     const { velocity, dye, pressure } = buffers
     for (const { buffer } of [velocity, dye, pressure]) {
       device.queue.writeBuffer(buffer, 0, new Float32Array(buffer.size / FLOAT_BYTES))
@@ -336,48 +341,11 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
     time = 0
   }
 
-  const addProp = (key: string, label: string, min?: number | number[], max?: number) => {
-    gui
-      .add(props, key, min, max)
-      .name(label)
-      .onChange((val) => updateQueue.push([key, [val]]))
-  }
-
-  // gui.add(props, 'reset').name('Clear').onChange(reset)
-  gui
-    .add(props, 'renderMode', {
-      Classic: RenderMode.Classic,
-      'Smoke 2D': RenderMode.Smoke2D,
-      'Smoke 3D + Shadows': RenderMode.Smoke3D,
-    })
-    .name('Render Mode')
-    .onChange((val) => {
-      updateQueue.push(['renderMode', [val]])
-      if (val == RenderMode.Smoke3D) smokeFolder.show(), smokeFolder.open()
-      else smokeFolder.hide()
-    })
-
-  addProp('gridSize', 'Sim Resolution', [32, 64, 128, 256, 512, 1024])
-  addProp('dyeSize', 'Render Resolution', [128, 256, 512, 1024, 2048])
-  addProp('simSpeed', 'Sim Speed', 0.1, 20)
-  addProp('containFluid', 'Solid boundaries')
-  addProp('velocityForce', 'Velocity Force', 0, 0.5)
-  addProp('velocityRadius', 'Velocity Radius', 0, 0.001)
-  addProp('velocityDiffusion', 'Velocity Diffusion', 0.95, 1)
-  addProp('dyeIntensity', 'Dye Intensity', 0, 10)
-  addProp('dyeRadius', 'Dye Radius', 0, 0.01)
-  addProp('dyeDiffusion', 'Dye Diffusion', 0.95, 1)
-  addProp('viscosity', 'Viscosity', 0, 1)
-  addProp('vorticity', 'Vorticity', 0, 10)
-
-  const smokeFolder = gui.addFolder('Smoke Parameters')
-  smokeFolder.add(props, 'raymarchSteps', 5, 20, 1).name('3D resolution').onChange(onSmokeParamChange)
-  smokeFolder.add(props, 'lightHeight', 0.5, 1).name('Light Elevation').onChange(onSmokeParamChange)
-  smokeFolder.add(props, 'lightIntensity', 0, 1).name('Light Intensity').onChange(onSmokeParamChange)
-  smokeFolder.add(props, 'lightFalloff', 0.5, 10).name('Light Falloff').onChange(onSmokeParamChange)
-  smokeFolder.add(props, 'enableShadows').name('Enable Shadows').onChange(onSmokeParamChange)
-  smokeFolder.add(props, 'shadowIntensity', 0, 50).name('Shadow Intensity').onChange(onSmokeParamChange)
-  smokeFolder.hide()
+  buffers = createBuffers()
+  let programs = createPrograms()
+  let lastFrame = performance.now()
+  let dt = 0.0
+  let time = 0.0
 
   // Render loop
   const step = () => {
@@ -420,30 +388,28 @@ const runFluidSim = (context: GPUCanvasContext, device: GPUDevice, gui: any) => 
   }
 
   step()
+
+  return { onPropChange, reset }
 }
 
 const useFluidSimEffect = (canvasRef: RefObject<HTMLCanvasElement>, device: GPUDevice | null) => {
-  const guiRef = useRef<any>(null)
+  const [simulation, setSimulation] = useState<any>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas || !device) return
 
-    guiRef.current = new dat.GUI()
     try {
       const context = canvas.getContext('webgpu')
       if (!context) throw new Error('Canvas does not support WebGPU')
 
-      runFluidSim(context, device, guiRef.current)
+      setSimulation(runFluidSim(context, device))
     } catch (e) {
       console.error(e)
     }
-
-    return () => {
-      guiRef.current?.destroy()
-      guiRef.current = null
-    }
   }, [canvasRef, device])
+
+  return simulation
 }
 
-export { useFluidSimEffect }
+export { useFluidSimEffect, RenderMode }
