@@ -458,22 +458,22 @@ const Dropdown: React.FC<DropdownProps> = ({ k, l, options, v, cb }) => (
   </Control>
 )
 
-interface SmokeControlPaneProps {
-  props: SmokeProps
-  onChange: (key: string, value: any) => void
+interface TabButtonProps {
+  tabKey: string
+  activeKey: string
+  setActive: React.Dispatch<React.SetStateAction<string>>
+  children: React.ReactNode
 }
-const SmokeControlPane: React.FC<SmokeControlPaneProps> = ({
-  props: { raymarchSteps, lightHeight, lightIntensity, lightFalloff, enableShadows, shadowIntensity },
-  onChange,
-}) => (
-  <div>
-    <h4>Smoke Parameters</h4>
-    <Slider k="raymarchSteps" l="3D resolution" v={raymarchSteps} min={5} max={20} cb={onChange} />
-    <Slider k="lightHeight" l="Light Elevation" v={lightHeight} min={0.5} max={1} cb={onChange} />
-    <Slider k="lightIntensity" l="Light Intensity" v={lightIntensity} min={0} max={1} cb={onChange} />
-    <Slider k="lightFalloff" l="Light Falloff" v={lightFalloff} min={0.5} max={10} cb={onChange} />
-    <Toggle k="enableShadows" l="Enable Shadows" v={enableShadows} cb={onChange} />
-    <Slider k="shadowIntensity" l="Shadow Intensity" v={shadowIntensity} min={0} max={50} cb={onChange} />
+const TabButton: React.FC<TabButtonProps> = ({ tabKey, activeKey, setActive, children }) => (
+  <div
+    style={{
+      borderBottom: `2px solid ${activeKey == tabKey ? '#1e90ff' : '#ccc'}`,
+      padding: '0.25em 1em',
+      cursor: 'pointer',
+    }}
+    onClick={() => setActive(tabKey)}
+  >
+    {children}
   </div>
 )
 
@@ -485,6 +485,7 @@ interface ControlPaneProps {
 }
 const ControlPane: React.FC<ControlPaneProps> = ({ props, onChange, reset, style = {} }) => {
   const [open, setOpen] = useState(true)
+  const [activeTab, setActiveTab] = useState<'velocity' | 'dye' | 'lights' | 'shadows'>('velocity')
 
   const {
     renderMode,
@@ -502,6 +503,7 @@ const ControlPane: React.FC<ControlPaneProps> = ({ props, onChange, reset, style
     vorticity,
     smoke,
   } = props
+  const { lightHeight, lightIntensity, lightFalloff, enableShadows, shadowIntensity } = smoke
 
   return (
     <div className="control-pane" style={style}>
@@ -521,24 +523,67 @@ const ControlPane: React.FC<ControlPaneProps> = ({ props, onChange, reset, style
               'Smoke 2D': RenderMode.Smoke2D,
               'Smoke 3D + Shadows': RenderMode.Smoke3D,
             }}
-            cb={onChange}
+            cb={(k, v) => {
+              if (v !== RenderMode.Smoke3D && ['lights', 'shadows'].includes(activeTab)) setActiveTab('velocity')
+              onChange(k, v)
+            }}
           />
           <Dropdown k="gridSize" l="Sim res" v={gridSize} options={[32, 64, 128, 256, 512, 1024]} cb={onChange} />
           <Dropdown k="dyeSize" l="Render res" v={dyeSize} options={[128, 256, 512, 1024, 2048]} cb={onChange} />
           <Toggle k="containFluid" l="Boundaries" v={containFluid} cb={onChange} />
           <Slider k="simSpeed" l="Sim speed" v={simSpeed} min={0.1} max={20} cb={onChange} />
-          <Slider k="velocityForce" l="Vel force" v={velocityForce} min={0} max={0.5} cb={onChange} />
-          <Slider k="velocityRadius" l="Vel radius" v={velocityRadius} min={0} max={0.001} cb={onChange} />
-          <Slider k="velocityDiffusion" l="Vel diffusion" v={velocityDiffusion} min={0.95} max={1} cb={onChange} />
-          <Slider k="dyeIntensity" l="Dye intensity" v={dyeIntensity} min={0} max={10} cb={onChange} />
-          <Slider k="dyeRadius" l="Dye radius" v={dyeRadius} min={0} max={0.01} cb={onChange} />
-          <Slider k="dyeDiffusion" l="Dye diffusion" v={dyeDiffusion} min={0.95} max={1} cb={onChange} />
           <Slider k="viscosity" l="Viscosity" v={viscosity} min={0} max={1} cb={onChange} />
           <Slider k="vorticity" l="Vorticity" v={vorticity} min={0} max={10} cb={onChange} />
-          {renderMode === RenderMode.Smoke3D && <SmokeControlPane props={smoke} onChange={onChange} />}
+          <div style={{ display: 'flex', marginBottom: '0.5em' }}>
+            <TabButton tabKey={'velocity'} activeKey={activeTab} setActive={setActiveTab}>
+              Velocity
+            </TabButton>
+            <TabButton tabKey={'dye'} activeKey={activeTab} setActive={setActiveTab}>
+              Dye
+            </TabButton>
+            {renderMode === RenderMode.Smoke3D && (
+              <>
+                <TabButton tabKey={'lights'} activeKey={activeTab} setActive={setActiveTab}>
+                  Lights
+                </TabButton>
+                <TabButton tabKey={'shadows'} activeKey={activeTab} setActive={setActiveTab}>
+                  Shadows
+                </TabButton>
+              </>
+            )}
+          </div>
+          {activeTab === 'velocity' && (
+            <>
+              <Slider k="velocityForce" l="Force" v={velocityForce} min={0} max={0.5} cb={onChange} />
+              <Slider k="velocityRadius" l="Radius" v={velocityRadius} min={0} max={0.001} cb={onChange} />
+              <Slider k="velocityDiffusion" l="Diffusion" v={velocityDiffusion} min={0.95} max={1} cb={onChange} />
+            </>
+          )}
+          {activeTab === 'dye' && (
+            <>
+              <Slider k="dyeIntensity" l="Intensity" v={dyeIntensity} min={0} max={10} cb={onChange} />
+              <Slider k="dyeRadius" l="Radius" v={dyeRadius} min={0} max={0.01} cb={onChange} />
+              <Slider k="dyeDiffusion" l="Diffusion" v={dyeDiffusion} min={0.95} max={1} cb={onChange} />
+            </>
+          )}
+          {renderMode === RenderMode.Smoke3D && activeTab === 'lights' && (
+            <>
+              <Slider k="lightHeight" l="Elevation" v={lightHeight} min={0.5} max={1} cb={onChange} />
+              <Slider k="lightIntensity" l="Intensity" v={lightIntensity} min={0} max={1} cb={onChange} />
+              <Slider k="lightFalloff" l="Falloff" v={lightFalloff} min={0.5} max={10} cb={onChange} />
+            </>
+          )}
+          {renderMode === RenderMode.Smoke3D && activeTab === 'shadows' && (
+            <>
+              {/* <Slider k="raymarchSteps" l="3D res" v={raymarchSteps} min={5} max={20} cb={onChange} /> */}
+              {/* todo hard-code raymarch steps in shader */}
+              <Toggle k="enableShadows" l="Enable" v={enableShadows} cb={onChange} />
+              <Slider k="shadowIntensity" l="Intensity" v={shadowIntensity} min={0} max={50} cb={onChange} />
+            </>
+          )}
           <input
             type="button"
-            value="Reset"
+            value="Reset sim"
             style={{ alignSelf: 'center', marginTop: 5, padding: '3px 8px' }}
             onClick={reset}
           />
