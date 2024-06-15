@@ -1,4 +1,4 @@
-import { TimesIcon } from '../icons'
+import { TimesIcon } from 'icons'
 import EntryNavItems from './EntryNavItems'
 
 export default ({ isOpen, setOpen }) => (

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import * as _webgpu from '@webgpu/types'
 
+import { ListIcon, TimesIcon } from 'icons'
 import shaders from './FluidSimShaders'
 
 interface Dimension {
@@ -392,6 +393,13 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
   return { onPropChange, reset }
 }
 
+const Control: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <label style={{ marginRight: '0.5em', width: '6em', textAlign: 'right' }}>{label}</label>
+    {React.cloneElement(children, { style: { ...children.props.style, flex: 1 } })}
+  </div>
+)
+
 interface SliderProps {
   k: string
   l: string
@@ -401,8 +409,7 @@ interface SliderProps {
   max: number
 }
 const Slider: React.FC<SliderProps> = ({ k, l, min, max, v, cb }) => (
-  <div>
-    <label>{l}</label>
+  <Control label={l}>
     <input
       type="range"
       min={min}
@@ -411,7 +418,7 @@ const Slider: React.FC<SliderProps> = ({ k, l, min, max, v, cb }) => (
       value={v}
       onChange={(e) => cb(k, parseFloat(e.target.value))}
     />
-  </div>
+  </Control>
 )
 
 interface ToggleProps {
@@ -421,10 +428,9 @@ interface ToggleProps {
   cb: (key: string, value: boolean) => void
 }
 const Toggle: React.FC<ToggleProps> = ({ k, l, v, cb }) => (
-  <div>
-    <label>{l}</label>
+  <Control label={l}>
     <input type="checkbox" checked={v} onChange={(e) => cb(k, e.target.checked)} />
-  </div>
+  </Control>
 )
 
 interface DropdownProps {
@@ -435,8 +441,7 @@ interface DropdownProps {
   options: { [key: string]: number } | number[]
 }
 const Dropdown: React.FC<DropdownProps> = ({ k, l, options, v, cb }) => (
-  <div>
-    <label>{l}</label>
+  <Control label={l}>
     <select value={v} onChange={(e) => cb(k, parseInt(e.target.value))}>
       {Array.isArray(options)
         ? options.map((option) => (
@@ -450,7 +455,7 @@ const Dropdown: React.FC<DropdownProps> = ({ k, l, options, v, cb }) => (
             </option>
           ))}
     </select>
-  </div>
+  </Control>
 )
 
 interface SmokeControlPaneProps {
@@ -476,8 +481,11 @@ interface ControlPaneProps {
   props: FluidSimProps
   onChange: (key: string, value: any) => void
   reset: () => void
+  style?: React.CSSProperties
 }
-const ControlPane: React.FC<ControlPaneProps> = ({ props, onChange, reset }) => {
+const ControlPane: React.FC<ControlPaneProps> = ({ props, onChange, reset, style = {} }) => {
+  const [open, setOpen] = useState(true)
+
   const {
     renderMode,
     containFluid,
@@ -496,32 +504,46 @@ const ControlPane: React.FC<ControlPaneProps> = ({ props, onChange, reset }) => 
   } = props
 
   return (
-    <div className="control-pane" style={{ position: 'absolute' }}>
-      <Dropdown
-        k="renderMode"
-        l="Render Mode"
-        v={renderMode}
-        options={{
-          Classic: RenderMode.Classic,
-          'Smoke 2D': RenderMode.Smoke2D,
-          'Smoke 3D + Shadows': RenderMode.Smoke3D,
-        }}
-        cb={onChange}
-      />
-      <Dropdown k="gridSize" l="Sim Resolution" v={gridSize} options={[32, 64, 128, 256, 512, 1024]} cb={onChange} />
-      <Dropdown k="dyeSize" l="Render Resolution" v={dyeSize} options={[128, 256, 512, 1024, 2048]} cb={onChange} />
-      <Toggle k="containFluid" l="Solid boundaries" v={containFluid} cb={onChange} />
-      <Slider k="simSpeed" l="Sim speed" v={simSpeed} min={0.1} max={20} cb={onChange} />
-      <Slider k="velocityForce" l="Velocity Force" v={velocityForce} min={0} max={0.5} cb={onChange} />
-      <Slider k="velocityRadius" l="Velocity Radius" v={velocityRadius} min={0} max={0.001} cb={onChange} />
-      <Slider k="velocityDiffusion" l="Velocity Diffusion" v={velocityDiffusion} min={0.95} max={1} cb={onChange} />
-      <Slider k="dyeIntensity" l="Dye Intensity" v={dyeIntensity} min={0} max={10} cb={onChange} />
-      <Slider k="dyeRadius" l="Dye Radius" v={dyeRadius} min={0} max={0.01} cb={onChange} />
-      <Slider k="dyeDiffusion" l="Dye Diffusion" v={dyeDiffusion} min={0.95} max={1} cb={onChange} />
-      <Slider k="viscosity" l="Viscosity" v={viscosity} min={0} max={1} cb={onChange} />
-      <Slider k="vorticity" l="Vorticity" v={vorticity} min={0} max={10} cb={onChange} />
-      {renderMode === RenderMode.Smoke3D && <SmokeControlPane props={smoke} onChange={onChange} />}
-      <input type="button" value="Reset" onClick={reset} />
+    <div className="control-pane" style={style}>
+      {!open && <ListIcon className="clickable" onClick={() => setOpen(true)} />}
+      {open && (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5em' }}>
+            <div style={{ flex: 'auto', fontWeight: 'bold' }}>Fluid Simulation Controls</div>
+            <TimesIcon className="clickable" onClick={() => setOpen(false)} />
+          </div>
+          <Dropdown
+            k="renderMode"
+            l="Render mode"
+            v={renderMode}
+            options={{
+              Classic: RenderMode.Classic,
+              'Smoke 2D': RenderMode.Smoke2D,
+              'Smoke 3D + Shadows': RenderMode.Smoke3D,
+            }}
+            cb={onChange}
+          />
+          <Dropdown k="gridSize" l="Sim res" v={gridSize} options={[32, 64, 128, 256, 512, 1024]} cb={onChange} />
+          <Dropdown k="dyeSize" l="Render res" v={dyeSize} options={[128, 256, 512, 1024, 2048]} cb={onChange} />
+          <Toggle k="containFluid" l="Boundaries" v={containFluid} cb={onChange} />
+          <Slider k="simSpeed" l="Sim speed" v={simSpeed} min={0.1} max={20} cb={onChange} />
+          <Slider k="velocityForce" l="Vel force" v={velocityForce} min={0} max={0.5} cb={onChange} />
+          <Slider k="velocityRadius" l="Vel radius" v={velocityRadius} min={0} max={0.001} cb={onChange} />
+          <Slider k="velocityDiffusion" l="Vel diffusion" v={velocityDiffusion} min={0.95} max={1} cb={onChange} />
+          <Slider k="dyeIntensity" l="Dye intensity" v={dyeIntensity} min={0} max={10} cb={onChange} />
+          <Slider k="dyeRadius" l="Dye radius" v={dyeRadius} min={0} max={0.01} cb={onChange} />
+          <Slider k="dyeDiffusion" l="Dye diffusion" v={dyeDiffusion} min={0.95} max={1} cb={onChange} />
+          <Slider k="viscosity" l="Viscosity" v={viscosity} min={0} max={1} cb={onChange} />
+          <Slider k="vorticity" l="Vorticity" v={vorticity} min={0} max={10} cb={onChange} />
+          {renderMode === RenderMode.Smoke3D && <SmokeControlPane props={smoke} onChange={onChange} />}
+          <input
+            type="button"
+            value="Reset"
+            style={{ alignSelf: 'center', marginTop: 5, padding: '3px 8px' }}
+            onClick={reset}
+          />
+        </div>
+      )}
     </div>
   )
 }
@@ -597,7 +619,21 @@ export default () => {
             ref={canvasRef}
             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
           ></canvas>
-          {simulation && <ControlPane props={props} onChange={handlePropChange} reset={simulation.reset} />}
+          {simulation && (
+            <ControlPane
+              props={props}
+              onChange={handlePropChange}
+              reset={simulation.reset}
+              style={{
+                position: 'absolute',
+                top: '0.5em',
+                right: '0.5em',
+                padding: '0.5em',
+                background: '#ffffff9b',
+                borderRadius: 5,
+              }}
+            />
+          )}
         </>
       )}
       {errorMessage && (
