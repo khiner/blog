@@ -595,8 +595,8 @@ const ControlPane: React.FC<ControlPaneProps> = ({ props, onChange, reset, style
 
 export default () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [device, setDevice] = useState<GPUDevice | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
   const [simulation, setSimulation] = useState<any>(null)
   const [props, setProps] = useState<FluidSimProps>({
     gridSize: 128,
@@ -625,7 +625,7 @@ export default () => {
   })
 
   useEffect(() => {
-    const initializeGpu = async () => {
+    const initDevice = async () => {
       if (!canvasRef.current) return
 
       try {
@@ -634,19 +634,33 @@ export default () => {
         const adapter = await navigator.gpu.requestAdapter()
         if (!adapter) throw new Error('No adapter found')
 
-        const device = await adapter.requestDevice()
-        const canvas = canvasRef.current
-        const context = canvas.getContext('webgpu')
-        if (!context) throw new Error('Canvas does not support WebGPU')
-
-        setSimulation(runFluidSim(props, context, device))
+        setDevice(await adapter.requestDevice())
       } catch (e) {
         setErrorMessage(e.message)
       }
     }
 
-    initializeGpu()
+    initDevice()
+
+    return () => {
+      device?.destroy()
+      setDevice(null)
+    }
   }, [canvasRef])
+
+  useEffect(() => {
+    if (!canvasRef.current || !device) return
+
+    try {
+      const canvas = canvasRef.current
+      const context = canvas.getContext('webgpu')
+      if (!context) throw new Error('Canvas does not support WebGPU')
+
+      setSimulation(runFluidSim(props, context, device))
+    } catch (e) {
+      setErrorMessage(e.message)
+    }
+  }, [device])
 
   const handlePropChange = (key: string, value: any) => {
     setProps((prevProps) => {
