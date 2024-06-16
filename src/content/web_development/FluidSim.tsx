@@ -83,7 +83,6 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
   let gridDim: Dimension
   let dyeDim: Dimension
 
-  const { canvas } = context
   const createBuffer = (dim: Dimension, floatsPerElement = 1): Buffer => ({
     dim,
     buffer: device.createBuffer({
@@ -134,8 +133,8 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     gridDim = scaleDims(props.gridSize)
     dyeDim = scaleDims(props.dyeSize)
 
-    canvas.width = dyeDim.w
-    canvas.height = dyeDim.h
+    context.canvas.width = dyeDim.w
+    context.canvas.height = dyeDim.h
   }
 
   let buffers: Record<string, Buffer>
@@ -317,22 +316,11 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
   const onMouseStopMoving = () => {
     updateQueue.push(['mouse', [...prevMousePos, 0, 0]])
   }
-  let mouseMoveTimeout: number
-  canvas.addEventListener('mousemove', (e: MouseEvent) => {
-    clearTimeout(mouseMoveTimeout)
-    const { width, height } = (canvas as HTMLCanvasElement).getBoundingClientRect()
-    const mousePos = [e.offsetX / width, 1 - e.offsetY / height]
-    const mouseVelocity = prevMousePos ? [mousePos[0] - prevMousePos[0], mousePos[1] - prevMousePos[1]] : [0, 0]
-    prevMousePos = [mousePos[0], mousePos[1]]
-
-    updateQueue.push(['mouse', [...mousePos, ...mouseVelocity]])
-    mouseMoveTimeout = setTimeout(onMouseStopMoving, 100)
-  })
-  let resizeTimeout: number
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout)
-    resizeTimeout = setTimeout(onSizeChange, 150)
-  })
+  const onMouseMove = (pos: [number, number]) => {
+    const velocity = prevMousePos ? [pos[0] - prevMousePos[0], pos[1] - prevMousePos[1]] : [0, 0]
+    prevMousePos = [pos[0], pos[1]]
+    updateQueue.push(['mouse', [...pos, ...velocity]])
+  }
 
   const reset = () => {
     const { velocity, dye, pressure } = buffers
@@ -390,7 +378,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
 
   step()
 
-  return { onPropChange, reset }
+  return { onPropChange, onSizeChange, onMouseMove, onMouseStopMoving, reset }
 }
 
 const Control: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
@@ -661,6 +649,34 @@ export default () => {
       setErrorMessage(e.message)
     }
   }, [device])
+
+  useEffect(() => {
+    if (!simulation) return
+
+    let resizeTimeout: number
+    const onResize = () => {
+      clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(simulation.onSizeChange, 150)
+    }
+    window.addEventListener('resize', onResize)
+
+    let mouseMoveTimeout: number
+    const onMouseMove = (e: MouseEvent) => {
+      clearTimeout(mouseMoveTimeout)
+      const { width, height } = canvasRef.current.getBoundingClientRect()
+      simulation.onMouseMove([e.offsetX / width, 1 - e.offsetY / height])
+      mouseMoveTimeout = setTimeout(simulation.onMouseStopMoving, 100)
+    }
+    canvasRef.current.addEventListener('mousemove', onMouseMove)
+
+    return () => {
+      canvasRef.current?.removeEventListener('mousemove', onMouseMove)
+      clearTimeout(mouseMoveTimeout)
+
+      window.removeEventListener('resize', onResize)
+      clearTimeout(resizeTimeout)
+    }
+  }, [simulation])
 
   const handlePropChange = (key: string, value: any) => {
     setProps((prevProps) => {
