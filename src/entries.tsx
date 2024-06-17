@@ -542,19 +542,19 @@ const entries = [
     contentPath: 'mesh_audio_editor/MeshAudioEditor',
     type: 'article',
   },
-  {
-    path: '/fluid_sim',
-    title: 'HTML Boundary Sims',
-    subtitle: 'Using HTML elements as boundary conditions for physics simulations',
-    date: 'May 26 2024',
-    description: (
-      <div>
-        <p>TODO</p>
-      </div>
-    ),
-    contentPath: 'web_development/FluidSim',
-    type: 'article',
-  },
+  // {
+  //   path: '/fluid_sim',
+  //   title: 'HTML Boundary Sims',
+  //   subtitle: 'Using HTML elements as boundary conditions for physics simulations',
+  //   date: 'May 26 2024',
+  //   description: (
+  //     <div>
+  //       <p>TODO</p>
+  //     </div>
+  //   ),
+  //   contentPath: 'web_development/FluidSim',
+  //   type: 'article',
+  // },
 ]
 
 export default entries
