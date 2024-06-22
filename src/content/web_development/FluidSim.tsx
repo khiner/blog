@@ -338,8 +338,6 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
 
   // Render loop
   const step = () => {
-    requestAnimationFrame(step)
-
     const now = performance.now()
     dt = ((now - lastFrame) / 1000) * props.simSpeed
     time += dt
@@ -376,9 +374,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     device.queue.submit([command.finish()])
   }
 
-  step()
-
-  return { onPropChange, onSizeChange, onMouseMove, onMouseStopMoving, reset }
+  return { step, reset, onPropChange, onSizeChange, onMouseMove, onMouseStopMoving }
 }
 
 const Control: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
@@ -611,6 +607,7 @@ export default () => {
       lightFalloff: 1,
     },
   })
+  const requestId = useRef<number>()
 
   useEffect(() => {
     const initDevice = async () => {
@@ -669,7 +666,16 @@ export default () => {
     }
     canvasRef.current.addEventListener('mousemove', onMouseMove)
 
+    const animate = () => {
+      simulation.step()
+      requestId.current = requestAnimationFrame(animate)
+    }
+
+    animate()
+
     return () => {
+      cancelAnimationFrame(requestId.current)
+
       canvasRef.current?.removeEventListener('mousemove', onMouseMove)
       clearTimeout(mouseMoveTimeout)
 
@@ -678,7 +684,7 @@ export default () => {
     }
   }, [simulation])
 
-  const handlePropChange = (key: string, value: any) => {
+  const onPropChange = (key: string, value: any) => {
     setProps((prevProps) => {
       if (key in props.smoke) return { ...prevProps, smoke: { ...prevProps.smoke, [key]: value } }
       return { ...prevProps, [key]: value }
@@ -697,7 +703,7 @@ export default () => {
           {simulation && (
             <ControlPane
               props={props}
-              onChange={handlePropChange}
+              onChange={onPropChange}
               reset={simulation.reset}
               style={{
                 position: 'absolute',
