@@ -14,6 +14,11 @@ interface Buffer {
   buffer: GPUBuffer
 }
 
+interface UniformBuffer {
+  buffer: GPUBuffer
+  values: Float32Array // Staging buffer
+}
+
 enum RenderMode {
   Classic,
   Smoke2D,
@@ -51,7 +56,25 @@ interface FluidSimProps {
 const FLOAT_BYTES = 4
 
 const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GPUDevice) => {
-  let updateQueue: [string, Float32Array][] = []
+  const createUniformBuffer = (values: number[]): UniformBuffer => {
+    const buffer = device.createBuffer({
+      size: values.length * FLOAT_BYTES,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      mappedAtCreation: true,
+    })
+    new Float32Array(buffer.getMappedRange()).set(values)
+    buffer.unmap()
+    return { buffer: buffer, values: new Float32Array(values) }
+  }
+  const updateUniformBuffer = (buffer: UniformBuffer) => {
+    device.queue.writeBuffer(buffer.buffer, 0, buffer.values, 0, buffer.buffer.size / FLOAT_BYTES)
+  }
+
+  let gridDim: Dimension
+  let dyeDim: Dimension
+  const gridUniformValues = () => [gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]
+
+  let updateQueue: string[] = []
 
   const onPropChange = (key, val) => {
     if (key in props) props[key] = val
@@ -62,26 +85,16 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
 
     const isSmokeParam = key in props.smoke
     const isGridParam = key == 'gridSize' || key == 'dyeSize'
-    const uniformKey = isSmokeParam ? 'smokeParams' : isGridParam ? 'gridSize' : key
-    const uniformValues = isSmokeParam
-      ? [
-          props.smoke.raymarchSteps,
-          props.smoke.smokeDensity,
-          props.smoke.enableShadows ? 1 : 0,
-          props.smoke.shadowIntensity,
-          props.smoke.smokeHeight,
-          props.smoke.lightHeight,
-          props.smoke.lightIntensity,
-          props.smoke.lightFalloff,
-        ]
-      : isGridParam
-        ? [gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]
-        : [val]
-    updateQueue.push([uniformKey, new Float32Array(uniformValues)])
+    if (isSmokeParam) {
+      const index = Object.keys(props.smoke).indexOf(key)
+      uniformBuffers.smokeParams.values[index] = val
+    } else if (isGridParam) {
+      uniformBuffers.gridSize.values = new Float32Array(gridUniformValues())
+    } else {
+      uniformBuffers[key].values[0] = val
+    }
+    updateQueue.push(isSmokeParam ? 'smokeParams' : isGridParam ? 'gridSize' : key)
   }
-
-  let gridDim: Dimension
-  let dyeDim: Dimension
 
   const createBuffer = (dim: Dimension, floatsPerElement = 1): Buffer => ({
     dim,
@@ -105,20 +118,6 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     command.copyBufferToBuffer(from, 0, to, 0, from.size)
   }
 
-  const createUniformBuffer = (values: number[]) => {
-    const buffer = device.createBuffer({
-      size: values.length * FLOAT_BYTES,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
-    })
-    new Float32Array(buffer.getMappedRange()).set(values)
-    buffer.unmap()
-    return buffer
-  }
-  const updateUniformBuffer = (buffer: GPUBuffer, values: Float32Array) => {
-    device.queue.writeBuffer(buffer, 0, values, 0, buffer.size / FLOAT_BYTES)
-  }
-
   const initSizes = () => {
     const scaleDims = (size: number) => {
       // Fit to screen while keeping the aspect ratio.
@@ -138,14 +137,13 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
   }
 
   let buffers: Record<string, Buffer>
+
   const onSizeChange = () => {
     initSizes()
     buffers = createBuffers()
     programs = createPrograms()
-    updateQueue.push([
-      'gridSize',
-      new Float32Array([gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]),
-    ])
+    uniformBuffers.gridSize.values = new Float32Array(gridUniformValues())
+    updateQueue.push('gridSize')
   }
 
   const createRenderProgram = () => {
@@ -190,10 +188,10 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
         layout: pipeline.getBindGroupLayout(0),
         entries: [
           renderBuffer.buffer,
-          uniformBuffers.gridSize,
-          uniformBuffers.mouse,
-          uniformBuffers.renderMode,
-          uniformBuffers.smokeParams,
+          uniformBuffers.gridSize.buffer,
+          uniformBuffers.mouse.buffer,
+          uniformBuffers.renderMode.buffer,
+          uniformBuffers.smokeParams.buffer,
         ].map((buffer, binding) => ({ binding, resource: { buffer } })),
       }),
       passDescriptor: {
@@ -203,7 +201,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
   }
 
   const createPrograms = () => {
-    const program = (buffers: Buffer[], uniformBuffers: GPUBuffer[], shader: string) => {
+    const program = (buffers: Buffer[], uniformBuffers: UniformBuffer[], shader: string) => {
       const pipeline = device.createComputePipeline({
         layout: 'auto',
         compute: { module: device.createShaderModule({ code: shader }), entryPoint: 'main' },
@@ -212,7 +210,10 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
         pipeline,
         bindGroup: device.createBindGroup({
           layout: pipeline.getBindGroupLayout(0),
-          entries: [...buffers.map(({ buffer }) => buffer), ...uniformBuffers].map((buffer, binding) => ({
+          entries: [
+            ...buffers.map(({ buffer }) => buffer),
+            ...uniformBuffers.map(({ buffer: gpuBuffer }) => gpuBuffer),
+          ].map((buffer, binding) => ({
             binding,
             resource: { buffer },
           })),
@@ -283,11 +284,11 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
 
   initSizes()
 
-  const uniformBuffers: Record<string, GPUBuffer> = {
+  const uniformBuffers: Record<string, UniformBuffer> = {
     time: createUniformBuffer([0]),
     dt: createUniformBuffer([0]),
     mouse: createUniformBuffer([0, 0, 0, 0]),
-    gridSize: createUniformBuffer([gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]),
+    gridSize: createUniformBuffer(gridUniformValues()),
     smokeParams: createUniformBuffer([
       props.smoke.raymarchSteps,
       props.smoke.smokeDensity,
@@ -319,15 +320,22 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
   buffers = createBuffers()
   let programs = createPrograms()
   let lastTime = performance.now()
-  let dt = new Float32Array([0.0]) // Uniform buffer for time delta
-  let time = new Float32Array([0.0]) // Uniform buffer for time
 
   let prevMousePos: [number, number] | null = null
-  const onMouseStopMoving = () => updateQueue.push(['mouse', new Float32Array([...prevMousePos, 0, 0])])
+  const onMouseStopMoving = () => {
+    const { mouse } = uniformBuffers
+    mouse.values[2] = mouse.values[3] = 0
+    updateQueue.push('mouse')
+  }
   const onMouseMove = (pos: [number, number]) => {
     const velocity = prevMousePos ? [pos[0] - prevMousePos[0], pos[1] - prevMousePos[1]] : [0, 0]
     prevMousePos = [pos[0], pos[1]]
-    updateQueue.push(['mouse', new Float32Array([...pos, ...velocity])])
+    const { mouse } = uniformBuffers
+    mouse.values[0] = pos[0]
+    mouse.values[1] = pos[1]
+    mouse.values[2] = velocity[0]
+    mouse.values[3] = velocity[1]
+    updateQueue.push('mouse')
   }
 
   const reset = () => {
@@ -335,22 +343,19 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     for (const { buffer } of [velocity, dye, pressure]) {
       device.queue.writeBuffer(buffer, 0, new Float32Array(buffer.size / FLOAT_BYTES))
     }
-    time[0] = 0
+    uniformBuffers.time.values[0] = 0
   }
 
   // Render loop
   const step = () => {
     const now = performance.now()
-    dt[0] = ((now - lastTime) / 1000) * props.simSpeed
-    time[0] += dt[0]
+    uniformBuffers.dt.values[0] = ((now - lastTime) / 1000) * props.simSpeed
+    uniformBuffers.time.values[0] += uniformBuffers.dt.values[0]
     lastTime = now
 
-    updateUniformBuffer(uniformBuffers.dt, dt)
-    updateUniformBuffer(uniformBuffers.time, time)
-    while (updateQueue.length) {
-      const [name, value] = updateQueue.shift()!
-      updateUniformBuffer(uniformBuffers[name], value)
-    }
+    updateUniformBuffer(uniformBuffers.dt)
+    updateUniformBuffer(uniformBuffers.time)
+    while (updateQueue.length) updateUniformBuffer(uniformBuffers[updateQueue.shift()!])
 
     const command = device.createCommandEncoder()
     const computePass = command.beginComputePass()
