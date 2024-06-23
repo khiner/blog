@@ -4,13 +4,13 @@ import * as _webgpu from '@webgpu/types'
 import { ListIcon, TimesIcon } from 'icons'
 import shaders from './FluidSimShaders'
 
-interface Dimension {
+interface GridSize {
   w: number
   h: number
 }
 
-interface Buffer {
-  dim: Dimension
+interface GridBuffer {
+  size: GridSize
   buffer: GPUBuffer
 }
 
@@ -55,24 +55,40 @@ interface FluidSimProps {
 
 const FLOAT_BYTES = 4
 
+const copyBuffer = (command: GPUCommandEncoder, from: GPUBuffer, to: GPUBuffer) => {
+  command.copyBufferToBuffer(from, 0, to, 0, from.size)
+}
+
 const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GPUDevice) => {
-  const createUniformBuffer = (values: number[]): UniformBuffer => {
+  const createGpuBuffer = (values: number[], usage: GPUBufferUsageFlags): GPUBuffer => {
     const buffer = device.createBuffer({
       size: values.length * FLOAT_BYTES,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: usage | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true,
     })
     new Float32Array(buffer.getMappedRange()).set(values)
     buffer.unmap()
-    return { buffer: buffer, values: new Float32Array(values) }
-  }
-  const updateUniformBuffer = (buffer: UniformBuffer) => {
-    device.queue.writeBuffer(buffer.buffer, 0, buffer.values, 0, buffer.buffer.size / FLOAT_BYTES)
+    return buffer
   }
 
-  let gridDim: Dimension
-  let dyeDim: Dimension
-  const gridUniformValues = () => [gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]
+  const createUniformBuffer = (values: number[]): UniformBuffer => ({
+    buffer: createGpuBuffer(values, GPUBufferUsage.UNIFORM),
+    values: new Float32Array(values),
+  })
+  const updateUniformBuffer = (buffer: UniformBuffer) => {
+    device.queue.writeBuffer(buffer.buffer, 0, buffer.values, 0, buffer.values.length)
+  }
+
+  let gridSize: GridSize
+  let dyeGridSize: GridSize
+  const gridSizeUniformValues = () => [
+    gridSize.w,
+    gridSize.h,
+    dyeGridSize.w,
+    dyeGridSize.h,
+    props.gridSize * 4,
+    props.dyeSize * 4,
+  ]
 
   let updateQueue: string[] = []
 
@@ -85,77 +101,65 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
 
     const isSmokeParam = key in props.smoke
     const isGridParam = key == 'gridSize' || key == 'dyeSize'
-    if (isSmokeParam) {
-      const index = Object.keys(props.smoke).indexOf(key)
-      uniformBuffers.smokeParams.values[index] = val
-    } else if (isGridParam) {
-      uniformBuffers.gridSize.values.set(gridUniformValues())
-    } else {
-      uniformBuffers[key].values[0] = val
-    }
+    if (isSmokeParam) uniformBuffers.smokeParams.values[Object.keys(props.smoke).indexOf(key)] = val
+    else if (isGridParam) uniformBuffers.gridSize.values.set(gridSizeUniformValues())
+    else uniformBuffers[key].values[0] = val
     updateQueue.push(isSmokeParam ? 'smokeParams' : isGridParam ? 'gridSize' : key)
   }
 
-  const createBuffer = (dim: Dimension, floatsPerElement = 1): Buffer => ({
-    dim,
+  const gridBuffer = (size: GridSize, channels = 1): GridBuffer => ({
+    size,
     buffer: device.createBuffer({
-      size: dim.w * dim.h * floatsPerElement * FLOAT_BYTES,
+      size: size.w * size.h * channels * FLOAT_BYTES,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
     }),
   })
   const createBuffers = () => ({
-    velocity: createBuffer(gridDim, 2),
-    velocity0: createBuffer(gridDim, 2),
-    dye: createBuffer(dyeDim, 4),
-    dye0: createBuffer(dyeDim, 4),
-    divergence: createBuffer(gridDim),
-    divergence0: createBuffer(gridDim),
-    pressure: createBuffer(gridDim),
-    pressure0: createBuffer(gridDim),
-    vorticity: createBuffer(gridDim),
+    velocity: gridBuffer(gridSize, 2),
+    velocity0: gridBuffer(gridSize, 2),
+    dye: gridBuffer(dyeGridSize, 4),
+    dye0: gridBuffer(dyeGridSize, 4),
+    divergence: gridBuffer(gridSize),
+    divergence0: gridBuffer(gridSize),
+    pressure: gridBuffer(gridSize),
+    pressure0: gridBuffer(gridSize),
+    vorticity: gridBuffer(gridSize),
   })
-  const copyBuffer = (command: GPUCommandEncoder, from: GPUBuffer, to: GPUBuffer) => {
-    command.copyBufferToBuffer(from, 0, to, 0, from.size)
-  }
 
-  const initSizes = () => {
-    const scaleDims = (size: number) => {
+  const initGridSizes = () => {
+    const scale = (s: number) => {
       // Fit to screen while keeping the aspect ratio.
       const aspectRatio = window.innerWidth / window.innerHeight
-      const maxSize = device.limits.maxTextureDimension2D
-      const dim = aspectRatio > 1 ? { w: size * aspectRatio, h: size } : { w: size, h: size / aspectRatio }
+      const size = aspectRatio > 1 ? { w: s * aspectRatio, h: s } : { w: s, h: s / aspectRatio }
       // Downscale if necessary to prevent canvas size overflow.
-      const ratio = dim.w > maxSize ? maxSize / dim.w : dim.h > maxSize ? maxSize / dim.h : 1
-      return { w: Math.floor(dim.w * ratio), h: Math.floor(dim.h * ratio) }
+      const maxDim = device.limits.maxTextureDimension2D
+      const ratio = Math.min(maxDim / size.w, maxDim / size.h, 1)
+      return { w: Math.floor(size.w * ratio), h: Math.floor(size.h * ratio) }
     }
 
-    gridDim = scaleDims(props.gridSize)
-    dyeDim = scaleDims(props.dyeSize)
+    gridSize = scale(props.gridSize)
+    dyeGridSize = scale(props.dyeSize)
 
-    context.canvas.width = dyeDim.w
-    context.canvas.height = dyeDim.h
+    context.canvas.width = dyeGridSize.w
+    context.canvas.height = dyeGridSize.h
   }
 
-  let buffers: Record<string, Buffer>
+  let buffers: Record<string, GridBuffer>
 
   const onSizeChange = () => {
-    initSizes()
+    initGridSizes()
     buffers = createBuffers()
     programs = createPrograms()
-    uniformBuffers.gridSize.values.set(gridUniformValues())
+    uniformBuffers.gridSize.values.set(gridSizeUniformValues())
     updateQueue.push('gridSize')
   }
 
   const createRenderProgram = () => {
     const shaderModule = device.createShaderModule({ code: shaders.render })
-    const vertices = new Float32Array([-1, -1, 0, 1, -1, 1, 0, 1, 1, -1, 0, 1, 1, -1, 0, 1, -1, 1, 0, 1, 1, 1, 0, 1])
-    const vertexBuffer = device.createBuffer({
-      size: vertices.byteLength,
-      usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
-    })
-    new Float32Array(vertexBuffer.getMappedRange()).set(vertices)
-    vertexBuffer.unmap()
+    const vertexBuffer = createGpuBuffer(
+      [-1, -1, 0, 1, -1, 1, 0, 1, 1, -1, 0, 1, 1, -1, 0, 1, -1, 1, 0, 1, 1, 1, 0, 1],
+      GPUBufferUsage.VERTEX,
+    )
 
     const pipeline = device.createRenderPipeline({
       layout: 'auto',
@@ -178,7 +182,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
       primitive: { topology: 'triangle-list' },
     })
 
-    const renderBuffer = createBuffer(dyeDim, 4)
+    const renderBuffer = gridBuffer(dyeGridSize, 4)
 
     return {
       pipeline,
@@ -201,7 +205,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
   }
 
   const createPrograms = () => {
-    const program = (buffers: Buffer[], uniformBuffers: UniformBuffer[], shader: string) => {
+    const program = (buffers: GridBuffer[], uniformBuffers: UniformBuffer[], shader: string) => {
       const pipeline = device.createComputePipeline({
         layout: 'auto',
         compute: { module: device.createShaderModule({ code: shader }), entryPoint: 'main' },
@@ -218,7 +222,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
             resource: { buffer },
           })),
         }),
-        dim: buffers[0].dim,
+        dim: buffers[0].size,
       }
     }
 
@@ -282,13 +286,13 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     alphaMode: 'opaque',
   })
 
-  initSizes()
+  initGridSizes()
 
   const uniformBuffers: Record<string, UniformBuffer> = {
     time: createUniformBuffer([0]),
     dt: createUniformBuffer([0]),
     mouse: createUniformBuffer([0, 0, 0, 0]),
-    gridSize: createUniformBuffer(gridUniformValues()),
+    gridSize: createUniformBuffer(gridSizeUniformValues()),
     smokeParams: createUniformBuffer([
       props.smoke.raymarchSteps,
       props.smoke.smokeDensity,
