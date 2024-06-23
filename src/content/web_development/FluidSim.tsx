@@ -89,7 +89,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
       const index = Object.keys(props.smoke).indexOf(key)
       uniformBuffers.smokeParams.values[index] = val
     } else if (isGridParam) {
-      uniformBuffers.gridSize.values = new Float32Array(gridUniformValues())
+      uniformBuffers.gridSize.values.set(gridUniformValues())
     } else {
       uniformBuffers[key].values[0] = val
     }
@@ -142,7 +142,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     initSizes()
     buffers = createBuffers()
     programs = createPrograms()
-    uniformBuffers.gridSize.values = new Float32Array(gridUniformValues())
+    uniformBuffers.gridSize.values.set(gridUniformValues())
     updateQueue.push('gridSize')
   }
 
@@ -321,20 +321,23 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
   let programs = createPrograms()
   let lastTime = performance.now()
 
-  let prevMousePos: [number, number] | null = null
   const onMouseStopMoving = () => {
     const { mouse } = uniformBuffers
     mouse.values[2] = mouse.values[3] = 0
     updateQueue.push('mouse')
   }
   const onMouseMove = (pos: [number, number]) => {
-    const velocity = prevMousePos ? [pos[0] - prevMousePos[0], pos[1] - prevMousePos[1]] : [0, 0]
-    prevMousePos = [pos[0], pos[1]]
-    const { mouse } = uniformBuffers
-    mouse.values[0] = pos[0]
-    mouse.values[1] = pos[1]
-    mouse.values[2] = velocity[0]
-    mouse.values[3] = velocity[1]
+    const {
+      mouse: { values },
+    } = uniformBuffers
+    // Calculate velocity.
+    values[2] = pos[0] - values[0]
+    values[3] = pos[1] - values[1]
+    // Try and catch large jumps that are likely due to mouse re-entering the canvas.
+    if (values[2] > 0.1 || values[3] > 0.1) values[2] = values[3] = 0
+    // Update position.
+    values[0] = pos[0]
+    values[1] = pos[1]
     updateQueue.push('mouse')
   }
 
