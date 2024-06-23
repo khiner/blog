@@ -51,7 +51,7 @@ interface FluidSimProps {
 const FLOAT_BYTES = 4
 
 const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GPUDevice) => {
-  let updateQueue: [string, number[]][] = []
+  let updateQueue: [string, Float32Array][] = []
 
   const onPropChange = (key, val) => {
     if (key in props) props[key] = val
@@ -77,7 +77,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
       : isGridParam
         ? [gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]
         : [val]
-    updateQueue.push([uniformKey, uniformValues])
+    updateQueue.push([uniformKey, new Float32Array(uniformValues)])
   }
 
   let gridDim: Dimension
@@ -115,8 +115,8 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     buffer.unmap()
     return buffer
   }
-  const updateUniformBuffer = (buffer: GPUBuffer, values: number[]) => {
-    device.queue.writeBuffer(buffer, 0, new Float32Array(values), 0, buffer.size / FLOAT_BYTES)
+  const updateUniformBuffer = (buffer: GPUBuffer, values: Float32Array) => {
+    device.queue.writeBuffer(buffer, 0, values, 0, buffer.size / FLOAT_BYTES)
   }
 
   const initSizes = () => {
@@ -142,7 +142,10 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     initSizes()
     buffers = createBuffers()
     programs = createPrograms()
-    updateQueue.push(['gridSize', [gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]])
+    updateQueue.push([
+      'gridSize',
+      new Float32Array([gridDim.w, gridDim.h, dyeDim.w, dyeDim.h, props.gridSize * 4, props.dyeSize * 4]),
+    ])
   }
 
   const createRenderProgram = () => {
@@ -297,6 +300,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     ]),
   }
 
+  // Single-value uniform buffers.
   for (const key of [
     'renderMode',
     'containFluid',
@@ -312,14 +316,18 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     uniformBuffers[key] = createUniformBuffer([props[key]])
   }
 
+  buffers = createBuffers()
+  let programs = createPrograms()
+  let lastTime = performance.now()
+  let dt = new Float32Array([0.0]) // Uniform buffer for time delta
+  let time = new Float32Array([0.0]) // Uniform buffer for time
+
   let prevMousePos: [number, number] | null = null
-  const onMouseStopMoving = () => {
-    updateQueue.push(['mouse', [...prevMousePos, 0, 0]])
-  }
+  const onMouseStopMoving = () => updateQueue.push(['mouse', new Float32Array([...prevMousePos, 0, 0])])
   const onMouseMove = (pos: [number, number]) => {
     const velocity = prevMousePos ? [pos[0] - prevMousePos[0], pos[1] - prevMousePos[1]] : [0, 0]
     prevMousePos = [pos[0], pos[1]]
-    updateQueue.push(['mouse', [...pos, ...velocity]])
+    updateQueue.push(['mouse', new Float32Array([...pos, ...velocity])])
   }
 
   const reset = () => {
@@ -327,24 +335,18 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     for (const { buffer } of [velocity, dye, pressure]) {
       device.queue.writeBuffer(buffer, 0, new Float32Array(buffer.size / FLOAT_BYTES))
     }
-    time = 0
+    time[0] = 0
   }
-
-  buffers = createBuffers()
-  let programs = createPrograms()
-  let lastFrame = performance.now()
-  let dt = 0.0
-  let time = 0.0
 
   // Render loop
   const step = () => {
     const now = performance.now()
-    dt = ((now - lastFrame) / 1000) * props.simSpeed
-    time += dt
-    lastFrame = now
+    dt[0] = ((now - lastTime) / 1000) * props.simSpeed
+    time[0] += dt[0]
+    lastTime = now
 
-    updateUniformBuffer(uniformBuffers.dt, [dt])
-    updateUniformBuffer(uniformBuffers.time, [time])
+    updateUniformBuffer(uniformBuffers.dt, dt)
+    updateUniformBuffer(uniformBuffers.time, time)
     while (updateQueue.length) {
       const [name, value] = updateQueue.shift()!
       updateUniformBuffer(uniformBuffers[name], value)
