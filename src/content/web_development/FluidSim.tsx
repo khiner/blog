@@ -293,20 +293,10 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     dt: createUniformBuffer([0]),
     mouse: createUniformBuffer([0, 0, 0, 0]),
     gridSize: createUniformBuffer(gridSizeUniformValues()),
-    smokeParams: createUniformBuffer([
-      props.smoke.raymarchSteps,
-      props.smoke.smokeDensity,
-      props.smoke.enableShadows ? 1 : 0,
-      props.smoke.shadowIntensity,
-      props.smoke.smokeHeight,
-      props.smoke.lightHeight,
-      props.smoke.lightIntensity,
-      props.smoke.lightFalloff,
-    ]),
+    smokeParams: createUniformBuffer(Object.values(props.smoke)),
   }
 
-  // Single-value uniform buffers.
-  for (const key of [
+  const singleValuePropKeys = [
     'renderMode',
     'containFluid',
     'velocityForce',
@@ -317,9 +307,8 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
     'dyeDiffusion',
     'viscosity',
     'vorticity',
-  ]) {
-    uniformBuffers[key] = createUniformBuffer([props[key]])
-  }
+  ]
+  for (const key of singleValuePropKeys) uniformBuffers[key] = createUniformBuffer([props[key]])
 
   buffers = createBuffers()
   let programs = createPrograms()
