@@ -1,9 +1,9 @@
-const StructGridSize = `struct GridSize { w : f32, h : f32, dyeW: f32, dyeH: f32, rdx : f32, dyeRdx : f32 }`
+const StructGridSize = `struct GridSize { dim: vec2f, dye: vec2f, rdx : f32, dyeRdx : f32 }`
 const StructMouse = `struct Mouse { pos: vec2f, vel: vec2f }`
 
 const createIdFunction = (w: string) => `fn ID(p : vec2f) -> u32 { return u32(p.x + p.y * ${w}); }`
-const IdGrid = createIdFunction('uGrid.w')
-const IdDye = createIdFunction('uGrid.dyeW')
+const IdGrid = createIdFunction('grid.dim.x')
+const IdDye = createIdFunction('grid.dye.x')
 
 // Initialize the pos and index variables and target the cells in the given grid
 const createMain = (id: string, w: [string, string], h: [string, string]) => `
@@ -15,9 +15,9 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   if (pos.x <= ${w[0]} || pos.y <= ${h[0]} || pos.x >= ${w[1]} || pos.y >= ${h[1]}) { return; }
   let index = ID(pos);`
 
-const MainDye = createMain(IdDye, ['0', 'uGrid.dyeW - 1'], ['0', 'uGrid.dyeH - 1'])
-const MainInterior = createMain(IdGrid, ['0', 'uGrid.w - 1'], ['0', 'uGrid.h - 1'])
-const MainFull = createMain(IdGrid, ['-1', 'uGrid.w'], ['-1', 'uGrid.h'])
+const MainDye = createMain(IdDye, ['0', 'grid.dye.x - 1'], ['0', 'grid.dye.y - 1'])
+const MainInterior = createMain(IdGrid, ['0', 'grid.dim.x - 1'], ['0', 'grid.dim.y - 1'])
+const MainFull = createMain(IdGrid, ['-1', 'grid.dim.x'], ['-1', 'grid.dim.y'])
 
 const DeclareLRBT = `
   let L = pos - vec2f(1, 0);
@@ -40,7 +40,7 @@ ${StructMouse}
 ${createBindings(
   ['storage', 'v_in', 'array<vec2f>'],
   ['storage', 'v_out', 'array<vec2f>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
   ['uniform', 'uMouse', 'Mouse'],
   ['uniform', 'uForce', 'f32'],
   ['uniform', 'uRadius', 'f32'],
@@ -50,14 +50,14 @@ ${createBindings(
 
 fn createSplat(pos : vec2f, splatPos : vec2f, vel : vec2f, radius : f32) -> vec2f {
   var p = pos - splatPos;
-  p.x *= uGrid.w / uGrid.h;
+  p.x *= grid.dim.x / grid.dim.y;
   var v = vel;
-  v.x *= uGrid.w / uGrid.h;
+  v.x *= grid.dim.x / grid.dim.y;
   return exp(-dot(p, p) / radius) * v;
 }
 
 ${MainInterior}
-  let p = pos / vec2f(uGrid.w, uGrid.h);
+  let p = pos / grid.dim;
   let splat = createSplat(p, uMouse.pos, 2*uMouse.vel, uRadius) * 200*uForce*uDt;
   v_out[index] = v_in[index] * uDiffusion + splat;
 }`
@@ -69,7 +69,7 @@ ${StructMouse}
 ${createBindings(
   ['storage', 'dye_in', 'array<vec4f>'],
   ['storage', 'dye_out', 'array<vec4f>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
   ['uniform', 'uMouse', 'Mouse'],
   ['uniform', 'uForce', 'f32'],
   ['uniform', 'uRadius', 'f32'],
@@ -83,16 +83,16 @@ fn palette(t : f32, a : vec3f, b : vec3f, c : vec3f, d : vec3f ) -> vec3f { retu
 
 fn createSplat(pos : vec2f, splatPos : vec2f, vel : vec2f, radius : f32) -> vec3f {
   var p = pos - splatPos;
-  p.x *= uGrid.w / uGrid.h;
+  p.x *= grid.dim.x / grid.dim.y;
   var v = vel;
-  v.x *= uGrid.w / uGrid.h;
+  v.x *= grid.dim.x / grid.dim.y;
   return vec3f(exp(-dot(p, p) / radius) * length(v));
 }
 
 ${MainDye}
   let col_incr = 0.15;
   let col_start = palette(uTime/8., vec3f(1), vec3f(0.5), vec3f(1), vec3f(0, col_incr, 2*col_incr));
-  let p = pos / vec2(uGrid.dyeW, uGrid.dyeH);
+  let p = pos / grid.dye;
   let splat = 100 * createSplat(p, uMouse.pos, 2*uMouse.vel, uRadius) * col_start*uForce*uDt;
   dye_out[index] = vec4(dye_in[index].rgb * uDiffusion + splat, 1);
 }`
@@ -104,15 +104,15 @@ ${createBindings(
   ['storage', 'p_in', 'array<vec2f>'],
   ['storage', 'v_in', 'array<vec2f>'],
   ['storage', 'p_out', 'array<vec2f>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
   ['uniform', 'uDt', 'f32'],
 )}
 
 fn in(p : vec2f) -> vec2f { return p_in[ID(p)]; }
 
 ${MainInterior}
-  var p = pos - uDt * uGrid.rdx * v_in[index];
-  p = clamp(p, vec2(0), vec2(uGrid.w, uGrid.h) - 1);
+  var p = pos - uDt * grid.rdx * v_in[index];
+  p = clamp(p, vec2(0), grid.dim - 1);
 
   let p1 = floor(p);
   let TL = p1 + vec2(0, 1);
@@ -131,16 +131,16 @@ ${createBindings(
   ['storage', 'dye_in', 'array<vec4f>'],
   ['storage', 'v_in', 'array<vec2f>'],
   ['storage', 'dye_out', 'array<vec4f>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
   ['uniform', 'uDt', 'f32'],
 )}
 
 fn in(p : vec2f) -> vec3f { return dye_in[ID(p)].rgb; }
-fn vel(v : vec2f) -> vec2f {  return v_in[u32(i32(v.x) + i32(v.y) * i32(uGrid.w))]; }
+fn vel(v : vec2f) -> vec2f {  return v_in[u32(i32(v.x) + i32(v.y) * i32(grid.dim.x))]; }
 
 fn vel_bilerp(_p : vec2f) -> vec2f {
-  var p = _p * vec2(uGrid.w, uGrid.h) / vec2(uGrid.dyeW, uGrid.dyeH);
-  p = clamp(p, vec2(0), vec2(uGrid.w, uGrid.h) - 1);
+  var p = _p * grid.dim / grid.dye;
+  p = clamp(p, vec2(0), grid.dim - 1);
 
   let p1 = floor(p);
   let TL = p1 + vec2(0, 1);
@@ -153,8 +153,8 @@ fn vel_bilerp(_p : vec2f) -> vec2f {
 }
 
 ${MainDye}
-  var p = pos - uDt * uGrid.dyeRdx * vel_bilerp(pos);
-  p = clamp(p, vec2(0), vec2(uGrid.dyeW, uGrid.dyeH) - 1);
+  var p = pos - uDt * grid.dyeRdx * vel_bilerp(pos);
+  p = clamp(p, vec2(0), grid.dye - 1);
 
   let p1 = floor(p);
   let TL = p1 + vec2(0, 1);
@@ -172,14 +172,14 @@ ${StructGridSize}
 ${createBindings(
   ['storage', 'v_in', 'array<vec2f>'],
   ['storage', 'div', 'array<f32>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
 )}
 
 fn vel(v : vec2f) -> vec2f { return v_in[ID(v)]; }
 
 ${MainInterior}
 ${DeclareLRBT}
-  div[index] = 0.5 * uGrid.rdx * ((vel(R).x - vel(L).x) + (vel(T).y - vel(B).y));
+  div[index] = 0.5 * grid.rdx * ((vel(R).x - vel(L).x) + (vel(T).y - vel(B).y));
 }`
 
 const pressure = `
@@ -189,7 +189,7 @@ ${createBindings(
   ['storage', 'pres_in', 'array<f32>'],
   ['storage', 'div', 'array<f32>'],
   ['storage', 'pres_out', 'array<f32>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
 )}
 
 fn in(p : vec2f) -> f32 { return pres_in[ID(p)]; }
@@ -197,7 +197,7 @@ fn in(p : vec2f) -> f32 { return pres_in[ID(p)]; }
 ${MainInterior}
 ${DeclareLRBT}
 
-  pres_out[index] = (in(L) + in(R) + in(B) + in(T) - div[index] / (uGrid.rdx * uGrid.rdx)) * 0.25;
+  pres_out[index] = (in(L) + in(R) + in(B) + in(T) - div[index] / (grid.rdx * grid.rdx)) * 0.25;
 }`
 
 const gradientSubtract = `
@@ -207,7 +207,7 @@ ${createBindings(
   ['storage', 'pressure', 'array<f32>'],
   ['storage', 'v_in', 'array<vec2f>'],
   ['storage', 'v_out', 'array<vec2f>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
 )}
 
 fn pres(p : vec2f) -> f32 { return pressure[ID(p)]; }
@@ -215,7 +215,7 @@ fn pres(p : vec2f) -> f32 { return pressure[ID(p)]; }
 ${MainInterior}
 ${DeclareLRBT}
 
-  v_out[index] = v_in[index] - .5 * uGrid.rdx * vec2f(pres(R) - pres(L), pres(T) - pres(B));
+  v_out[index] = v_in[index] - .5 * grid.rdx * vec2f(pres(R) - pres(L), pres(T) - pres(B));
 }`
 
 const vorticity = `
@@ -224,7 +224,7 @@ ${StructGridSize}
 ${createBindings(
   ['storage', 'v_in', 'array<vec2f>'],
   ['storage', 'vorticity', 'array<f32>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
 )}
 
 fn vel(p : vec2f) -> vec2f { return v_in[ID(p)]; }
@@ -232,7 +232,7 @@ fn vel(p : vec2f) -> vec2f { return v_in[ID(p)]; }
 ${MainInterior}
 ${DeclareLRBT}
 
-  vorticity[index] = 0.5 * uGrid.rdx * ((vel(R).y - vel(L).y) - (vel(T).x - vel(B).x));
+  vorticity[index] = 0.5 * grid.rdx * ((vel(R).y - vel(L).y) - (vel(T).x - vel(B).x));
 }`
 
 const vorticityConfinment = `
@@ -242,7 +242,7 @@ ${createBindings(
   ['storage', 'v_in', 'array<vec2f>'],
   ['storage', 'vorticity', 'array<f32>'],
   ['storage', 'v_out', 'array<vec2f>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
   ['uniform', 'uDt', 'f32'],
   ['uniform', 'uVorticity', 'f32'],
 )}
@@ -253,8 +253,8 @@ ${MainInterior}
 ${DeclareLRBT}
 
   let epsilon = 2.4414e-4;
-  var force = 0.5 * uGrid.rdx * vec2f(abs(vort(T)) - abs(vort(B)), abs(vort(R)) - abs(vort(L)));
-  force *= (uVorticity * uDt * vorticity[index] / (uGrid.rdx * max(epsilon, dot(force, force))));
+  var force = 0.5 * grid.rdx * vec2f(abs(vort(T)) - abs(vort(B)), abs(vort(R)) - abs(vort(L)));
+  force *= (uVorticity * uDt * vorticity[index] / (grid.rdx * max(epsilon, dot(force, force))));
 
   v_out[index] = v_in[index] + force * vec2(1, -1);
 }`
@@ -265,7 +265,7 @@ ${StructGridSize}
 ${createBindings(
   ['storage', 'p_in', 'array<f32>'],
   ['storage', 'p_out', 'array<f32>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
   ['uniform', 'uVisc', 'f32'],
 )}
 
@@ -279,7 +279,7 @@ ${StructGridSize}
 ${createBindings(
   ['storage', 'v_in', 'array<vec2f>'],
   ['storage', 'v_out', 'array<vec2f>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
   ['uniform', 'containFluid', 'f32'],
 )}
 
@@ -287,9 +287,9 @@ ${MainFull}
   var scale = vec2f(1);
   if (containFluid != 0) {
     if (pos.x <= 0) { pos.x = 1; scale.x = -1.; }
-    else if (pos.x >= uGrid.w - 1) { pos.x = uGrid.w - 2; scale.x = -1.; }
+    else if (pos.x >= grid.dim.x - 1) { pos.x = grid.dim.x - 2; scale.x = -1.; }
     if (pos.y <= 0) { pos.y = 1; scale.y = -1.; }
-    else if (pos.y >= uGrid.h - 1) { pos.y = uGrid.h - 2; scale.y = -1.; }
+    else if (pos.y >= grid.dim.y - 1) { pos.y = grid.dim.y - 2; scale.y = -1.; }
   }
 
   v_out[index] = v_in[ID(pos)] * scale;
@@ -301,14 +301,14 @@ ${StructGridSize}
 ${createBindings(
   ['storage', 'x_in', 'array<f32>'],
   ['storage', 'x_out', 'array<f32>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
 )}
 
 ${MainFull}
   if (pos.x <= 0) { pos.x = 1; }
-  else if (pos.x >= uGrid.w - 1) { pos.x = uGrid.w - 2; }
+  else if (pos.x >= grid.dim.x - 1) { pos.x = grid.dim.x - 2; }
   if (pos.y <= 0) { pos.y = 1; }
-  else if (pos.y >= uGrid.h - 1) { pos.y = uGrid.h - 2; }
+  else if (pos.y >= grid.dim.y - 1) { pos.y = grid.dim.y - 2; }
 
   x_out[index] = x_in[ID(pos)];
 }`
@@ -318,7 +318,7 @@ ${StructGridSize}
 
 ${createBindings(
   ['storage', 'col_out', 'array<vec4f>', true],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
   ['uniform', 'uTime', 'f32'],
 )}
 
@@ -349,7 +349,7 @@ fn fbm(p_ : vec3f, octaveNum : i32) -> vec2f {
 }
 
 ${MainDye}
-  let uv = pos / vec2f(uGrid.dyeW, uGrid.dyeH);
+  let uv = pos / grid.dye;
   let zoom = 4.;
   let smallNoise = fbm(vec3f((2 * uv * zoom).xy, uTime + 2.145), 7) - .5;
   let bigNoise = fbm(vec3f((uv * zoom).xy, 0.1 * uTime + 30), 7) - .5;
@@ -382,7 +382,7 @@ struct SmokeData {
 
 ${createBindings(
   ['storage', 'field', 'array<vec4f>'],
-  ['uniform', 'uGrid', 'GridSize'],
+  ['uniform', 'grid', 'GridSize'],
   ['uniform', 'uMouse', 'Mouse'],
   ['uniform', 'renderMode', 'f32'], // 0: Classic, 1: Smoke2D, 2: Smoke3D
   ['uniform', 'smokeData', 'SmokeData'],
@@ -392,18 +392,18 @@ ${createBindings(
 fn vertex_main(@location(0) position: vec4f) -> VertexOut {return VertexOut(position, position.xy * .5 + .5); }
 
 fn getDye(pos : vec3f) -> vec3f {
-  var uv = vec2f(pos.x * uGrid.h / uGrid.w, pos.y) * 0.5 + 0.5;
+  var uv = vec2f(pos.x * grid.dim.y / grid.dim.x, pos.y) * 0.5 + 0.5;
   if (max(uv.x, uv.y) > 1 || min(uv.x, uv.y) < 0) { return vec3f(0); }
 
-  uv = floor(uv*vec2f(uGrid.dyeW, uGrid.dyeH));
-  return field[u32(uv.x + uv.y * uGrid.dyeW)].rgb;
+  uv = floor(uv * grid.dye);
+  return field[u32(uv.x + uv.y * grid.dye.x)].rgb;
 }
 
 fn getLevel(dye: vec3f) -> f32 { return max(dye.r, max(dye.g, dye.b)); }
 
 fn getMousePos() -> vec2f {
   let pos = 2 * (uMouse.pos - .5);
-  return vec2f(pos.x * uGrid.w / uGrid.h, pos.y);
+  return vec2f(pos.x * grid.dim.x / grid.dim.y, pos.y);
 }
 
 fn getShadow(p: vec3f, lightPos: vec3f, fogSlice: f32) -> f32 {
@@ -424,15 +424,14 @@ fn getShadow(p: vec3f, lightPos: vec3f, fogSlice: f32) -> f32 {
 @fragment
 fn fragment_main(fragData : VertexOut) -> @location(0) vec4f {
   if (renderMode != 2) {
-    let dim = vec2f(uGrid.dyeW, uGrid.dyeH);
-    let fuv = floor(fragData.uv * dim);
-    return field[u32(fuv.x + fuv.y * dim.x)];
+    let fuv = floor(fragData.uv * grid.dye);
+    return field[u32(fuv.x + fuv.y * grid.dye.x)];
   }
 
   // Smoke 3D
 
   var uv: vec2f = fragData.uv * 2 - 1;
-  uv.x *= uGrid.dyeW / uGrid.dyeH;
+  uv.x *= grid.dye.x / grid.dye.y;
 
   let theta: f32 = -1.5708;
   let pi: f32 = 3.141592653589793;
