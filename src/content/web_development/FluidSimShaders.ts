@@ -14,15 +14,16 @@ fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   var pos = vec2f(global_id.xy);
   if (pos.x <= ${w[0]} || pos.y <= ${h[0]} || pos.x >= ${w[1]} || pos.y >= ${h[1]}) { return; }
   let index = ID(pos);`
+
 const MainDye = createMain(IdDye, ['0', 'uGrid.dyeW - 1'], ['0', 'uGrid.dyeH - 1'])
 const MainInterior = createMain(IdGrid, ['0', 'uGrid.w - 1'], ['0', 'uGrid.h - 1'])
 const MainFull = createMain(IdGrid, ['-1', 'uGrid.w'], ['-1', 'uGrid.h'])
 
 const DeclareLRBT = `
-  let L = pos - vec2(1, 0);
-  let R = pos + vec2(1, 0);
-  let B = pos - vec2(0, 1);
-  let T = pos + vec2(0, 1);`
+  let L = pos - vec2f(1, 0);
+  let R = pos + vec2f(1, 0);
+  let B = pos - vec2f(0, 1);
+  let T = pos + vec2f(0, 1);`
 
 const createBindings = (...bindings: Array<[string, string, string, boolean?]>) =>
   bindings
@@ -85,12 +86,12 @@ fn createSplat(pos : vec2f, splatPos : vec2f, vel : vec2f, radius : f32) -> vec3
   p.x *= uGrid.w / uGrid.h;
   var v = vel;
   v.x *= uGrid.w / uGrid.h;
-  return vec3(exp(-dot(p, p) / radius) * length(v));
+  return vec3f(exp(-dot(p, p) / radius) * length(v));
 }
 
 ${MainDye}
   let col_incr = 0.15;
-  let col_start = palette(uTime/8., vec3(1), vec3(0.5), vec3(1), vec3(0, col_incr, 2*col_incr));
+  let col_start = palette(uTime/8., vec3f(1), vec3f(0.5), vec3f(1), vec3f(0, col_incr, 2*col_incr));
   let p = pos / vec2(uGrid.dyeW, uGrid.dyeH);
   let splat = 100 * createSplat(p, uMouse.pos, 2*uMouse.vel, uRadius) * col_start*uForce*uDt;
   dye_out[index] = vec4(dye_in[index].rgb * uDiffusion + splat, 1);
@@ -111,10 +112,7 @@ fn in(p : vec2f) -> vec2f { return p_in[ID(p)]; }
 
 ${MainInterior}
   var p = pos - uDt * uGrid.rdx * v_in[index];
-  if (p.x < 0) { p.x = 0; }
-  else if (p.x >= uGrid.w - 1) { p.x = uGrid.w - 1; }
-  if (p.y < 0) { p.y = 0; }
-  else if (p.y >= uGrid.h - 1) { p.y = uGrid.h - 1; }
+  p = clamp(p, vec2(0), vec2(uGrid.w, uGrid.h) - 1);
 
   let p1 = floor(p);
   let TL = p1 + vec2(0, 1);
@@ -142,10 +140,7 @@ fn vel(v : vec2f) -> vec2f {  return v_in[u32(i32(v.x) + i32(v.y) * i32(uGrid.w)
 
 fn vel_bilerp(_p : vec2f) -> vec2f {
   var p = _p * vec2(uGrid.w, uGrid.h) / vec2(uGrid.dyeW, uGrid.dyeH);
-  if (p.x < 0) { p.x = 0; }
-  else if (p.x >= uGrid.w - 1) { p.x = uGrid.w - 1; }
-  if (p.y < 0) { p.y = 0; }
-  else if (p.y >= uGrid.h - 1) { p.y = uGrid.h - 1; }
+  p = clamp(p, vec2(0), vec2(uGrid.w, uGrid.h) - 1);
 
   let p1 = floor(p);
   let TL = p1 + vec2(0, 1);
@@ -159,10 +154,7 @@ fn vel_bilerp(_p : vec2f) -> vec2f {
 
 ${MainDye}
   var p = pos - uDt * uGrid.dyeRdx * vel_bilerp(pos);
-  if (p.x < 0) { p.x = 0; }
-  else if (p.x >= uGrid.dyeW - 1) { p.x = uGrid.dyeW - 1; }
-  if (p.y < 0) { p.y = 0; }
-  else if (p.y >= uGrid.dyeH - 1) { p.y = uGrid.dyeH - 1; }
+  p = clamp(p, vec2(0), vec2(uGrid.dyeW, uGrid.dyeH) - 1);
 
   let p1 = floor(p);
   let TL = p1 + vec2(0, 1);
@@ -223,7 +215,7 @@ fn pres(p : vec2f) -> f32 { return pressure[ID(p)]; }
 ${MainInterior}
 ${DeclareLRBT}
 
-  v_out[index] = v_in[index] - .5 * uGrid.rdx * vec2(pres(R) - pres(L), pres(T) - pres(B));
+  v_out[index] = v_in[index] - .5 * uGrid.rdx * vec2f(pres(R) - pres(L), pres(T) - pres(B));
 }`
 
 const vorticity = `
@@ -261,7 +253,7 @@ ${MainInterior}
 ${DeclareLRBT}
 
   let epsilon = 2.4414e-4;
-  var force = 0.5 * uGrid.rdx * vec2(abs(vort(T)) - abs(vort(B)), abs(vort(R)) - abs(vort(L)));
+  var force = 0.5 * uGrid.rdx * vec2f(abs(vort(T)) - abs(vort(B)), abs(vort(R)) - abs(vort(L)));
   force *= (uVorticity * uDt * vorticity[index] / (uGrid.rdx * max(epsilon, dot(force, force))));
 
   v_out[index] = v_in[index] + force * vec2(1, -1);
@@ -325,7 +317,7 @@ const checkerboard = `
 ${StructGridSize}
 
 ${createBindings(
-  ['storage', 'col_out', 'array<vec4<f32>>', true],
+  ['storage', 'col_out', 'array<vec4f>', true],
   ['uniform', 'uGrid', 'GridSize'],
   ['uniform', 'uTime', 'f32'],
 )}
@@ -334,8 +326,8 @@ fn noise(p_ : vec3f) -> f32 {
   var p = p_;
   let ip = floor(p);
   p -= ip; 
-  var s = vec3(7.,157.,113.);
-  var h = vec4(0., s.y, s.z, s.y+s.z) + dot(ip, s);
+  var s = vec3f(7.,157.,113.);
+  var h = vec4f(0., s.y, s.z, s.y+s.z) + dot(ip, s);
   p = p * p * (3 - 2*p); 
   h = mix(fract(sin(h) * 43758.5), fract(sin(h + s.x)*43758.5), p.x);
   let r = mix(h.xz, h.yw, p.y);
@@ -344,12 +336,12 @@ fn noise(p_ : vec3f) -> f32 {
 
 fn fbm(p_ : vec3f, octaveNum : i32) -> vec2f {
   let freq = 1.0;
-  let shift = vec3(100.);
+  let shift = vec3f(100);
   var p = p_;
-  var acc = vec2(0.);	
+  var acc = vec2f(0);
   var amp = 0.5;
   for (var i = 0; i < octaveNum; i++) {
-    acc += vec2(noise(p), noise(p + vec3(0, 0, 10))) * amp;
+    acc += vec2f(noise(p), noise(p + vec3f(0, 0, 10))) * amp;
     p = 2*p + shift;
     amp *= 0.5;
   }
@@ -357,13 +349,13 @@ fn fbm(p_ : vec3f, octaveNum : i32) -> vec2f {
 }
 
 ${MainDye}
-  let uv = pos / vec2(uGrid.dyeW, uGrid.dyeH);
+  let uv = pos / vec2f(uGrid.dyeW, uGrid.dyeH);
   let zoom = 4.;
-  let smallNoise = fbm(vec3((2 * uv * zoom).xy, uTime + 2.145), 7) - .5;
-  let bigNoise = fbm(vec3((uv * zoom).xy, 0.1 * uTime + 30), 7) - .5;
+  let smallNoise = fbm(vec3f((2 * uv * zoom).xy, uTime + 2.145), 7) - .5;
+  let bigNoise = fbm(vec3f((uv * zoom).xy, 0.1 * uTime + 30), 7) - .5;
   let noise = max(length(bigNoise) * 0.035, 0.) + max(length(smallNoise) * 0.035, 0.) * .05;
 
-  col_out[index] += noise * vec4(1.);
+  col_out[index] += noise * vec4f(1);
 }`
 
 // 3D Smoke Rendering inspired from @xjorma's shader:
@@ -373,7 +365,7 @@ ${StructGridSize}
 ${StructMouse}
 
 struct VertexOut {
-  @builtin(position) position : vec4<f32>,
+  @builtin(position) position : vec4f,
   @location(1) uv : vec2f,
 };
 
@@ -389,7 +381,7 @@ struct SmokeData {
 }
 
 ${createBindings(
-  ['storage', 'field', 'array<vec4<f32>>'],
+  ['storage', 'field', 'array<vec4f>'],
   ['uniform', 'uGrid', 'GridSize'],
   ['uniform', 'uMouse', 'Mouse'],
   ['uniform', 'renderMode', 'f32'], // 0: Classic, 1: Smoke2D, 2: Smoke3D
@@ -397,13 +389,13 @@ ${createBindings(
 )}
 
 @vertex
-fn vertex_main(@location(0) position: vec4<f32>) -> VertexOut {return VertexOut(position, position.xy * .5 + .5); }
+fn vertex_main(@location(0) position: vec4f) -> VertexOut {return VertexOut(position, position.xy * .5 + .5); }
 
 fn getDye(pos : vec3f) -> vec3f {
-  var uv = vec2(pos.x * uGrid.h / uGrid.w, pos.y) * 0.5 + 0.5;
+  var uv = vec2f(pos.x * uGrid.h / uGrid.w, pos.y) * 0.5 + 0.5;
   if (max(uv.x, uv.y) > 1 || min(uv.x, uv.y) < 0) { return vec3f(0); }
 
-  uv = floor(uv*vec2(uGrid.dyeW, uGrid.dyeH));
+  uv = floor(uv*vec2f(uGrid.dyeW, uGrid.dyeH));
   return field[u32(uv.x + uv.y * uGrid.dyeW)].rgb;
 }
 
@@ -411,7 +403,7 @@ fn getLevel(dye: vec3f) -> f32 { return max(dye.r, max(dye.g, dye.b)); }
 
 fn getMousePos() -> vec2f {
   let pos = 2 * (uMouse.pos - .5);
-  return vec2(pos.x * uGrid.w / uGrid.h, pos.y);
+  return vec2f(pos.x * uGrid.w / uGrid.h, pos.y);
 }
 
 fn getShadow(p: vec3f, lightPos: vec3f, fogSlice: f32) -> f32 {
@@ -430,7 +422,7 @@ fn getShadow(p: vec3f, lightPos: vec3f, fogSlice: f32) -> f32 {
 }
 
 @fragment
-fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32> {
+fn fragment_main(fragData : VertexOut) -> @location(0) vec4f {
   if (renderMode != 2) {
     let dim = vec2f(uGrid.dyeW, uGrid.dyeH);
     let fuv = floor(fragData.uv * dim);
@@ -442,9 +434,10 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32> {
   var uv: vec2f = fragData.uv * 2 - 1;
   uv.x *= uGrid.dyeW / uGrid.dyeH;
 
-  let theta = -1.5708;
-  let phi = 3.141592 + 0.0001; // - (uMouse.pos.y - .5);
-  let parralax = 20.;
+  let theta: f32 = -1.5708;
+  let pi: f32 = 3.141592653589793;
+  let phi = pi + 0.0001; // - (uMouse.pos.y - .5);
+  let parralax: f32 = 20.;
   var ro = parralax * vec3f(sin(phi)*cos(theta), cos(phi), sin(phi)*sin(theta));
   let cw = normalize(-ro);
   let cu = normalize(cross(cw, vec3f(0, 0, 1)));
@@ -457,7 +450,7 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32> {
   let fogSlice = smokeData.smokeHeight / smokeData.raymarchSteps;
   let near = (smokeData.smokeHeight - ro.z) / rd.z;
   let far = -ro.z / rd.z;
-  let lightPos: vec3f = vec3(getMousePos(), smokeData.lightHeight);
+  let lightPos: vec3f = vec3f(getMousePos(), smokeData.lightHeight);
 
   var transmittance = 1.;
   var col = vec3f(0);
@@ -465,10 +458,10 @@ fn fragment_main(fragData : VertexOut) -> @location(0) vec4<f32> {
     let p: vec3f = ro + mix(near, far, i / smokeData.raymarchSteps) * rd;
     let dyeColor: vec3f = getDye(p);
     let height: f32 = getLevel(dyeColor) * smokeData.smokeHeight;
-    let smple: f32 = min(max(0., height - p.z), fogSlice);
-    if (smple > .0001) {
+    let smpl: f32 = clamp(height - p.z, 0.0, fogSlice);
+    if (smpl > .0001) {
       let shadow: f32 = select(1., getShadow(p, lightPos, fogSlice), smokeData.enableShadows > 0);
-      let dens: f32 = smple * smokeData.smokeDensity;
+      let dens: f32 = smpl * smokeData.smokeDensity;
       col += shadow * dens * transmittance * dyeColor;
       transmittance *= 1 - dens;
     } 
