@@ -19,11 +19,23 @@ const MainDye = createMain(IdDye, ['0', 'grid.dye.x - 1'], ['0', 'grid.dye.y - 1
 const MainInterior = createMain(IdGrid, ['0', 'grid.dim.x - 1'], ['0', 'grid.dim.y - 1'])
 const MainFull = createMain(IdGrid, ['-1', 'grid.dim.x'], ['-1', 'grid.dim.y'])
 
-const DeclareLRBT = `
-  let L = pos - vec2f(1, 0);
-  let R = pos + vec2f(1, 0);
-  let B = pos - vec2f(0, 1);
-  let T = pos + vec2f(0, 1);`
+const DeclareSideNeighbors = (p: string) => `
+  let L = ${p} - vec2f(1, 0);
+  let R = ${p} + vec2f(1, 0);
+  let B = ${p} - vec2f(0, 1);
+  let T = ${p} + vec2f(0, 1);`
+
+const DeclareBilerped = (p: string, dim: string, get: string) => `
+  p = clamp(p, vec2(0), ${dim} - 1);
+  let p1 = floor(${p});
+  let TL = p1 + vec2(0, 1);
+  let TR = p1 + 1;
+  let BL = p1;
+  let BR = p1 + vec2(1, 0);
+
+  let m = fract(p);
+  let bilerped = mix(mix(${get}(BL), ${get}(BR), m.x), mix(${get}(TL), ${get}(TR), m.x), m.y);
+`
 
 const createBindings = (...bindings: Array<[string, string, string, boolean?]>) =>
   bindings
@@ -112,16 +124,8 @@ fn in(p : vec2f) -> vec2f { return p_in[ID(p)]; }
 
 ${MainInterior}
   var p = pos - uDt * grid.rdx * v_in[index];
-  p = clamp(p, vec2(0), grid.dim - 1);
-
-  let p1 = floor(p);
-  let TL = p1 + vec2(0, 1);
-  let TR = p1 + 1;
-  let BL = p1;
-  let BR = p1 + vec2(1, 0);
-
-  let m = fract(p);
-  p_out[index] = mix(mix(in(BL), in(BR), m.x), mix(in(TL), in(TR), m.x), m.y);
+${DeclareBilerped('p', 'grid.dim', 'in')}
+  p_out[index] = bilerped;
 }`
 
 const advectDye = `
@@ -140,30 +144,14 @@ fn vel(v : vec2f) -> vec2f {  return v_in[u32(i32(v.x) + i32(v.y) * i32(grid.dim
 
 fn vel_bilerp(_p : vec2f) -> vec2f {
   var p = _p * grid.dim / grid.dye;
-  p = clamp(p, vec2(0), grid.dim - 1);
-
-  let p1 = floor(p);
-  let TL = p1 + vec2(0, 1);
-  let TR = p1 + 1;
-  let BL = p1;
-  let BR = p1 + vec2(1, 0);
-
-  let m = fract(p);
-  return mix(mix(vel(BL), vel(BR), m.x), mix(vel(TL), vel(TR), m.x), m.y);
+${DeclareBilerped('p', 'grid.dim', 'vel')}
+  return bilerped;
 }
 
 ${MainDye}
   var p = pos - uDt * grid.dyeRdx * vel_bilerp(pos);
-  p = clamp(p, vec2(0), grid.dye - 1);
-
-  let p1 = floor(p);
-  let TL = p1 + vec2(0, 1);
-  let TR = p1 + 1;
-  let BL = p1;
-  let BR = p1 + vec2(1, 0);
-
-  let m = fract(p);
-  dye_out[index] = vec4(mix(mix(in(BL), in(BR), m.x), mix(in(TL), in(TR), m.x), m.y), 1);
+${DeclareBilerped('p', 'grid.dye', 'in')}
+  dye_out[index] = vec4(bilerped, 1);
 }`
 
 const divergence = `
@@ -178,7 +166,7 @@ ${createBindings(
 fn vel(v : vec2f) -> vec2f { return v_in[ID(v)]; }
 
 ${MainInterior}
-${DeclareLRBT}
+${DeclareSideNeighbors('pos')}
   div[index] = 0.5 * grid.rdx * ((vel(R).x - vel(L).x) + (vel(T).y - vel(B).y));
 }`
 
@@ -195,7 +183,7 @@ ${createBindings(
 fn in(p : vec2f) -> f32 { return pres_in[ID(p)]; }
 
 ${MainInterior}
-${DeclareLRBT}
+${DeclareSideNeighbors('pos')}
 
   pres_out[index] = (in(L) + in(R) + in(B) + in(T) - div[index] / (grid.rdx * grid.rdx)) * 0.25;
 }`
@@ -213,7 +201,7 @@ ${createBindings(
 fn pres(p : vec2f) -> f32 { return pressure[ID(p)]; }
 
 ${MainInterior}
-${DeclareLRBT}
+${DeclareSideNeighbors('pos')}
 
   v_out[index] = v_in[index] - .5 * grid.rdx * vec2f(pres(R) - pres(L), pres(T) - pres(B));
 }`
@@ -230,7 +218,7 @@ ${createBindings(
 fn vel(p : vec2f) -> vec2f { return v_in[ID(p)]; }
 
 ${MainInterior}
-${DeclareLRBT}
+${DeclareSideNeighbors('pos')}
 
   vorticity[index] = 0.5 * grid.rdx * ((vel(R).y - vel(L).y) - (vel(T).x - vel(B).x));
 }`
@@ -250,7 +238,7 @@ ${createBindings(
 fn vort(p : vec2f) -> f32 { return vorticity[ID(p)]; }
 
 ${MainInterior}
-${DeclareLRBT}
+${DeclareSideNeighbors('pos')}
 
   let epsilon = 2.4414e-4;
   var force = 0.5 * grid.rdx * vec2f(abs(vort(T)) - abs(vort(B)), abs(vort(R)) - abs(vort(L)));
