@@ -543,6 +543,22 @@ const entries = [
     type: 'article',
   },
   // {
+  //   path: '/flowgrid',
+  //   title: 'FlowGrid',
+  //   subtitle: "Still isn't really a thing yet️",
+  //   date: 'May 29 2024',
+  //   description: (
+  //     <div>
+  //       It's an app.. it's a framework... no, it's ... neither!
+  //       <p>
+  //         <small>And you could, too!</small>
+  //       </p>
+  //     </div>
+  //   ),
+  //   contentPath: 'flowgrid/FlowGrid',
+  //   type: 'articler',
+  // },
+  // {
   //   path: '/fluid_sim',
   //   title: 'HTML Boundary Sims',
   //   subtitle: 'Using HTML elements as boundary conditions for physics simulations',
