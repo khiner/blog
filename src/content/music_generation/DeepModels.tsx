@@ -340,24 +340,20 @@ $ python train.py --exp dawn_of_midi --frame_sizes 16 4 --n_rnn 2 --sample_lengt
     </ul>
     <h3>Toward realtime, controllable audio generation for musicians</h3>
     <p>
-      Ultimately, musicians need tools capable of both realtime generation, and realtime control. There are many fronts
-      converging right now to make that dream possible.
+      Musicians need tools capable of both realtime generation, and realtime control. There are many fronts converging
+      right now to make that dream possible.
     </p>
     <p>
-      As mentioned above, SampleRNN is already capable of faster-than-realtime generation on high-quality GPUs, and
-      there are highly optimized implementations of WaveNet that allow for realtime inference, such as Nvidia's{' '}
-      <Link href="https://github.com/NVIDIA/nv-wavenet">nv-wavenet</Link>. Another promising avenue of realtime
-      generation being explored is{' '}
-      <Link href="https://arxiv.org/abs/1902.08710v2">
-        adapting generative adversarial networks to the audio domain
-      </Link>
-      . Towards the goal of providing meaningful control, one promising avenue of research is along the lines of{' '}
-      <Link href="https://openai.com/blog/glow/">π invertible generative models</Link>, which allow for exact,
-      reversible mapping between latent variables and generated samples. Nvidia's{' '}
+      As mentioned above, SampleRNN is capable of faster-than-realtime generation on high-quality GPUs, and there are
+      highly optimized implementations of WaveNet that allow for realtime inference, such as Nvidia's{' '}
+      <Link href="https://github.com/NVIDIA/nv-wavenet">nv-wavenet</Link>.{' '}
+      <Link href="https://arxiv.org/abs/1902.08710v2">GANs are being adapted to the audio domain.</Link> Towards the
+      goal of providing meaningful control, one promising avenue of research is along the lines of{' '}
+      <Link href="https://openai.com/blog/glow/">π invertible generative models</Link> produce a reversible mapping
+      between latent variables and generated samples. Nvidia's{' '}
       <Link href="https://nv-adlr.github.io/WaveGlow">WaveGlow</Link> model combines these ideas with WaveNet for fast,
-      non-autoregressive conditional audio generation. Of course, there are{' '}
-      <Link href="http://www.arxiv-sanity.com/search?q=audio+generation">many other</Link> audio generation models being
-      developed all the time, and I hope to look into some of these other approaches in future posts!
+      non-autoregressive conditional audio generation.{' '}
+      <Link href="https://paperswithcode.com/task/audio-generation">What a time to be alive!</Link>.
     </p>
   </div>
 )
