@@ -177,7 +177,12 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
 
     gridSize = scale(props.gridSize)
     dyeGridSize = scale(props.dyeSize)
-    boundary = { minX: gridSize.w / 4, minY: gridSize.h / 4, maxX: (gridSize.w / 4) * 3, maxY: (gridSize.h / 4) * 3 }
+    boundary = {
+      minX: Math.floor(gridSize.w / 4),
+      minY: Math.floor(gridSize.h / 4),
+      maxX: Math.floor(gridSize.w / 4) * 3,
+      maxY: Math.floor(gridSize.h / 4) * 3,
+    }
 
     context.canvas.width = dyeGridSize.w
     context.canvas.height = dyeGridSize.h

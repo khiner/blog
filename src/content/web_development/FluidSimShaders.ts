@@ -294,13 +294,13 @@ ${MainFull}
     if (pos.y <= 0) { pos.y = 1; scale.y = -1.; }
     else if (pos.y >= grid.dim.y - 1) { pos.y = grid.dim.y - 2; scale.y = -1.; }
   }
-  if (insideBoundary(pos, grid)) {
-    let bmin = grid.boundaryMin;
-    let bmax = grid.boundaryMax;
-    if (pos.x < (bmin.x + bmax.x) / 2.) { pos.x = bmin.x - 1; scale.x = -1.;}
-    else { pos.x = bmax.x; scale.x = -1.;}
-    if (pos.y <= (bmin.y + bmax.y) / 2) { pos.y = bmin.y - 1; scale.y = -1.; }
-    else { pos.y = bmax.y; scale.y = -1.;}
+  let bmin = grid.boundaryMin - vec2f(1, 1);
+  let bmax = grid.boundaryMax + vec2f(1, 1);
+  if (inside(pos, bmin, bmax)) {
+    if (pos.x <= bmin.x) { pos.x = bmin.x - 1; scale.x = -1.; }
+    else if (pos.x >= bmax.x) { pos.x = bmax.x + 1; scale.x = -1.; }
+    if (pos.y <= bmin.y) { pos.y = bmin.y - 1; scale.y = -1.; }
+    else if (pos.y >= bmax.y) { pos.y = bmax.y + 1; scale.y = -1.; }
   }
 
   v_out[index] = v_in[ID(pos)] * scale;
@@ -321,13 +321,13 @@ ${MainFull}
   if (pos.y <= 0) { pos.y = 1; }
   else if (pos.y >= grid.dim.y - 1) { pos.y = grid.dim.y - 2; }
 
-  if (insideBoundary(pos, grid)) {
-    let bmin = grid.boundaryMin;
-    let bmax = grid.boundaryMax;
-    if (pos.x < (bmin.x + bmax.x) / 2.) { pos.x = bmin.x - 1; }
-    else { pos.x = bmax.x; }
-    if (pos.y <= (bmin.y + bmax.y) / 2) { pos.y = bmin.y - 1; }
-    else { pos.y = bmax.y; }
+  let bmin = grid.boundaryMin - vec2f(1, 1);
+  let bmax = grid.boundaryMax + vec2f(1, 1);
+  if (inside(pos, bmin, bmax)) {
+    if (pos.x <= bmin.x) { pos.x = bmin.x - 1; }
+    else if (pos.x >= bmax.x) { pos.x = bmax.x + 1; }
+    if (pos.y <= bmin.y) { pos.y = bmin.y - 1; }
+    else if (pos.y >= bmax.y) { pos.y = bmax.y + 1; }
   }
 
   x_out[index] = x_in[ID(pos)];
