@@ -1,4 +1,8 @@
-const StructGridSize = `struct GridSize { dim: vec2f, dye: vec2f, rdx : f32, dyeRdx : f32 }`
+const StructGridSize = `struct GridSize { dim: vec2f, dye: vec2f, rdx : f32, dyeRdx : f32, boundaryMin: vec2f, boundaryMax: vec2f }
+
+fn inside(p : vec2f, min : vec2f, max : vec2f) -> bool { return p.x >= min.x && p.y >= min.y && p.x <= max.x && p.y <= max.y; }
+fn insideBoundary(p : vec2f, gridSize: GridSize) -> bool { return inside(p, gridSize.boundaryMin, gridSize.boundaryMax); }`
+
 const StructMouse = `struct Mouse { pos: vec2f, vel: vec2f }`
 
 const createIdFunction = (w: string) => `fn ID(p : vec2f) -> u32 { return u32(p.x + p.y * ${w}); }`
@@ -12,7 +16,9 @@ ${id}
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) global_id : vec3<u32>) {
   var pos = vec2f(global_id.xy);
-  if (pos.x <= ${w[0]} || pos.y <= ${h[0]} || pos.x >= ${w[1]} || pos.y >= ${h[1]}) { return; }
+  if (!inside(pos, vec2f(${w[0]}, ${h[0]}), vec2f(${w[1]}, ${h[1]}))) { return; }
+  if (insideBoundary(pos, grid)) { return; }
+
   let index = ID(pos);`
 
 const MainDye = createMain(IdDye, ['0', 'grid.dye.x - 1'], ['0', 'grid.dye.y - 1'])
@@ -69,8 +75,11 @@ fn createSplat(pos : vec2f, splatPos : vec2f, vel : vec2f, radius : f32) -> vec2
 }
 
 ${MainInterior}
-  let p = pos / grid.dim;
-  let splat = createSplat(p, uMouse.pos, 2*uMouse.vel, uRadius) * 200*uForce*uDt;
+  if (insideBoundary(pos, grid)) { return; }
+
+  let shouldSplat = !insideBoundary(uMouse.pos * grid.dim, grid);
+  var splat = vec2f(0);
+  if (shouldSplat) { splat = createSplat(pos / grid.dim, uMouse.pos, 2*uMouse.vel, uRadius) * 200*uForce*uDt; }
   v_out[index] = v_in[index] * uDiffusion + splat;
 }`
 
@@ -104,8 +113,11 @@ fn createSplat(pos : vec2f, splatPos : vec2f, vel : vec2f, radius : f32) -> vec3
 ${MainDye}
   let col_incr = 0.15;
   let col_start = palette(uTime/8., vec3f(1), vec3f(0.5), vec3f(1), vec3f(0, col_incr, 2*col_incr));
-  let p = pos / grid.dye;
-  let splat = 100 * createSplat(p, uMouse.pos, 2*uMouse.vel, uRadius) * col_start*uForce*uDt;
+  if (insideBoundary(pos, grid)) { return; }
+
+  let shouldSplat = !insideBoundary(uMouse.pos * grid.dim, grid);
+  var splat = vec3f(0);
+  if (shouldSplat) { splat = 100 * createSplat(pos / grid.dye, uMouse.pos, 2*uMouse.vel, uRadius) * col_start*uForce*uDt; }
   dye_out[index] = vec4(dye_in[index].rgb * uDiffusion + splat, 1);
 }`
 
@@ -123,6 +135,8 @@ ${createBindings(
 fn in(p : vec2f) -> vec2f { return p_in[ID(p)]; }
 
 ${MainInterior}
+  if (insideBoundary(pos, grid)) { return; }
+
   var p = pos - uDt * grid.rdx * v_in[index];
 ${DeclareBilerped('p', 'grid.dim', 'in')}
   p_out[index] = bilerped;
@@ -272,12 +286,21 @@ ${createBindings(
 )}
 
 ${MainFull}
+  // Reflect at boundaries.
   var scale = vec2f(1);
   if (containFluid != 0) {
     if (pos.x <= 0) { pos.x = 1; scale.x = -1.; }
     else if (pos.x >= grid.dim.x - 1) { pos.x = grid.dim.x - 2; scale.x = -1.; }
     if (pos.y <= 0) { pos.y = 1; scale.y = -1.; }
     else if (pos.y >= grid.dim.y - 1) { pos.y = grid.dim.y - 2; scale.y = -1.; }
+  }
+  if (insideBoundary(pos, grid)) {
+    let bmin = grid.boundaryMin;
+    let bmax = grid.boundaryMax;
+    if (pos.x < (bmin.x + bmax.x) / 2.) { pos.x = bmin.x - 1; scale.x = -1.;}
+    else { pos.x = bmax.x; scale.x = -1.;}
+    if (pos.y <= (bmin.y + bmax.y) / 2) { pos.y = bmin.y - 1; scale.y = -1.; }
+    else { pos.y = bmax.y; scale.y = -1.;}
   }
 
   v_out[index] = v_in[ID(pos)] * scale;
@@ -298,6 +321,15 @@ ${MainFull}
   if (pos.y <= 0) { pos.y = 1; }
   else if (pos.y >= grid.dim.y - 1) { pos.y = grid.dim.y - 2; }
 
+  if (insideBoundary(pos, grid)) {
+    let bmin = grid.boundaryMin;
+    let bmax = grid.boundaryMax;
+    if (pos.x < (bmin.x + bmax.x) / 2.) { pos.x = bmin.x - 1; }
+    else { pos.x = bmax.x; }
+    if (pos.y <= (bmin.y + bmax.y) / 2) { pos.y = bmin.y - 1; }
+    else { pos.y = bmax.y; }
+  }
+
   x_out[index] = x_in[ID(pos)];
 }`
 
@@ -314,7 +346,7 @@ fn noise(p_ : vec3f) -> f32 {
   var p = p_;
   let ip = floor(p);
   p -= ip; 
-  var s = vec3f(7.,157.,113.);
+  let s = vec3f(7.,157.,113.);
   var h = vec4f(0., s.y, s.z, s.y+s.z) + dot(ip, s);
   p = p * p * (3 - 2*p); 
   h = mix(fract(sin(h) * 43758.5), fract(sin(h + s.x)*43758.5), p.x);

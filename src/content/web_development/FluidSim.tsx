@@ -9,6 +9,13 @@ interface GridSize {
   h: number
 }
 
+interface Rect {
+  minX: number
+  minY: number
+  maxX: number
+  maxY: number
+}
+
 interface GridBuffer {
   size: GridSize
   buffer: GPUBuffer
@@ -81,14 +88,45 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
 
   let gridSize: GridSize
   let dyeGridSize: GridSize
-  const gridSizeUniformValues = () => [
-    gridSize.w,
-    gridSize.h,
-    dyeGridSize.w,
-    dyeGridSize.h,
-    props.gridSize * 4,
-    props.dyeSize * 4,
-  ]
+  let boundary: Rect
+  const gridSizeUniformValues = () => {
+    // const canvas = context.canvas as HTMLCanvasElement
+    // const cr = canvas.getBoundingClientRect()
+
+    // todo html boundaries
+    //   const element = document.querySelector('.boundary')
+    //   if (!element) return
+
+    //   const r = element.getBoundingClientRect()
+    //   const left = ((r.left - cr.left) / cr.width) * 2 - 1
+    //   const right = ((r.right - cr.left) / cr.width) * 2 - 1
+    //   const top = ((r.top - cr.top) / cr.height) * -2 + 1
+    //   const bottom = ((r.bottom - cr.top) / cr.height) * -2 + 1
+    //   const boundaries = [left, top, right, top, right, bottom, left, bottom, left, top]
+
+    //   boundaryBufferRef.current?.destroy()
+    //   boundaryBufferRef.current = device.createBuffer({
+    //     size: boundaries.length * 4,
+    //     usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+    //     mappedAtCreation: true,
+    //   })
+
+    //   new Float32Array(boundaryBufferRef.current.getMappedRange()).set(boundaries)
+    //   boundaryBufferRef.current.unmap()
+
+    return [
+      gridSize.w,
+      gridSize.h,
+      dyeGridSize.w,
+      dyeGridSize.h,
+      props.gridSize * 4,
+      props.dyeSize * 4,
+      boundary.minX,
+      boundary.minY,
+      boundary.maxX,
+      boundary.maxY,
+    ]
+  }
 
   let updateQueue: string[] = []
 
@@ -139,6 +177,7 @@ const runFluidSim = (props: FluidSimProps, context: GPUCanvasContext, device: GP
 
     gridSize = scale(props.gridSize)
     dyeGridSize = scale(props.dyeSize)
+    boundary = { minX: gridSize.w / 4, minY: gridSize.h / 4, maxX: (gridSize.w / 4) * 3, maxY: (gridSize.h / 4) * 3 }
 
     context.canvas.width = dyeGridSize.w
     context.canvas.height = dyeGridSize.h
@@ -723,7 +762,7 @@ export default () => {
       {errorMessage && (
         <div style={{ padding: 10 }}>
           <p>
-            WebGPU is not supported on this browser. <i>Error: {errorMessage}</i>
+            <i>Error: {errorMessage}</i>
           </p>
         </div>
       )}
