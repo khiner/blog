@@ -556,7 +556,7 @@ const entries = [
   //     </div>
   //   ),
   //   contentPath: 'flowgrid/FlowGrid',
-  //   type: 'articler',
+  //   type: 'article',
   // },
   // {
   //   path: '/fluid_sim',
@@ -568,9 +568,18 @@ const entries = [
   //       <p>TODO</p>
   //     </div>
   //   ),
-  //   contentPath: 'web_development/FluidSim',
+  //   contentPath: 'web_development/FluidSimPost',
   //   type: 'article',
   // },
+  {
+    path: '/albums/doodles',
+    summaryTitle: 'Album - Doodles',
+    title: 'Doodles',
+    date: 'Aug 29 2024',
+    description: <div>A collection of modular/synth explorations</div>,
+    contentPath: 'albums/Doodles',
+    type: 'article',
+  },
 ]
 
 export default entries
