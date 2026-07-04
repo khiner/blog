@@ -336,7 +336,8 @@ is_invertible(listlist2mat([[1,0],[0,1],[2,1]]))
       </li>
       <li>
         {' '}
-        Use <code>find_candidates(N, primelist)</code> to compute the lists <code>roots</code> and <code>rowlist</code>.{' '}
+        Use <code>find_candidates(N, primelist)</code> to compute the lists <code>roots</code> and <code>rowlist</code>
+        .{' '}
       </li>
       <li>
         {' '}

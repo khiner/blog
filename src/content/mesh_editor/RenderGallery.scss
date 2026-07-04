@@ -1,0 +1,157 @@
+// The app-wide 'Roboto' family maps its default weight to the Light face. A separate
+// family name keeps this heavier face from changing font resolution anywhere else.
+@font-face {
+  font-family: 'Roboto Regular';
+  src: url(/src/assets/fonts/Roboto/Roboto-Regular.ttf) format('truetype');
+}
+
+// Cell geometry (preview height, per-media aspect ratio, hover scale factors) is set
+// inline by RenderGallery.tsx.
+$frame-color: #3f454c;
+$frame-width: 6px; // Row side padding around the cells.
+
+.renderGallery {
+  // Each row is one solid block — everything inside sits on it, so there are no
+  // adjoining frame-color elements to open subpixel seams between.
+  .renderRow {
+    background: $frame-color;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden; // Clip square cell corners to the rounded block.
+    // No top or bottom edge — the header and label strip end the row themselves.
+    padding: 0 $frame-width;
+
+    + .renderRow {
+      margin-top: 5px;
+    }
+  }
+
+  .rowHeader {
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Roboto Regular', 'Roboto', sans-serif; // One step up from the Light default.
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    padding: 0.6em 1em;
+    margin: 0;
+  }
+
+  .rowItems {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+  }
+
+  .renderItem {
+    flex: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+
+    .preview {
+      position: relative;
+
+      // The box already has the media's aspect ratio, so 100%/100% fills it exactly.
+      img,
+      video {
+        width: 100%;
+        height: 100%;
+        border-radius: 3px;
+        margin: 0;
+        transition: 0.075s ease;
+      }
+
+      .playBadge {
+        position: absolute;
+        right: 6px;
+        bottom: 6px;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.55);
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        font-size: 10px;
+        line-height: 22px;
+        text-align: center;
+      }
+    }
+
+    .itemName {
+      // Zero intrinsic width so a long nowrap label ellipsizes instead of widening the cell.
+      width: 0;
+      min-width: 100%;
+      padding: 8px;
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #f2f2f2;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: 0.075s ease;
+    }
+
+    &:hover {
+      // Recede the media into the row block, revealing an equal inset on all sides.
+      .preview img,
+      .preview video {
+        transform: scale(var(--hover-scale-x, 1), var(--hover-scale-y, 1));
+      }
+      // The title tracks the receding media's bottom edge. The hairline stroke thickens
+      // the glyphs by less than a font-weight step, without changing their metrics.
+      .itemName {
+        color: #fff;
+        -webkit-text-stroke: 0.5px currentColor;
+        transform: translateY(calc(-1 * var(--hover-inset, 0px)));
+      }
+    }
+  }
+
+  .renderViewer {
+    position: fixed;
+    inset: 0;
+    z-index: 10001; // Above the sidebar (10000).
+    background: rgba(0, 0, 0, 0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    figure {
+      margin: 0;
+
+      img,
+      video {
+        width: auto;
+        max-width: 94vw;
+        max-height: 86vh;
+        margin: 0; // App.scss gives .content imgs followed by a sibling 28px vertical margins.
+      }
+
+      figcaption {
+        color: #ccc;
+        text-align: center;
+        font-size: 14px;
+        padding: 0.6em 0;
+      }
+    }
+
+    .viewerClose {
+      position: absolute;
+      top: 8px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 36px;
+      line-height: 1;
+      opacity: 0.8;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

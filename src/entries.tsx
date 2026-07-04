@@ -572,6 +572,13 @@ const entries = [
   //   type: 'article',
   // },
   {
+    // Media and manifest live at /MeshEditor/render-data/, published by scripts/deploy_render_data.sh.
+    path: '/MeshEditor/render',
+    title: 'MeshEditor Renders',
+    contentPath: 'mesh_editor/RenderGallery',
+    type: 'article',
+  },
+  {
     path: '/albums/doodles',
     summaryTitle: 'Album - Doodles',
     title: 'Doodles',
