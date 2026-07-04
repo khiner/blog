@@ -21,9 +21,11 @@ node "$SCRIPT_DIR/render_manifest.mjs" "$SOURCE_DIR" "$STAGING_DIR/dims.json" > 
 ssh -p "$PORT" "$REMOTE" "mkdir -p $REMOTE_DIR"
 
 # The server drops long transfers occasionally. rsync resumes, so retry.
+# -c compares by checksum: fresh CI checkouts give every file a new mtime, which would
+# otherwise retransfer the whole corpus on each publish.
 sync_with_retries() {
   local attempts=0
-  until rsync -r --partial --delete -e "ssh -p $PORT" "$@"; do
+  until rsync -rtc --partial --delete -e "ssh -p $PORT" "$@"; do
     attempts=$((attempts + 1))
     if [ "$attempts" -ge 30 ]; then
       echo "rsync failed after $attempts resumes, giving up" >&2
