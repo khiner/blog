@@ -6,7 +6,6 @@ import image_asset from '../assets/cityscape.jpg'
 export default function sketch(p) {
   const BACKGROUND_COLOR_STR = '#1e90ff'
   const FOREGROUND_COLOR_STR = 'rgb(221, 250, 252)'
-  const DENSITY = p.pixelDensity()
 
   let cnv, image, edges, pixelMask
   let backgroundColor, foregroundColor, foregroundColorArray
@@ -14,10 +13,6 @@ export default function sketch(p) {
   let snowRate = 6
   let imageSelectId = 0 // 0 == original image, 1 == snow, 2 == edge detect
   let isMouseDragging = false
-
-  p.preload = () => {
-    image = p.loadImage(image_asset)
-  }
 
   const onSizeChange = () => {
     image.resize(p.width, p.height)
@@ -31,7 +26,8 @@ export default function sketch(p) {
     pixelMask = new Array(p.width * p.height).fill(false)
   }
 
-  p.setup = () => {
+  p.setup = async () => {
+    image = await p.loadImage(image_asset)
     backgroundColor = p.color(BACKGROUND_COLOR_STR)
     foregroundColor = p.color(FOREGROUND_COLOR_STR)
     foregroundColorArray = [p.red(foregroundColor), p.green(foregroundColor), p.blue(foregroundColor), 255]
@@ -61,13 +57,14 @@ export default function sketch(p) {
       if (!pixelMask) return
 
       shake()
+      const density = p.pixelDensity()
       p.loadPixels()
       for (let x = 0; x < p.width; x++) {
         for (let y = 0; y < p.height; y++) {
           if (pixelMask[y * p.width + x]) {
-            for (let i = 0; i < DENSITY; i++) {
-              for (let j = 0; j < DENSITY; j++) {
-                const idx = 4 * ((y * DENSITY + j) * p.width * DENSITY + (x * DENSITY + i))
+            for (let i = 0; i < density; i++) {
+              for (let j = 0; j < density; j++) {
+                const idx = 4 * ((y * density + j) * p.width * density + (x * density + i))
                 p.pixels[idx] = foregroundColorArray[0]
                 p.pixels[idx + 1] = foregroundColorArray[1]
                 p.pixels[idx + 2] = foregroundColorArray[2]
@@ -84,12 +81,14 @@ export default function sketch(p) {
   }
 
   p.keyPressed = (event) => {
-    event.stopPropagation()
-    event.preventDefault()
+    if ([p.UP_ARROW, p.DOWN_ARROW, ' '].includes(event.key)) {
+      event.stopPropagation()
+      event.preventDefault()
+    }
   }
   p.keyReleased = (_) => {
-    if (p.keyCode === p.UP_ARROW && snowRate < 40) ++snowRate
-    else if (p.keyCode === p.DOWN_ARROW && snowRate > 0) --snowRate
+    if (p.key === p.UP_ARROW && snowRate < 40) ++snowRate
+    else if (p.key === p.DOWN_ARROW && snowRate > 0) --snowRate
     else if (p.key === ' ') imageSelectId = (imageSelectId + 1) % 3
   }
 
@@ -105,7 +104,7 @@ export default function sketch(p) {
   // The mouse drops snow when held down.
   // Drop three 'snowflakes': one on the clicked pixel, one to the left, and one to the right.
   const mouseSnow = () => {
-    const clickedPixel = p.int(p.mouseX + p.mouseY * p.width)
+    const clickedPixel = p.int(p.mouseY) * p.width + p.int(p.mouseX)
     if (clickedPixel < 1 || clickedPixel >= p.width * p.height - 1) return
 
     for (let i = clickedPixel - 1; i <= clickedPixel + 1; i++) pixelMask[i] = true

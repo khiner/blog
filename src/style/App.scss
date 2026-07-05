@@ -203,6 +203,12 @@ iframe.soundcloud-small {
   padding-top: 1em;
   padding-bottom: 1em;
 
+  // The card body already pads showcase entries.
+  &.Showcase {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
   &.well {
     background-image: none;
   }
@@ -219,7 +225,7 @@ iframe.soundcloud-small {
     font-size: 14px;
     line-height: 1.6;
   }
-  h2,
+  h2:not(.lead),
   h3,
   h4 {
     margin-bottom: 1rem;

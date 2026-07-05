@@ -11,7 +11,7 @@ export default function sketch(p) {
   let harmonics = 8 // harmonics - each harmonic requires more computation
   let c = 100 // speed
   let amp = 0.0 // amplitude
-  var d // x position of pluck
+  let d = 0 // x position of pluck
   let damp = 1.1 // damping constant
   let precomputedHarmonics = []
   let isMouseDragging = false // XXX change to use p.mousePressed

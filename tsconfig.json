@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
     "paths": {
-      "components/*": ["components/*"]
+      "*": ["./src/*"]
     },
     "lib": ["dom", "es2023"],
+    "types": ["vite/client", "node", "@webgpu/types"],
+    "skipLibCheck": true,
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "react-jsx"

@@ -9,7 +9,7 @@ import parsedEntries from 'parsedEntries'
 
 import loadable from '@loadable/component'
 
-const modules = import.meta.glob('../content/**/*.tsx')
+const modules = import.meta.glob<{ default: any }>('../content/**/*.tsx')
 
 const LoadableEntry = (entry) => {
   const Loadable = loadable(

@@ -20,21 +20,18 @@ export default function sketch(p) {
     network?.onSizeChange()
   })
 
-  p.preload = () => {
-    p.loadImage(image_asset, (img) => {
-      img.loadPixels()
+  p.setup = async () => {
+    const img = await p.loadImage(image_asset)
+    img.loadPixels()
 
-      let w = img.width / AXIS_SECTIONS
-      let h = img.height / AXIS_SECTIONS
-      for (let row = 0; row < AXIS_SECTIONS - 1; row++) {
-        for (let col = 0; col < AXIS_SECTIONS - 1; col++) {
-          imageSections.push(img.get(col * w, row * h, w, h))
-        }
+    let w = img.width / AXIS_SECTIONS
+    let h = img.height / AXIS_SECTIONS
+    for (let row = 0; row < AXIS_SECTIONS - 1; row++) {
+      for (let col = 0; col < AXIS_SECTIONS - 1; col++) {
+        imageSections.push(img.get(col * w, row * h, w, h))
       }
-    })
-  }
+    }
 
-  p.setup = () => {
     parentColor = p.color(getBackgroundColor())
     network = new Network()
 

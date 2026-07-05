@@ -33,7 +33,7 @@ const entries = [
     description: (
       <div>
         A bunch of random tracks ranging from about 2006-2011. Playful bedroom experiments. Some are just goofy, some
-        are more serious. Some good ideas, some not so much. All of them mastered terribly.
+        are more serious. Some good ideas, some not so much. All mastered terribly.
       </div>
     ),
     contentPath: 'albums/WebTracks2006To2011',

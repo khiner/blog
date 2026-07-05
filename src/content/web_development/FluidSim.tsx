@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import * as _webgpu from '@webgpu/types'
 
 import { ListIcon, TimesIcon } from 'icons'
 import shaders from './FluidSimShaders'
@@ -644,7 +643,7 @@ export default ({ boundaryRef = null }: FluidSimProps) => {
       lightFalloff: 1,
     },
   })
-  const requestId = useRef<number>()
+  const requestId = useRef<number | undefined>(undefined)
 
   useEffect(() => {
     const initDevice = async () => {
@@ -687,14 +686,14 @@ export default ({ boundaryRef = null }: FluidSimProps) => {
   useEffect(() => {
     if (!simulation) return
 
-    let resizeTimeout: number
+    let resizeTimeout: ReturnType<typeof setTimeout>
     const onResize = () => {
       clearTimeout(resizeTimeout)
       resizeTimeout = setTimeout(simulation.onSizeChange, 150)
     }
     window.addEventListener('resize', onResize)
 
-    let mouseMoveTimeout: number
+    let mouseMoveTimeout: ReturnType<typeof setTimeout>
     const onMouseMove = (e: MouseEvent) => {
       clearTimeout(mouseMoveTimeout)
       const { width, height } = canvasRef.current.getBoundingClientRect()

@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 import { createReadStream, existsSync, statSync } from 'node:fs'
 import path from 'node:path'
@@ -71,20 +70,22 @@ const renderDataDevServer = () => {
   }
 }
 
-export default defineConfig(() => ({
+export default defineConfig({
   build: {
     outDir: 'build',
   },
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'modern',
         loadPaths: [path.dirname(fileURLToPath(import.meta.url))], // App.scss imports 'node_modules/...' paths.
         quietDeps: true, // Bootstrap 5.3 still uses deprecated sass internals.
         silenceDeprecations: ['import'], // App.scss's Bootstrap @import has no @use equivalent until Bootstrap 6.
       },
     },
   },
-  plugins: [react(), tsconfigPaths(), renderDataDevServer()],
+  resolve: {
+    tsconfigPaths: true,
+  },
+  plugins: [react(), renderDataDevServer()],
   base: '/',
-}))
+})
