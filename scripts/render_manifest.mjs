@@ -1,19 +1,24 @@
 // Builds the /MeshEditor/render gallery manifest from a MeshEditor render tree, where
 // each leaf dir holds media named `<Scene>[.<MaterialVariant>].(webp|mp4)`, optionally
 // nested one level deeper for format variants (e.g. Lantern/glTF-Draco/Lantern.webp).
-// Emits { rows: [{ dir, items: [{ name, src, width?, height? }] }] }, with dimensions
+// Emits { rows: [{ dir, items: [{ name, src, v, width?, height? }] }] }, with dimensions
 // from an optional dims.json (see generate_render_thumbs.mjs).
+// `v` is a content hash the page appends to media URLs, so a republished render shows up before the
+// browser's week-long cache expires. Hashing content, not mtime, keeps URLs stable across fresh checkouts.
 
+import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const MEDIA_EXTENSIONS = new Set(['.webp', '.mp4'])
 
+const contentHash = (filePath) => createHash('md5').update(readFileSync(filePath)).digest('hex').slice(0, 8)
+
 export const generateManifest = (rootDir, dims = {}) => {
   const itemsByRowDir = new Map()
 
-  const addMediaFile = (relPath) => {
+  const addMediaFile = (relPath, filePath) => {
     const segments = relPath.split('/')
     const fileName = segments.pop()
     const stem = fileName.slice(0, fileName.lastIndexOf('.'))
@@ -27,14 +32,15 @@ export const generateManifest = (rootDir, dims = {}) => {
     if (material) nameParts.push(material)
 
     if (!itemsByRowDir.has(rowDir)) itemsByRowDir.set(rowDir, [])
-    itemsByRowDir.get(rowDir).push({ name: nameParts.join(' · '), src: relPath, ...dims[relPath] })
+    itemsByRowDir.get(rowDir).push({ name: nameParts.join(' · '), src: relPath, v: contentHash(filePath), ...dims[relPath] })
   }
 
   const walk = (dir, relDir) => {
     for (const dirent of readdirSync(dir, { withFileTypes: true })) {
       const relPath = relDir ? `${relDir}/${dirent.name}` : dirent.name
-      if (dirent.isDirectory()) walk(path.join(dir, dirent.name), relPath)
-      else if (MEDIA_EXTENSIONS.has(path.extname(dirent.name))) addMediaFile(relPath)
+      const filePath = path.join(dir, dirent.name)
+      if (dirent.isDirectory()) walk(filePath, relPath)
+      else if (MEDIA_EXTENSIONS.has(path.extname(dirent.name))) addMediaFile(relPath, filePath)
     }
   }
   walk(rootDir, '')

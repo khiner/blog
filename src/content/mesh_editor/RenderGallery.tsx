@@ -7,6 +7,7 @@ const DATA_BASE = '/MeshEditor/render-data'
 interface Item {
   name: string
   src: string
+  v?: string // Content hash. Media is cached for a week, so a republished render needs a new URL to reach browsers.
   width?: number // Present when the manifest was published with dimensions.
   height?: number
 }
@@ -15,8 +16,9 @@ interface Row {
   items: Item[]
 }
 
-const mediaUrl = (item: Item) => encodeURI(`${DATA_BASE}/${item.src}`)
-const thumbUrl = (item: Item) => encodeURI(`${DATA_BASE}/${item.src}.thumb.jpg`)
+const version = (item: Item) => (item.v ? `?v=${item.v}` : '')
+const mediaUrl = (item: Item) => encodeURI(`${DATA_BASE}/${item.src}`) + version(item)
+const thumbUrl = (item: Item) => encodeURI(`${DATA_BASE}/${item.src}.thumb.jpg`) + version(item)
 const isVideo = (item: Item) => item.src.endsWith('.mp4')
 
 const MEDIA_HEIGHT = 110 // Preview height in px. Each cell's width follows its media's aspect ratio.
