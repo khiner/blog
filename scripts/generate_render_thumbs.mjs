@@ -1,10 +1,12 @@
 // Generates grid thumbnails for MeshEditor renders (video items get a first-frame
-// poster), plus dims.json recording each source's pixel dimensions for the manifest.
+// poster), plus dims.json recording each source's pixel dimensions and content hash for the manifest.
 // Thumbs are staged outside the render tree as `<file>.thumb.jpg`, mirroring the source
-// layout so they publish to the same URL prefix. Regeneration is mtime-based.
+// layout so they publish to the same URL prefix. A corpus render rewrites every file, so the
+// publish regenerates by content hash rather than mtime.
 // Requires ffmpeg/ffprobe.
 
 import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -16,9 +18,14 @@ const THUMB_WIDTH = 360 // ~2x the ~176px grid cell, for high-DPI displays.
 
 const MEDIA_EXTENSIONS = new Set(['.webp', '.mp4'])
 
+export const contentHash = (filePath) => createHash('md5').update(readFileSync(filePath)).digest('hex').slice(0, 8)
+
+const newerThanSource = (sourcePath, thumbPath) => statSync(thumbPath).mtimeMs >= statSync(sourcePath).mtimeMs
+
 // Creates or refreshes one thumb. Returns true if it (re)generated.
-export const ensureThumb = (sourcePath, thumbPath) => {
-  if (existsSync(thumbPath) && statSync(thumbPath).mtimeMs >= statSync(sourcePath).mtimeMs) return false
+// `current` says whether an existing thumb still matches its source, by mtime unless given.
+export const ensureThumb = (sourcePath, thumbPath, current = newerThanSource) => {
+  if (existsSync(thumbPath) && current(sourcePath, thumbPath)) return false
   mkdirSync(path.dirname(thumbPath), { recursive: true })
   // -frames:v 1 takes the first frame of videos (and guards against animated webp).
   execFileSync('ffmpeg', [
@@ -49,8 +56,10 @@ export const generateThumbs = (rootDir, stagingDir) => {
       const relPath = relDir ? `${relDir}/${dirent.name}` : dirent.name
       if (dirent.isDirectory()) walk(fullPath, relPath)
       else if (MEDIA_EXTENSIONS.has(path.extname(dirent.name))) {
-        if (ensureThumb(fullPath, path.join(stagingDir, relPath + THUMB_SUFFIX)) || !dims[relPath]) {
-          dims[relPath] = mediaDimensions(fullPath)
+        const hash = contentHash(fullPath)
+        const unchanged = dims[relPath]?.hash === hash
+        if (ensureThumb(fullPath, path.join(stagingDir, relPath + THUMB_SUFFIX), () => unchanged) || !unchanged) {
+          dims[relPath] = { ...mediaDimensions(fullPath), hash }
           generated++
         }
       }
