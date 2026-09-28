@@ -1,38 +1,40 @@
-import jsfeat from 'jsfeat'
-
+import { cannyEdges } from './canny'
 import { windowResized } from './utils'
 import image_asset from '../assets/cityscape.jpg'
 
 export default function sketch(p) {
-  const BACKGROUND_COLOR_STR = '#1e90ff'
-  const FOREGROUND_COLOR_STR = 'rgb(221, 250, 252)'
+  const backgroundColor = '#1e90ff'
+  const snowColor = [221, 250, 252, 255]
 
-  let cnv, image, edges, pixelMask
-  let backgroundColor, foregroundColor, foregroundColorArray
+  let cnv, sourceImage, image, edges, edgeMask, pixelMask
 
   let snowRate = 6
   let imageSelectId = 0 // 0 == original image, 1 == snow, 2 == edge detect
   let isMouseDragging = false
 
   const onSizeChange = () => {
+    image = sourceImage.get()
     image.resize(p.width, p.height)
     image.loadPixels()
 
-    let buffer = new jsfeat.matrix_t(p.width, p.height, jsfeat.U8C1_t)
-    jsfeat.imgproc.grayscale(image.pixels, p.width, p.height, buffer)
-    jsfeat.imgproc.gaussian_blur(buffer, buffer, 3, 0)
-    jsfeat.imgproc.canny(buffer, buffer, 20, 50)
-    edges = jsfeatToP5(buffer)
-    pixelMask = new Array(p.width * p.height).fill(false)
+    edgeMask = cannyEdges(image.pixels, p.width, p.height)
+    edges = p.createImage(p.width, p.height)
+    edges.loadPixels()
+    for (let i = 0; i < edgeMask.length; i++) {
+      const offset = i * 4
+      edges.pixels[offset] = edges.pixels[offset + 1] = edges.pixels[offset + 2] = edgeMask[i]
+      edges.pixels[offset + 3] = 255
+    }
+    edges.updatePixels()
+    pixelMask = new Uint8Array(p.width * p.height)
   }
 
   p.setup = async () => {
-    image = await p.loadImage(image_asset)
-    backgroundColor = p.color(BACKGROUND_COLOR_STR)
-    foregroundColor = p.color(FOREGROUND_COLOR_STR)
-    foregroundColorArray = [p.red(foregroundColor), p.green(foregroundColor), p.blue(foregroundColor), 255]
-    p.windowResized = windowResized(p, image.height / image.width, onSizeChange)
+    sourceImage = await p.loadImage(image_asset)
+    p.windowResized = windowResized(p, sourceImage.height / sourceImage.width, onSizeChange)
     cnv = p.createCanvas(600, 500)
+    // Each snow cell occupies one canvas pixel.
+    p.pixelDensity(1)
     cnv.mouseClicked(() => {
       if (imageSelectId !== 1) imageSelectId = (imageSelectId + 1) % 3
     })
@@ -57,22 +59,9 @@ export default function sketch(p) {
       if (!pixelMask) return
 
       shake()
-      const density = p.pixelDensity()
       p.loadPixels()
-      for (let x = 0; x < p.width; x++) {
-        for (let y = 0; y < p.height; y++) {
-          if (pixelMask[y * p.width + x]) {
-            for (let i = 0; i < density; i++) {
-              for (let j = 0; j < density; j++) {
-                const idx = 4 * ((y * density + j) * p.width * density + (x * density + i))
-                p.pixels[idx] = foregroundColorArray[0]
-                p.pixels[idx + 1] = foregroundColorArray[1]
-                p.pixels[idx + 2] = foregroundColorArray[2]
-                p.pixels[idx + 3] = foregroundColorArray[3]
-              }
-            }
-          }
-        }
+      for (let i = 0; i < pixelMask.length; i++) {
+        if (pixelMask[i]) p.pixels.set(snowColor, i * 4)
       }
       p.updatePixels()
     } else {
@@ -118,7 +107,7 @@ export default function sketch(p) {
       for (let y = 0; y < p.height; y++) {
         const pixel = y * p.width + x
         // Once an edge is colored white, it is locked, so ignore these pixels, and all empty ones
-        if (!pixelMask[pixel] || edges.pixels[pixel * 4] === 255) continue
+        if (!pixelMask[pixel] || edgeMask[pixel] === 255) continue
 
         const newX = p.int(p.constrain(x + p.int(p.random(-2, 2)), 0, p.width - 1))
         const newY = p.int(p.constrain(y + p.int(p.random(0, 2)), 0, p.height - 1))
@@ -130,21 +119,5 @@ export default function sketch(p) {
         }
       }
     }
-  }
-
-  // https://github.com/marrific/Computer-Vision-with-JS/blob/feaaef0e47b7f18f4fc55bdab8a0ca5ff648bafd/shared/utils.js
-  // Convert grayscale jsfeat image to p5 rgba image.
-  const jsfeatToP5 = (src) => {
-    let dst = p.createImage(src.cols, src.rows)
-    dst.loadPixels()
-    const n = src.data.length
-    const srcData = src.data
-    let dstData = dst.pixels
-    for (let i = 0, j = 0; i < n; i++) {
-      dstData[j++] = dstData[j++] = dstData[j++] = srcData[i]
-      dstData[j++] = 255
-    }
-    dst.updatePixels()
-    return dst
   }
 }

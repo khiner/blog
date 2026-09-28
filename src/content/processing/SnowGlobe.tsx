@@ -19,9 +19,5 @@ export default (
       <li>SPACE toggles between the original image, the "snowy" image and the edge detection results.</li>
     </ul>
     <P5Wrapper sketch={snow_globe_sketch} />
-    <small>
-      This implementation of Canny Edge Detection is stripped down and adapted from Tom Gibara's implementation{' '}
-      <a href="http://www.tomgibara.com/computer-vision/CannyEdgeDetector.java">here</a>.
-    </small>
   </div>
 )
