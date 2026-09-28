@@ -5,36 +5,20 @@
   src: url(/src/assets/fonts/Roboto/Roboto-Regular.ttf) format('truetype');
 }
 
-// Cell geometry (preview height, per-media aspect ratio, hover scale factors) is set
-// inline by RenderGallery.tsx.
-$frame-color: #3f454c;
-$frame-width: 6px; // Row side padding around the cells.
-
 .renderGallery {
-  // Each row is one solid block — everything inside sits on it, so there are no
-  // adjoining frame-color elements to open subpixel seams between.
   .renderRow {
-    background: $frame-color;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    overflow: hidden; // Clip square cell corners to the rounded block.
-    // No top or bottom edge — the header and label strip end the row themselves.
-    padding: 0 $frame-width;
+    border-top: 1px solid var(--site-frame-border);
+    padding: 0.75rem 0;
 
-    + .renderRow {
-      margin-top: 5px;
+    .rowHeader {
+      color: #263e52;
+      text-align: left;
+      font-size: 16px;
+      font-family: 'Roboto Regular', 'Roboto', sans-serif; // One step up from the Light default.
+      font-weight: 400;
+      padding: 0 0 0.5rem;
+      margin: 0;
     }
-  }
-
-  .rowHeader {
-    color: #fff;
-    text-align: center;
-    font-size: 16px;
-    font-family: 'Roboto Regular', 'Roboto', sans-serif; // One step up from the Light default.
-    font-weight: 400;
-    letter-spacing: 0.04em;
-    padding: 0.6em 1em;
-    margin: 0;
   }
 
   .rowItems {
@@ -82,11 +66,11 @@ $frame-width: 6px; // Row side padding around the cells.
       // Zero intrinsic width so a long nowrap label ellipsizes instead of widening the cell.
       width: 0;
       min-width: 100%;
-      padding: 8px;
+      padding: 8px 8px 0;
       margin: 0;
-      font-size: 12px;
+      font-size: 14px;
       line-height: 1.4;
-      color: #f2f2f2;
+      color: #5b6771;
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
@@ -95,7 +79,7 @@ $frame-width: 6px; // Row side padding around the cells.
     }
 
     &:hover {
-      // Recede the media into the row block, revealing an equal inset on all sides.
+      // Recede the media, revealing an equal inset on all sides.
       .preview img,
       .preview video {
         transform: scale(var(--hover-scale-x, 1), var(--hover-scale-y, 1));
@@ -103,7 +87,7 @@ $frame-width: 6px; // Row side padding around the cells.
       // The title tracks the receding media's bottom edge. The hairline stroke thickens
       // the glyphs by less than a font-weight step, without changing their metrics.
       .itemName {
-        color: #fff;
+        color: #263e52;
         -webkit-text-stroke: 0.5px currentColor;
         transform: translateY(calc(-1 * var(--hover-inset, 0px)));
       }

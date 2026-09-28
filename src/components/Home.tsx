@@ -17,6 +17,7 @@ export default function Home() {
             GitHub activity
           </NavLink>
           <NavLink to="/posts">Posts</NavLink>
+          <NavLink to="/MeshEditor/render">MeshEditor renders</NavLink>
         </nav>
         <Outlet />
       </div>

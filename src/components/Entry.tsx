@@ -23,7 +23,7 @@ const Header = ({ title, date }) => (
 )
 
 export default React.memo(
-  function Entry({ title, subtitle, date, type, children }) {
+  function Entry({ title, subtitle, date, type, fullWidth, hideTitle, intro, children }) {
     useEffect(() => {
       formatMathWhenContentIsReady()
     }, [])
@@ -39,12 +39,13 @@ export default React.memo(
             <title>{formattedTitle}</title>
           </Helmet>
           {columnBreak}
-          <div className="container col-xs-12 col-md-10 col-lg-8">
+          <div className={fullWidth ? 'container-fluid' : 'container col-xs-12 col-md-10 col-lg-8'}>
             {!isShowcase && (
               <div className="entry">
-                {title && <h1 className="title">{title}</h1>}
+                {title && !hideTitle && <h1 className="title">{title}</h1>}
                 {subtitle && <h2 className="subtitle">{subtitle}</h2>}
                 {date && <h3 className="date">{date}</h3>}
+                {intro}
                 {children}
               </div>
             )}

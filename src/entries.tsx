@@ -575,8 +575,15 @@ const entries = [
     // Media and manifest live at /MeshEditor/render-data/, published by scripts/deploy_render_data.sh.
     path: '/MeshEditor/render',
     title: 'MeshEditor Renders',
+    hideTitle: true,
     contentPath: 'mesh_editor/RenderGallery',
     type: 'article',
+    fullWidth: true,
+    intro: (
+      <p>
+        Images, animations, and audio rendered with <Link href="https://github.com/khiner/MeshEditor">MeshEditor</Link>.
+      </p>
+    ),
   },
   {
     path: '/albums/doodles',

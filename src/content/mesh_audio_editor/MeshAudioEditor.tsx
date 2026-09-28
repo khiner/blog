@@ -67,37 +67,38 @@ const ImpactGrid = ({ rows }: ImpactGridProps) => (
 )
 
 const audioStyle: React.CSSProperties = {
+  display: 'block',
   width: '100%',
-  marginTop: '10px',
+  marginTop: '4px',
 }
 
 const ImpactGridItem = ({ name, meshSrc, realAudio, modalAudio }: ImpactGridItemProps) => (
   <div
     style={{
       border: '1px solid #ccc',
+      borderRadius: 8,
+      backgroundColor: '#fff',
       padding: 10,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 10,
     }}
   >
-    <div
+    <h2
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        flexGrow: 1,
-        height: '100%',
+        margin: 0,
+        fontSize: 18,
+        textAlign: 'center',
       }}
     >
-      <h2
-        style={{
-          marginTop: '0',
-          marginBottom: 10,
-          fontSize: 18,
-          textAlign: 'center',
-        }}
-      >
-        {name}
-      </h2>
-      <img src={meshSrc} alt={`${name} Mesh`} style={{ maxWidth: 400, width: '100%', height: 'auto' }} />
+      {name}
+    </h2>
+    <img
+      src={meshSrc}
+      alt={`${name} Mesh`}
+      style={{ maxWidth: 400, width: '100%', height: 'auto', margin: '0 auto', borderRadius: 8 }}
+    />
+    <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
       {realAudio && (
         <div>
           <div style={{ fontSize: 15 }}>Real audio:</div>
@@ -128,7 +129,7 @@ export default (
 
     <img
       src={preview_image}
-      style={{ maxWidth: 900 }}
+      style={{ maxWidth: 900, margin: '0 auto 1rem' }}
       alt="Ceramic pitcher mesh in the RealImpact mesh editor, with modal audio control panel open"
     />
     <div>

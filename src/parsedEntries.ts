@@ -9,7 +9,11 @@ if (config.origin) {
   })
 }
 
-const strippedPaths = entries.map((entry) => stripSlashes(entry.path))
+const reverseChronological = entries
+  .filter((entry) => entry.date)
+  .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+
+const strippedPaths = reverseChronological.map((entry) => stripSlashes(entry.path))
 
 const findUniqueTopLevelPathSegments = () => [...new Set(strippedPaths.map((path) => path.split('/')[0]))]
 const findNestedTopLevelPathSegments = () =>
@@ -21,14 +25,10 @@ const byTopLevelPathSegment = Object.fromEntries(
   uniqueTopLevelPathSegments.map((topLevelPathSegment) => [
     topLevelPathSegment,
     nestedTopLevelPathSegments.includes(topLevelPathSegment)
-      ? entries.filter((entry) => stripSlashes(entry.path).startsWith(topLevelPathSegment))
-      : entries.find((entry) => stripSlashes(entry.path) === topLevelPathSegment),
+      ? reverseChronological.filter((entry) => stripSlashes(entry.path).startsWith(topLevelPathSegment))
+      : reverseChronological.find((entry) => stripSlashes(entry.path) === topLevelPathSegment),
   ]),
 )
-
-const reverseChronological = entries
-  .filter((entry) => entry.date)
-  .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
 
 export default {
   all: entries,
