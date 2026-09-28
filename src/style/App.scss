@@ -35,6 +35,10 @@ $link-hover-color: $primary-highlight;
 
 @import 'node_modules/bootstrap/scss/bootstrap';
 
+:root {
+  --site-frame-border: #aebdc7;
+}
+
 body {
   font-family: 'Roboto';
   font-weight: 400;
@@ -138,6 +142,27 @@ blockquote {
 
 .summary {
   background: #f8f8f8;
+  min-height: 100%;
+}
+.home-views {
+  display: flex;
+  gap: 20px;
+  padding: 8px 10px 0;
+
+  a {
+    border-bottom: 2px solid transparent;
+    color: $text-color-dark;
+    padding: 4px 0;
+    text-decoration: none;
+
+    &:hover,
+    &.active {
+      color: $primary-highlight;
+    }
+    &.active {
+      border-bottom-color: currentColor;
+    }
+  }
 }
 
 // Default dropdown toggle triangle is too wide and too high.

@@ -8,12 +8,13 @@ import { fileURLToPath } from 'node:url'
 import { generateManifest } from './scripts/render_manifest.mjs'
 import { THUMB_SUFFIX, ensureThumb } from './scripts/generate_render_thumbs.mjs'
 
+const root = path.dirname(fileURLToPath(import.meta.url))
+
 // In production, /MeshEditor/render-data/ is real files on the server, published by
 // scripts/deploy_render_data.sh (and eventually by MeshEditor CI). In dev, serve the
 // same URLs straight from the sibling MeshEditor repo's render output tree, generating
 // thumbnails on demand into the same cache the deploy script uses.
 const renderDataDevServer = () => {
-  const root = path.dirname(fileURLToPath(import.meta.url))
   const sourceDir = path.resolve(root, '../MeshEditor/render')
   const thumbCacheDir = path.resolve(root, 'node_modules/.cache/render-thumbs')
   const contentTypes = { '.webp': 'image/webp', '.mp4': 'video/mp4' }
@@ -70,6 +71,25 @@ const renderDataDevServer = () => {
   }
 }
 
+const githubActivityDevServer = () => {
+  const activityFile = path.join(root, 'node_modules/.cache/github-activity.json')
+  return {
+    name: 'github-activity-data',
+    configureServer(server) {
+      server.middlewares.use('/github-activity/activity.json', (_req, res) => {
+        if (!existsSync(activityFile)) {
+          res.statusCode = 404
+          res.end('Run scripts/update_github_activity.py to create local activity data')
+          return
+        }
+        res.setHeader('Content-Type', 'application/json; charset=utf-8')
+        res.setHeader('Cache-Control', 'no-store')
+        createReadStream(activityFile).pipe(res)
+      })
+    },
+  }
+}
+
 export default defineConfig({
   build: {
     outDir: 'build',
@@ -77,7 +97,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        loadPaths: [path.dirname(fileURLToPath(import.meta.url))], // App.scss imports 'node_modules/...' paths.
+        loadPaths: [root], // App.scss imports 'node_modules/...' paths.
         quietDeps: true, // Bootstrap 5.3 still uses deprecated sass internals.
         silenceDeprecations: ['import'], // App.scss's Bootstrap @import has no @use equivalent until Bootstrap 6.
       },
@@ -86,6 +106,6 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-  plugins: [react(), renderDataDevServer()],
+  plugins: [react(), renderDataDevServer(), githubActivityDevServer()],
   base: '/',
 })

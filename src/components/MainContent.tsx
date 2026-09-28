@@ -2,6 +2,8 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 
 import SummaryList from './SummaryList'
+import Home from './Home'
+import GitHubActivity from './GitHubActivity'
 import Entry from './Entry'
 import { stripSlashes } from 'utils'
 
@@ -27,7 +29,10 @@ const LoadableEntry = (entry) => {
 export default () => (
   <div className="content">
     <Routes>
-      <Route exact path="/" element={SummaryList} />
+      <Route path="/" element={<Home />}>
+        <Route index element={<GitHubActivity />} />
+        <Route path="posts" element={SummaryList} />
+      </Route>
       {parsedEntries.all.map((entry) => (
         <Route
           key={entry.path}

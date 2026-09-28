@@ -1,8 +1,5 @@
 import { Link } from 'react-router-dom'
 import { Card, Container, Row, Col } from 'react-bootstrap'
-import { HelmetProvider, Helmet } from 'react-helmet-async'
-
-import config from 'config'
 import parsedEntries from 'parsedEntries'
 
 const Panel = ({ entry }) => (
@@ -23,22 +20,13 @@ const Panel = ({ entry }) => (
 )
 
 export default (
-  <HelmetProvider>
-    <div className="summary">
-      <Container className="summary">
-        {config?.siteName && (
-          <Helmet>
-            <title>{config.siteName}</title>
-          </Helmet>
-        )}
-        <Row>
-          <Col className="justify-content-md-center">
-            {parsedEntries.reverseChronological.map((entry) => (
-              <Panel key={entry.title} entry={entry} />
-            ))}
-          </Col>
-        </Row>
-      </Container>
-    </div>
-  </HelmetProvider>
+  <Container>
+    <Row>
+      <Col className="justify-content-md-center">
+        {parsedEntries.reverseChronological.map((entry) => (
+          <Panel key={entry.title} entry={entry} />
+        ))}
+      </Col>
+    </Row>
+  </Container>
 )
