@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'preact/compat'
 import Link from 'components/Link'
 
 import preview_image from './assets/images/RealImpact_CeramicPitcher.png'

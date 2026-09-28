@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useMemo, useState } from 'react'
+import { CSSProperties, useEffect, useMemo, useState } from 'preact/compat'
 
 import './RenderGallery.css'
 

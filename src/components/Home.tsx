@@ -1,12 +1,10 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from 'preact/compat'
 import { InternalLink, normalizePath } from 'navigation'
 
-import config from 'config'
 import parsedEntries from 'parsedEntries'
 
 export default function Home({ pathname, children }: { pathname: string; children: ReactNode }) {
   const homeMatch = pathname === '/'
-  const postsMatch = /^\/posts(?:\/[^/]+)?$/.test(pathname)
   const category = parsedEntries.categories.find(
     (category) =>
       pathname === normalizePath(`/posts/${category.path}`) ||
@@ -16,7 +14,6 @@ export default function Home({ pathname, children }: { pathname: string; childre
 
   return (
     <div className="summary">
-      {config.siteName && (homeMatch || postsMatch) && <title>{config.siteName}</title>}
       <nav className="home-views" aria-label="Home views">
         <InternalLink
           href="/"

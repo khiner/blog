@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'preact/compat'
 
 import { ListIcon, TimesIcon } from 'icons'
 import shaders from './FluidSimShaders'
@@ -435,7 +435,7 @@ const Slider: React.FC<SliderProps> = ({ k, l, min, max, v, cb }) => (
       max={max}
       step={0.0001}
       value={v}
-      onChange={(e) => cb(k, parseFloat(e.target.value))}
+      onChange={(e) => cb(k, parseFloat(e.currentTarget.value))}
     />
   </Control>
 )
@@ -448,7 +448,7 @@ interface ToggleProps {
 }
 const Toggle: React.FC<ToggleProps> = ({ k, l, v, cb }) => (
   <Control label={l}>
-    <input type="checkbox" checked={v} onChange={(e) => cb(k, e.target.checked)} />
+    <input type="checkbox" checked={v} onChange={(e) => cb(k, e.currentTarget.checked)} />
   </Control>
 )
 
@@ -461,7 +461,7 @@ interface DropdownProps {
 }
 const Dropdown: React.FC<DropdownProps> = ({ k, l, options, v, cb }) => (
   <Control label={l}>
-    <select value={v} onChange={(e) => cb(k, parseInt(e.target.value))}>
+    <select value={v} onChange={(e) => cb(k, parseInt(e.currentTarget.value))}>
       {Array.isArray(options)
         ? options.map((option) => (
             <option key={option} value={option}>

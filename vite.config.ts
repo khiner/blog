@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import preact from '@preact/preset-vite'
 
 import { createReadStream, existsSync, statSync } from 'node:fs'
 import path from 'node:path'
@@ -98,6 +98,6 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-  plugins: [highlightCode(), react(), renderDataDevServer(), githubActivityDevServer()],
+  plugins: [highlightCode(), preact(), renderDataDevServer(), githubActivityDevServer()],
   base: '/',
 })

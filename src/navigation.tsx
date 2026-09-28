@@ -1,5 +1,5 @@
-import { useSyncExternalStore } from 'react'
-import type { AnchorHTMLAttributes } from 'react'
+import { useSyncExternalStore } from 'preact/compat'
+import type { AnchorHTMLAttributes } from 'preact/compat'
 
 const navigationEvent = 'blog:navigate'
 

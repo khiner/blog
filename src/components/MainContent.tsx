@@ -1,4 +1,4 @@
-import { isValidElement, lazy, Suspense, useEffect } from 'react'
+import { isValidElement, lazy, Suspense, useEffect, useLayoutEffect } from 'preact/compat'
 import { InternalLink, navigate, normalizePath, usePathname } from 'navigation'
 
 import SummaryList from './SummaryList'
@@ -39,6 +39,12 @@ export default function MainContent() {
   const postsMatch = pathname.match(/^\/posts(?:\/([^/]+))?$/)
   const category = parsedEntries.categories.find((item) => item.path.toLowerCase() === postsMatch?.[1])
   const invalidCategory = !!postsMatch?.[1] && !category
+  const entry = parsedEntries.all.find((entry) => normalizePath(entry.path) === pathname)
+  const title = pathname === '/' || postsMatch ? null : entry ? entry.title : 'Page not found'
+  const pageTitle = config.siteName && title ? `${config.siteName} - ${title}` : config.siteName || title || ''
+  useLayoutEffect(() => {
+    document.title = pageTitle
+  }, [pageTitle])
   useEffect(() => {
     if (invalidCategory) navigate('/posts', true)
   }, [invalidCategory])
@@ -57,7 +63,6 @@ export default function MainContent() {
   } else {
     content = entryPages.get(pathname) ?? (
       <div className="page-width entry">
-        <title>{`${config.siteName} - Page not found`}</title>
         <h1>Page not found</h1>
         <InternalLink href="/">Return home</InternalLink>
       </div>

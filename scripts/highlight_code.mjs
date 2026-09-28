@@ -48,7 +48,7 @@ export default function highlightCode() {
           if (/(^|\/)CodeBlock(?:\.tsx)?$/.test(statement.source.value)) {
             if (Object.hasOwn(languages, name)) bindings.set(specifier.local.name, languages[name])
           } else if (
-            /^react\/jsx-(dev-)?runtime$/.test(statement.source.value) &&
+            /^preact\/jsx-(dev-)?runtime$/.test(statement.source.value) &&
             ['jsx', 'jsxs', 'jsxDEV'].includes(name)
           ) {
             jsx.add(specifier.local.name)

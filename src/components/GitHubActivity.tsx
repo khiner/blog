@@ -8,7 +8,7 @@ import {
   type ReactNode,
   type MouseEvent,
   type PointerEvent,
-} from 'react'
+} from 'preact/compat'
 
 import '../style/GitHubActivity.css'
 
@@ -428,10 +428,18 @@ export default function GitHubActivity() {
       setAxisFontSize(parseFloat(getComputedStyle(element).fontSize))
       updateViewport()
     }
-    const observer = new ResizeObserver(resize)
+    // Defer layout-changing state updates until ResizeObserver delivery has finished.
+    let frame = 0
+    const observer = new ResizeObserver(() => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(resize)
+    })
     observer.observe(element)
     resize()
-    return () => observer.disconnect()
+    return () => {
+      observer.disconnect()
+      cancelAnimationFrame(frame)
+    }
   }, [activity])
 
   useLayoutEffect(() => {

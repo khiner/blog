@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'preact/compat'
 import p5 from 'p5'
 
 export default ({ sketch }) => {

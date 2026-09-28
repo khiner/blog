@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef } from 'preact/compat'
 import FluidSim from './FluidSim'
 
 export default () => {
