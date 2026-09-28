@@ -1,4 +1,4 @@
-// Document defaults shared by posts, embedded controls, and the site chrome.
+/* Document defaults shared by posts, embedded controls, and the site chrome. */
 *,
 *::before,
 *::after {
@@ -204,7 +204,7 @@ textarea {
   display: none !important;
 }
 
-// Keep the existing page widths, including the article's percentage of the viewport.
+/* Keep the existing page widths, including the article's percentage of the viewport. */
 .page-width,
 .page-fluid {
   width: 100%;
@@ -213,11 +213,29 @@ textarea {
   margin-right: auto;
   margin-left: auto;
 }
-@each $breakpoint, $width in (576px: 540px, 768px: 720px, 992px: 960px, 1200px: 1140px, 1400px: 1320px) {
-  @media (min-width: $breakpoint) {
-    .page-width {
-      max-width: $width;
-    }
+@media (min-width: 576px) {
+  .page-width {
+    max-width: 540px;
+  }
+}
+@media (min-width: 768px) {
+  .page-width {
+    max-width: 720px;
+  }
+}
+@media (min-width: 992px) {
+  .page-width {
+    max-width: 960px;
+  }
+}
+@media (min-width: 1200px) {
+  .page-width {
+    max-width: 1140px;
+  }
+}
+@media (min-width: 1400px) {
+  .page-width {
+    max-width: 1320px;
   }
 }
 @media (min-width: 768px) {

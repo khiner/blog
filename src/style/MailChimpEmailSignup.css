@@ -1,0 +1,73 @@
+#mc_embed_signup {
+  clear: left;
+  font:
+    14px Helvetica,
+    Arial,
+    sans-serif;
+
+  form {
+    display: block;
+    position: relative;
+    text-align: left;
+    padding: 10px;
+  }
+
+  label {
+    display: block;
+    font-size: 16px;
+    padding-bottom: 10px;
+    font-weight: bold;
+  }
+
+  input {
+    width: 100%;
+    border: 1px solid #999;
+    appearance: none;
+
+    &:focus {
+      border-color: #333;
+    }
+  }
+
+  input.email {
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, Helvetica, Verdana, sans-serif;
+    font-size: 15px;
+    display: block;
+    padding: 0 0.4em;
+    margin: 0 0 10px;
+    min-height: 32px;
+    min-width: 200px;
+    border-radius: 3px;
+  }
+
+  input.button {
+    clear: both;
+    display: block;
+    background-color: var(--site-primary);
+    border: 0;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    color: #fff;
+    cursor: pointer;
+    font-size: 15px;
+    height: 32px;
+    line-height: 32px;
+    margin: 0;
+    padding: 0;
+    min-width: 90px;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    white-space: nowrap;
+    transition: background-color 0.23s ease-in-out;
+
+    &:hover {
+      background-color: var(--site-link-hover);
+    }
+  }
+
+  .clear {
+    clear: none;
+    display: inline;
+  }
+}

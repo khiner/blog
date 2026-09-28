@@ -1,6 +1,6 @@
 import { CSSProperties, useEffect, useMemo, useState } from 'react'
 
-import './RenderGallery.scss'
+import './RenderGallery.css'
 
 const DATA_BASE = '/MeshEditor/render-data'
 

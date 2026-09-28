@@ -10,7 +10,7 @@ import {
   type PointerEvent,
 } from 'react'
 
-import '../style/GitHubActivity.scss'
+import '../style/GitHubActivity.css'
 
 type DayTarget = [string | string[], string?, string?]
 type Lane = [number, DayTarget?]

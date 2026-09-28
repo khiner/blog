@@ -1,6 +1,5 @@
-@use 'sass:color';
-@use './Base';
-@use './MainNav';
+@import './Base.css';
+@import './MainNav.css';
 
 @font-face {
   font-family: 'Roboto';
@@ -23,13 +22,6 @@
   src: url(/src/assets/fonts/Roboto/Roboto-BoldItalic.ttf) format('truetype');
 }
 
-$primary: #1e90ff;
-$primary-highlight: #1176db;
-$text-color-light: #ffffff;
-$text-color-dark: #444444;
-$page-background: #fafafa;
-$link-hover-color: $primary-highlight;
-
 :root {
   --site-frame-border: #aebdc7;
   --site-primary: #1e90ff;
@@ -46,7 +38,7 @@ body {
     transition: none;
 
     &:hover {
-      color: $link-hover-color;
+      color: var(--site-link-hover);
     }
   }
 
@@ -76,7 +68,7 @@ code {
 blockquote {
   font-style: italic;
   padding-left: 1em;
-  border-left: 4px solid $primary-highlight;
+  border-left: 4px solid var(--site-link-hover);
 }
 
 /* From https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php */
@@ -107,11 +99,6 @@ blockquote {
     width: 90%;
   }
 
-  /* Medium devices (landscape tablets, 768px and up) */
-  @media only screen and (min-width: 768px) {
-    width: 90%;
-  }
-
   /* Large devices (laptops/desktops, 992px and up) */
   @media only screen and (min-width: 992px) {
     width: 80%;
@@ -138,7 +125,7 @@ blockquote {
 
 html,
 body {
-  background: $page-background;
+  background: #fafafa;
 }
 
 .summary {
@@ -153,14 +140,14 @@ body {
 
   a {
     border-bottom: 2px solid transparent;
-    color: $text-color-dark;
+    color: #444;
     padding: 4px 0;
     text-decoration: none;
     white-space: nowrap;
 
     &:hover,
     &.active {
-      color: $primary-highlight;
+      color: var(--site-link-hover);
     }
     &.active {
       border-bottom-color: currentColor;
@@ -180,7 +167,7 @@ body {
   padding: 0;
   text-decoration: underline;
   &:hover {
-    color: $primary;
+    color: var(--site-primary);
   }
 }
 
@@ -197,14 +184,10 @@ iframe.soundcloud-small {
   padding-top: 1em;
   padding-bottom: 1em;
 
-  // The card body already pads showcase entries.
+  /* The card body already pads showcase entries. */
   &.Showcase {
     padding-top: 0;
     padding-bottom: 0;
-  }
-
-  &.well {
-    background-image: none;
   }
 
   a {
@@ -226,8 +209,7 @@ iframe.soundcloud-small {
     margin-top: 1.5rem;
   }
   h3 {
-    margin: 1rem 0;
-    margin-top: 2rem;
+    margin: 2rem 0 1rem;
   }
   .date {
     margin-top: 14px;
@@ -265,7 +247,7 @@ iframe.soundcloud-small {
 }
 
 .post-card {
-  --card-heading-bg: #{$primary};
+  --card-heading-bg: var(--site-primary);
   --card-body-bg: #fff;
   --card-border-color: var(--site-frame-border);
 
@@ -283,9 +265,9 @@ iframe.soundcloud-small {
   margin: 1.5em;
 
   &:has(> .panelLink):hover {
-    --card-heading-bg: #{$primary-highlight};
-    --card-body-bg: #{color.mix(white, $primary-highlight, 92%)};
-    --card-border-color: #{color.mix(black, $primary-highlight, 20%)};
+    --card-heading-bg: var(--site-link-hover);
+    --card-body-bg: color-mix(in srgb, white 92%, var(--site-link-hover));
+    --card-border-color: color-mix(in srgb, black 20%, var(--site-link-hover));
   }
 
   .post-card-header,
@@ -296,7 +278,7 @@ iframe.soundcloud-small {
   .post-card-header {
     padding: 18px 16px 16px;
     margin-bottom: 0;
-    color: $text-color-light;
+    color: #fff;
     background-color: var(--card-heading-bg);
     border-bottom: 1px solid var(--card-border-color);
 
@@ -350,22 +332,8 @@ iframe.soundcloud-small {
   font-size: 18px;
   &:hover {
     cursor: pointer;
-    color: $text-color-dark;
+    color: #444;
   }
-}
-
-.webgpu-not-supported {
-  visibility: hidden;
-  width: 50%;
-  height: 50%;
-  padding: 1em;
-  margin: auto;
-  border: 4px solid black;
-  border-radius: 4px;
-  background-color: #ffdaba;
-  font-family: monospace;
-  font-size: large;
-  text-align: center;
 }
 
 body.nineties {
@@ -376,7 +344,6 @@ body.nineties {
   font-size: 16px;
   line-height: 20px;
   color: #ffff00 !important;
-  background-color: #0000ff;
   -webkit-font-smoothing: none;
   background: #0000ff url('../assets/90s/microfab.gif') top left;
 
@@ -386,7 +353,7 @@ body.nineties {
 
   a {
     color: #00eeee !important;
-    text-decoration: none;
+    text-decoration: underline;
   }
 
   .panelLink {
@@ -418,37 +385,16 @@ body.nineties {
     font-weight: bold;
   }
 
-  em {
-    font-style: italic;
-  }
-
-  cite {
-    font-style: normal;
-  }
-
   h1,
   h2,
   h3,
-  h4,
-  h5,
-  h6 {
+  h4 {
     margin: 10px 0;
     font-family: inherit;
     font-weight: bold;
     line-height: 20px;
     color: inherit;
     text-rendering: optimizelegibility;
-  }
-
-  h1 small,
-  h2 small,
-  h3 small,
-  h4 small,
-  h5 small,
-  h6 small {
-    font-weight: normal;
-    line-height: 1;
-    color: #999999;
   }
 
   h1,
@@ -459,42 +405,29 @@ body.nineties {
 
   h1 {
     font-size: 44px !important;
+    color: #ff0000 !important;
   }
 
   h2 {
     font-size: 36px !important;
-  }
-
-  h3 {
-    font-size: 28px;
-  }
-
-  h4 {
-    font-size: 20px;
-  }
-
-  h5 {
-    font-size: 16px;
-  }
-
-  h6 {
-    font-size: 13.6px;
-  }
-
-  h1 small {
-    font-size: 28px;
+    color: #ffcc00 !important;
   }
 
   h2 small {
     font-size: 20px;
+    font-weight: normal;
+    line-height: 1;
+    color: #999;
   }
 
-  h3 small {
-    font-size: 16px;
+  h3 {
+    font-size: 28px;
+    color: #ffff00;
   }
 
-  h4 small {
-    font-size: 16px;
+  h4 {
+    font-size: 20px;
+    color: #66ff00;
   }
 
   ul,
@@ -514,75 +447,12 @@ body.nineties {
     line-height: 20px;
   }
 
-  dl {
-    margin-bottom: 20px;
-  }
-
-  dt,
-  dd {
-    line-height: 20px;
-  }
-
-  dt {
-    font-weight: bold;
-  }
-
-  dd {
-    margin-left: 10px;
-  }
-
-  h1 {
-    color: #ff0000 !important;
-  }
-
-  h2 {
-    color: #ffcc00 !important;
-  }
-
-  h3 {
-    color: #ffff00;
-  }
-
-  h4 {
-    color: #66ff00;
-  }
-
-  h5 {
-    color: #0000ff;
-  }
-
-  h6 {
-    color: #ff00ff;
-  }
-
-  a {
-    text-decoration: underline;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
   .site-header {
-    border-bottom: 1px solid #fff;
-    -webkit-box-shadow:
-      0 2px 0 #d4d0c8,
-      0 3px 0 #808080,
-      0 4px 0 #404040;
-    -moz-box-shadow:
-      0 2px 0 #d4d0c8,
-      0 3px 0 #808080,
-      0 4px 0 #404040;
     box-shadow:
       0 2px 0 #d4d0c8,
       0 3px 0 #808080,
       0 4px 0 #404040;
     background: #000000 url('../assets/90s/stars.gif') top left;
     border-bottom: 1px solid #d4d0c8;
-  }
-
-  legend {
-    font-weight: bold;
-    color: yellow;
   }
 }

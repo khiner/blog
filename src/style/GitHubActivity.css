@@ -398,10 +398,17 @@ a.github-activity-day {
   outline: 1px solid var(--activity-ink);
   z-index: 3;
 }
-@for $level from 1 through 4 {
-  .level-#{$level} {
-    background: var(--activity-level-#{$level});
-  }
+.level-1 {
+  background: var(--activity-level-1);
+}
+.level-2 {
+  background: var(--activity-level-2);
+}
+.level-3 {
+  background: var(--activity-level-3);
+}
+.level-4 {
+  background: var(--activity-level-4);
 }
 
 .github-activity-marker {

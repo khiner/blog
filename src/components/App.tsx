@@ -1,7 +1,7 @@
 import MainNav from './MainNav'
 import MainContent from './MainContent'
 
-import 'style/App.scss'
+import 'style/App.css'
 
 export default function App() {
   return (

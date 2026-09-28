@@ -1,4 +1,4 @@
-import 'style/MailChimpEmailSignup.scss'
+import 'style/MailChimpEmailSignup.css'
 
 export default ({ formAction, inputName }) =>
   !formAction || !inputName ? null : (

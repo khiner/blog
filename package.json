@@ -8,7 +8,7 @@
     "build": "npm run typecheck && vite build",
     "typecheck": "tsc --noEmit",
     "serve": "vite preview",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\""
   },
   "eslintConfig": {
     "extends": [
@@ -37,7 +37,7 @@
     ]
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+    "src/**/*.{js,jsx,ts,tsx,json,css,md}": [
       "prettier --write"
     ]
   },
@@ -58,7 +58,6 @@
     "lowlight": "3.3.0",
     "magic-string": "^1.4.2",
     "prettier": "^3.9.9",
-    "sass": "^1.105.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.1"
   }
