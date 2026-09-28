@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
-import { Card } from 'react-bootstrap'
 
 import config from 'config'
 
@@ -29,7 +28,7 @@ export default React.memo(
     }, [])
 
     const isShowcase = type && type.toLowerCase() === 'showcase'
-    const columnBreak = <div className="col-md-1 col-lg-2" />
+    const columnBreak = <div className="article-spacer" />
     const formattedTitle = config.siteName && title ? `${config.siteName} - ${title}` : config.siteName || title
 
     return (
@@ -39,7 +38,7 @@ export default React.memo(
             <title>{formattedTitle}</title>
           </Helmet>
           {columnBreak}
-          <div className={fullWidth ? 'container-fluid' : 'container col-xs-12 col-md-10 col-lg-8'}>
+          <div className={fullWidth ? 'page-fluid' : 'page-width article-page'}>
             {!isShowcase && (
               <div className="entry">
                 {title && !hideTitle && <h1 className="title">{title}</h1>}
@@ -50,14 +49,14 @@ export default React.memo(
               </div>
             )}
             {isShowcase && (
-              <Card>
-                <Card.Header>
+              <div className="post-card">
+                <div className="post-card-header">
                   <Header title={title} date={date} />
-                </Card.Header>
-                <Card.Body>
+                </div>
+                <div className="post-card-body">
                   <div className="entry Showcase">{children}</div>
-                </Card.Body>
-              </Card>
+                </div>
+              </div>
             )}
           </div>
           {columnBreak}

@@ -1,4 +1,6 @@
 @use 'sass:color';
+@use './Base';
+@use './MainNav';
 
 @font-face {
   font-family: 'Roboto';
@@ -25,23 +27,13 @@ $primary: #1e90ff;
 $primary-highlight: #1176db;
 $text-color-light: #ffffff;
 $text-color-dark: #444444;
-$border-color: #e8e8e8;
 $page-background: #fafafa;
-$navbar-light-brand-color: $text-color-light;
-$navbar-light-color: $text-color-light;
-$navbar-light-hover-color: $text-color-dark;
-$card-cap-bg: $primary;
-$card-cap-color: $text-color-light;
-$card-border-color: var(--site-frame-border);
-
-$link-color: $primary;
 $link-hover-color: $primary-highlight;
-$nav-link-transition: none;
-
-@import 'node_modules/bootstrap/scss/bootstrap';
 
 :root {
   --site-frame-border: #aebdc7;
+  --site-primary: #1e90ff;
+  --site-link-hover: #1176db;
 }
 
 body {
@@ -182,130 +174,6 @@ body {
   padding-top: 2px;
 }
 
-// Default dropdown toggle triangle is too wide and too high.
-.dropdown-toggle::after {
-  vertical-align: 0.15em;
-  border-top: 0.3em solid;
-  border-right: 0.28em solid transparent;
-  border-left: 0.28em solid transparent;
-}
-
-.navbar {
-  background-color: $primary;
-  color: $text-color-light;
-  border-bottom: 1px $border-color solid;
-  padding: 0.5rem 1rem;
-
-  .navbar-brand {
-    margin-right: auto;
-
-    a {
-      padding: 0;
-    }
-  }
-
-  .header-menu-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.65rem;
-    color: $text-color-light;
-    font-size: 1rem;
-    line-height: 1.2;
-    background: transparent;
-    border: 0;
-    border-radius: 0.25rem;
-    transition: none;
-
-    &:hover,
-    &:not(.collapsed) {
-      background: $primary-highlight;
-    }
-
-    &:focus {
-      outline: 0;
-      box-shadow: none;
-    }
-
-    &:focus-visible {
-      outline: 2px solid $text-color-light;
-      outline-offset: 2px;
-    }
-
-    .header-menu-chevron {
-      width: 12px;
-      height: 8px;
-    }
-
-    &:not(.collapsed) .header-menu-chevron {
-      transform: rotate(180deg);
-    }
-  }
-
-  @media (min-width: 840px) {
-    flex-wrap: nowrap;
-
-    .header-links {
-      --bs-navbar-nav-link-padding-x: 0.625rem;
-    }
-
-    .navbar-nav {
-      flex-direction: row;
-    }
-
-    .navbar-nav .dropdown-menu {
-      position: absolute;
-    }
-
-    .navbar-collapse {
-      display: flex !important;
-      flex-basis: auto;
-    }
-
-    .navbar-toggler {
-      display: none;
-    }
-
-    .header-links > * + * {
-      position: relative;
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0;
-        width: 1px;
-        height: 10px;
-        background: $text-color-light;
-        opacity: 0.7;
-        transform: translate(-50%, -50%);
-      }
-    }
-  }
-
-  a {
-    color: $text-color-light;
-    text-decoration: none;
-    white-space: nowrap;
-    padding-right: var(--bs-navbar-nav-link-padding-x);
-    padding-left: var(--bs-navbar-nav-link-padding-x);
-
-    &:hover {
-      color: $text-color-dark;
-    }
-  }
-
-  .dropdown-menu {
-    a {
-      color: $text-color-dark;
-      &:hover {
-        color: $link-hover-color;
-        text-decoration: none;
-      }
-    }
-  }
-}
-
 .linkButton {
   background: none;
   border: none;
@@ -378,8 +246,15 @@ iframe.soundcloud-small {
 
 .panelLink {
   text-decoration: none;
+
+  &::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    content: '';
+  }
 }
-.panelLink ~ .card-body {
+.panelLink ~ .post-card-body {
   a,
   iframe {
     z-index: 2;
@@ -389,25 +264,45 @@ iframe.soundcloud-small {
   }
 }
 
-.card {
-  --bs-card-cap-padding-y: 1rem;
+.post-card {
+  --card-heading-bg: #{$primary};
+  --card-body-bg: #fff;
+  --card-border-color: var(--site-frame-border);
 
-  background-color: var(--bs-card-cap-bg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: #212529;
+  overflow-wrap: break-word;
+  background-clip: border-box;
+  border: 1px solid var(--card-border-color);
+  border-radius: 6px;
+
+  background-color: var(--card-heading-bg);
   margin: 1.5em;
 
   &:hover {
-    --bs-card-cap-bg: #{$primary-highlight};
-    --bs-card-bg: #{color.mix(white, $primary-highlight, 92%)};
-    --bs-card-border-color: #{color.mix(black, $primary-highlight, 20%)};
+    --card-heading-bg: #{$primary-highlight};
+    --card-body-bg: #{color.mix(white, $primary-highlight, 92%)};
+    --card-border-color: #{color.mix(black, $primary-highlight, 20%)};
   }
 
-  .card-header,
-  .card-body {
+  .post-card-header,
+  .post-card-body {
     text-box: trim-both cap text;
   }
 
-  .card-header {
-    padding-top: calc(var(--bs-card-cap-padding-y) + 2px);
+  .post-card-header {
+    padding: 18px 16px 16px;
+    margin-bottom: 0;
+    color: $text-color-light;
+    background-color: var(--card-heading-bg);
+    border-bottom: 1px solid var(--card-border-color);
+
+    &:first-child {
+      border-radius: 5px 5px 0 0;
+    }
 
     h1 {
       margin: 0;
@@ -433,10 +328,11 @@ iframe.soundcloud-small {
     }
   }
 
-  .card-body {
-    background-color: var(--bs-card-bg);
-    border-radius: 0 0 var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius);
-    padding-top: calc(var(--bs-card-spacer-y) + 1px);
+  .post-card-body {
+    flex: 1 1 auto;
+    background-color: var(--card-body-bg);
+    border-radius: 0 0 5px 5px;
+    padding: 17px 16px 16px;
     font-size: 18px;
     line-height: 29px;
   }
@@ -450,7 +346,7 @@ iframe.soundcloud-small {
   font-size: 18px;
   &:hover {
     cursor: pointer;
-    color: $navbar-light-hover-color;
+    color: $text-color-dark;
   }
 }
 
@@ -484,20 +380,6 @@ body.nineties {
     color: #ffff00;
   }
 
-  .panel {
-    background-color: #000000;
-
-    &:hover {
-      background-color: #222222;
-      .panel-heading {
-        background-color: #3333ff;
-      }
-    }
-    .panel-heading {
-      background-color: #0000ff;
-    }
-  }
-
   a {
     color: #00eeee !important;
     text-decoration: none;
@@ -511,16 +393,6 @@ body.nineties {
   a:focus {
     color: #00eeee;
     text-decoration: underline;
-  }
-
-  [class*='span'].hide,
-  .row-fluid [class*='span'].hide {
-    display: none;
-  }
-
-  [class*='span'].pull-right,
-  .row-fluid [class*='span'].pull-right {
-    float: right;
   }
 
   p {
@@ -548,63 +420,6 @@ body.nineties {
 
   cite {
     font-style: normal;
-  }
-
-  .muted {
-    color: #999999;
-  }
-
-  a.muted:hover,
-  a.muted:focus {
-    color: #808080;
-  }
-
-  .text-warning {
-    color: #000000;
-  }
-
-  a.text-warning:hover,
-  a.text-warning:focus {
-    color: #000000;
-  }
-
-  .text-error {
-    color: #ffffff;
-  }
-
-  a.text-error:hover,
-  a.text-error:focus {
-    color: #e6e6e6;
-  }
-
-  .text-info {
-    color: #000000;
-  }
-
-  a.text-info:hover,
-  a.text-info:focus {
-    color: #000000;
-  }
-
-  .text-success {
-    color: #ffffff;
-  }
-
-  a.text-success:hover,
-  a.text-success:focus {
-    color: #e6e6e6;
-  }
-
-  .text-left {
-    text-align: left;
-  }
-
-  .text-right {
-    text-align: right;
-  }
-
-  .text-center {
-    text-align: center;
   }
 
   h1,
@@ -678,12 +493,6 @@ body.nineties {
     font-size: 16px;
   }
 
-  .page-header {
-    padding-bottom: 9px;
-    margin: 20px 0 30px;
-    border-bottom: 1px solid #eeeeee;
-  }
-
   ul,
   ol {
     padding: 0;
@@ -699,25 +508,6 @@ body.nineties {
 
   li {
     line-height: 20px;
-  }
-
-  ul.unstyled,
-  ol.unstyled {
-    margin-left: 0;
-    list-style: none;
-  }
-
-  ul.inline,
-  ol.inline {
-    margin-left: 0;
-    list-style: none;
-  }
-
-  ul.inline > li,
-  ol.inline > li {
-    display: inline-block;
-    padding-right: 5px;
-    padding-left: 5px;
   }
 
   dl {
@@ -761,19 +551,6 @@ body.nineties {
     color: #ff00ff;
   }
 
-  .page-header {
-    border-bottom: 1px solid #b6b2a3;
-    -webkit-box-shadow:
-      inset 0 -1px 0 rgba(0, 0, 0, 0.2),
-      0 1px 0 #eae7d8;
-    -moz-box-shadow:
-      inset 0 -1px 0 rgba(0, 0, 0, 0.2),
-      0 1px 0 #eae7d8;
-    box-shadow:
-      inset 0 -1px 0 rgba(0, 0, 0, 0.2),
-      0 1px 0 #eae7d8;
-  }
-
   a {
     text-decoration: underline;
   }
@@ -782,15 +559,7 @@ body.nineties {
     text-decoration: underline;
   }
 
-  blink {
-    -webkit-animation: blink 1s linear infinite;
-    -moz-animation: blink 1s linear infinite;
-    -ms-animation: blink 1s linear infinite;
-    -o-animation: blink 1s linear infinite;
-    animation: blink 1s linear infinite;
-  }
-
-  .navbar {
+  .site-header {
     border-bottom: 1px solid #fff;
     -webkit-box-shadow:
       0 2px 0 #d4d0c8,
@@ -808,20 +577,8 @@ body.nineties {
     border-bottom: 1px solid #d4d0c8;
   }
 
-  .btn {
-    border: 6px ridge #bbbbbb;
-  }
-
-  .btn-primary {
-    background: #000000 url('../assets/90s/rainbow.gif') top left;
-  }
-
   legend {
     font-weight: bold;
     color: yellow;
-  }
-
-  .control-group.error input {
-    background: #000000 url('../assets/90s/flames.gif') 0 -30px repeat-x;
   }
 }

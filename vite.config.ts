@@ -94,15 +94,6 @@ export default defineConfig({
   build: {
     outDir: 'build',
   },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        loadPaths: [root], // App.scss imports 'node_modules/...' paths.
-        quietDeps: true, // Bootstrap 5.3 still uses deprecated sass internals.
-        silenceDeprecations: ['import'], // App.scss's Bootstrap @import has no @use equivalent until Bootstrap 6.
-      },
-    },
-  },
   resolve: {
     tsconfigPaths: true,
   },

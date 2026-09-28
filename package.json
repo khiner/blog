@@ -42,11 +42,9 @@
   },
   "dependencies": {
     "@loadable/component": "^5.16.7",
-    "bootstrap": "^5.3.8",
     "jsfeat": "^0.0.8",
     "p5": "^2.3.0",
     "react": "^19.2.7",
-    "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.7",
     "react-helmet-async": "^3.0.0",
     "react-router-dom": "^7.18.1",

@@ -40,7 +40,7 @@ export default () => (
         <Route
           index
           element={
-            <div className="container-fluid">
+            <div className="page-fluid">
               <div className="entry">
                 <GitHubActivity />
               </div>

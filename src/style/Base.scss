@@ -1,0 +1,254 @@
+// Document defaults shared by posts, embedded controls, and the site chrome.
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #212529;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+h2 {
+  font-size: calc(1.325rem + 0.9vw);
+}
+h3 {
+  font-size: calc(1.3rem + 0.6vw);
+}
+h4 {
+  font-size: calc(1.275rem + 0.3vw);
+}
+h5 {
+  font-size: 1.25rem;
+}
+h6 {
+  font-size: 1rem;
+}
+@media (min-width: 1200px) {
+  h2 {
+    font-size: 2rem;
+  }
+  h3 {
+    font-size: 1.75rem;
+  }
+  h4 {
+    font-size: 1.5rem;
+  }
+}
+
+p,
+ul,
+ol,
+dl,
+blockquote,
+figure,
+pre {
+  margin: 0 0 1rem;
+}
+ul,
+ol {
+  padding-left: 2rem;
+}
+ul ul,
+ul ol,
+ol ul,
+ol ol {
+  margin-bottom: 0;
+}
+dt {
+  font-weight: 700;
+}
+dd {
+  margin: 0 0 0.5rem;
+}
+b,
+strong {
+  font-weight: bolder;
+}
+small {
+  font-size: 0.875em;
+}
+sub,
+sup {
+  position: relative;
+  font-size: 0.75em;
+  line-height: 0;
+  vertical-align: baseline;
+}
+sub {
+  bottom: -0.25em;
+}
+sup {
+  top: -0.5em;
+}
+.lead {
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+hr {
+  margin: 1rem 0;
+  color: inherit;
+  border: 0;
+  border-top: 1px solid;
+  opacity: 0.25;
+}
+a {
+  text-decoration: underline;
+}
+a:not([href]):not([class]) {
+  &,
+  &:hover {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+pre,
+code,
+kbd,
+samp {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 1em;
+}
+pre {
+  display: block;
+  overflow: auto;
+  font-size: 0.875em;
+  code {
+    font-size: inherit;
+    word-break: normal;
+  }
+}
+code {
+  font-size: 0.875em;
+  overflow-wrap: break-word;
+}
+img,
+svg {
+  vertical-align: middle;
+}
+iframe {
+  border: 0;
+}
+label {
+  display: inline-block;
+}
+button {
+  border-radius: 0;
+}
+button:focus:not(:focus-visible) {
+  outline: 0;
+}
+input,
+button,
+select,
+optgroup,
+textarea {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+button,
+select {
+  text-transform: none;
+}
+select {
+  overflow-wrap: normal;
+}
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button;
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+}
+[role='button'] {
+  cursor: pointer;
+}
+::-moz-focus-inner {
+  padding: 0;
+  border-style: none;
+}
+textarea {
+  resize: vertical;
+}
+::file-selector-button {
+  font: inherit;
+  -webkit-appearance: button;
+}
+[hidden] {
+  display: none !important;
+}
+
+// Keep the existing page widths, including the article's percentage of the viewport.
+.page-width,
+.page-fluid {
+  width: 100%;
+  padding-right: 12px;
+  padding-left: 12px;
+  margin-right: auto;
+  margin-left: auto;
+}
+@each $breakpoint, $width in (576px: 540px, 768px: 720px, 992px: 960px, 1200px: 1140px, 1400px: 1320px) {
+  @media (min-width: $breakpoint) {
+    .page-width {
+      max-width: $width;
+    }
+  }
+}
+@media (min-width: 768px) {
+  .article-page {
+    flex: 0 0 auto;
+    width: 83.33333333%;
+  }
+  .article-spacer {
+    flex: 0 0 auto;
+    width: 8.33333333%;
+  }
+  .post-column {
+    justify-content: center;
+  }
+}
+@media (min-width: 992px) {
+  .article-page {
+    width: 66.66666667%;
+  }
+  .article-spacer {
+    width: 16.66666667%;
+  }
+}
+.post-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -12px;
+}
+.post-column {
+  flex: 1 0 0;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 12px;
+}

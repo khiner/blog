@@ -76,7 +76,7 @@ export default (
         marginBottom: '1em',
       }}
     >
-      <div style={{ minWidth: 450, flex: '1 1 50%', textAlign: 'center' }}>
+      <div style={{ minWidth: 'min(450px, 100%)', flex: '1 1 50%', textAlign: 'center' }}>
         <img
           src={midi_annotated_audio_recording}
           alt="MIDI-annotated audio recording of a latin beat"
@@ -86,7 +86,7 @@ export default (
           <small>MIDI-annotated audio recording of a single sequence</small>
         </label>
       </div>
-      <div style={{ minWidth: 300, maxWidth: 450, flex: '1 1 35%', textAlign: 'center' }}>
+      <div style={{ minWidth: 'min(300px, 100%)', maxWidth: 450, flex: '1 1 35%', textAlign: 'center' }}>
         <img
           src={egmd_dataset_table}
           alt="Table of Extended MIDI Groove dataset"
@@ -150,12 +150,12 @@ Excluded 6354 of 45537 rows.`}
       <img
         src={slim_dataset_note_occurrences}
         alt="Number of unique MIDI events per note (drum instrument) in the slim dataset"
-        style={{ minWidth: 400, maxWidth: 600, objectFit: 'contain', flex: '1 1 50%' }}
+        style={{ minWidth: 'min(400px, 100%)', maxWidth: 600, objectFit: 'contain', flex: '1 1 50%' }}
       />
       <img
         src={chopped_dataset_label_occurrences}
         alt="Occurrences of drum instrument labels in the chopped dataset"
-        style={{ minWidth: 350, maxWidth: 500, objectFit: 'contain', flex: '1 1 30%' }}
+        style={{ minWidth: 'min(350px, 100%)', maxWidth: 500, objectFit: 'contain', flex: '1 1 30%' }}
       />
     </div>
 
