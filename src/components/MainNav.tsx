@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
@@ -5,41 +6,53 @@ import { ListIcon } from 'icons'
 import config from 'config'
 import MailChimpEmailSignup from './MailChimpEmailSignup'
 
-export default ({ sidebarOpen, setSidebarOpen }) => (
-  <Navbar fixed="top" expand="lg" variant="dark">
-    <ListIcon
-      className={`clickable${sidebarOpen ? ' active' : ''}`}
-      onClick={(event) => {
-        event.stopPropagation()
-        setSidebarOpen(!sidebarOpen)
-      }}
-    />
-    <Navbar.Brand style={{ marginLeft: '2em' }}>
-      <Link to="/">{config.hostname}</Link>
-    </Navbar.Brand>
-    <Navbar.Toggle />
-    <Navbar.Collapse className="justify-content-end">
-      <Nav activeKey={location.pathname}>
-        {config.topLevelLinks?.map((topLevelLink) => (
-          <Nav.Link key={topLevelLink.label} href={topLevelLink.href} target="_blank">
-            {topLevelLink.label}
-          </Nav.Link>
-        ))}
-        {config.mailChimpFormAction && config.mailChimpInputName && (
-          <NavDropdown title="Subscribe" id="subscribe" align="end">
-            {config.mailChimpFormAction && config.mailChimpInputName && (
-              <MailChimpEmailSignup formAction={config.mailChimpFormAction} inputName={config.mailChimpInputName} />
-            )}
-          </NavDropdown>
-        )}
-        {config.email && (
-          <NavDropdown title="Contact" id="contact" align="end">
-            <Nav.Link href={`mailto:${config.email}?Subject=Hello!`} target="_blank">
-              {config.email}
+export default function MainNav({ sidebarOpen, setSidebarOpen }) {
+  const [linksOpen, setLinksOpen] = useState(false)
+
+  return (
+    <Navbar fixed="top" expand={false} variant="dark" expanded={linksOpen} onToggle={setLinksOpen}>
+      <ListIcon
+        className={`clickable${sidebarOpen ? ' active' : ''}`}
+        onClick={(event) => {
+          event.stopPropagation()
+          setSidebarOpen(!sidebarOpen)
+        }}
+      />
+      <Navbar.Brand>
+        <Link to="/">{config.hostname}</Link>
+      </Navbar.Brand>
+      <Navbar.Toggle
+        className="header-menu-toggle"
+        label="Links"
+        aria-controls="header-links"
+        aria-expanded={linksOpen}
+      >
+        Links
+        <svg className="header-menu-chevron" viewBox="0 0 12 8" aria-hidden="true">
+          <path d="m1 2 5 4 5-4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+      </Navbar.Toggle>
+      <Navbar.Collapse id="header-links" className="justify-content-end">
+        <Nav activeKey={location.pathname} className="header-links">
+          {config.topLevelLinks?.map((topLevelLink) => (
+            <Nav.Link key={topLevelLink.label} href={topLevelLink.href} target="_blank">
+              {topLevelLink.label}
             </Nav.Link>
-          </NavDropdown>
-        )}
-      </Nav>
-    </Navbar.Collapse>
-  </Navbar>
-)
+          ))}
+          {config.mailChimpFormAction && config.mailChimpInputName && (
+            <NavDropdown title="Subscribe" id="subscribe" align="end">
+              <MailChimpEmailSignup formAction={config.mailChimpFormAction} inputName={config.mailChimpInputName} />
+            </NavDropdown>
+          )}
+          {config.email && (
+            <NavDropdown title="Contact" id="contact" align="end">
+              <Nav.Link href={`mailto:${config.email}?Subject=Hello!`} target="_blank">
+                {config.email}
+              </Nav.Link>
+            </NavDropdown>
+          )}
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
+  )
+}

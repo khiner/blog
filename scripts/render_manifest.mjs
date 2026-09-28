@@ -31,7 +31,9 @@ export const generateManifest = (rootDir, dims = {}) => {
 
     if (!itemsByRowDir.has(rowDir)) itemsByRowDir.set(rowDir, [])
     const { width, height, hash } = dims[relPath] ?? {}
-    itemsByRowDir.get(rowDir).push({ name: nameParts.join(' · '), src: relPath, v: hash ?? contentHash(filePath), width, height })
+    itemsByRowDir
+      .get(rowDir)
+      .push({ name: nameParts.join(' · '), src: relPath, v: hash ?? contentHash(filePath), width, height })
   }
 
   const walk = (dir, relDir) => {

@@ -4,18 +4,14 @@ import parsedEntries from 'parsedEntries'
 
 const Panel = ({ entry }) => (
   <Card>
-    <Link to={entry.path} key={entry.path} className="panelLink">
+    <Link to={entry.path} className="panelLink stretched-link">
       <Card.Header>
-        <div>
-          <h1>{entry.summaryTitle || entry.title}</h1>
-          {entry.subtitle && <h2 className="subtitle">{entry.subtitle}</h2>}
-          <h3 className="date">{entry.date}</h3>
-        </div>
+        <h1>{entry.summaryTitle || entry.title}</h1>
+        {entry.subtitle && <h2 className="subtitle">{entry.subtitle}</h2>}
+        <h3 className="date">{entry.date}</h3>
       </Card.Header>
     </Link>
-    <Card.Body>
-      <div>{entry.description}</div>
-    </Card.Body>
+    <Card.Body>{entry.description}</Card.Body>
   </Card>
 )
 

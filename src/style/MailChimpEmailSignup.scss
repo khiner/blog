@@ -15,9 +15,9 @@
 
     &.button {
       margin: 0 !important;
-      background-color: #1e90ff;
+      background-color: var(--bs-primary);
       &:hover {
-        background-color: #63b8ff;
+        background-color: var(--bs-link-hover-color);
       }
     }
     &.email {
