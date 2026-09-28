@@ -1,6 +1,18 @@
 import React, { useEffect } from 'react'
+import type { ReactNode } from 'react'
 
 import config from 'config'
+
+interface EntryProps {
+  title?: string
+  subtitle?: string
+  date?: string
+  type?: string
+  fullWidth?: boolean
+  hideTitle?: boolean
+  intro?: ReactNode
+  children?: ReactNode
+}
 
 const formatMathWhenContentIsReady = () => {
   const element = document.getElementById('loadedContent')
@@ -21,7 +33,7 @@ const Header = ({ title, date }) => (
 )
 
 export default React.memo(
-  function Entry({ title, subtitle, date, type, fullWidth, hideTitle, intro, children }) {
+  function Entry({ title, subtitle, date, type, fullWidth, hideTitle, intro, children }: EntryProps) {
     useEffect(() => {
       formatMathWhenContentIsReady()
     }, [])

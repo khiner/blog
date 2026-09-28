@@ -1,14 +1,16 @@
-import { Link, NavLink, Outlet, useLocation, useMatch } from 'react-router-dom'
+import type { ReactNode } from 'react'
+import { InternalLink, normalizePath } from 'navigation'
 
 import config from 'config'
 import parsedEntries from 'parsedEntries'
 
-export default function Home() {
-  const { pathname } = useLocation()
-  const homeMatch = useMatch('/')
-  const postsMatch = useMatch('/posts/:category?')
+export default function Home({ pathname, children }: { pathname: string; children: ReactNode }) {
+  const homeMatch = pathname === '/'
+  const postsMatch = /^\/posts(?:\/[^/]+)?$/.test(pathname)
   const category = parsedEntries.categories.find(
-    (category) => pathname === `/posts/${category.path}` || category.posts.some((post) => post.path === pathname),
+    (category) =>
+      pathname === normalizePath(`/posts/${category.path}`) ||
+      category.posts.some((post) => normalizePath(post.path) === pathname),
   )?.path
   const viewingPosts = pathname === '/posts' || pathname.startsWith('/posts/') || !!category
 
@@ -16,33 +18,43 @@ export default function Home() {
     <div className="summary">
       {config.siteName && (homeMatch || postsMatch) && <title>{config.siteName}</title>}
       <nav className="home-views" aria-label="Home views">
-        <NavLink to="/" end>
+        <InternalLink
+          href="/"
+          className={homeMatch ? 'active' : undefined}
+          aria-current={homeMatch ? 'page' : undefined}
+        >
           GitHub activity
-        </NavLink>
-        <Link
-          to="/posts"
+        </InternalLink>
+        <InternalLink
+          href="/posts"
           className={viewingPosts ? 'active' : undefined}
           aria-current={viewingPosts ? 'page' : undefined}
         >
           Posts
-        </Link>
-        <NavLink to="/MeshEditor/render">MeshEditor renders</NavLink>
+        </InternalLink>
+        <InternalLink
+          href="/MeshEditor/render"
+          className={pathname === '/mesheditor/render' ? 'active' : undefined}
+          aria-current={pathname === '/mesheditor/render' ? 'page' : undefined}
+        >
+          MeshEditor renders
+        </InternalLink>
       </nav>
       {viewingPosts && (
         <nav className="post-views" aria-label="Post categories">
           {[{ path: '', title: 'All' }, ...parsedEntries.categories].map(({ path, title }) => (
-            <Link
+            <InternalLink
               key={path}
-              to={path ? `/posts/${path}` : '/posts'}
+              href={path ? `/posts/${path}` : '/posts'}
               className={path === (category ?? '') ? 'active' : undefined}
               aria-current={path === (category ?? '') ? 'page' : undefined}
             >
               {title}
-            </Link>
+            </InternalLink>
           ))}
         </nav>
       )}
-      <Outlet />
+      {children}
     </div>
   )
 }

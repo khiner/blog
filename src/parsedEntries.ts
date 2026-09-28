@@ -1,13 +1,5 @@
-import config from './config'
 import entries from './entries'
 import { snakeCaseToTitle, stripSlashes } from './utils'
-
-// decorate all entries with full urls
-if (config.origin) {
-  entries.forEach((entry) => {
-    entry.url = `${stripSlashes(config.origin)}/${stripSlashes(entry.path)}`
-  })
-}
 
 const reverseChronological = entries
   .filter((entry) => entry.date)

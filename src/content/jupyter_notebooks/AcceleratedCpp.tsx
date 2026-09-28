@@ -67,7 +67,7 @@ export default (
     <p>
       Heck yeah! Well, kind of... it's a little clunky as of now. More on that later. For now, let's focus on the good:
     </p>
-    <div style={{ display: 'flex', 'flex-direction': 'row' }}>
+    <div style={{ display: 'flex', flexDirection: 'row' }}>
       <div style={{ width: '50%' }}>
         <h2>C++ in Jupyter: The Good</h2>
         <p>

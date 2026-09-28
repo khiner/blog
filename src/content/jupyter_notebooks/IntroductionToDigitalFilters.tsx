@@ -276,10 +276,12 @@ plt.grid(True)`}
       {`$\\color{red}{G(\\omega)} = \\frac{\\color{orange}{\\left|e^{j\\omega T} - e^{j\\omega_n}\\right|\\left|e^{j\\omega T} - e^{-j\\omega_n}\\right|}}{\\color{blue}{\\left|e^{j\\omega T} - ae^{j\\omega_n}\\right|\\left|e^{j\\omega T} - ae^{-j\\omega_n}\\right|}}$`}
     </p>
     <p>
-      Here we can see that <font color="red">the frequency response magnitude at frequency {`$\\omega$`}</font> is given
-      by the product of <font color="orange">vector lengths from the zeros to the point {`$e^{j\\omega T}$`}</font> on
-      the unit circle, divided by the product of{' '}
-      <font color="blue">vectors lengths from the poles to that same point</font>.{' '}
+      Here we can see that{' '}
+      <span style={{ color: 'red' }}>the frequency response magnitude at frequency {`$\\omega$`}</span> is given by the
+      product of{' '}
+      <span style={{ color: 'orange' }}>vector lengths from the zeros to the point {`$e^{j\\omega T}$`}</span> on the
+      unit circle, divided by the product of{' '}
+      <span style={{ color: 'blue' }}>vectors lengths from the poles to that same point</span>.{' '}
       <small>
         (The phase response is similarly given by the <i>sum</i> of angles of the zero vectors, <i>subtracted</i> by the
         angles of the pole vectors. But I won't be discussing phase reponse in this post.)

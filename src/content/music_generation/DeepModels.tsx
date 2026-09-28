@@ -53,14 +53,14 @@ export default (
       <br />
       <audio
         src="https://storage.googleapis.com/deepmind-media/pixie/knowing-what-to-say/first-list/speaker-1.wav"
-        controls="controls"
+        controls
       />
       <br />
     </p>
     <p>
       For music, the results are only coherent over a few notes, but the timbral characteristics are well modeled:
       <br />
-      <audio src="https://storage.googleapis.com/deepmind-media/pixie/making-music/sample_2.wav" controls="controls" />
+      <audio src="https://storage.googleapis.com/deepmind-media/pixie/making-music/sample_2.wav" controls />
     </p>
     <p>
       In my experiments, I don't achieve this level of quality. This is partially because the complexity of the training

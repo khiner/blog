@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { InternalLink } from 'navigation'
 import ExternalLink from 'components/Link'
 import CodeBlock from '../CodeBlock'
 
@@ -80,12 +80,13 @@ export default (
     <p>Originally I subscribed to Squarespace account where I posted simple blog-style content.</p>
     <h3>Squarespace + manual hosting</h3>
     <p>
-      I started this site to add other content like <Link to="/processing/retrograde_motion">Processing sketches</Link>{' '}
-      that Squarespace isn't well-suited to host. I built it using raw HTML, CSS and JS for simplicity and control, but
-      also because I wanted it to be served statically from the Namecheap hosting I bought. I love React, but it kind of
-      felt like overkill and it serves pages dynamically, meaning direct links won't resolve since the directory won't
-      be actually serving up an <code>index.hml</code> file and thus won't load unless you visit the site index and
-      follow a <code>Route</code> link. (<i>More on this in a bit!</i>)
+      I started this site to add other content like{' '}
+      <InternalLink href="/processing/retrograde_motion">Processing sketches</InternalLink> that Squarespace isn't
+      well-suited to host. I built it using raw HTML, CSS and JS for simplicity and control, but also because I wanted
+      it to be served statically from the Namecheap hosting I bought. I love React, but it kind of felt like overkill
+      and it serves pages dynamically, meaning direct links won't resolve since the directory won't be actually serving
+      up an <code>index.hml</code> file and thus won't load unless you visit the site index and follow a{' '}
+      <code>Route</code> link. (<i>More on this in a bit!</i>)
     </p>
     <p>
       Honestly though, I mostly just thought it was refreshing and fun to write things barebones after working so much

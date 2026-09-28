@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { InternalLink } from 'navigation'
 
 import config from 'config'
 import MailChimpEmailSignup from './MailChimpEmailSignup'
@@ -167,7 +167,7 @@ export default function MainNav() {
   return (
     <nav className="site-header">
       <span className="site-brand">
-        <Link to="/">{config.hostname}</Link>
+        <InternalLink href="/">{config.hostname}</InternalLink>
       </span>
       <button
         type="button"

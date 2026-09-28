@@ -42,7 +42,7 @@ interface SmokeProps {
   lightFalloff: number
 }
 
-interface FluidSimProps {
+interface SimulationParams {
   gridSize: number
   dyeSize: number
   renderMode: RenderMode
@@ -66,7 +66,7 @@ const copyBuffer = (command: GPUCommandEncoder, from: GPUBuffer, to: GPUBuffer) 
 }
 
 const runFluidSim = (
-  props: FluidSimProps,
+  props: SimulationParams,
   context: GPUCanvasContext,
   device: GPUDevice,
   boundaryRef?: React.RefObject<HTMLDivElement>,
@@ -229,7 +229,7 @@ const runFluidSim = (
       }),
       passDescriptor: {
         colorAttachments: [{ clearValue: { r: 0, g: 0, b: 0, a: 1 }, loadOp: 'clear', storeOp: 'store', view: null }],
-      },
+      } satisfies GPURenderPassDescriptor,
     }
   }
 
@@ -409,7 +409,10 @@ const runFluidSim = (
   return { step, reset, onPropChange, onSizeChange, onMouseMove, onMouseStopMoving }
 }
 
-const Control: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
+const Control: React.FC<{ label: string; children: React.ReactElement<{ style?: React.CSSProperties }> }> = ({
+  label,
+  children,
+}) => (
   <div style={{ display: 'flex', alignItems: 'center' }}>
     <label style={{ marginRight: '0.5em', width: '6em', textAlign: 'right' }}>{label}</label>
     {React.cloneElement(children, { style: { ...children.props.style, flex: 1 } })}
@@ -494,7 +497,7 @@ const TabButton: React.FC<TabButtonProps> = ({ tabKey, activeKey, setActive, chi
 )
 
 interface ControlPaneProps {
-  props: FluidSimProps
+  props: SimulationParams
   onChange: (key: string, value: any) => void
   reset: () => void
   style?: React.CSSProperties
@@ -618,7 +621,7 @@ export default ({ boundaryRef = null }: FluidSimProps) => {
   const [device, setDevice] = useState<GPUDevice | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [simulation, setSimulation] = useState<any>(null)
-  const [props, setProps] = useState<FluidSimProps>({
+  const [props, setProps] = useState<SimulationParams>({
     gridSize: 128,
     dyeSize: 1024,
     renderMode: RenderMode.Classic,

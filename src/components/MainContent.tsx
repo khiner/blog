@@ -1,11 +1,10 @@
-import { isValidElement, lazy, Suspense } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { isValidElement, lazy, Suspense, useEffect } from 'react'
+import { InternalLink, navigate, normalizePath, usePathname } from 'navigation'
 
 import SummaryList from './SummaryList'
 import Home from './Home'
 import GitHubActivity from './GitHubActivity'
 import Entry from './Entry'
-import { stripSlashes } from 'utils'
 import config from 'config'
 
 import parsedEntries from 'parsedEntries'
@@ -26,33 +25,48 @@ const lazyEntry = (entry) => {
   )
 }
 
-const entryRoute = (entry) => (
-  <Route
-    key={entry.path}
-    path={`/${stripSlashes(entry.path)}`}
-    element={<Entry {...entry}>{entry.contentPath ? lazyEntry(entry) : entry.content}</Entry>}
-  />
-)
-const entryRoutes = parsedEntries.all.map(entryRoute)
+const entryPage = (entry) =>
+  [
+    normalizePath(entry.path),
+    <Entry key={entry.path} {...entry}>
+      {entry.contentPath ? lazyEntry(entry) : entry.content}
+    </Entry>,
+  ] as const
+const entryPages = new Map(parsedEntries.all.map(entryPage))
 
-export default () => (
-  <div className="content">
-    <Routes>
-      <Route path="/" element={<Home />}>
-        <Route
-          index
-          element={
-            <div className="page-fluid">
-              <div className="entry">
-                <GitHubActivity />
-              </div>
-            </div>
-          }
-        />
-        <Route path="posts/:category?" element={<SummaryList />} />
-        {entryRoutes}
-      </Route>
-      <Route path="*" element={<title>{config.siteName}</title>} />
-    </Routes>
-  </div>
-)
+export default function MainContent() {
+  const pathname = usePathname()
+  const postsMatch = pathname.match(/^\/posts(?:\/([^/]+))?$/)
+  const category = parsedEntries.categories.find((item) => item.path.toLowerCase() === postsMatch?.[1])
+  const invalidCategory = !!postsMatch?.[1] && !category
+  useEffect(() => {
+    if (invalidCategory) navigate('/posts', true)
+  }, [invalidCategory])
+
+  let content
+  if (pathname === '/') {
+    content = (
+      <div className="page-fluid">
+        <div className="entry">
+          <GitHubActivity />
+        </div>
+      </div>
+    )
+  } else if (postsMatch) {
+    content = invalidCategory ? null : <SummaryList category={category?.path} />
+  } else {
+    content = entryPages.get(pathname) ?? (
+      <div className="page-width entry">
+        <title>{`${config.siteName} - Page not found`}</title>
+        <h1>Page not found</h1>
+        <InternalLink href="/">Return home</InternalLink>
+      </div>
+    )
+  }
+
+  return (
+    <div className="content">
+      <Home pathname={pathname}>{content}</Home>
+    </div>
+  )
+}
