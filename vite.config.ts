@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 
 import { generateManifest } from './scripts/render_manifest.mjs'
 import { THUMB_SUFFIX, ensureThumb } from './scripts/generate_render_thumbs.mjs'
+import highlightCode from './scripts/highlight_code.mjs'
 
 const root = path.dirname(fileURLToPath(import.meta.url))
 
@@ -97,6 +98,6 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-  plugins: [react(), renderDataDevServer(), githubActivityDevServer()],
+  plugins: [highlightCode(), react(), renderDataDevServer(), githubActivityDevServer()],
   base: '/',
 })
