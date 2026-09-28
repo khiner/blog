@@ -33,17 +33,23 @@ const entryRoute = (entry) => (
     element={<Entry {...entry}>{entry.contentPath ? LoadableEntry(entry) : entry.content}</Entry>}
   />
 )
-const renderGalleryEntry = parsedEntries.all.find((entry) => entry.path === '/MeshEditor/render')
-
 export default () => (
   <div className="content">
     <Routes>
       <Route path="/" element={<Home />}>
-        <Route index element={<GitHubActivity />} />
-        <Route path="posts" element={SummaryList} />
-        {entryRoute(renderGalleryEntry)}
+        <Route
+          index
+          element={
+            <div className="container-fluid">
+              <div className="entry">
+                <GitHubActivity />
+              </div>
+            </div>
+          }
+        />
+        <Route path="posts/:category?" element={<SummaryList />} />
+        {parsedEntries.all.map(entryRoute)}
       </Route>
-      {parsedEntries.all.filter((entry) => entry !== renderGalleryEntry).map(entryRoute)}
     </Routes>
   </div>
 )

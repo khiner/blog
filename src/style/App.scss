@@ -131,12 +131,6 @@ blockquote {
   }
 }
 
-.transitionable {
-  transition: 0.3s;
-  &.opaque {
-    opacity: 0.5;
-  }
-}
 .content {
   position: absolute;
   left: 0;
@@ -158,7 +152,8 @@ body {
 .summary {
   min-height: 100%;
 }
-.home-views {
+.home-views,
+.post-views {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 20px;
@@ -181,6 +176,12 @@ body {
   }
 }
 
+.post-views {
+  font-size: 0.875rem;
+  gap: 2px 16px;
+  padding-top: 2px;
+}
+
 // Default dropdown toggle triangle is too wide and too high.
 .dropdown-toggle::after {
   vertical-align: 0.15em;
@@ -197,7 +198,6 @@ body {
 
   .navbar-brand {
     margin-right: auto;
-    margin-left: 1rem;
 
     a {
       padding: 0;
@@ -295,9 +295,6 @@ body {
     }
   }
 
-  .active {
-    color: $navbar-light-hover-color;
-  }
   .dropdown-menu {
     a {
       color: $text-color-dark;
@@ -455,86 +452,6 @@ iframe.soundcloud-small {
     cursor: pointer;
     color: $navbar-light-hover-color;
   }
-}
-
-.sidebar {
-  position: fixed;
-  z-index: 10000;
-  top: 58px;
-  background: #f8f8f8;
-  border: 1px $border-color solid;
-
-  &.show {
-    left: 0px;
-  }
-
-  left: -250px;
-  transition: 0.3s;
-
-  .sidebarHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 10px;
-    background-color: $primary;
-    color: $text-color-light;
-
-    h3 {
-      margin: 0;
-    }
-  }
-
-  > .nav {
-    padding-top: 4px;
-  }
-
-  .nav-link,
-  .dropdown-item {
-    padding-block: 3px;
-
-    &:hover {
-      background-color: #eaeaea;
-    }
-  }
-  .nav-link {
-    color: $text-color-dark;
-    &:hover {
-      color: $link-hover-color;
-    }
-  }
-  .dropdown-item:hover {
-    color: $link-hover-color;
-  }
-
-  .nav > a {
-    padding-inline: var(--bs-nav-link-padding-x);
-  }
-
-  .dropdown-menu {
-    padding: 0 0 0 1em;
-    background-color: inherit;
-    border: none;
-    box-shadow: none;
-    transform: none !important;
-    inset: inherit !important;
-    position: relative !important;
-    margin: inherit !important;
-
-    .dropdown-item {
-      font-size: 15px;
-    }
-  }
-
-  ul li.active > a,
-  a[aria-expanded='true'] {
-    background-color: inherit;
-  }
-}
-
-.dropdown-menu > .active > a,
-.dropdown-menu > .active > a:hover,
-.dropdown-menu > .active > a:focus {
-  background-color: $primary !important;
 }
 
 .webgpu-not-supported {

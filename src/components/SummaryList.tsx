@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { Card, Container, Row, Col } from 'react-bootstrap'
 import parsedEntries from 'parsedEntries'
 
@@ -15,14 +15,20 @@ const Panel = ({ entry }) => (
   </Card>
 )
 
-export default (
-  <Container>
-    <Row>
-      <Col className="justify-content-md-center">
-        {parsedEntries.reverseChronological.map((entry) => (
-          <Panel key={entry.title} entry={entry} />
-        ))}
-      </Col>
-    </Row>
-  </Container>
-)
+export default function SummaryList() {
+  const { category } = useParams()
+  const selected = parsedEntries.categories.find((item) => item.path === category)
+  if (category && !selected) return <Navigate to="/posts" replace />
+  const posts = selected?.posts ?? parsedEntries.reverseChronological
+  return (
+    <Container>
+      <Row>
+        <Col className="justify-content-md-center">
+          {posts.map((entry) => (
+            <Panel key={entry.title} entry={entry} />
+          ))}
+        </Col>
+      </Row>
+    </Container>
+  )
+}

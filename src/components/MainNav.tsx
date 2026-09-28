@@ -2,22 +2,14 @@ import { useState } from 'react'
 import { Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-import { ListIcon } from 'icons'
 import config from 'config'
 import MailChimpEmailSignup from './MailChimpEmailSignup'
 
-export default function MainNav({ sidebarOpen, setSidebarOpen }) {
+export default function MainNav() {
   const [linksOpen, setLinksOpen] = useState(false)
 
   return (
     <Navbar fixed="top" expand={false} variant="dark" expanded={linksOpen} onToggle={setLinksOpen}>
-      <ListIcon
-        className={`clickable${sidebarOpen ? ' active' : ''}`}
-        onClick={(event) => {
-          event.stopPropagation()
-          setSidebarOpen(!sidebarOpen)
-        }}
-      />
       <Navbar.Brand>
         <Link to="/">{config.hostname}</Link>
       </Navbar.Brand>
