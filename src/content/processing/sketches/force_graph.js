@@ -158,13 +158,16 @@ export default function sketch(p) {
           for (let col = 0; col < AXIS_SECTIONS - 1; col++) {
             const posIndex = row * AXIS_SECTIONS + col
             const imageSection = imageSections[i++]
-            p.image(
-              imageSection,
-              this.positions[posIndex][0],
-              this.positions[posIndex][1],
-              this.positions[posIndex + 1][0] - this.positions[posIndex][0] + 1,
-              this.positions[posIndex + AXIS_SECTIONS][1] - this.positions[posIndex][1] + 1,
+            const [x, y] = this.positions[posIndex]
+            p.push()
+            p.translate(x, y)
+            // Signed scales keep each tile attached when neighboring vertices cross.
+            p.scale(
+              (this.positions[posIndex + 1][0] - x) / imageSection.width,
+              (this.positions[posIndex + AXIS_SECTIONS][1] - y) / imageSection.height,
             )
+            p.image(imageSection, 0, 0)
+            p.pop()
           }
         }
       }

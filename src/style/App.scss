@@ -282,7 +282,7 @@ iframe.soundcloud-small {
   background-color: var(--card-heading-bg);
   margin: 1.5em;
 
-  &:hover {
+  &:has(> .panelLink):hover {
     --card-heading-bg: #{$primary-highlight};
     --card-body-bg: #{color.mix(white, $primary-highlight, 92%)};
     --card-border-color: #{color.mix(black, $primary-highlight, 20%)};
@@ -340,6 +340,10 @@ iframe.soundcloud-small {
 
 .Showcase {
   background-color: rgb(255, 255, 255);
+
+  canvas {
+    display: block;
+  }
 }
 
 .clickable {

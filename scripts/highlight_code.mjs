@@ -1,6 +1,8 @@
 import { parseSync, Visitor } from 'vite'
-import lowlight from 'lowlight'
+import { all, createLowlight } from 'lowlight'
 import MagicString from 'magic-string'
+
+const lowlight = createLowlight(all)
 
 const tokenStyles = Object.fromEntries(
   [
@@ -79,7 +81,7 @@ export default function highlightCode() {
               : (lowlight.listLanguages().includes(language)
                   ? lowlight.highlight(language, text)
                   : lowlight.highlightAuto(text)
-                ).value
+                ).children
           transformed.overwrite(props.start, props.end, JSON.stringify({ language, tokens: flattenTokens(tree) }))
         },
       }).visit(program)
