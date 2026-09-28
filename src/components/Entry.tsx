@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { HelmetProvider, Helmet } from 'react-helmet-async'
 
 import config from 'config'
 
@@ -32,36 +31,32 @@ export default React.memo(
     const formattedTitle = config.siteName && title ? `${config.siteName} - ${title}` : config.siteName || title
 
     return (
-      <HelmetProvider>
-        <div>
-          <Helmet>
-            <title>{formattedTitle}</title>
-          </Helmet>
-          {columnBreak}
-          <div className={fullWidth ? 'page-fluid' : 'page-width article-page'}>
-            {!isShowcase && (
-              <div className="entry">
-                {title && !hideTitle && <h1 className="title">{title}</h1>}
-                {subtitle && <h2 className="subtitle">{subtitle}</h2>}
-                {date && <h3 className="date">{date}</h3>}
-                {intro}
-                {children}
+      <div>
+        <title>{formattedTitle}</title>
+        {columnBreak}
+        <div className={fullWidth ? 'page-fluid' : 'page-width article-page'}>
+          {!isShowcase && (
+            <div className="entry">
+              {title && !hideTitle && <h1 className="title">{title}</h1>}
+              {subtitle && <h2 className="subtitle">{subtitle}</h2>}
+              {date && <h3 className="date">{date}</h3>}
+              {intro}
+              {children}
+            </div>
+          )}
+          {isShowcase && (
+            <div className="post-card">
+              <div className="post-card-header">
+                <Header title={title} date={date} />
               </div>
-            )}
-            {isShowcase && (
-              <div className="post-card">
-                <div className="post-card-header">
-                  <Header title={title} date={date} />
-                </div>
-                <div className="post-card-body">
-                  <div className="entry Showcase">{children}</div>
-                </div>
+              <div className="post-card-body">
+                <div className="entry Showcase">{children}</div>
               </div>
-            )}
-          </div>
-          {columnBreak}
+            </div>
+          )}
         </div>
-      </HelmetProvider>
+        {columnBreak}
+      </div>
     )
   },
   () => true,

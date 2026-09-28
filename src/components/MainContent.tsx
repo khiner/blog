@@ -1,4 +1,4 @@
-import React from 'react'
+import { isValidElement, lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 
 import SummaryList from './SummaryList'
@@ -6,33 +6,35 @@ import Home from './Home'
 import GitHubActivity from './GitHubActivity'
 import Entry from './Entry'
 import { stripSlashes } from 'utils'
+import config from 'config'
 
 import parsedEntries from 'parsedEntries'
 
-import loadable from '@loadable/component'
-
 const modules = import.meta.glob<{ default: any }>('../content/**/*.tsx')
 
-const LoadableEntry = (entry) => {
-  const Loadable = loadable(
-    async () => {
-      const imported = await modules[`../content/${entry.contentPath}.tsx`]()
-      const Content = imported.default
-      const element = React.isValidElement(Content) ? Content : <Content />
-      return () => <div id="loadedContent">{element}</div>
-    },
-    { fallback: <div>Loading...</div> },
+const lazyEntry = (entry) => {
+  const Content = lazy(async () => {
+    const imported = await modules[`../content/${entry.contentPath}.tsx`]()
+    const Component = imported.default
+    const element = isValidElement(Component) ? Component : <Component />
+    return { default: () => <div id="loadedContent">{element}</div> }
+  })
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Content />
+    </Suspense>
   )
-  return <Loadable />
 }
 
 const entryRoute = (entry) => (
   <Route
     key={entry.path}
     path={`/${stripSlashes(entry.path)}`}
-    element={<Entry {...entry}>{entry.contentPath ? LoadableEntry(entry) : entry.content}</Entry>}
+    element={<Entry {...entry}>{entry.contentPath ? lazyEntry(entry) : entry.content}</Entry>}
   />
 )
+const entryRoutes = parsedEntries.all.map(entryRoute)
+
 export default () => (
   <div className="content">
     <Routes>
@@ -48,8 +50,9 @@ export default () => (
           }
         />
         <Route path="posts/:category?" element={<SummaryList />} />
-        {parsedEntries.all.map(entryRoute)}
+        {entryRoutes}
       </Route>
+      <Route path="*" element={<title>{config.siteName}</title>} />
     </Routes>
   </div>
 )
