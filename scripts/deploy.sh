@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+cd "$(dirname "$0")/.."
 npm run build
 
 # Activity data stays outside the site's rsync --delete destination.
@@ -8,6 +9,7 @@ scp -P 7822 scripts/update_github_activity.py root@karlhiner.com:/opt/blog-activ
 scp -P 7822 scripts/github-activity-apache.conf root@karlhiner.com:/etc/apache2/conf-available/blog-activity.conf
 scp -P 7822 scripts/github-activity.cron root@karlhiner.com:/etc/cron.d/blog-activity
 ssh -p 7822 root@karlhiner.com 'set -e
+  export LC_ALL=C
   test -s /etc/blog-activity/github-token
   chmod 644 /etc/cron.d/blog-activity
   a2enconf blog-activity

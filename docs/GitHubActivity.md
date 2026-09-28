@@ -8,7 +8,7 @@ Fork icons distinguish upstream contributions from fork-only commits.
 Private repos appear as `Private` and are hidden until the lock filter is enabled.
 The public JSON still includes their daily commit counts.
 
-`./deploy.sh` installs the updater, daily job, and Apache mapping.
+`./scripts/deploy.sh` installs the updater, daily job, and Apache mapping.
 The server token must already exist at `/etc/blog-activity/github-token`.
 The daily job runs `/opt/blog-activity/update_github_activity.py`.
 Apache serves `/srv/blog-activity/activity.json` at `/github-activity/activity.json`.
