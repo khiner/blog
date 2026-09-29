@@ -1,0 +1,47 @@
+---
+path: /jupyter_notebooks/python_for_data_analysis
+summaryTitle: Jupyter Notebook - Python for Data Analysis
+title: Python for Data Analysis
+date: Feb 9 2018
+summary: |-
+  This Jupyter notebook contains all code and corresponding output from the *Python for Data Analysis* book by Wes McKinney.
+
+  ![Preview of chart from Python for Data Analysis book](./assets/python_for_data_analysis_preview.png)
+---
+
+<div>
+
+{<p><Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_for_data_analysis/index.ipynb"><big>This Jupyter notebook</big></Link>{" "}<small>(<Link href="https://github.com/khiner/notebooks/tree/master/python_for_data_analysis">raw GitHub link</Link>)</small>{" "}includes every line of code in the{" "}<Link href="https://www.amazon.com/Python-Data-Analysis-Wrangling-IPython/dp/1491957662/">Python for Data Analysis</Link>{" "}book (2nd addition) by Wes McKinney, who is the creator of the <code>pandas</code> library that is the subject of the book.
+The notebook is the result of me simply coding along with every executable line in the book.</p>}
+
+{<p><small><i>Full disclosure: This is probably the lowest-value notebook I have published (or will publish), since the author already provides Jupyter notebooks for each of the chapters{" "}<Link href="https://github.com/wesm/pydata-book">here</Link>.
+So this is more of a "this is what I've been up to" post.{" "}</i></small></p>}
+
+## Why `pandas`?
+
+{<p><big>My main takeaway</big> from <i>Python for Data Analysis</i> is that <code>pandas</code> is flipping awesome, and one of the very few frameworks I've encountered for which I have no reservations about saying the extra abstractions are well worth it.</p>}
+
+I'm not going to put a lot of effort here to justify that enthusiasm, as its evangelism is widespread.
+I will just say I now understand why so many libraries have put so much effort into integrating with it deeply, and I would recommend getting to know it well if you are serious about getting fluent with data science in Python.
+I myself look forward to getting more familiar with it.
+
+I've used `pandas` before at work, but only in the most basic way, as a convenient wrapper for loading and processing data (usually with `scikit-learn`).
+
+The `DataFrame` is its main table-like data structure.
+It is designed to be a direct analogue to [R's data frames](http://www.r-tutor.com/r-introduction/data-frame).
+In both frameworks, `DataFrame`s are designed to strike a balance between the expressiveness of SQL queries (hierarchical indices, `select`, `join`, `merge`, etc.), the numerical convenience of matrices and vectors, and the natural table/cell intuition of spreadsheets. `pandas` adds to this set of features a natural integration with Python's built-in language features.
+
+I am more familiar with `numpy`, so I had basically thought `pandas` was a tool to get data from some other format (CSV, JSON, etc.) into a kind of labelled-`numpy` format as quickly as possible.
+Without taking the time to understand the philosophy and parlance of `pandas`' core data structures, I _usually_ found the incantations required to access and manipulate them as slightly clunky (except when their awesomeness was immediately obvious, such as their ability to handle missing data seamlessly).
+I relied on the DataFrame's `as_matrix()` method to get back to what I considered a more sane representation that can be indexed with a natural `data[i][j]` kind of notation.
+
+However, after getting more familiar with the `DataFrame`, the more fundamental `Index` type underneath it, and the excellent `Series`, which simplifies everything time-related (including well-labelled plotting, time-zone handling and even [resampling!](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.resample.html#pandas.Series.resample)), I am much more comfortable working within these data structures as first-order abstractions without wanting to always pull out the underlying primitive data types and manipulate them manually.
+(I still need a _ton_ of practice to really feel comfortable, though!)
+
+## Example
+
+{<>Rather than provide any examples inline, I will link to the section that I found most interesting.{" "}
+
+<Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/python_for_data_analysis/chapter_14/chapter_14.ipynb#scrollTo=Wxq_PeK00pMz">"Analyzing Naming Trends" in Chapter 14</Link>{" "}combines many of the techniques covered in the book to analyze the evolution of baby names since 1880, and it is great practice for using Pandas to quickly explore and gain high-level insight into a new dataset.</>}
+
+</div>

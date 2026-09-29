@@ -8,7 +8,7 @@
     "build": "npm run typecheck && vite build",
     "typecheck": "tsc --noEmit",
     "serve": "vite preview",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\""
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md,mdx}\""
   },
   "prettier": {
     "semi": false,
@@ -32,13 +32,15 @@
     "preact": "^10.29.8"
   },
   "devDependencies": {
+    "@mdx-js/mdx": "^3.1.1",
+    "@mdx-js/rollup": "^3.1.1",
     "@prefresh/vite": "^4.0.1",
     "@types/node": "^26.6.3",
     "@webgpu/types": "^0.1.74",
     "lowlight": "3.3.0",
-    "magic-string": "^1.4.2",
     "prettier": "^3.9.9",
     "typescript": "^7.0.2",
-    "vite": "^8.3.1"
+    "vite": "^8.3.1",
+    "yaml": "^2.9.1"
   }
 }

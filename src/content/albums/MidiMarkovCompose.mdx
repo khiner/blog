@@ -1,0 +1,29 @@
+---
+path: /albums/midi_markov_compose
+summaryTitle: 'Album - MIDI Markov: Compose'
+title: 'MIDI Markov: Compose'
+date: Sep 1 2016
+summary: Piano compositions generated from a Markov chain given classical MIDI scores as input.
+---
+
+import AlbumPreview from './AlbumPreview'
+
+<div>
+
+These pieces were generated from a Markov chain given some classical piano MIDI scores as input.
+
+To reproduce the pieces, run the following (in Terminal, assuming Mac)
+
+<pre>
+  {
+    '\n$ git clone git@github.com:khiner/midi_markov.git\n$ cd midi_markov\n$ gem install bundler\n$ bundle install\n$ brew install timidity\n$ ./midi_markov {PASTE THE TRACK NAME HERE}'
+  }
+</pre>
+
+It may take up to 30 seconds or so depending on the track and your system.
+
+{<p><a href="https://karlhiner.com/music_generation/midi_markov/">Read more about it!</a></p>}
+
+<AlbumPreview title="MidiMarkov: Compose" playlistId="257076049" />
+
+</div>

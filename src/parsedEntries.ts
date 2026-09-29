@@ -3,7 +3,7 @@ import { snakeCaseToTitle, stripSlashes } from './utils'
 
 const reverseChronological = entries
   .filter((entry) => entry.date)
-  .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+  .sort((a, b) => Date.parse(b.date) - Date.parse(a.date) || b.path.localeCompare(a.path))
 
 const categoryPath = (entry) => stripSlashes(entry.path).split('/')[0]
 const categories = [...new Set(reverseChronological.map(categoryPath))].sort().map((path) => {

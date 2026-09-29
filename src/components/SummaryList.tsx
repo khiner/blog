@@ -1,5 +1,6 @@
 import { InternalLink } from 'navigation'
 import parsedEntries from 'parsedEntries'
+import contentComponents from 'contentComponents'
 
 const PostCard = ({ entry }) => (
   <div className="post-card">
@@ -10,7 +11,9 @@ const PostCard = ({ entry }) => (
         <h3 className="date">{entry.date}</h3>
       </div>
     </InternalLink>
-    <div className="post-card-body">{entry.description}</div>
+    <div className="post-card-body">
+      <div>{entry.Summary && <entry.Summary components={contentComponents} />}</div>
+    </div>
   </div>
 )
 

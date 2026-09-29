@@ -7,11 +7,10 @@ interface EntryProps {
   showcase?: boolean
   fullWidth?: boolean
   hideTitle?: boolean
-  intro?: ComponentChildren
   children?: ComponentChildren
 }
 
-export default function Entry({ title, subtitle, date, showcase, fullWidth, hideTitle, intro, children }: EntryProps) {
+export default function Entry({ title, subtitle, date, showcase, fullWidth, hideTitle, children }: EntryProps) {
   return (
     <div className={fullWidth ? 'page' : 'page article-page'}>
       {showcase ? (
@@ -29,7 +28,6 @@ export default function Entry({ title, subtitle, date, showcase, fullWidth, hide
           {title && !hideTitle && <h1 className="title">{title}</h1>}
           {subtitle && <h2 className="subtitle">{subtitle}</h2>}
           {date && <h3 className="date">{date}</h3>}
-          {intro}
           {children}
         </div>
       )}

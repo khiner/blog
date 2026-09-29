@@ -1,0 +1,352 @@
+---
+path: /jupyter_notebooks/physical_audio_signal_processing
+title: Audiovisual Guide to Physical Audio Signal Processing
+subtitle: Companion Jupyter Notebooks for "Physical Audio Signal Processing" by J. O. Smith III
+date: Jan 1 2020
+summary: |-
+  Continuing with Julius O. Smith III's audio DSP series, this set of Jupyter notebooks covers book III - *Physical Audio Signal Processing*.
+
+  ![Animation showing digital waveguide delay lines with excitation scatter junction](./assets/pasp/chapter_9_pick_excitation.gif)
+---
+
+import Audio from '../Audio'
+import delayed_1 from './assets/pasp/delayed_1.wav'
+import delayed_2 from './assets/pasp/delayed_2.wav'
+import delayed_3 from './assets/pasp/delayed_3.wav'
+import delayed_4 from './assets/pasp/delayed_4.wav'
+import delayed_5 from './assets/pasp/delayed_5.wav'
+import delayed_6 from './assets/pasp/delayed_6.wav'
+import delayed_7 from './assets/pasp/delayed_7.wav'
+import delayed_8 from './assets/pasp/delayed_8.wav'
+import delayed_9 from './assets/pasp/delayed_9.wav'
+import delayed_10 from './assets/pasp/delayed_10.wav'
+
+export const allDelayAudios = [
+  delayed_1,
+  delayed_2,
+  delayed_3,
+  delayed_4,
+  delayed_5,
+  delayed_6,
+  delayed_7,
+  delayed_8,
+  delayed_9,
+  delayed_10,
+]
+
+<div>
+
+This set of [Jupyter notebooks](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/index.ipynb) covers each chapter of the third book in Julius O. Smith III's excellent four-book series on audio DSP, [Physical Audio Signal Processing](https://ccrma.stanford.edu/~jos/pasp/).
+Armed with the tools from the [previous](https://karlhiner.com/jupyter_notebooks/mathematics_of_the_dft) [books](https://karlhiner.com/jupyter_notebooks/intro_to_digital_filters), we are introduced to some powerful synthesis techniques capable of producing some pretty convincing emulations of real, physical instruments.
+
+{<p>There's a notebook for each chapter, culminating with a three-part final chapter that walks through the implementation of three real-time-capable virtual instruments:{" "}<Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_9_virtual_musical_instruments.ipynb">guitars</Link>,{" "}<Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_9_virtual_musical_instruments_part_2.ipynb">pianos</Link>{" "}and{" "}<Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_9_virtual_musical_instruments_part_3.ipynb">woodwinds</Link>.
+To view and run the full, interactive set of notebooks, open them in{" "}<Link href="https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/index.ipynb">Colab</Link>{" "}<small>(<Link href="https://github.com/khiner/notebooks/tree/master/physical_audio_signal_processing/">raw Github link</Link>).</small>{" "}
+
+<i>Note: these will generally look bad in Colab's dark mode.
+From top menu, select Tools {"->"} Settings.
+Under Theme, select "light".</i></p>}
+
+## What is physical audio signal processing?
+
+From the perspective of musical synthesis, physical modeling is all about making _digital things_ that sound like _physical things_.
+The basic insight that fuels physical modeling research is this: if we simulate the behavior of physical systems (like musical instruments) over time, to a certain degree of accuracy, and then extract audio signals from appropriate points of the simulated system, those signals should resemble the audio emitted from the corresponding points of the real-world physical system being modeled.
+
+Other synthesis techniques, such as [subtractive synthesis](https://en.wikipedia.org/wiki/Subtractive_synthesis) or [FM synthesis](https://en.wikipedia.org/wiki/Frequency_modulation_synthesis), are sometimes used to emulate physical sounds.
+However, this is usually done by ear, using parameters that don't fundamentally correspond to a purely physical interpretation.
+For example, sound designers may use FM synthesis to approximate the spectral properties of brass instruments or bells, but there is no physical analogy to the FM modulation - it is an abstract mathematical operation.
+One of the promises of the physical modeling approach is that, in principle, we don't need to be particularly _creative_ to get the results we're looking for.
+We can use the reductive tools of experimental science, breaking the system down to its constituent parts, studying them individually, and developing digital algorithms to emulate their behavior to some acceptable degree of accuracy.
+For the most part, we can accomplish this with relatively simple and well-understood concepts in physics.
+
+Where much of the creativity comes in is making something that can actually run in real-time on devices like laptops and phones.
+Real-time digital instruments have the strong design constraint of needing to produce tens of thousands audio samples every second.
+This means it's not usually enough to just blindly translate physical systems to their digital counterparts.
+Instead, we need to find clever ways to model only the parts of the system most relevant to the thing we care about - the audio.
+(In fact, we only really care about the audio that is available to our [perception](https://colab.research.google.com/github/khiner/notebooks/blob/master/musimathics/volume_1/chapter_6_psychophysical_basis_of_sound.ipynb) - a fact which provides another avenue for optimization.)
+Making tradeoffs between accuracy, efficiency and physical interpretability is a big part of what this field, and this book, is all about.
+
+## Why I'm excited about physical audio modeling
+
+Having access to real-time controllable virtual instruments that sound like real instruments is incredibly valuable on its own.
+However, there are many other exciting aspects of physical audio models that we get "for free":
+
+<ul>
+
+<li>
+
+{<><strong>Intuitive control</strong></>}
+
+Physical models have physically meaningful parameters of control.
+For example, we can change the length or tension of a string, the position of a violin bow, the stiffness of a clarinet reed, or the mass of a guitar pick.
+Because we're modeling these aspects directly, we get direct control for free.
+
+</li>
+
+<li>
+
+{<><strong>Mutability</strong></>}
+
+Unlike instruments in the real world, we can in principle change _any_ aspect of a virtual instrument.
+I can't change the material properties of my real guitar's wooden body, or the shape of the hammers in my piano.
+These are _immutable_ properties of the instruments I bought.
+With virtual instruments, these properties can not only be changed, but can often be changed _in real-time_.
+
+</li>
+
+<li>
+
+{<><strong>Modularity</strong></>}
+
+Physical systems are naturally modular and hierarchically composed.
+Most techniques (like digital waveguides) model physical relationships in a way that reflects this, with a modular design.
+A string is modeled with a delay line, which has inputs and outputs at discrete positions along its length.
+A guitar bridge is modeled with a digital filter with multiple inputs and outputs.
+
+This allows for combining model components in musically creative ways.
+For example, there's no reason we couldn't send a _force_ wave signal into something expecting a _velocity_ input.
+Or (as is actually done in [commuted synthesis](https://ccrma.stanford.edu/~jos/pasp/Commuted_Synthesis.html)) we can excite a string with the impulse response of a piano soundboard.
+In other words, anything can be hooked up to anything.
+There's no need to constrain ourselves to what's physically plausible.
+Experimenting with _connectivity_ in low-level DSP architecture is a powerful dimension of control that is not often exposed in audio software, and is something I'm excited to pursue further.
+
+</li>
+
+<li>
+
+{<><strong>Scalability</strong></>}
+
+I mentioned the tradeoff between accuracy and efficiency above.
+In many cases, it is actually _simpler_ to make a physically accurate model if computational complexity isn't a concern.
+A lot of complexity in physical modeling comes from "hacks" that make things faster, but also less physically interpretable.
+For example, [this tool](https://github.com/grame-cncm/faust/blob/master-dev/tools/physicalModeling/mesh2faust/README.md) transforms a volumetric mesh of a 3D object into a modal physical model in [Faust](https://faust.grame.fr/).
+The realism of the resulting model, and the computational complexity, will scale with the number of mesh vertices included in the transformation.
+
+Physical modeling techniques, perhaps more so than other synthesis techniques, have a capacity for improvement by simply throwing more hardware at the problem.
+This means the possibilities available to us will grow with hardware capabilities.
+In particular, I'm excited to see how this influences [the role of GPUs](https://www.researchgate.net/publication/263020611_Modular_Physical_Modeling_Synthesis_Environments_on_GPU) in music production in the future.
+
+</li>
+
+<li>
+
+{<><strong>Exploring the unreal</strong></>}
+
+Once the physical aspects of an instrument are digitally modeled and parameterized, there's nothing stopping us from changing parameter values to ones that are physically ridiculous.
+As an example, researchers at the University of Edinburgh created [a brass instrument model](http://www.ness.music.ed.ac.uk/archives/systems/brass-instruments-2) "using traditional instrument geometries along with a 10m long trumpet".
+Of course, geometry isn't the only thing we can get crazy with.
+Everything down to the most basic laws of physics are mutable in a computational model!
+
+</li>
+
+</ul>
+
+## About these notebooks
+
+This book has the most material of the series, with about 430 dense pages of material, and an additional 300 pages in the appendices.
+I don't attempt to make a "definitive guide" with these notebooks.
+Instead, I focus on some of the things I found most interesting, or fundamental, or challenging or confusing to me.
+These notebooks don't stand alone as educational material, and should be thought of as a companion to go along with the book.
+Many parts are lacking in explanation, deferring to the text, which is [available for free online](https://ccrma.stanford.edu/~jos/pasp/).
+Solutions are provided to many of the exercises, problems and labs (which are only available in the [physical book](https://www.amazon.com/Physical-Audio-Signal-Processing-Instruments/dp/0974560723)).
+My main goal with these and my other notebook sets is to help myself and others understand the material in the book.
+
+Some notebooks go into much greater depth than others.
+The first two chapters are basically just my solutions to the exercises, while in later chapters I started to feel bogged down by the theoretical work and focused more on implementations and visualizations.
+The last chapter (accounting for almost a third of the book's material) is split up into three notebooks.
+If you're curious about what all this physical modeling stuff is about and just want to see some end results, those would be the ones to skim through!
+
+Finally, a disclaimer that there are probably a lot of errors, technically incorrect statements, etc.
+There were many exercises I looked at and had absolutely no idea what to do.
+There aren't a ton of resources on this stuff out there, which is a big part of the reason for doing this work.
+If you see something wrong, or missing, or incomplete or could be better, please reach out!
+
+## Preview
+
+The rest of this post is a small sample of some of the visualizations and audio in these notebooks, to share a broad sense of what's there.
+For explanations and much more content, follow the chapter links, or start from [the index](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/index.ipynb).
+_(Note: The animations here are just gifs, but in the Colab links, all animations are rendered in a Javascript player with playback controls.)_
+
+### [Chapter 1: Physical Signal Modeling Intro](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_1_physical_signal_modeling_intro.ipynb)
+
+_Mostly just exercise solutions in this chapter._
+
+### [Chapter 2: Acoustic Modeling with Digital Delay](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_2_acoustic_modeling_with_digital_delay.ipynb)
+
+_Same here._
+
+### [Chapter 3: Artificial Reverberation](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_3_artificial_reverberation.ipynb)
+
+```python
+fs, samples = readwav('FDNJot4LPIR-speech-male.wav')
+Audio(samples, rate=fs)
+```
+
+<Audio src="./assets/pasp/artificial_reverb.wav" />
+
+### [Chapter 4: Delay Line and Signal Interpolation](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_4_delay_line_and_signal_interpolation.ipynb)
+
+![Animation showing reconstruction of signal with sinc convolution](./assets/pasp/chapter_4_sinc.gif)
+
+### [Chapter 5: Time-Varying Delay Effects](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_5_time_varying_delay_effects.ipynb)
+
+In the following examples, we can hear a diverse range of qualities produced from a simple delay line, ranging (in order) from chipmunky pitch-raising, to flanging & doubling effects, pitch-dropping, pitch-changing reverse, and feedback-like spectral buzzing:
+
+```python
+delay = Delay(fs)
+delay_growths = [-2, -1, 0.0001, 0.001, 0.01, 0.1, 2, 3, 10, 100]
+
+delayed_set = []
+for delay_growth in delay_growths:
+    delay.set_delay_samples(0)
+    delay.set_delay_growth_samples(delay_growth)
+    delayed_set.append(Audio(delay.tick_all(samples), rate=fs))
+
+delayed_set
+```
+
+{allDelayAudios.map((delayAudio, i) => <Audio key={i} src={delayAudio} />)}
+
+### [Chapter 6: Digital Waveguide Models](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_6_digital_waveguide_models.ipynb)
+
+![Animation showing simple traveling wave components](./assets/pasp/chapter_6_waveguide.gif)
+
+```python
+notes = np.array([1, 5, 8, 12, 13]) # 7 chord
+root_hz = 110 # low A
+notes_hz = root_hz * 2**(notes / 12)
+note_length_seconds = 4
+between_notes_seconds = 1 / 16
+strum_samples = np.zeros(int(fs * (note_length_seconds + between_notes_seconds * notes.size)))
+for i, note_hz in enumerate(notes_hz):
+    offset_samples = int(i * fs * between_notes_seconds)
+    for frequency in [note_hz, note_hz + 0.2]:
+        strum_samples[offset_samples:offset_samples + fs * note_length_seconds] += generate_pluck(frequency, length_seconds=note_length_seconds, fs=fs)
+
+display.Audio(strum_samples, rate=fs)
+```
+
+<Audio src="./assets/pasp/simple_strum.wav" />
+
+### [Chapter 7: Lumped Models](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_7_lumped_models.ipynb)
+
+![Animation showing region of convergence in s and z planes](./assets/pasp/chapter_7_roc.gif)
+
+<img
+  src="./assets/pasp/chapter_7_s_z_plane.gif"
+  alt="Animation showing transformation between s and z planes"
+  style={{ width: '60%' }}
+/>
+
+### [Chapter 8: Transfer Function Models](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_8_transfer_function_models.ipynb)
+
+![Animation showing frequency response and pole-zero plots for allpass chain](./assets/pasp/chapter_8_allpass_chain.gif)
+
+### Chapter 9: Virtual Musical Instruments
+
+#### [Part 1: Guitars and String Excitations](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_9_virtual_musical_instruments.ipynb)
+
+![Animation showing brightness/sustain loop filter frequency response](./assets/pasp/chapter_9_brightness_sustain_lf.gif)
+
+![Animation showing the traveling wave components with an initial pluck shape with damping](./assets/pasp/chapter_9_waveguide_pluck.gif)
+
+![Animation showing the traveling wave components of a string being struck by a simulated pick up and down](./assets/pasp/chapter_9_pick_excitation.gif)
+
+```python
+out = np.zeros(fs * 10)
+waveguide = WaveguideWithExcitation(length_samples=length_samples,
+                                    pickup_sample=length_samples//6,
+                                    excitation_sample=length_samples//4,
+                                    excitation_type=WaveguideWithExcitation.ExcitationType.hammer,
+                                    excitation_mass=80.0)
+for i in range(out.size):
+    if i < fs * 5 and i % (fs // 6) == 0: # every 6th of a second starting at t=0, trigger again
+        waveguide.trigger(np.random.rand())
+    out[i] = waveguide.tick()
+Audio(out, rate=fs)
+```
+
+<Audio src="./assets/pasp/guitar_pick.wav" />
+
+```python
+from scipy.signal import convolve
+string_indices = np.concatenate([np.arange(6), np.arange(6)[::-1]])
+strum = guitar_with_coupling.strum(string_indices=string_indices, num_samples=fs*12)
+strum_with_body = convolve(strum, ir_samples)
+
+Audio(strum_with_body, rate=fs)
+```
+
+<Audio src="./assets/pasp/guitar_strum.wav" />
+
+#### [Part 2: Piano Synthesis](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_9_virtual_musical_instruments_part_2.ipynb)
+
+```python
+frequencies_and_amplitudes = [(frequency_for_note_label(note_label), 0.9) for note_label in ['A1', 'C3', 'D4', 'G6']]
+plot_hammer_pulses_and_gains(frequencies_and_amplitudes, title='Hammer Pulses for Varying String Frequency')
+```
+
+![Piano hammer pulses for varying string frequency](./assets/pasp/hammer_pulses.png)
+
+```python
+fundamental_frequency = note2freq('D4')
+# higher `nfft` to get frequency bins with better alignment to exact harmonics
+harmonic_frequencies = fundamental_frequency*np.arange(1, 13)
+F, T, B_edr = plot_edr(d4, fs_d4, nfft=5096, harmonic_frequencies=harmonic_frequencies)
+```
+
+![3D Normalized energy decay relief](./assets/pasp/piano_edr.png)
+
+```python
+create_dispersion_filter_animation()
+```
+
+![Animation showing the changing phase response of a piano dispersion filter for different string frequencies](./assets/pasp/chapter_9_dispersion.gif)
+
+```python
+arpeggiate(note_frequencies, onset_samples,
+brightness=0.8,
+model_hammer=False,
+model_strike_position=False,
+dispersion_filter_fn=piano_dispersion_filter)
+Audio(out_samples, rate=fs)
+```
+
+<Audio src="./assets/pasp/piano_arpeggio.wav" />
+
+```python
+Audio(piano_striking_single_key, rate=fs)
+```
+
+<Audio src="./assets/pasp/piano_single_key.wav" />
+
+#### [Part 3: Woodwinds](https://colab.research.google.com/github/khiner/notebooks/blob/master/physical_audio_signal_processing/chapter_9_virtual_musical_instruments_part_3.ipynb)
+
+![Samples for each step in a chain of processors producing a clarinet-like sound](./assets/pasp/clarinet_chain.png)
+
+```python
+clarinet = Clarinet()
+clarinet.set_reed_stiffness(0.65)
+clarinet.set_noise_gain(0.3)
+clarinet.set_vibrato_gain(0.025)
+
+note_frequencies = notes2freqs(['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'])
+note_index = 0
+for i in range(out_samples.size):
+    if np.isin(i, note_on_samples):
+        amplitude = np.random.uniform(low=0.7, high=1.0)
+        clarinet.note_on(note_frequencies[note_index], amplitude)
+        note_index += 1
+    elif np.isin(i, note_off_samples):
+        clarinet.note_off(0.008)
+    out_samples[i] = clarinet.tick()
+
+Audio(out_samples, rate=fs)
+```
+
+<Audio src="./assets/pasp/clarinet.wav" />
+
+{<><br /><br /></>}
+
+Please email or open an issue on GitHub with questions, corrections and comments!
+
+</div>

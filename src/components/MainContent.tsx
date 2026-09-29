@@ -1,4 +1,4 @@
-import { isValidElement, lazy, Suspense } from 'preact/compat'
+import { lazy, Suspense } from 'preact/compat'
 import { useEffect, useLayoutEffect, useRef } from 'preact/hooks'
 import type { ComponentChildren } from 'preact'
 import { InternalLink, navigate, normalizePath, usePathname } from 'navigation'
@@ -10,8 +10,7 @@ import Entry from './Entry'
 import config from 'config'
 
 import parsedEntries from 'parsedEntries'
-
-const modules = import.meta.glob<{ default: any }>('../content/**/*.tsx')
+import contentComponents from 'contentComponents'
 
 function LoadedContent({ children }: { children: ComponentChildren }) {
   const root = useRef<HTMLDivElement>(null)
@@ -34,9 +33,14 @@ function LoadedContent({ children }: { children: ComponentChildren }) {
 const entryPages = new Map(
   parsedEntries.all.map((entry) => {
     const Content = lazy(async () => {
-      const { default: Component } = await modules[`../content/${entry.contentPath}.tsx`]()
-      const element = isValidElement(Component) ? Component : <Component />
-      return { default: () => <LoadedContent>{element}</LoadedContent> }
+      const { default: Component } = await entry.load()
+      return {
+        default: () => (
+          <LoadedContent>
+            <Component components={contentComponents} />
+          </LoadedContent>
+        ),
+      }
     })
     return [
       normalizePath(entry.path),

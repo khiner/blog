@@ -1,6 +1,4 @@
-import { parseSync, Visitor } from 'vite'
 import { all, createLowlight } from 'lowlight'
-import MagicString from 'magic-string'
 
 const lowlight = createLowlight(all)
 
@@ -27,69 +25,52 @@ const flattenTokens = (nodes, classes = []) =>
       : flattenTokens(node.children, [...new Set([...classes, ...(node.properties.className ?? [])])]),
   )
 
-const propertyName = (property) => property.key?.name ?? property.key?.value
-const languages = { default: null, CodeBlock: null, Python: 'python', Cpp: 'cpp' }
+const cssStyle = (style) =>
+  Object.entries(style)
+    .map(([name, value]) => `${name.replace(/[A-Z]/g, (letter) => '-' + letter.toLowerCase())}:${value}`)
+    .join(';')
 
 export default function highlightCode() {
-  return {
-    name: 'highlight-static-code',
-    // Let Vite normalize JSX text and entities before extracting static strings.
-    enforce: 'post',
-    transform(source, id) {
-      if (!id.endsWith('.tsx') || !source.includes('CodeBlock')) return
-      const { program, errors } = parseSync(id, source)
-      if (errors.length) this.error(errors[0].message)
-      const bindings = new Map()
-      const jsx = new Set()
-      for (const statement of program.body) {
-        if (statement.type !== 'ImportDeclaration') continue
-        for (const specifier of statement.specifiers) {
-          const name = specifier.type === 'ImportDefaultSpecifier' ? 'default' : specifier.imported?.name
-          if (/(^|\/)CodeBlock(?:\.tsx)?$/.test(statement.source.value)) {
-            if (Object.hasOwn(languages, name)) bindings.set(specifier.local.name, languages[name])
-          } else if (
-            /^preact\/jsx-(dev-)?runtime$/.test(statement.source.value) &&
-            ['jsx', 'jsxs', 'jsxDEV'].includes(name)
-          ) {
-            jsx.add(specifier.local.name)
-          }
-        }
-      }
-      if (!bindings.size) return
-      const transformed = new MagicString(source)
-      const fail = (message, node) => this.error(message, node.start)
-      new Visitor({
-        CallExpression(node) {
-          if (!jsx.has(node.callee.name) || !bindings.has(node.arguments[0]?.name)) return
-          const props = node.arguments[1]
-          if (
-            props?.type !== 'ObjectExpression' ||
-            props.properties.some((p) => p.type !== 'Property' || !['children', 'language'].includes(propertyName(p)))
-          )
-            fail('Code blocks accept only a static language and string', node)
-          const languageProp = props.properties.find((p) => propertyName(p) === 'language')
-          if (languageProp && typeof languageProp.value.value !== 'string')
-            fail('Code blocks require a static language', languageProp)
-          const value = props.properties.find((p) => propertyName(p) === 'children')?.value
-          const text =
-            value?.type === 'TemplateLiteral' && !value.expressions.length ? value.quasis[0].value.cooked : value?.value
-          if (typeof text !== 'string') fail('Code blocks require a static string', node)
-          const language = bindings.get(node.arguments[0].name) ?? languageProp?.value.value ?? 'shell'
-          const tree =
-            language === 'text'
-              ? [{ type: 'text', value: text }]
-              : (lowlight.listLanguages().includes(language)
-                  ? lowlight.highlight(language, text)
-                  : lowlight.highlightAuto(text)
-                ).children
-          transformed.overwrite(props.start, props.end, JSON.stringify({ language, tokens: flattenTokens(tree) }))
-        },
-      }).visit(program)
-      if (!transformed.hasChanged()) return
-      return {
-        code: transformed.toString(),
-        map: transformed.generateMap({ hires: true, source: id, includeContent: true }),
-      }
-    },
+  return (tree) => {
+    const visit = (node) => {
+      const fenced = node.type === 'element' && node.tagName === 'pre' && node.children[0]?.tagName === 'code'
+      const embedded = ['mdxJsxFlowElement', 'mdxJsxTextElement'].includes(node.type) && node.name === 'CodeBlock'
+      if (fenced || embedded) {
+        const code = fenced ? node.children[0] : null
+        const language = fenced
+          ? (code.properties.className?.[0]?.replace(/^language-/, '') ?? 'shell')
+          : (node.attributes.find((attribute) => attribute.name === 'language')?.value ?? 'shell')
+        const text = fenced
+          ? code.children[0].value.replace(/\n$/, '')
+          : node.attributes.find((attribute) => attribute.name === 'code')?.value.data.estree.body[0].expression.value
+        if (typeof text !== 'string') throw new Error('Code blocks require static text')
+        const tokens =
+          language === 'text'
+            ? [{ type: 'text', value: text }]
+            : (lowlight.listLanguages().includes(language)
+                ? lowlight.highlight(language, text)
+                : lowlight.highlightAuto(text)
+              ).children
+        Object.assign(node, {
+          type: 'element',
+          tagName: 'pre',
+          properties: { style: 'color:#abb2bf;background:#282c34' },
+          children: [
+            {
+              type: 'element',
+              tagName: 'code',
+              properties: { className: [`language-${language}`], style: 'white-space:pre' },
+              children: flattenTokens(tokens).map(([value, style]) => ({
+                type: 'element',
+                tagName: 'span',
+                properties: { style: cssStyle(style) },
+                children: [{ type: 'text', value }],
+              })),
+            },
+          ],
+        })
+      } else node.children?.forEach(visit)
+    }
+    visit(tree)
   }
 }

@@ -1,0 +1,23 @@
+---
+path: /processing/string_pluck
+summaryTitle: Processing Sketch - String Pluck
+title: String Pluck
+date: Feb 16 2015
+showcase: true
+summary: |-
+  Interactive model of plucked string motion.
+
+  <Image src="./assets/string_pluck.gif" alt="Short animation of plucked string" style={{ maxWidth: 720 }} />
+---
+
+import P5Wrapper from './P5Wrapper'
+
+import string_pluck_sketch from './sketches/string_pluck'
+
+<div>
+
+<h2 className="sketch-intro">{'Pluck the string by holding the mouse down and releasing.'}</h2>
+
+<P5Wrapper sketch={string_pluck_sketch} />
+
+</div>

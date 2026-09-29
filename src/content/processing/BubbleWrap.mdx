@@ -1,0 +1,27 @@
+---
+path: /processing/bubble_wrap
+summaryTitle: Processing Sketch - Bubble Wrap
+title: Bubble Wrap
+date: Dec 19 2017
+showcase: true
+summary: |-
+  A simple sketch with for trippy, colorful bubble patterns.
+
+  ![Preview of Bubble Wrap sketch](./assets/bubble_wrap_preview.png)
+---
+
+import P5Wrapper from './P5Wrapper'
+
+import bubble_wrap_sketch from './sketches/bubble_wrap'
+
+<div>
+
+<h2 className="sketch-intro">{'A simple sketch with for trippy, colorful bubble patterns.'}</h2>
+
+- The size of the bubbles depends on X-Position of the mouse.
+- The speed depends on Y-position of the mouse.
+- Click anywhere on the screen to change the amount of rows along the X-axis and Y-axis.
+
+<P5Wrapper sketch={bubble_wrap_sketch} />
+
+</div>
