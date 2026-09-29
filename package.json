@@ -27,11 +27,6 @@
       "last 1 safari version"
     ]
   },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,md}": [
-      "prettier --write"
-    ]
-  },
   "dependencies": {
     "p5": "^2.3.4",
     "preact": "^10.29.8"
@@ -40,8 +35,6 @@
     "@prefresh/vite": "^4.0.1",
     "@types/node": "^26.6.3",
     "@webgpu/types": "^0.1.74",
-    "husky": "^9.1.7",
-    "lint-staged": "^17.6.0",
     "lowlight": "3.3.0",
     "magic-string": "^1.4.2",
     "prettier": "^3.9.9",
