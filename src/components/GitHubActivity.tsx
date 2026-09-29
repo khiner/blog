@@ -140,15 +140,29 @@ export default function GitHubActivity() {
   const plot = useRef<HTMLDivElement>(null)
   const overview = useRef<HTMLDivElement>(null)
   const overviewCanvas = useRef<HTMLCanvasElement>(null)
-  const overviewGrabOffset = useRef<number | null>(null)
+  const overviewDrag = useRef<{
+    id: number
+    x: number
+    y: number
+    grabOffset: number
+    inside: boolean
+    moved: boolean
+  } | null>(null)
   const stopOverviewDrag = () => {
-    overviewGrabOffset.current = null
+    overviewDrag.current = null
   }
   const tooltip = useRef<HTMLDivElement>(null)
   const zoomAnchor = useRef<{ day: number; x: number } | null>(null)
   const renderedDayWidth = useRef(1)
   const previousView = useRef({ width: 0, right: 0 })
-  const showTooltip = (label: string, event: { clientX: number; clientY: number }) => {
+  const showTooltip = (
+    label: string,
+    event: { clientX: number; clientY: number; pointerType?: string; type?: string },
+  ) => {
+    if (event.pointerType === 'touch' && event.type === 'pointermove') {
+      hideTooltip()
+      return
+    }
     if (!label.trim()) {
       hideTooltip()
       return
@@ -181,11 +195,17 @@ export default function GitHubActivity() {
   const hideTooltip = () => {
     if (tooltip.current) tooltip.current.hidden = true
   }
-  const tooltipHandlers = (label: string) => ({
-    onPointerEnter: (event: PointerEvent<HTMLButtonElement>) => showTooltip(label, event),
-    onPointerMove: (event: PointerEvent<HTMLButtonElement>) => showTooltip(label, event),
-    onPointerLeave: hideTooltip,
-  })
+  const tooltipHandlers = (label: string, title?: string) => {
+    const hover = (event: PointerEvent<HTMLButtonElement>) => {
+      if (event.pointerType === 'touch' && event.type === 'pointermove') {
+        hideTooltip()
+        return
+      }
+      const name = title ? event.currentTarget.querySelector<HTMLElement>('.github-activity-repo-name') : null
+      showTooltip(name && name.scrollWidth > name.clientWidth ? `${title}\n${label}` : label, event)
+    }
+    return { onPointerEnter: hover, onPointerMove: hover, onPointerLeave: hideTooltip }
+  }
   const filterHandlers = (label: string, shown: boolean, toggle: () => void) => ({
     ...tooltipHandlers(`${shown ? 'Hide' : 'Show'} ${label}`),
     onClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -244,29 +264,14 @@ export default function GitHubActivity() {
     }
   }, [activity, showPrivate, showUpstreamForks, showForkOnlyForks])
   const totalDays = chart ? chart.lastDay - chart.firstDay + 1 : 0
-
-  const labelSizer = useMemo(
-    () =>
-      chart && (
-        <div className="github-activity-label-sizer" aria-hidden="true">
-          {chart.repos.map((repo) => (
-            <div className="github-activity-repo github-activity-other-repo" key={repo.id}>
-              <RepoLabel repo={repo} />
-            </div>
-          ))}
-          <div className="github-activity-repo">
-            <span className="github-activity-other-chevron">▸</span>
-            <span className="github-activity-repo-name">Inactive in view ({chart.repos.length})</span>
-          </div>
-        </div>
-      ),
-    [chart],
-  )
+  const firstVisibleDay = Math.floor(viewport.start * totalDays)
+  const lastVisibleDay = Math.ceil(viewport.end * totalDays) - 1
+  const position = (date: string) => `${((dayNumber(date) - chart.firstDay) / totalDays) * 100}%`
 
   const grouped = useMemo(() => {
     if (!chart) return null
-    const firstVisible = isoDate(chart.firstDay + Math.floor(viewport.start * totalDays))
-    const lastVisible = isoDate(chart.firstDay + Math.ceil(viewport.end * totalDays) - 1)
+    const firstVisible = isoDate(chart.firstDay + firstVisibleDay)
+    const lastVisible = isoDate(chart.firstDay + lastVisibleDay)
     const inView: { repo: Repository; commits: number; latest: string }[] = []
     const other: Repository[] = []
     const counts = new Map<Repository, number>()
@@ -293,7 +298,7 @@ export default function GitHubActivity() {
       counts,
       totalCommits,
     }
-  }, [chart, viewport.start, viewport.end])
+  }, [chart, firstVisibleDay, lastVisibleDay])
 
   const rowItems = useMemo<(Repository | null)[]>(
     () =>
@@ -359,7 +364,7 @@ export default function GitHubActivity() {
         <span
           className={`github-activity-period-line${month === 0 ? ' year' : ''}`}
           key={day}
-          style={{ left: (day - chart.firstDay) * dayWidth }}
+          style={{ left: `${((day - chart.firstDay) / totalDays) * 100}%` }}
           aria-hidden="true"
         />
       ))
@@ -472,25 +477,155 @@ export default function GitHubActivity() {
         plotElement.clientWidth / Math.min(7, totalDays),
         Math.max(plotElement.clientWidth / totalDays, Math.round(width * 10000) / 10000),
       )
-    const zoomAt = (scale: number, anchor: { day: number; x: number }) => {
-      zoomAnchor.current = anchor
-      setDayWidth((width) => clampWidth(width * scale))
+    let zoomFrame = 0
+    let pendingZoom: { width: number; anchor: { day: number; x: number } } | null = null
+    const zoomAt = (width: number, anchor: { day: number; x: number }) => {
+      pendingZoom = { width: clampWidth(width), anchor }
+      if (zoomFrame) return
+      zoomFrame = requestAnimationFrame(() => {
+        zoomFrame = 0
+        const change = pendingZoom!
+        pendingZoom = null
+        if (change.width === renderedDayWidth.current) {
+          plotElement.scrollLeft = change.anchor.day * change.width - change.anchor.x
+          updateViewport()
+        } else {
+          zoomAnchor.current = change.anchor
+          setDayWidth(change.width)
+        }
+      })
     }
-    const zoomPlotAt = (scale: number, clientX: number) => {
-      const x = Math.max(0, Math.min(clientX - plotElement.getBoundingClientRect().left, plotElement.clientWidth))
-      zoomAt(scale, { day: (plotElement.scrollLeft + x) / renderedDayWidth.current, x })
+    const zoomPlotAt = (scale: number, clientX?: number) => {
+      const x =
+        clientX === undefined
+          ? plotElement.clientWidth / 2
+          : Math.max(0, Math.min(clientX - plotElement.getBoundingClientRect().left, plotElement.clientWidth))
+      const width = pendingZoom?.width ?? renderedDayWidth.current
+      const left = pendingZoom ? pendingZoom.anchor.day * width - pendingZoom.anchor.x : plotElement.scrollLeft
+      zoomAt(width * scale, { day: (left + x) / width, x })
     }
-    const zoomOverviewAt = (scale: number, clientX: number) => {
-      const bounds = overviewElement.getBoundingClientRect()
-      const fraction = Math.max(0, Math.min(1, (clientX - bounds.left) / bounds.width))
-      zoomAt(scale, { day: fraction * totalDays, x: plotElement.clientWidth / 2 })
+    const zoomOverviewAt = (scale: number) => zoomPlotAt(scale)
+    const controller = new AbortController()
+    const active = { passive: false, signal: controller.signal }
+    let momentum = { x: 0, y: 0, time: 0, frame: 0 }
+    const stopMomentum = () => {
+      cancelAnimationFrame(momentum.frame)
+      momentum = { x: 0, y: 0, time: performance.now(), frame: 0 }
     }
-    const addGestureHandlers = (
-      element: HTMLDivElement,
-      zoom: (scale: number, clientX: number) => void,
-      onPinchStart?: () => void,
-    ) => {
+    const panBy = (dx: number, dy: number) => {
+      if (pendingZoom) pendingZoom.anchor.x -= dx
+      else plotElement.scrollLeft += dx
+      if (dy) window.scrollBy({ top: dy, behavior: 'instant' })
+    }
+    const coast = () => {
+      if (Math.hypot(momentum.x, momentum.y) < 0.02) return
+      const now = performance.now()
+      const decay = Math.exp(-Math.max(1, now - momentum.time) / 250)
+      momentum.time = now
+      panBy(momentum.x * 250 * (1 - decay), momentum.y * 250 * (1 - decay))
+      momentum.x *= decay
+      momentum.y *= decay
+      momentum.frame = requestAnimationFrame(coast)
+    }
+    let pinch: {
+      onPlot: boolean
+      range: { width: number; day: number; x: number; distance: number } | null
+      finger: Touch | null
+      anchors: { id: number; day: number }[] | null
+      controller: AbortController
+    } | null = null
+    const onTouch = (event: TouchEvent) => {
+      if (event.type === 'touchstart') {
+        stopMomentum()
+        const target = event.target as Node
+        const onPlot = plotElement.contains(target)
+        if (!pinch && (onPlot || overviewElement.contains(target)))
+          pinch = { onPlot, range: null, finger: null, anchors: null, controller: new AbortController() }
+        if (!pinch) return
+        // Track both fingers, including outside the chart and on rows removed during zoom.
+        for (const touch of event.touches)
+          for (const type of ['touchmove', 'touchend', 'touchcancel'])
+            touch.target.addEventListener(type, onTouch, { passive: false, signal: pinch.controller.signal })
+      } else if (event.target !== event.currentTarget) {
+        return
+      }
+      if (!pinch) return
+      if (!event.touches.length) {
+        const now = performance.now()
+        if (event.type === 'touchend' && pinch.onPlot && pinch.finger && now - momentum.time < 100) {
+          momentum.time = now
+          momentum.frame = requestAnimationFrame(coast)
+        }
+        pinch.controller.abort()
+        pinch = null
+        return
+      }
+      if (event.touches.length !== 2) {
+        pinch.range = null
+        pinch.anchors = null
+        const finger = event.touches.length === 1 ? event.touches[0] : null
+        // Native scrolling cannot hand off to pinch after the first touchmove.
+        if (pinch.onPlot && finger && pinch.finger && event.type === 'touchmove') {
+          event.preventDefault()
+          const dx = pinch.finger.clientX - finger.clientX
+          const dy = pinch.finger.clientY - finger.clientY
+          const now = performance.now()
+          const elapsed = Math.max(1, now - momentum.time)
+          momentum.x = (momentum.x + dx / elapsed) / 2
+          momentum.y = (momentum.y + dy / elapsed) / 2
+          momentum.time = now
+          panBy(dx, dy)
+          hideTooltip()
+        } else stopMomentum()
+        pinch.finger = finger
+        return
+      }
+      pinch.finger = null
+      event.preventDefault()
+      stopOverviewDrag()
+      hideTooltip()
+      if (pinch.onPlot) {
+        const touches = Array.from(event.touches)
+        const left = plotElement.getBoundingClientRect().left
+        if (!pinch.anchors || pinch.anchors.some(({ id }) => !touches.some((touch) => touch.identifier === id))) {
+          const width = pendingZoom?.width ?? renderedDayWidth.current
+          const scroll = pendingZoom ? pendingZoom.anchor.day * width - pendingZoom.anchor.x : plotElement.scrollLeft
+          pinch.anchors = touches.map((touch) => ({
+            id: touch.identifier,
+            day: (scroll + touch.clientX - left) / width,
+          }))
+        }
+        const [first, second] = pinch.anchors
+        const x1 = touches.find((touch) => touch.identifier === first.id)!.clientX - left
+        const x2 = touches.find((touch) => touch.identifier === second.id)!.clientX - left
+        const width = (x2 - x1) / (second.day - first.day)
+        if (Number.isFinite(width) && width > 0) zoomAt(width, { day: (first.day + second.day) / 2, x: (x1 + x2) / 2 })
+      } else {
+        const [first, second] = event.touches
+        const distance = Math.hypot(first.clientX - second.clientX, first.clientY - second.clientY)
+        const x = (first.clientX + second.clientX) / 2
+        if (!pinch.range || !pinch.range.distance) {
+          const width = pendingZoom?.width ?? renderedDayWidth.current
+          const left = pendingZoom ? pendingZoom.anchor.day * width - pendingZoom.anchor.x : plotElement.scrollLeft
+          pinch.range = { width, day: (left + plotElement.clientWidth / 2) / width, x, distance }
+        }
+        if (event.type === 'touchmove' && pinch.range.distance) {
+          const range = pinch.range
+          zoomAt((range.width * distance) / range.distance, {
+            day: range.day + ((x - range.x) / overviewElement.getBoundingClientRect().width) * totalDays,
+            x: plotElement.clientWidth / 2,
+          })
+        }
+      }
+    }
+    document.addEventListener('touchstart', onTouch, active)
+    document.addEventListener('pointerdown', stopMomentum, { signal: controller.signal })
+    for (const [element, zoom] of [
+      [plotElement, zoomPlotAt],
+      [overviewElement, zoomOverviewAt],
+    ] as const) {
       const onWheel = (event: WheelEvent) => {
+        stopMomentum()
         if (!event.ctrlKey) {
           if (element !== overviewElement) return
           event.preventDefault()
@@ -506,64 +641,100 @@ export default function GitHubActivity() {
         event.preventDefault()
         if (!event.deltaY) return
         const scale = Math.exp(-event.deltaY * 0.01)
-        const width = renderedDayWidth.current
+        const width = pendingZoom?.width ?? renderedDayWidth.current
         if (clampWidth(width * scale) !== width) zoom(scale, event.clientX)
-      }
-      const distance = (touches: TouchList) =>
-        Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY)
-      let pinchDistance: number | null = null
-      const onTouchStart = (event: TouchEvent) => {
-        pinchDistance = event.touches.length === 2 ? distance(event.touches) : null
-        if (pinchDistance !== null) onPinchStart?.()
-      }
-      const onTouchMove = (event: TouchEvent) => {
-        if (event.touches.length !== 2 || !pinchDistance) return
-        event.preventDefault()
-        const nextDistance = distance(event.touches)
-        zoom(nextDistance / pinchDistance, (event.touches[0].clientX + event.touches[1].clientX) / 2)
-        pinchDistance = nextDistance
-      }
-      const onTouchEnd = (event: TouchEvent) => {
-        if (event.touches.length < 2) pinchDistance = null
       }
       let gestureScale = 1
       const onGestureStart = (event: Event) => {
+        stopMomentum()
         event.preventDefault()
-        onPinchStart?.()
+        stopOverviewDrag()
         gestureScale = 1
       }
       const onGestureChange = (event: Event) => {
         event.preventDefault()
+        // iOS also sends gesture events for the touch sequence handled above.
+        if (pinch) return
         const gesture = event as Event & { scale: number; clientX?: number }
-        const x = gesture.clientX ?? element.getBoundingClientRect().left + element.clientWidth / 2
-        zoom(gesture.scale / gestureScale, x)
+        zoom(gesture.scale / gestureScale, gesture.clientX)
         gestureScale = gesture.scale
       }
-      const controller = new AbortController()
-      const active = { passive: false, signal: controller.signal }
       element.addEventListener('wheel', onWheel, active)
-      element.addEventListener('touchstart', onTouchStart, { passive: true, signal: controller.signal })
-      element.addEventListener('touchmove', onTouchMove, active)
-      element.addEventListener('touchend', onTouchEnd, active)
-      element.addEventListener('touchcancel', onTouchEnd, active)
       element.addEventListener('gesturestart', onGestureStart, active)
       element.addEventListener('gesturechange', onGestureChange, active)
-      return () => controller.abort()
     }
-    const removePlotHandlers = addGestureHandlers(plotElement, zoomPlotAt)
-    const removeOverviewHandlers = addGestureHandlers(overviewElement, zoomOverviewAt, stopOverviewDrag)
     return () => {
-      removePlotHandlers()
-      removeOverviewHandlers()
+      stopMomentum()
+      cancelAnimationFrame(zoomFrame)
+      controller.abort()
+      pinch?.controller.abort()
     }
   }, [chart])
+
+  const renderDay = (
+    repo: Repository | null,
+    date: string,
+    count: number,
+    target?: DayTarget | null,
+    lane?: 'upstream' | 'fork-only',
+  ) => {
+    if (!count) return null
+    const className = `github-activity-day level-${strength(count)}${lane ? ` github-activity-${lane}` : ''}`
+    const key = `${date}-${lane ?? 'all'}`
+    const props = { className, 'data-date': date, style: { left: position(date) } }
+    return repo && !repo.private && target ? (
+      <a
+        {...props}
+        key={key}
+        href={dayHref(date, count, target)}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${repo.name}, ${readableDate(date)}: ${commitLabel(count, lane)}`}
+      />
+    ) : (
+      <span {...props} key={key} />
+    )
+  }
+  const repositoryViews = useMemo(
+    () =>
+      new Map(
+        (chart?.repos ?? []).map((repo) => {
+          const title = repoName(repo)
+          const details = repositoryDetails(repo)
+          const [activeStart, end] = activeDays(repo, chart.lastDay)
+          const start = Math.max(activeStart, chart.firstDay)
+          const startDate = dateAt(start)
+          const endDate = dateAt(end)
+          const sameYear = startDate.getUTCFullYear() === endDate.getUTCFullYear()
+          const startLabel = sameYear ? timelineDateWithoutYear.format(startDate) : timelineDate.format(startDate)
+          const range =
+            sameYear && startDate.getUTCMonth() === endDate.getUTCMonth()
+              ? `${timelineMonth.format(startDate)} ${startDate.getUTCDate()}${start === end ? '' : `-${endDate.getUTCDate()}`} ${endDate.getUTCFullYear()}`
+              : `${startLabel} - ${timelineDate.format(endDate)}`
+          const instruction = `Click to show active timeline (${range})`
+          const cells = repo.days.map(([date, count, target, lanes]) => ({
+            date,
+            content: lanes
+              ? [
+                  renderDay(repo, date, lanes[0][0], lanes[0][1], 'upstream'),
+                  renderDay(repo, date, lanes[1][0], lanes[1][1], 'fork-only'),
+                ]
+              : renderDay(repo, date, count, target),
+          }))
+          return [
+            repo,
+            { title, details, start, end, cells, tooltip: [details, instruction].filter(Boolean).join('\n') },
+          ] as const
+        }),
+      ),
+    [chart],
+  )
 
   const rows = useMemo(() => {
     if (!chart) return null
     const overscanDays = 30
-    const firstRenderedDate = isoDate(chart.firstDay + Math.floor(viewport.start * totalDays) - overscanDays)
-    const lastRenderedDate = isoDate(chart.firstDay + Math.ceil(viewport.end * totalDays) + overscanDays)
-    const position = (date: string) => `${((dayNumber(date) - chart.firstDay) / totalDays) * 100}%`
+    const firstRenderedDate = isoDate(chart.firstDay + firstVisibleDay - overscanDays)
+    const lastRenderedDate = isoDate(chart.firstDay + lastVisibleDay + 1 + overscanDays)
     const hoveredDate = (event: PointerEvent<HTMLDivElement>) =>
       (event.target as HTMLElement).closest<HTMLElement>('.github-activity-day')?.dataset.date ??
       isoDate(
@@ -597,31 +768,11 @@ export default function GitHubActivity() {
         event,
       )
     }
-    const renderDay = (
-      repo: Repository | null,
-      date: string,
-      count: number,
-      target?: DayTarget | null,
-      lane?: 'upstream' | 'fork-only',
-    ) => {
-      if (!count) return null
-      const className = `github-activity-day level-${strength(count)}${lane ? ` github-activity-${lane}` : ''}`
-      const props = { className, key: `${date}-${lane ?? 'all'}`, 'data-date': date, style: { left: position(date) } }
-      return repo && !repo.private && target ? (
-        <a
-          {...props}
-          href={dayHref(date, count, target)}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`${repo.name}, ${readableDate(date)}: ${commitLabel(count, lane)}`}
-        />
-      ) : (
-        <span {...props} />
-      )
-    }
     return rowItems.map((repo) => {
       const repos = repo ? [repo] : showOtherRepos ? [] : grouped!.other
-      const days: Day[] = repo?.days ?? Array.from(otherDays, ([date, count]) => [date, count])
+      const cells = repo
+        ? repositoryViews.get(repo)!.cells
+        : Array.from(otherDays, ([date, count]) => ({ date, content: renderDay(null, date, count) }))
       const hover = (event: PointerEvent<HTMLDivElement>) => showDay(repo, event)
       return (
         <div
@@ -650,15 +801,9 @@ export default function GitHubActivity() {
             />
           ))}
           {repos.length > 0 &&
-            days.flatMap(([date, count, target, lanes]) => {
-              if (date < firstRenderedDate || date > lastRenderedDate) return []
-              return lanes
-                ? [
-                    renderDay(repo, date, lanes[0][0], lanes[0][1], 'upstream'),
-                    renderDay(repo, date, lanes[1][0], lanes[1][1], 'fork-only'),
-                  ]
-                : [renderDay(repo, date, count, target)]
-            })}
+            cells
+              .filter(({ date }) => date >= firstRenderedDate && date <= lastRenderedDate)
+              .flatMap(({ content }) => content)}
           {repos.flatMap((repo) => [
             <span
               className="github-activity-marker created"
@@ -672,7 +817,7 @@ export default function GitHubActivity() {
         </div>
       )
     })
-  }, [chart, grouped, otherDays, rowItems, showOtherRepos, viewport.start, viewport.end])
+  }, [chart, repositoryViews, grouped, otherDays, rowItems, showOtherRepos, firstVisibleDay, lastVisibleDay])
 
   if (error)
     return (
@@ -713,18 +858,35 @@ export default function GitHubActivity() {
     plot.current.scrollLeft = fraction * plot.current.scrollWidth
     updateViewport()
   }
-  const startOverviewDrag = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === 'touch' && !event.isPrimary) {
-      stopOverviewDrag()
+  const onOverviewPointer = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.type === 'pointerdown') {
+      if (event.pointerType === 'touch' && !event.isPrimary) {
+        stopOverviewDrag()
+        return
+      }
+      if (event.button !== 0) return
+      const bounds = event.currentTarget.getBoundingClientRect()
+      const fraction = (event.clientX - bounds.left) / bounds.width
+      overviewDrag.current = {
+        id: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        grabOffset: fraction - viewport.start,
+        inside: fraction >= viewport.start && fraction <= viewport.end,
+        moved: false,
+      }
+      event.currentTarget.setPointerCapture(event.pointerId)
       return
     }
-    const bounds = event.currentTarget.getBoundingClientRect()
-    const fraction = (event.clientX - bounds.left) / bounds.width
-    const inside = fraction >= viewport.start && fraction <= viewport.end
-    const grabOffset = inside ? fraction - viewport.start : (viewport.end - viewport.start) / 2
-    overviewGrabOffset.current = grabOffset
-    event.currentTarget.setPointerCapture(event.pointerId)
-    panOverview(event.clientX, grabOffset)
+    const drag = overviewDrag.current
+    if (!drag || drag.id !== event.pointerId) return
+    drag.moved ||= Math.hypot(event.clientX - drag.x, event.clientY - drag.y) >= 4
+    if (event.type === 'pointermove') {
+      if (drag.moved) panOverview(event.clientX, drag.grabOffset)
+    } else {
+      stopOverviewDrag()
+      if (!drag.moved && !drag.inside) panOverview(event.clientX, (viewport.end - viewport.start) / 2)
+    }
   }
   return (
     <section className="github-activity" aria-label="GitHub activity">
@@ -785,12 +947,11 @@ export default function GitHubActivity() {
             plot.current.scrollLeft += (event.key === 'ArrowRight' ? 1 : -1) * plot.current.clientWidth * 0.8
             updateViewport()
           }}
-          onPointerDown={startOverviewDrag}
-          onPointerMove={(event) => {
-            if (overviewGrabOffset.current !== null) panOverview(event.clientX, overviewGrabOffset.current)
-          }}
-          onPointerUp={stopOverviewDrag}
+          onPointerDown={onOverviewPointer}
+          onPointerMove={onOverviewPointer}
+          onPointerUp={onOverviewPointer}
           onPointerCancel={stopOverviewDrag}
+          onLostPointerCapture={stopOverviewDrag}
         >
           <canvas ref={overviewCanvas} aria-hidden="true" />
           <svg className="github-activity-overview-overlay" aria-hidden="true">
@@ -814,7 +975,6 @@ export default function GitHubActivity() {
       </div>
       <div className="github-activity-chart">
         <div className="github-activity-labels">
-          {labelSizer}
           <div className="github-activity-axis github-activity-controls">
             <div className="github-activity-filters">
               <button
@@ -877,19 +1037,7 @@ export default function GitHubActivity() {
               )
             }
             const count = grouped?.counts.get(repo) ?? 0
-            const title = repoName(repo)
-            const details = repositoryDetails(repo)
-            const [activeStart, end] = activeDays(repo, chart.lastDay)
-            const start = Math.max(activeStart, chart.firstDay)
-            const startDate = dateAt(start)
-            const endDate = dateAt(end)
-            const sameYear = startDate.getUTCFullYear() === endDate.getUTCFullYear()
-            const startLabel = sameYear ? timelineDateWithoutYear.format(startDate) : timelineDate.format(startDate)
-            const range =
-              sameYear && startDate.getUTCMonth() === endDate.getUTCMonth()
-                ? `${timelineMonth.format(startDate)} ${startDate.getUTCDate()}${start === end ? '' : `-${endDate.getUTCDate()}`} ${endDate.getUTCFullYear()}`
-                : `${startLabel} - ${timelineDate.format(endDate)}`
-            const instruction = `Click to show active timeline (${range})`
+            const { title, details, start, end, tooltip: labelTooltip } = repositoryViews.get(repo)!
             return (
               <button
                 className={`github-activity-repo${count ? '' : ' github-activity-other-repo'}`}
@@ -900,7 +1048,7 @@ export default function GitHubActivity() {
                   hideTooltip()
                   showRange(start, end + 1)
                 }}
-                {...tooltipHandlers([details, instruction].filter(Boolean).join('\n'))}
+                {...tooltipHandlers(labelTooltip, title)}
               >
                 <RepoLabel repo={repo} count={count} />
               </button>
@@ -913,15 +1061,18 @@ export default function GitHubActivity() {
           onScroll={updateViewport}
           aria-label="Scroll horizontally; pinch to zoom"
         >
-          <div className="github-activity-track" style={{ width, '--day-width': `${dayWidth}px` } as CSSProperties}>
+          <div
+            className="github-activity-track"
+            style={{ width, '--day-width': `${100 / totalDays}%` } as CSSProperties}
+          >
             <div className="github-activity-axis">
               {months.map((month) => (
                 <button
                   className={`github-activity-date${month.year ? ' github-activity-year' : ''}`}
-                  key={month.offset}
+                  key={month.day}
                   type="button"
                   aria-label={`Show ${month.year ? month.label : dateAt(month.day).toLocaleString(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' })}`}
-                  style={{ left: month.offset }}
+                  style={{ left: `${((month.day - chart.firstDay) / totalDays) * 100}%` }}
                   onClick={() => showPeriod(month.day, month.year)}
                 >
                   {month.label}

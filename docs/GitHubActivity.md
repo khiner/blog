@@ -2,7 +2,7 @@
 
 The home page shows my commits on repos' default branches.
 The overview combines included repos' daily commit counts in a single heatmap lane.
-Set `--activity-row-height` in `src/style/GitHubActivity.scss` to scale the view's typography, icons, and spacing together.
+Set `--activity-row-height` in `src/style/GitHubActivity.css` to scale the view's typography, icons, and spacing together.
 Fork rows show upstream commits above fork-only commits.
 Fork icons distinguish upstream contributions from fork-only commits.
 Private repos appear as `Private` and are hidden until the lock filter is enabled.

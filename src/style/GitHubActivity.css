@@ -1,6 +1,6 @@
 .github-activity {
   --activity-row-height: 22px;
-  --activity-label-padding: 0.75em;
+  --activity-label-padding: 0.375em;
   --activity-label-gap: 0.25em;
   --activity-chevron-width: 0.625em;
   --activity-background: #fff;
@@ -178,14 +178,8 @@
 }
 .github-activity-labels {
   border-right: 1px solid var(--activity-frame-border);
-  flex: 0 0 max-content;
-  width: max-content;
-}
-.github-activity-label-sizer {
-  height: 0;
-  overflow: hidden;
-  visibility: hidden;
-  width: max-content;
+  flex: 0 0 20em;
+  min-width: 0;
 }
 .github-activity-plot {
   flex: 1 1 auto;
@@ -193,7 +187,7 @@
   overscroll-behavior-x: contain;
   overflow-x: auto;
   overflow-y: hidden;
-  touch-action: pan-x pan-y;
+  touch-action: none;
 }
 .github-activity-track {
   position: relative;
@@ -246,16 +240,20 @@
   align-items: center;
   display: flex;
   gap: 0.75em;
-  padding: 0 var(--activity-label-padding) 0 0.625em;
+  padding: 0 var(--activity-label-padding);
 
   .github-activity-totals {
     color: var(--activity-muted);
     margin-left: auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   .github-activity-filters {
     display: flex;
+    flex-shrink: 0;
     gap: 0.25em;
     height: 100%;
   }
@@ -325,14 +323,18 @@
 .github-activity-fork-icon {
   height: 0.875em;
 }
+.github-activity-repo-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
 .github-activity-totals,
 .github-activity-repo-count {
   font-variant-numeric: tabular-nums;
 }
 .github-activity-repo-count {
   color: var(--activity-muted);
-  margin-left: auto;
-  padding-left: 1.1em;
+  flex: 0 0 auto;
 }
 button.github-activity-repo {
   background: var(--activity-label-background);
