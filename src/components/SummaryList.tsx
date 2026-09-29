@@ -1,9 +1,9 @@
 import { InternalLink } from 'navigation'
 import parsedEntries from 'parsedEntries'
 
-const Panel = ({ entry }) => (
+const PostCard = ({ entry }) => (
   <div className="post-card">
-    <InternalLink href={entry.path} className="panelLink">
+    <InternalLink href={entry.path} className="post-card-link">
       <div className="post-card-header">
         <h1>{entry.summaryTitle || entry.title}</h1>
         {entry.subtitle && <h2 className="subtitle">{entry.subtitle}</h2>}
@@ -18,14 +18,10 @@ export default function SummaryList({ category }: { category?: string }) {
   const selected = parsedEntries.categories.find((item) => item.path === category)
   const posts = selected?.posts ?? parsedEntries.reverseChronological
   return (
-    <div className="page-width">
-      <div className="post-row">
-        <div className="post-column">
-          {posts.map((entry) => (
-            <Panel key={entry.title} entry={entry} />
-          ))}
-        </div>
-      </div>
+    <div className="page post-list">
+      {posts.map((entry) => (
+        <PostCard key={entry.path} entry={entry} />
+      ))}
     </div>
   )
 }

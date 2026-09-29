@@ -1,77 +1,38 @@
-import React, { useEffect } from 'preact/compat'
-import type { ReactNode } from 'preact/compat'
+import type { ComponentChildren } from 'preact'
 
 interface EntryProps {
   title?: string
   subtitle?: string
   date?: string
-  type?: string
+  showcase?: boolean
   fullWidth?: boolean
   hideTitle?: boolean
-  intro?: ReactNode
-  children?: ReactNode
+  intro?: ComponentChildren
+  children?: ComponentChildren
 }
 
-const formatMathWhenContentIsReady = () => {
-  const element = document.getElementById('loadedContent')
-  if (element === null) {
-    window.requestAnimationFrame(formatMathWhenContentIsReady)
-  } else {
-    window.MathJax?.typesetPromise?.([element]).catch((err) => {
-      console.error('Error typesetting math:', err)
-    })
-  }
-}
-
-const Header = ({ title, date }) => (
-  <div>
-    <h1 className="title">{title}</h1>
-    <h2 className="date">{date}</h2>
-  </div>
-)
-
-export default React.memo(function Entry({
-  title,
-  subtitle,
-  date,
-  type,
-  fullWidth,
-  hideTitle,
-  intro,
-  children,
-}: EntryProps) {
-  useEffect(() => {
-    formatMathWhenContentIsReady()
-  }, [])
-
-  const isShowcase = type && type.toLowerCase() === 'showcase'
-  const columnBreak = <div className="article-spacer" />
-
+export default function Entry({ title, subtitle, date, showcase, fullWidth, hideTitle, intro, children }: EntryProps) {
   return (
-    <div>
-      {columnBreak}
-      <div className={fullWidth ? 'page-fluid' : 'page-width article-page'}>
-        {!isShowcase && (
-          <div className="entry">
-            {title && !hideTitle && <h1 className="title">{title}</h1>}
-            {subtitle && <h2 className="subtitle">{subtitle}</h2>}
-            {date && <h3 className="date">{date}</h3>}
-            {intro}
-            {children}
+    <div className={fullWidth ? 'page' : 'page article-page'}>
+      {showcase ? (
+        <div className="post-card showcase">
+          <div className="post-card-header">
+            <h1 className="title">{title}</h1>
+            <h2 className="date">{date}</h2>
           </div>
-        )}
-        {isShowcase && (
-          <div className="post-card">
-            <div className="post-card-header">
-              <Header title={title} date={date} />
-            </div>
-            <div className="post-card-body">
-              <div className="entry Showcase">{children}</div>
-            </div>
+          <div className="post-card-body">
+            <div className="entry">{children}</div>
           </div>
-        )}
-      </div>
-      {columnBreak}
+        </div>
+      ) : (
+        <div className="entry">
+          {title && !hideTitle && <h1 className="title">{title}</h1>}
+          {subtitle && <h2 className="subtitle">{subtitle}</h2>}
+          {date && <h3 className="date">{date}</h3>}
+          {intro}
+          {children}
+        </div>
+      )}
     </div>
   )
-})
+}

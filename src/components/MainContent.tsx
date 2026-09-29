@@ -1,8 +1,10 @@
-import { isValidElement, lazy, Suspense, useEffect, useLayoutEffect } from 'preact/compat'
+import { isValidElement, lazy, Suspense } from 'preact/compat'
+import { useEffect, useLayoutEffect, useRef } from 'preact/hooks'
+import type { ComponentChildren } from 'preact'
 import { InternalLink, navigate, normalizePath, usePathname } from 'navigation'
 
 import SummaryList from './SummaryList'
-import Home from './Home'
+import PageNav from './PageNav'
 import GitHubActivity from './GitHubActivity'
 import Entry from './Entry'
 import config from 'config'
@@ -11,37 +13,53 @@ import parsedEntries from 'parsedEntries'
 
 const modules = import.meta.glob<{ default: any }>('../content/**/*.tsx')
 
-const lazyEntry = (entry) => {
-  const Content = lazy(async () => {
-    const imported = await modules[`../content/${entry.contentPath}.tsx`]()
-    const Component = imported.default
-    const element = isValidElement(Component) ? Component : <Component />
-    return { default: () => <div id="loadedContent">{element}</div> }
-  })
+function LoadedContent({ children }: { children: ComponentChildren }) {
+  const root = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const typeset = () => {
+      window.MathJax?.typesetPromise?.([root.current]).catch((err) => console.error('Error typesetting math:', err))
+    }
+    const script = document.getElementById('MathJax-script')
+    if (window.MathJax?.typesetPromise) typeset()
+    else script?.addEventListener('load', typeset, { once: true })
+    return () => script?.removeEventListener('load', typeset)
+  }, [])
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Content />
-    </Suspense>
+    <div id="loadedContent" ref={root}>
+      {children}
+    </div>
   )
 }
 
-const entryPage = (entry) =>
-  [
-    normalizePath(entry.path),
-    <Entry key={entry.path} {...entry}>
-      {entry.contentPath ? lazyEntry(entry) : entry.content}
-    </Entry>,
-  ] as const
-const entryPages = new Map(parsedEntries.all.map(entryPage))
+const entryPages = new Map(
+  parsedEntries.all.map((entry) => {
+    const Content = lazy(async () => {
+      const { default: Component } = await modules[`../content/${entry.contentPath}.tsx`]()
+      const element = isValidElement(Component) ? Component : <Component />
+      return { default: () => <LoadedContent>{element}</LoadedContent> }
+    })
+    return [
+      normalizePath(entry.path),
+      {
+        entry,
+        content: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Content />
+          </Suspense>
+        ),
+      },
+    ] as const
+  }),
+)
 
 export default function MainContent() {
   const pathname = usePathname()
   const postsMatch = pathname.match(/^\/posts(?:\/([^/]+))?$/)
   const category = parsedEntries.categories.find((item) => item.path.toLowerCase() === postsMatch?.[1])
   const invalidCategory = !!postsMatch?.[1] && !category
-  const entry = parsedEntries.all.find((entry) => normalizePath(entry.path) === pathname)
-  const title = pathname === '/' || postsMatch ? null : entry ? entry.title : 'Page not found'
-  const pageTitle = config.siteName && title ? `${config.siteName} - ${title}` : config.siteName || title || ''
+  const entryPage = entryPages.get(pathname)
+  const title = pathname === '/' || postsMatch ? null : (entryPage?.entry.title ?? 'Page not found')
+  const pageTitle = title ? `${config.siteName} - ${title}` : config.siteName
   useLayoutEffect(() => {
     document.title = pageTitle
   }, [pageTitle])
@@ -52,17 +70,19 @@ export default function MainContent() {
   let content
   if (pathname === '/') {
     content = (
-      <div className="page-fluid">
-        <div className="entry">
-          <GitHubActivity />
-        </div>
+      <div className="page entry">
+        <GitHubActivity />
       </div>
     )
   } else if (postsMatch) {
     content = invalidCategory ? null : <SummaryList category={category?.path} />
   } else {
-    content = entryPages.get(pathname) ?? (
-      <div className="page-width entry">
+    content = entryPage ? (
+      <Entry key={pathname} {...entryPage.entry}>
+        {entryPage.content}
+      </Entry>
+    ) : (
+      <div className="page post-list entry">
         <h1>Page not found</h1>
         <InternalLink href="/">Return home</InternalLink>
       </div>
@@ -70,8 +90,9 @@ export default function MainContent() {
   }
 
   return (
-    <div className="content">
-      <Home pathname={pathname}>{content}</Home>
-    </div>
+    <main className="content">
+      <PageNav pathname={pathname} />
+      {content}
+    </main>
   )
 }

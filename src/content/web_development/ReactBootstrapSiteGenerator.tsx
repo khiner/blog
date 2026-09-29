@@ -9,14 +9,8 @@ const toggleNineties = () => {
   const decadeLabel = document.getElementById('decadeLabel')
   if (!decadeLabel) return
 
-  const body = document.getElementsByTagName('body')[0]
-  if (body.className === 'nineties') {
-    body.className = ''
-    decadeLabel.textContent = 'like the 90s'
-  } else {
-    body.className = 'nineties'
-    decadeLabel.textContent = 'sane again'
-  }
+  const enabled = document.body.classList.toggle('nineties')
+  decadeLabel.textContent = enabled ? 'sane again' : 'like the 90s'
 }
 
 export default (

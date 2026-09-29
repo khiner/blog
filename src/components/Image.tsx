@@ -7,5 +7,5 @@ interface ImageProps {
 }
 
 export default ({ src, alt = '', style = { maxWidth: 900 } }: ImageProps) => (
-  <img className="responsive wide" src={src} alt={alt} style={style} />
+  <img className="wide-media" src={src} alt={alt} style={style} />
 )

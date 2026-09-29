@@ -26,6 +26,7 @@
   --site-frame-border: #aebdc7;
   --site-primary: #1e90ff;
   --site-link-hover: #1176db;
+  --site-surface: #fff;
 }
 
 body {
@@ -35,7 +36,6 @@ body {
   a {
     cursor: pointer;
     color: #121212;
-    transition: none;
 
     &:hover {
       color: var(--site-link-hover);
@@ -88,34 +88,21 @@ blockquote {
   }
 }
 
-.responsive.wide {
-  /* Extra small devices (phones, 600px and down) */
-  @media only screen and (max-width: 600px) {
-    width: 100%;
-  }
-
-  /* Small devices (portrait tablets and large phones, 600px and up) */
-  @media only screen and (min-width: 600px) {
+.wide-media {
+  @media (min-width: 600px) {
     width: 90%;
   }
-
-  /* Large devices (laptops/desktops, 992px and up) */
-  @media only screen and (min-width: 992px) {
+  @media (min-width: 992px) {
     width: 80%;
   }
-
-  /* Extra large devices (large laptops and desktops, 1200px and up) */
-  @media only screen and (min-width: 1200px) {
+  @media (min-width: 1200px) {
     width: 70%;
   }
 }
 
 .content {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 57px;
-  height: calc(100% - 57px);
+  padding-top: 57px;
+  min-height: 100vh;
 
   img:not(:last-child) {
     margin-top: 28px;
@@ -128,9 +115,6 @@ body {
   background: #fafafa;
 }
 
-.summary {
-  min-height: 100%;
-}
 .home-views,
 .post-views {
   display: flex;
@@ -185,7 +169,8 @@ iframe.soundcloud-small {
   padding-bottom: 1em;
 
   /* The card body already pads showcase entries. */
-  &.Showcase {
+  .showcase & {
+    background: var(--site-surface);
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -198,11 +183,11 @@ iframe.soundcloud-small {
     border: 0;
     background-color: transparent;
     border-radius: 7px;
-    padding: 0.5em 1em !important;
+    padding: 0.5em 1em;
     font-size: 14px;
     line-height: 1.6;
   }
-  h2:not(.lead),
+  h2:not(.sketch-intro),
   h3,
   h4 {
     margin-bottom: 1rem;
@@ -226,7 +211,7 @@ iframe.soundcloud-small {
   }
 }
 
-.panelLink {
+.post-card-link {
   text-decoration: none;
 
   &::after {
@@ -236,7 +221,7 @@ iframe.soundcloud-small {
     content: '';
   }
 }
-.panelLink ~ .post-card-body {
+.post-card-link ~ .post-card-body {
   a,
   iframe {
     z-index: 2;
@@ -248,25 +233,21 @@ iframe.soundcloud-small {
 
 .post-card {
   --card-heading-bg: var(--site-primary);
-  --card-body-bg: #fff;
+  --card-body-bg: var(--site-surface);
   --card-border-color: var(--site-frame-border);
 
   position: relative;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  color: #212529;
+  color: inherit;
   overflow-wrap: break-word;
-  background-clip: border-box;
   border: 1px solid var(--card-border-color);
   border-radius: 6px;
 
   background-color: var(--card-heading-bg);
   margin: 1.5em;
 
-  &:has(> .panelLink):hover {
+  &:has(> .post-card-link):hover {
     --card-heading-bg: var(--site-link-hover);
-    --card-body-bg: color-mix(in srgb, white 92%, var(--site-link-hover));
+    --card-body-bg: color-mix(in srgb, var(--site-surface) 92%, var(--site-link-hover));
     --card-border-color: color-mix(in srgb, black 20%, var(--site-link-hover));
   }
 
@@ -277,14 +258,11 @@ iframe.soundcloud-small {
 
   .post-card-header {
     padding: 18px 16px 16px;
-    margin-bottom: 0;
     color: #fff;
     background-color: var(--card-heading-bg);
     border-bottom: 1px solid var(--card-border-color);
 
-    &:first-child {
-      border-radius: 5px 5px 0 0;
-    }
+    border-radius: 5px 5px 0 0;
 
     h1 {
       margin: 0;
@@ -311,7 +289,6 @@ iframe.soundcloud-small {
   }
 
   .post-card-body {
-    flex: 1 1 auto;
     background-color: var(--card-body-bg);
     border-radius: 0 0 5px 5px;
     padding: 17px 16px 16px;
@@ -320,23 +297,20 @@ iframe.soundcloud-small {
   }
 }
 
-.Showcase {
-  background-color: rgb(255, 255, 255);
-
-  canvas {
-    display: block;
-  }
+.showcase canvas {
+  display: block;
 }
 
-.clickable {
-  font-size: 18px;
-  &:hover {
-    cursor: pointer;
-    color: #444;
-  }
+html:has(body.nineties),
+body.nineties {
+  background: #0000ff url('../assets/90s/microfab.gif') top left;
 }
 
 body.nineties {
+  --site-text: #ffff00;
+  --site-primary: #000080;
+  --site-surface: #000080;
+  --site-frame-border: #00eeee;
   margin: 0;
   font-family:
     'Comic Sans', 'Comic Sans MS', 'Chalkboard', 'ChalkboardSE-Regular', 'Marker Felt', 'Purisa', 'URW Chancery L',
@@ -345,18 +319,39 @@ body.nineties {
   line-height: 20px;
   color: #ffff00 !important;
   -webkit-font-smoothing: none;
-  background: #0000ff url('../assets/90s/microfab.gif') top left;
 
   .entry {
     color: #ffff00;
   }
 
-  a {
+  .github-activity {
+    --activity-background: #000080;
+    --activity-label-background: #000040;
+    --activity-ink: #ffff00;
+    --activity-muted: #00eeee;
+    --activity-link: #00eeee;
+    --activity-hover: #00eeee;
+    --activity-row-border: #000080;
+    --activity-active: #0000aa;
+  }
+
+  .renderGallery {
+    .itemName {
+      color: #ffff00;
+    }
+    .renderItem:hover .itemName {
+      color: #00eeee;
+    }
+  }
+
+  a,
+  .header-dropdown summary,
+  .email-signup button {
     color: #00eeee !important;
     text-decoration: underline;
   }
 
-  .panelLink {
+  .post-card-link {
     text-decoration: none;
   }
 
@@ -370,7 +365,7 @@ body.nineties {
     margin: 0 0 10px;
   }
 
-  .lead {
+  .sketch-intro {
     margin-bottom: 20px;
     font-size: 24px;
     font-weight: 200;

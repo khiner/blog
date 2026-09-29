@@ -1,9 +1,8 @@
-import type { ReactNode } from 'preact/compat'
 import { InternalLink, normalizePath } from 'navigation'
 
 import parsedEntries from 'parsedEntries'
 
-export default function Home({ pathname, children }: { pathname: string; children: ReactNode }) {
+export default function PageNav({ pathname }: { pathname: string }) {
   const homeMatch = pathname === '/'
   const category = parsedEntries.categories.find(
     (category) =>
@@ -13,7 +12,7 @@ export default function Home({ pathname, children }: { pathname: string; childre
   const viewingPosts = pathname === '/posts' || pathname.startsWith('/posts/') || !!category
 
   return (
-    <div className="summary">
+    <>
       <nav className="home-views" aria-label="Home views">
         <InternalLink
           href="/"
@@ -51,7 +50,6 @@ export default function Home({ pathname, children }: { pathname: string; childre
           ))}
         </nav>
       )}
-      {children}
-    </div>
+    </>
   )
 }

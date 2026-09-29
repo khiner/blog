@@ -37,7 +37,6 @@ const entries = [
       </div>
     ),
     contentPath: 'albums/WebTracks2006To2011',
-    type: 'article',
   },
   {
     path: '/albums/calahjes_and_lewps',
@@ -46,7 +45,6 @@ const entries = [
     date: 'Dec 22 2011',
     description: <div>Stream of consciousness frenetic sampling from musical sources.</div>,
     contentPath: 'albums/CalahjesAndLewps',
-    type: 'article',
   },
   {
     path: '/albums/make_noise_shared_system_jams',
@@ -60,7 +58,6 @@ const entries = [
       </div>
     ),
     contentPath: 'albums/MakeNoiseSharedSystemJams',
-    type: 'article',
   },
   {
     path: '/albums/midi_markov_compose',
@@ -69,7 +66,6 @@ const entries = [
     date: 'Sep 1 2016',
     description: <div>Piano compositions generated from a Markov chain given classical MIDI scores as input.</div>,
     contentPath: 'albums/MidiMarkovCompose',
-    type: 'article',
   },
   {
     path: '/albums/midi_markov_decompose',
@@ -83,7 +79,6 @@ const entries = [
       </div>
     ),
     contentPath: 'albums/MidiMarkovDecompose',
-    type: 'article',
   },
   {
     path: '/albums/web_tracks_2012_2017',
@@ -97,7 +92,6 @@ const entries = [
       </div>
     ),
     contentPath: 'albums/WebTracks2012To2017',
-    type: 'article',
   },
   {
     path: '/processing/string_pluck',
@@ -111,7 +105,7 @@ const entries = [
       </div>
     ),
     contentPath: 'processing/StringPluck',
-    type: 'showcase',
+    showcase: true,
   },
   {
     path: '/processing/snow_globe',
@@ -127,7 +121,7 @@ const entries = [
       </div>
     ),
     contentPath: 'processing/SnowGlobe',
-    type: 'showcase',
+    showcase: true,
   },
   {
     path: '/processing/retrograde_motion',
@@ -148,7 +142,7 @@ const entries = [
       </div>
     ),
     contentPath: 'processing/RetrogradeMotion',
-    type: 'showcase',
+    showcase: true,
   },
   {
     path: '/processing/force_graph',
@@ -166,7 +160,7 @@ const entries = [
       </div>
     ),
     contentPath: 'processing/ForceGraph',
-    type: 'showcase',
+    showcase: true,
   },
   {
     path: '/music_generation/midi_markov',
@@ -182,7 +176,6 @@ const entries = [
       </div>
     ),
     contentPath: 'music_generation/MidiMarkov',
-    type: 'article',
   },
   {
     path: '/music_generation/auto_sampler',
@@ -203,7 +196,6 @@ const entries = [
       </div>
     ),
     contentPath: 'music_generation/AutoSampler',
-    type: 'article',
   },
   {
     path: '/processing/bubble_wrap',
@@ -217,7 +209,7 @@ const entries = [
       </div>
     ),
     contentPath: 'processing/BubbleWrap',
-    type: 'showcase',
+    showcase: true,
   },
   {
     path: '/jupyter_notebooks/python_crash_course',
@@ -238,7 +230,6 @@ const entries = [
       </div>
     ),
     contentPath: 'jupyter_notebooks/PythonCrashCourse',
-    type: 'article',
   },
   {
     path: '/jupyter_notebooks/dft_timeseries',
@@ -259,7 +250,6 @@ const entries = [
       </div>
     ),
     contentPath: 'jupyter_notebooks/DftTimeseries',
-    type: 'article',
   },
   {
     path: '/web_development/react_bootstrap_site_generator',
@@ -306,7 +296,6 @@ const entries = [
       </div>
     ),
     contentPath: 'jupyter_notebooks/PythonForDataAnalysis',
-    type: 'article',
   },
   {
     path: '/jupyter_notebooks/accelerated_cpp',
@@ -322,7 +311,6 @@ const entries = [
       </div>
     ),
     contentPath: 'jupyter_notebooks/AcceleratedCpp',
-    type: 'article',
   },
   {
     path: '/jupyter_notebooks/coding_the_matrix',
@@ -339,7 +327,6 @@ const entries = [
       </div>
     ),
     contentPath: 'jupyter_notebooks/CodingTheMatrix',
-    type: 'article',
   },
   {
     path: '/jupyter_notebooks/musimathics_volume_1',
@@ -360,7 +347,6 @@ const entries = [
       </div>
     ),
     contentPath: 'jupyter_notebooks/MusimathicsVolume1',
-    type: 'article',
   },
   {
     path: '/jupyter_notebooks/musimathics_volume_2',
@@ -381,7 +367,6 @@ const entries = [
       </div>
     ),
     contentPath: 'jupyter_notebooks/MusimathicsVolume2',
-    type: 'article',
   },
   {
     path: '/jupyter_notebooks/mathematics_of_the_dft',
@@ -401,7 +386,6 @@ const entries = [
       </div>
     ),
     contentPath: 'jupyter_notebooks/MathematicsOfTheDft',
-    type: 'article',
   },
   {
     path: '/jupyter_notebooks/intro_to_digital_filters',
@@ -424,7 +408,6 @@ const entries = [
       </div>
     ),
     contentPath: 'jupyter_notebooks/IntroductionToDigitalFilters',
-    type: 'article',
   },
   {
     path: '/sound_machine',
@@ -441,7 +424,6 @@ const entries = [
       </div>
     ),
     contentPath: 'sound_machine/SoundMachine',
-    type: 'article',
   },
   {
     path: '/music_generation/wavenet_and_samplernn',
@@ -457,7 +439,6 @@ const entries = [
       </div>
     ),
     contentPath: 'music_generation/DeepModels',
-    type: 'article',
   },
   {
     path: '/jupyter_notebooks/physical_audio_signal_processing',
@@ -477,7 +458,6 @@ const entries = [
       </div>
     ),
     contentPath: 'jupyter_notebooks/PhysicalAudioSignalProcessing',
-    type: 'article',
   },
   {
     path: '/geoldm_viz',
@@ -498,7 +478,6 @@ const entries = [
       </div>
     ),
     contentPath: 'geoldm_viz/GeoLDMViz',
-    type: 'article',
   },
   {
     path: '/drum_classification',
@@ -518,7 +497,6 @@ const entries = [
       </div>
     ),
     contentPath: 'drum_classification/DrumClassification',
-    type: 'article',
   },
   {
     path: '/mesh_audio_editor',
@@ -540,7 +518,6 @@ const entries = [
       </div>
     ),
     contentPath: 'mesh_audio_editor/MeshAudioEditor',
-    type: 'article',
   },
   // {
   //   path: '/flowgrid',
@@ -556,7 +533,6 @@ const entries = [
   //     </div>
   //   ),
   //   contentPath: 'flowgrid/FlowGrid',
-  //   type: 'article',
   // },
   // {
   //   path: '/fluid_sim',
@@ -569,7 +545,6 @@ const entries = [
   //     </div>
   //   ),
   //   contentPath: 'web_development/FluidSimPost',
-  //   type: 'article',
   // },
   {
     // Media and manifest live at /MeshEditor/render-data/, published by scripts/deploy_render_data.sh.
@@ -577,7 +552,6 @@ const entries = [
     title: 'MeshEditor Renders',
     hideTitle: true,
     contentPath: 'mesh_editor/RenderGallery',
-    type: 'article',
     fullWidth: true,
     intro: (
       <p>
@@ -592,7 +566,6 @@ const entries = [
     date: 'Aug 29 2024',
     description: <div>A collection of modular/synth explorations</div>,
     contentPath: 'albums/Doodles',
-    type: 'article',
   },
 ]
 

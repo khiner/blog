@@ -10,7 +10,7 @@ const CodeBlock = ({ language = 'shell', tokens }: CodeBlockProps) => {
   if (!tokens) throw new Error('CodeBlock must be highlighted by the Vite code-block transform')
 
   return (
-    <pre style={{ display: 'block', overflowX: 'auto', padding: '0.5em', color: '#abb2bf', background: '#282c34' }}>
+    <pre style={{ color: '#abb2bf', background: '#282c34' }}>
       <code className={`language-${language}`} style={{ whiteSpace: 'pre' }}>
         {tokens.map(([text, style], index) => (
           <span key={index} style={style}>

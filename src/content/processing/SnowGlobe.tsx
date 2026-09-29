@@ -4,7 +4,7 @@ import snow_globe_sketch from './sketches/snow_globe'
 
 export default (
   <div>
-    <h2 className="lead">
+    <h2 className="sketch-intro">
       Some fun with edge detection. This simple effect, when used on images like cityscapes, looks like a blizzard.
       <br />
     </h2>

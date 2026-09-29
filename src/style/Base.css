@@ -23,9 +23,7 @@ body {
 h1,
 h2,
 h3,
-h4,
-h5,
-h6 {
+h4 {
   margin: 0 0 0.5rem;
   font-weight: 500;
   line-height: 1.2;
@@ -38,12 +36,6 @@ h3 {
 }
 h4 {
   font-size: calc(1.275rem + 0.3vw);
-}
-h5 {
-  font-size: 1.25rem;
-}
-h6 {
-  font-size: 1rem;
 }
 @media (min-width: 1200px) {
   h2 {
@@ -60,7 +52,6 @@ h6 {
 p,
 ul,
 ol,
-dl,
 blockquote,
 figure,
 pre {
@@ -75,12 +66,6 @@ ul ol,
 ol ul,
 ol ol {
   margin-bottom: 0;
-}
-dt {
-  font-weight: 700;
-}
-dd {
-  margin: 0 0 0.5rem;
 }
 b,
 strong {
@@ -102,7 +87,7 @@ sub {
 sup {
   top: -0.5em;
 }
-.lead {
+.sketch-intro {
   font-size: 1.25rem;
   font-weight: 300;
 }
@@ -117,17 +102,8 @@ hr {
 a {
   text-decoration: underline;
 }
-a:not([href]):not([class]) {
-  &,
-  &:hover {
-    color: inherit;
-    text-decoration: none;
-  }
-}
 pre,
-code,
-kbd,
-samp {
+code {
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 1em;
 }
@@ -162,111 +138,59 @@ button:focus:not(:focus-visible) {
 }
 input,
 button,
-select,
-optgroup,
-textarea {
+select {
   margin: 0;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
 }
-button,
-select {
-  text-transform: none;
-}
-select {
-  overflow-wrap: normal;
-}
-button,
-[type='button'],
-[type='reset'],
-[type='submit'] {
-  -webkit-appearance: button;
-  &:not(:disabled) {
-    cursor: pointer;
-  }
-}
-[role='button'] {
+button:not(:disabled),
+input[type='button']:not(:disabled) {
   cursor: pointer;
-}
-::-moz-focus-inner {
-  padding: 0;
-  border-style: none;
-}
-textarea {
-  resize: vertical;
-}
-::file-selector-button {
-  font: inherit;
-  -webkit-appearance: button;
 }
 [hidden] {
   display: none !important;
 }
 
-/* Keep the existing page widths, including the article's percentage of the viewport. */
-.page-width,
-.page-fluid {
+/* Shared padding with separate post-list and article widths. */
+.page {
   width: 100%;
-  padding-right: 12px;
-  padding-left: 12px;
-  margin-right: auto;
-  margin-left: auto;
+  padding-inline: 12px;
+  margin-inline: auto;
 }
 @media (min-width: 576px) {
-  .page-width {
+  .post-list,
+  .article-page {
     max-width: 540px;
   }
 }
 @media (min-width: 768px) {
-  .page-width {
+  .post-list,
+  .article-page {
     max-width: 720px;
+  }
+  .article-page {
+    width: 83.33333333%;
   }
 }
 @media (min-width: 992px) {
-  .page-width {
+  .post-list,
+  .article-page {
     max-width: 960px;
+  }
+  .article-page {
+    width: 66.66666667%;
   }
 }
 @media (min-width: 1200px) {
-  .page-width {
+  .post-list,
+  .article-page {
     max-width: 1140px;
   }
 }
 @media (min-width: 1400px) {
-  .page-width {
+  .post-list,
+  .article-page {
     max-width: 1320px;
   }
-}
-@media (min-width: 768px) {
-  .article-page {
-    flex: 0 0 auto;
-    width: 83.33333333%;
-  }
-  .article-spacer {
-    flex: 0 0 auto;
-    width: 8.33333333%;
-  }
-  .post-column {
-    justify-content: center;
-  }
-}
-@media (min-width: 992px) {
-  .article-page {
-    width: 66.66666667%;
-  }
-  .article-spacer {
-    width: 16.66666667%;
-  }
-}
-.post-row {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -12px;
-}
-.post-column {
-  flex: 1 0 0;
-  width: 100%;
-  max-width: 100%;
-  padding: 0 12px;
 }
