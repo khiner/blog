@@ -37,7 +37,7 @@
     "preact": "^10.29.8"
   },
   "devDependencies": {
-    "@preact/preset-vite": "^2.10.6",
+    "@prefresh/vite": "^4.0.1",
     "@types/node": "^26.6.3",
     "@webgpu/types": "^0.1.74",
     "husky": "^9.1.7",

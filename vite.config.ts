@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import preact from '@preact/preset-vite'
+import prefresh from '@prefresh/vite'
 
 import { createReadStream, existsSync, statSync } from 'node:fs'
 import path from 'node:path'
@@ -92,12 +92,18 @@ const githubActivityDevServer = () => {
 }
 
 export default defineConfig({
+  oxc: {
+    jsx: {
+      runtime: 'automatic',
+      importSource: 'preact',
+    },
+  },
   build: {
     outDir: 'build',
   },
   resolve: {
     tsconfigPaths: true,
   },
-  plugins: [highlightCode(), preact(), renderDataDevServer(), githubActivityDevServer()],
+  plugins: [highlightCode(), prefresh(), renderDataDevServer(), githubActivityDevServer()],
   base: '/',
 })
