@@ -37,6 +37,10 @@ const timelineMonth = new Intl.DateTimeFormat(undefined, { month: 'short', timeZ
 
 const dayNumber = (date: string) => Math.floor(Date.parse(`${date}T00:00:00Z`) / millisecondsPerDay)
 const dateAt = (day: number) => new Date(day * millisecondsPerDay)
+const dragZoomScale = (fromY: number, toY: number) => {
+  const delta = fromY - toY
+  return Math.exp(Math.sign(delta) * Math.max(0, Math.abs(delta) - 8) * 0.01)
+}
 const isoDate = (day: number) => dateAt(day).toISOString().slice(0, 10)
 const readableDate = (date: string) => timelineLongDate.format(dateAt(dayNumber(date)))
 const repoName = (repo: Repository) => (repo.private ? 'Private' : repo.name)
@@ -144,15 +148,20 @@ export default function GitHubActivity() {
     id: number
     x: number
     y: number
+    barWidth: number
     grabOffset: number
     inside: boolean
     moved: boolean
+    zoomed: boolean
+    day: number
+    width: number
   } | null>(null)
   const stopOverviewDrag = () => {
     overviewDrag.current = null
   }
   const tooltip = useRef<HTMLDivElement>(null)
   const zoomAnchor = useRef<{ day: number; x: number } | null>(null)
+  const zoomAtRef = useRef<((width: number, anchor: { day: number; x: number }) => void) | null>(null)
   const renderedDayWidth = useRef(1)
   const previousView = useRef({ width: 0, right: 0 })
   const showTooltip = (
@@ -495,11 +504,11 @@ export default function GitHubActivity() {
         }
       })
     }
+    zoomAtRef.current = zoomAt
+    const plotX = (clientX: number) =>
+      Math.max(0, Math.min(clientX - plotElement.getBoundingClientRect().left, plotElement.clientWidth))
     const zoomPlotAt = (scale: number, clientX?: number) => {
-      const x =
-        clientX === undefined
-          ? plotElement.clientWidth / 2
-          : Math.max(0, Math.min(clientX - plotElement.getBoundingClientRect().left, plotElement.clientWidth))
+      const x = clientX === undefined ? plotElement.clientWidth / 2 : plotX(clientX)
       const width = pendingZoom?.width ?? renderedDayWidth.current
       const left = pendingZoom ? pendingZoom.anchor.day * width - pendingZoom.anchor.x : plotElement.scrollLeft
       zoomAt(width * scale, { day: (left + x) / width, x })
@@ -517,6 +526,17 @@ export default function GitHubActivity() {
       else plotElement.scrollLeft += dx
       if (dy) window.scrollBy({ top: dy, behavior: 'instant' })
     }
+    const sampleDragVelocity = (dx: number, dy: number) => {
+      const now = performance.now()
+      const elapsed = Math.max(1, now - momentum.time)
+      momentum.x = (momentum.x + dx / elapsed) / 2
+      momentum.y = (momentum.y + dy / elapsed) / 2
+      momentum.time = now
+    }
+    const panDrag = (dx: number, dy: number) => {
+      sampleDragVelocity(dx, dy)
+      panBy(dx, dy)
+    }
     const coast = () => {
       if (Math.hypot(momentum.x, momentum.y) < 0.02) return
       const now = performance.now()
@@ -525,6 +545,12 @@ export default function GitHubActivity() {
       panBy(momentum.x * 250 * (1 - decay), momentum.y * 250 * (1 - decay))
       momentum.x *= decay
       momentum.y *= decay
+      momentum.frame = requestAnimationFrame(coast)
+    }
+    const startMomentum = () => {
+      const now = performance.now()
+      if (now - momentum.time >= 100 || Math.hypot(momentum.x, momentum.y) < 0.02) return
+      momentum.time = now
       momentum.frame = requestAnimationFrame(coast)
     }
     let pinch: {
@@ -551,11 +577,7 @@ export default function GitHubActivity() {
       }
       if (!pinch) return
       if (!event.touches.length) {
-        const now = performance.now()
-        if (event.type === 'touchend' && pinch.onPlot && pinch.finger && now - momentum.time < 100) {
-          momentum.time = now
-          momentum.frame = requestAnimationFrame(coast)
-        }
+        if (event.type === 'touchend' && pinch.onPlot && pinch.finger) startMomentum()
         pinch.controller.abort()
         pinch = null
         return
@@ -569,12 +591,7 @@ export default function GitHubActivity() {
           event.preventDefault()
           const dx = pinch.finger.clientX - finger.clientX
           const dy = pinch.finger.clientY - finger.clientY
-          const now = performance.now()
-          const elapsed = Math.max(1, now - momentum.time)
-          momentum.x = (momentum.x + dx / elapsed) / 2
-          momentum.y = (momentum.y + dy / elapsed) / 2
-          momentum.time = now
-          panBy(dx, dy)
+          panDrag(dx, dy)
           hideTooltip()
         } else stopMomentum()
         pinch.finger = finger
@@ -620,27 +637,66 @@ export default function GitHubActivity() {
     }
     document.addEventListener('touchstart', onTouch, active)
     document.addEventListener('pointerdown', stopMomentum, { signal: controller.signal })
+    let mouseDrag: {
+      id: number
+      x: number
+      lastX: number
+      moved: boolean
+      axis: { y: number; width: number; day: number } | null
+    } | null = null
+    const onMousePointer = (event: globalThis.PointerEvent) => {
+      if (event.type === 'pointerdown') {
+        if (event.pointerType === 'mouse' && event.button === 0) {
+          const axis = event.target instanceof Element && event.target.closest('.github-activity-axis')
+          mouseDrag = {
+            id: event.pointerId,
+            x: event.clientX,
+            lastX: event.clientX,
+            moved: false,
+            axis: axis
+              ? {
+                  y: event.clientY,
+                  width: renderedDayWidth.current,
+                  day: (plotElement.scrollLeft + plotX(event.clientX)) / renderedDayWidth.current,
+                }
+              : null,
+          }
+        }
+      } else if (mouseDrag?.id === event.pointerId && event.type === 'pointermove') {
+        if (!(event.buttons & 1)) {
+          mouseDrag = null
+          return
+        }
+        const dx = event.clientX - mouseDrag.x
+        const axis = mouseDrag.axis
+        const dy = axis ? event.clientY - axis.y : 0
+        if (!mouseDrag.moved && Math.hypot(dx, dy) < 4) return
+        if (!mouseDrag.moved) plotElement.setPointerCapture(event.pointerId)
+        mouseDrag.moved = true
+        if (axis) {
+          sampleDragVelocity(mouseDrag.lastX - event.clientX, 0)
+          zoomAt(axis.width * dragZoomScale(axis.y, event.clientY), { day: axis.day, x: plotX(event.clientX) })
+        } else panDrag(mouseDrag.lastX - event.clientX, 0)
+        mouseDrag.lastX = event.clientX
+        hideTooltip()
+      } else if (mouseDrag?.id === event.pointerId) {
+        if (event.type === 'pointerup' && mouseDrag.moved) startMomentum()
+        mouseDrag = null
+      }
+    }
+    plotElement.addEventListener('pointerdown', onMousePointer, { signal: controller.signal })
+    for (const type of ['pointermove', 'pointerup', 'pointercancel'] as const)
+      document.addEventListener(type, onMousePointer, { signal: controller.signal })
     for (const [element, zoom] of [
       [plotElement, zoomPlotAt],
       [overviewElement, zoomOverviewAt],
     ] as const) {
       const onWheel = (event: WheelEvent) => {
         stopMomentum()
-        if (!event.ctrlKey) {
-          if (element !== overviewElement) return
-          event.preventDefault()
-          const unit =
-            event.deltaMode === 1
-              ? parseFloat(getComputedStyle(plotElement).fontSize)
-              : event.deltaMode === 2
-                ? plotElement.clientWidth
-                : 1
-          plotElement.scrollLeft += (event.deltaX || event.deltaY) * unit
-          return
-        }
+        if (!event.deltaY || (!event.ctrlKey && Math.abs(event.deltaX) > Math.abs(event.deltaY))) return
         event.preventDefault()
-        if (!event.deltaY) return
-        const scale = Math.exp(-event.deltaY * 0.01)
+        const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? plotElement.clientWidth : 1
+        const scale = Math.exp(-event.deltaY * unit * (event.ctrlKey ? 0.01 : 0.002))
         const width = pendingZoom?.width ?? renderedDayWidth.current
         if (clampWidth(width * scale) !== width) zoom(scale, event.clientX)
       }
@@ -666,6 +722,7 @@ export default function GitHubActivity() {
     return () => {
       stopMomentum()
       cancelAnimationFrame(zoomFrame)
+      zoomAtRef.current = null
       controller.abort()
       pinch?.controller.abort()
     }
@@ -686,6 +743,7 @@ export default function GitHubActivity() {
       <a
         {...props}
         key={key}
+        draggable={false}
         href={dayHref(date, count, target)}
         target="_blank"
         rel="noopener noreferrer"
@@ -787,6 +845,7 @@ export default function GitHubActivity() {
           {repo && !repo.private && repo.url && (
             <a
               className="github-activity-row-link"
+              draggable={false}
               href={repo.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -864,16 +923,20 @@ export default function GitHubActivity() {
         stopOverviewDrag()
         return
       }
-      if (event.button !== 0) return
+      if (event.button !== 0 || !plot.current) return
       const bounds = event.currentTarget.getBoundingClientRect()
       const fraction = (event.clientX - bounds.left) / bounds.width
       overviewDrag.current = {
         id: event.pointerId,
         x: event.clientX,
         y: event.clientY,
+        barWidth: bounds.width,
         grabOffset: fraction - viewport.start,
         inside: fraction >= viewport.start && fraction <= viewport.end,
         moved: false,
+        zoomed: false,
+        day: (plot.current.scrollLeft + plot.current.clientWidth / 2) / renderedDayWidth.current,
+        width: renderedDayWidth.current,
       }
       event.currentTarget.setPointerCapture(event.pointerId)
       return
@@ -882,7 +945,17 @@ export default function GitHubActivity() {
     if (!drag || drag.id !== event.pointerId) return
     drag.moved ||= Math.hypot(event.clientX - drag.x, event.clientY - drag.y) >= 4
     if (event.type === 'pointermove') {
-      if (drag.moved) panOverview(event.clientX, drag.grabOffset)
+      if (drag.moved) {
+        const scale = dragZoomScale(drag.y, event.clientY)
+        if (!drag.zoomed && scale === 1) panOverview(event.clientX, drag.grabOffset)
+        else if (plot.current) {
+          drag.zoomed = true
+          zoomAtRef.current?.(drag.width * scale, {
+            day: drag.day + ((event.clientX - drag.x) / drag.barWidth) * totalDays,
+            x: plot.current.clientWidth / 2,
+          })
+        }
+      }
     } else {
       stopOverviewDrag()
       if (!drag.moved && !drag.inside) panOverview(event.clientX, (viewport.end - viewport.start) / 2)
@@ -1059,7 +1132,7 @@ export default function GitHubActivity() {
           className="github-activity-plot"
           ref={plot}
           onScroll={updateViewport}
-          aria-label="Scroll horizontally; pinch to zoom"
+          aria-label="Drag or scroll horizontally to pan. Use the wheel or pinch to zoom."
         >
           <div
             className="github-activity-track"

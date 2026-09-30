@@ -182,12 +182,18 @@
   min-width: 0;
 }
 .github-activity-plot {
+  cursor: grab;
   flex: 1 1 auto;
   min-width: 0;
   overscroll-behavior-x: contain;
   overflow-x: auto;
   overflow-y: hidden;
   touch-action: none;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
 }
 .github-activity-track {
   position: relative;
