@@ -60,10 +60,7 @@ const strength = (count: number) => (count >= 8 ? 4 : count >= 4 ? 3 : count >= 
 const commitCount = (repo: Repository) => repo.days.reduce((sum, day) => sum + day[1], 0)
 const hasUpstreamContributions = (repo: Repository) => repo.days.some(([, , , lanes]) => (lanes?.[0][0] ?? 0) > 0)
 const repositoryDetails = (repo: Repository) =>
-  [
-    repo.sourceName && `fork of ${repo.sourceName}`,
-    repo.fork && hasUpstreamContributions(repo) && 'upstream contributions',
-  ]
+  [repo.sourceName && `fork of ${repo.sourceName}`, repo.fork && hasUpstreamContributions(repo) && 'upstream contributions']
     .filter(Boolean)
     .join(' · ')
 
@@ -166,12 +163,9 @@ export default function GitHubActivity() {
   const previousView = useRef({ width: 0, right: 0 })
   const showTooltip = (
     label: string,
-    event: { clientX: number; clientY: number; pointerType?: string; type?: string },
+    event: { clientX: number; clientY: number; pointerType?: string; isPrimary?: boolean; type?: string },
   ) => {
-    if (event.pointerType === 'touch' && event.type === 'pointermove') {
-      hideTooltip()
-      return
-    }
+    if (event.pointerType === 'touch' && (event.type !== 'pointerdown' || !event.isPrimary)) return
     if (!label.trim()) {
       hideTooltip()
       return
@@ -204,16 +198,21 @@ export default function GitHubActivity() {
   const hideTooltip = () => {
     if (tooltip.current) tooltip.current.hidden = true
   }
+  useEffect(() => {
+    const controller = new AbortController()
+    const onPointer = (event: globalThis.PointerEvent) => {
+      if (event.pointerType === 'touch') hideTooltip()
+    }
+    for (const type of ['pointerdown', 'pointerup', 'pointercancel'])
+      document.addEventListener(type, onPointer, { capture: true, signal: controller.signal })
+    return () => controller.abort()
+  }, [])
   const tooltipHandlers = (label: string, title?: string) => {
     const hover = (event: PointerEvent<HTMLButtonElement>) => {
-      if (event.pointerType === 'touch' && event.type === 'pointermove') {
-        hideTooltip()
-        return
-      }
       const name = title ? event.currentTarget.querySelector<HTMLElement>('.github-activity-repo-name') : null
       showTooltip(name && name.scrollWidth > name.clientWidth ? `${title}\n${label}` : label, event)
     }
-    return { onPointerEnter: hover, onPointerMove: hover, onPointerLeave: hideTooltip }
+    return { onPointerEnter: hover, onPointerDown: hover, onPointerMove: hover, onPointerLeave: hideTooltip }
   }
   const filterHandlers = (label: string, shown: boolean, toggle: () => void) => ({
     ...tooltipHandlers(`${shown ? 'Hide' : 'Show'} ${label}`),
@@ -223,12 +222,7 @@ export default function GitHubActivity() {
     },
   })
   const renderFilter = (label: string, shown: boolean, toggle: () => void, icon: ReactNode) => (
-    <button
-      type="button"
-      aria-label={label}
-      aria-pressed={shown}
-      {...filterHandlers(label.toLowerCase(), shown, toggle)}
-    >
+    <button type="button" aria-label={label} aria-pressed={shown} {...filterHandlers(label.toLowerCase(), shown, toggle)}>
       {icon}
     </button>
   )
@@ -256,14 +250,10 @@ export default function GitHubActivity() {
     const repos = activity.repositories
       .filter(
         (repo) =>
-          (showPrivate || !repo.private) &&
-          (!repo.fork || (hasUpstreamContributions(repo) ? showUpstreamForks : showForkOnlyForks)),
+          (showPrivate || !repo.private) && (!repo.fork || (hasUpstreamContributions(repo) ? showUpstreamForks : showForkOnlyForks)),
       )
-      .sort(
-        (a, b) => (b.days.at(-1)?.[0] ?? '').localeCompare(a.days.at(-1)?.[0] ?? '') || a.name.localeCompare(b.name),
-      )
-    const firstDay =
-      Math.min(lastDay, ...repos.map((repo) => (repo.days.length ? dayNumber(repo.days[0][0]) : lastDay))) - 7
+      .sort((a, b) => (b.days.at(-1)?.[0] ?? '').localeCompare(a.days.at(-1)?.[0] ?? '') || a.name.localeCompare(b.name))
+    const firstDay = Math.min(lastDay, ...repos.map((repo) => (repo.days.length ? dayNumber(repo.days[0][0]) : lastDay))) - 7
     return {
       firstDay,
       lastDay,
@@ -310,17 +300,13 @@ export default function GitHubActivity() {
   }, [chart, firstVisibleDay, lastVisibleDay])
 
   const rowItems = useMemo<(Repository | null)[]>(
-    () =>
-      grouped
-        ? [...grouped.inView, ...(grouped.other.length ? [null] : []), ...(showOtherRepos ? grouped.other : [])]
-        : [],
+    () => (grouped ? [...grouped.inView, ...(grouped.other.length ? [null] : []), ...(showOtherRepos ? grouped.other : [])] : []),
     [grouped, showOtherRepos],
   )
 
   const otherDays = useMemo(() => {
     const counts = new Map<string, number>()
-    for (const repo of grouped?.other ?? [])
-      for (const [date, count] of repo.days) counts.set(date, (counts.get(date) ?? 0) + count)
+    for (const repo of grouped?.other ?? []) for (const [date, count] of repo.days) counts.set(date, (counts.get(date) ?? 0) + count)
     return counts
   }, [grouped])
 
@@ -358,8 +344,7 @@ export default function GitHubActivity() {
         day: chart.firstDay,
       })
     const spaced: typeof result = []
-    for (const label of result)
-      if (!spaced.length || label.offset - spaced[spaced.length - 1].offset >= labelSpacing) spaced.push(label)
+    for (const label of result) if (!spaced.length || label.offset - spaced[spaced.length - 1].offset >= labelSpacing) spaced.push(label)
     const trackWidth = totalDays * dayWidth
     return spaced.filter(({ offset }) => offset + endSpacing <= trackWidth)
   }, [chart, dayWidth, monthStarts, axisFontSize])
@@ -384,8 +369,7 @@ export default function GitHubActivity() {
     if (!element || !element.scrollWidth) return
     const width = element.clientWidth
     if (previousView.current.width !== width) element.style.setProperty('--activity-plot-width', `${width}px`)
-    if (previousView.current.width && previousView.current.width !== width)
-      element.scrollLeft = previousView.current.right - width
+    if (previousView.current.width && previousView.current.width !== width) element.scrollLeft = previousView.current.right - width
     const left = Math.min(Math.max(0, element.scrollLeft), Math.max(0, element.scrollWidth - width))
     const right = left + width
     previousView.current = { width, right }
@@ -505,8 +489,7 @@ export default function GitHubActivity() {
       })
     }
     zoomAtRef.current = zoomAt
-    const plotX = (clientX: number) =>
-      Math.max(0, Math.min(clientX - plotElement.getBoundingClientRect().left, plotElement.clientWidth))
+    const plotX = (clientX: number) => Math.max(0, Math.min(clientX - plotElement.getBoundingClientRect().left, plotElement.clientWidth))
     const zoomPlotAt = (scale: number, clientX?: number) => {
       const x = clientX === undefined ? plotElement.clientWidth / 2 : plotX(clientX)
       const width = pendingZoom?.width ?? renderedDayWidth.current
@@ -557,6 +540,7 @@ export default function GitHubActivity() {
       onPlot: boolean
       range: { width: number; day: number; x: number; distance: number } | null
       finger: Touch | null
+      dragging: boolean
       anchors: { id: number; day: number }[] | null
       controller: AbortController
     } | null = null
@@ -566,7 +550,7 @@ export default function GitHubActivity() {
         const target = event.target as Node
         const onPlot = plotElement.contains(target)
         if (!pinch && (onPlot || overviewElement.contains(target)))
-          pinch = { onPlot, range: null, finger: null, anchors: null, controller: new AbortController() }
+          pinch = { onPlot, range: null, finger: null, dragging: false, anchors: null, controller: new AbortController() }
         if (!pinch) return
         // Track both fingers, including outside the chart and on rows removed during zoom.
         for (const touch of event.touches)
@@ -591,9 +575,14 @@ export default function GitHubActivity() {
           event.preventDefault()
           const dx = pinch.finger.clientX - finger.clientX
           const dy = pinch.finger.clientY - finger.clientY
+          if (!pinch.dragging && Math.hypot(dx, dy) < 8) return
+          pinch.dragging = true
           panDrag(dx, dy)
           hideTooltip()
-        } else stopMomentum()
+        } else {
+          stopMomentum()
+          pinch.dragging = false
+        }
         pinch.finger = finger
         return
       }
@@ -728,13 +717,7 @@ export default function GitHubActivity() {
     }
   }, [chart])
 
-  const renderDay = (
-    repo: Repository | null,
-    date: string,
-    count: number,
-    target?: DayTarget | null,
-    lane?: 'upstream' | 'fork-only',
-  ) => {
+  const renderDay = (repo: Repository | null, date: string, count: number, target?: DayTarget | null, lane?: 'upstream' | 'fork-only') => {
     if (!count) return null
     const className = `github-activity-day level-${strength(count)}${lane ? ` github-activity-${lane}` : ''}`
     const key = `${date}-${lane ?? 'all'}`
@@ -773,16 +756,10 @@ export default function GitHubActivity() {
           const cells = repo.days.map(([date, count, target, lanes]) => ({
             date,
             content: lanes
-              ? [
-                  renderDay(repo, date, lanes[0][0], lanes[0][1], 'upstream'),
-                  renderDay(repo, date, lanes[1][0], lanes[1][1], 'fork-only'),
-                ]
+              ? [renderDay(repo, date, lanes[0][0], lanes[0][1], 'upstream'), renderDay(repo, date, lanes[1][0], lanes[1][1], 'fork-only')]
               : renderDay(repo, date, count, target),
           }))
-          return [
-            repo,
-            { title, details, start, end, cells, tooltip: [details, instruction].filter(Boolean).join('\n') },
-          ] as const
+          return [repo, { title, details, start, end, cells, tooltip: [details, instruction].filter(Boolean).join('\n') }] as const
         }),
       ),
     [chart],
@@ -795,10 +772,7 @@ export default function GitHubActivity() {
     const lastRenderedDate = isoDate(chart.firstDay + lastVisibleDay + 1 + overscanDays)
     const hoveredDate = (event: PointerEvent<HTMLDivElement>) =>
       (event.target as HTMLElement).closest<HTMLElement>('.github-activity-day')?.dataset.date ??
-      isoDate(
-        chart.firstDay +
-          Math.floor((event.clientX - event.currentTarget.getBoundingClientRect().left) / renderedDayWidth.current),
-      )
+      isoDate(chart.firstDay + Math.floor((event.clientX - event.currentTarget.getBoundingClientRect().left) / renderedDayWidth.current))
     const showDay = (repo: Repository | null, event: PointerEvent<HTMLDivElement>) => {
       const date = hoveredDate(event)
       const day = repo?.days.find(([day]) => day === date)
@@ -820,9 +794,7 @@ export default function GitHubActivity() {
         publicEvents && (repo ? 'made public' : `${publicEvents} made public`),
       ].filter(Boolean)
       showTooltip(
-        [repo ? repoName(repo) : 'Inactive in view', ...(events.length ? [readableDate(date), ...events] : [])].join(
-          ' · ',
-        ),
+        [repo ? repoName(repo) : 'Inactive in view', ...(events.length ? [readableDate(date), ...events] : [])].join(' · '),
         event,
       )
     }
@@ -839,7 +811,7 @@ export default function GitHubActivity() {
           role="group"
           aria-label={repo ? repoName(repo) : 'Inactive in view'}
           onPointerMove={repo || !showOtherRepos ? hover : undefined}
-          onPointerDown={repo ? hover : undefined}
+          onPointerDown={repo || !showOtherRepos ? hover : undefined}
           onPointerLeave={hideTooltip}
         >
           {repo && !repo.private && repo.url && (
@@ -853,22 +825,12 @@ export default function GitHubActivity() {
             />
           )}
           {repos.map((repo) => (
-            <span
-              className="github-activity-active"
-              key={repo.id}
-              style={activeRange(repo, chart.firstDay, chart.lastDay)}
-            />
+            <span className="github-activity-active" key={repo.id} style={activeRange(repo, chart.firstDay, chart.lastDay)} />
           ))}
           {repos.length > 0 &&
-            cells
-              .filter(({ date }) => date >= firstRenderedDate && date <= lastRenderedDate)
-              .flatMap(({ content }) => content)}
+            cells.filter(({ date }) => date >= firstRenderedDate && date <= lastRenderedDate).flatMap(({ content }) => content)}
           {repos.flatMap((repo) => [
-            <span
-              className="github-activity-marker created"
-              key={`${repo.id}-created`}
-              style={{ left: position(repo.createdAt) }}
-            />,
+            <span className="github-activity-marker created" key={`${repo.id}-created`} style={{ left: position(repo.createdAt) }} />,
             ...repo.publications.map((event) => (
               <span className="github-activity-marker public" key={event.id} style={{ left: position(event.date) }} />
             )),
@@ -878,12 +840,8 @@ export default function GitHubActivity() {
     })
   }, [chart, repositoryViews, grouped, otherDays, rowItems, showOtherRepos, firstVisibleDay, lastVisibleDay])
 
-  if (error)
-    return (
-      <section className="github-activity github-activity-message">GitHub activity is temporarily unavailable.</section>
-    )
-  if (!activity || !chart)
-    return <section className="github-activity github-activity-message">Loading GitHub activity…</section>
+  if (error) return <section className="github-activity github-activity-message">GitHub activity is temporarily unavailable.</section>
+  if (!activity || !chart) return <section className="github-activity github-activity-message">Loading GitHub activity…</section>
 
   const fullTimeline = viewport.start === 0 && viewport.end === 1
   const width = totalDays * dayWidth
@@ -904,10 +862,7 @@ export default function GitHubActivity() {
     const calendarYear = date.getUTCFullYear()
     const month = date.getUTCMonth()
     const start = Math.max(chart.firstDay, Math.floor(Date.UTC(calendarYear, year ? 0 : month, 1) / millisecondsPerDay))
-    const end = Math.min(
-      chart.lastDay + 1,
-      Math.floor(Date.UTC(calendarYear + Number(year), year ? 0 : month + 1, 1) / millisecondsPerDay),
-    )
+    const end = Math.min(chart.lastDay + 1, Math.floor(Date.UTC(calendarYear + Number(year), year ? 0 : month + 1, 1) / millisecondsPerDay))
     showRange(start, end)
   }
   const panOverview = (clientX: number, grabOffset: number) => {
@@ -966,8 +921,7 @@ export default function GitHubActivity() {
       <div className="github-activity-heading">
         <div className="github-activity-caption">
           <p className="github-activity-intro">
-            I rarely write posts, but I'm always working on stuff! This GitHub timeline explorer shows what I'm
-            tinkering on. Updated daily.
+            I rarely write posts, but I'm always working on stuff! This GitHub timeline explorer shows what I'm tinkering on. Updated daily.
           </p>
           <div className="github-activity-legend" aria-label="Heatmap legend">
             <div className="github-activity-legend-group">
@@ -1010,9 +964,7 @@ export default function GitHubActivity() {
           aria-label="Timeline overview"
           aria-valuemin={chart.firstYear}
           aria-valuemax={chart.lastYear}
-          aria-valuenow={Math.round(
-            dateAt(chart.firstDay + viewport.start * (chart.lastDay - chart.firstDay)).getUTCFullYear(),
-          )}
+          aria-valuenow={Math.round(dateAt(chart.firstDay + viewport.start * (chart.lastDay - chart.firstDay)).getUTCFullYear())}
           tabIndex={0}
           onKeyDown={(event) => {
             if (!plot.current || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return
@@ -1134,10 +1086,7 @@ export default function GitHubActivity() {
           onScroll={updateViewport}
           aria-label="Drag or scroll horizontally to pan. Use the wheel or pinch to zoom."
         >
-          <div
-            className="github-activity-track"
-            style={{ width, '--day-width': `${100 / totalDays}%` } as CSSProperties}
-          >
+          <div className="github-activity-track" style={{ width, '--day-width': `${100 / totalDays}%` } as CSSProperties}>
             <div className="github-activity-axis">
               {months.map((month) => (
                 <button

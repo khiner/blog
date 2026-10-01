@@ -47,9 +47,7 @@ const Thumbnail = ({ item, onClick }: { item: Item; onClick: () => void }) => {
           src={thumbUrl(item)}
           alt={item.name}
           loading="lazy"
-          onLoad={(e) =>
-            e.currentTarget.naturalHeight > 0 && setAspect(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight)
-          }
+          onLoad={(e) => e.currentTarget.naturalHeight > 0 && setAspect(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight)}
         />
         {isVideo(item) && <span className="playBadge">▶</span>}
       </div>
@@ -61,11 +59,7 @@ const Thumbnail = ({ item, onClick }: { item: Item; onClick: () => void }) => {
 const Viewer = ({ item, onClose }: { item: Item; onClose: () => void }) => (
   <div className="renderViewer" onClick={onClose}>
     <figure onClick={(event) => event.stopPropagation()}>
-      {isVideo(item) ? (
-        <video src={mediaUrl(item)} controls autoPlay loop playsInline />
-      ) : (
-        <img src={mediaUrl(item)} alt={item.name} />
-      )}
+      {isVideo(item) ? <video src={mediaUrl(item)} controls autoPlay loop playsInline /> : <img src={mediaUrl(item)} alt={item.name} />}
       <figcaption>{item.name}</figcaption>
     </figure>
     <button className="viewerClose" aria-label="Close" onClick={onClose}>

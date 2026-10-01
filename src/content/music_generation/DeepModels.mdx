@@ -181,11 +181,7 @@ Melodies are composed of a series of musical events, which are often grouped int
 
 SampleRNN eases the discovery of these hierarchical timeseries features by imposing a similarly hierarchical network architecture.
 
-<img
-  src="./assets/samplernn_diagram.png"
-  style={{ width: '80%' }}
-  alt="Diagram of SampleRNN showing RNN cell hierarchy"
-/>
+<img src="./assets/samplernn_diagram.png" style={{ width: '80%' }} alt="Diagram of SampleRNN showing RNN cell hierarchy" />
 
 RNN memory cells are organized into tiers.
 Each cell receives information both from the previous timestep on its own tier, as well as a weighted summary of outputs from a contiguous local group of cells in the previous tier.

@@ -6,26 +6,17 @@ export default function PageNav({ pathname }: { pathname: string }) {
   const homeMatch = pathname === '/'
   const category = parsedEntries.categories.find(
     (category) =>
-      pathname === normalizePath(`/posts/${category.path}`) ||
-      category.posts.some((post) => normalizePath(post.path) === pathname),
+      pathname === normalizePath(`/posts/${category.path}`) || category.posts.some((post) => normalizePath(post.path) === pathname),
   )?.path
   const viewingPosts = pathname === '/posts' || pathname.startsWith('/posts/') || !!category
 
   return (
     <>
       <nav className="home-views" aria-label="Home views">
-        <InternalLink
-          href="/"
-          className={homeMatch ? 'active' : undefined}
-          aria-current={homeMatch ? 'page' : undefined}
-        >
+        <InternalLink href="/" className={homeMatch ? 'active' : undefined} aria-current={homeMatch ? 'page' : undefined}>
           GitHub activity
         </InternalLink>
-        <InternalLink
-          href="/posts"
-          className={viewingPosts ? 'active' : undefined}
-          aria-current={viewingPosts ? 'page' : undefined}
-        >
+        <InternalLink href="/posts" className={viewingPosts ? 'active' : undefined} aria-current={viewingPosts ? 'page' : undefined}>
           Posts
         </InternalLink>
         <InternalLink

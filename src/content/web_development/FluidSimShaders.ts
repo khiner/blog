@@ -171,11 +171,7 @@ ${DeclareBilerped('p', 'grid.dye', 'in')}
 const divergence = `
 ${StructGridSize}
 
-${createBindings(
-  ['storage', 'v_in', 'array<vec2f>'],
-  ['storage', 'div', 'array<f32>', true],
-  ['uniform', 'grid', 'GridSize'],
-)}
+${createBindings(['storage', 'v_in', 'array<vec2f>'], ['storage', 'div', 'array<f32>', true], ['uniform', 'grid', 'GridSize'])}
 
 fn vel(v : vec2f) -> vec2f { return v_in[ID(v)]; }
 
@@ -223,11 +219,7 @@ ${DeclareSideNeighbors('pos')}
 const vorticity = `
 ${StructGridSize}
 
-${createBindings(
-  ['storage', 'v_in', 'array<vec2f>'],
-  ['storage', 'vorticity', 'array<f32>', true],
-  ['uniform', 'grid', 'GridSize'],
-)}
+${createBindings(['storage', 'v_in', 'array<vec2f>'], ['storage', 'vorticity', 'array<f32>', true], ['uniform', 'grid', 'GridSize'])}
 
 fn vel(p : vec2f) -> vec2f { return v_in[ID(p)]; }
 
@@ -309,11 +301,7 @@ ${MainFull}
 const boundaryPressure = `
 ${StructGridSize}
 
-${createBindings(
-  ['storage', 'x_in', 'array<f32>'],
-  ['storage', 'x_out', 'array<f32>', true],
-  ['uniform', 'grid', 'GridSize'],
-)}
+${createBindings(['storage', 'x_in', 'array<f32>'], ['storage', 'x_out', 'array<f32>', true], ['uniform', 'grid', 'GridSize'])}
 
 ${MainFull}
   if (pos.x <= 0) { pos.x = 1; }
@@ -336,11 +324,7 @@ ${MainFull}
 const checkerboard = `
 ${StructGridSize}
 
-${createBindings(
-  ['storage', 'col_out', 'array<vec4f>', true],
-  ['uniform', 'grid', 'GridSize'],
-  ['uniform', 'uTime', 'f32'],
-)}
+${createBindings(['storage', 'col_out', 'array<vec4f>', true], ['uniform', 'grid', 'GridSize'], ['uniform', 'uTime', 'f32'])}
 
 fn noise(p_ : vec3f) -> f32 {
   var p = p_;

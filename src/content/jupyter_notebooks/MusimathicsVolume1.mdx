@@ -59,9 +59,7 @@ Hear the difference between the sound of a major triad in an equal-tempered scal
 </p>
 
 <p>
-  {
-    'Hear the "just intervals" ordered by decreasing consonance (increasing dissonance) based on the conventions of Western music theory:'
-  }
+  {'Hear the "just intervals" ordered by decreasing consonance (increasing dissonance) based on the conventions of Western music theory:'}
   <CodeBlock
     language="python"
     code={
@@ -124,11 +122,7 @@ render_samples_ipython(np.concatenate([noise_signal for noise_signal in band_lim
 
 <Audio src="./assets/musimathics/volume_1/band_limited_noise.wav" />
 
-<Image
-  src="./assets/musimathics/volume_1/band_limited_noise.png"
-  alt="band limited noise"
-  style={{ maxWidth: '550px' }}
-/>
+<Image src="./assets/musimathics/volume_1/band_limited_noise.png" alt="band limited noise" style={{ maxWidth: '550px' }} />
 
 ### [Chapter 7: Introduction to Acoustics](https://colab.research.google.com/github/khiner/notebooks/blob/master/musimathics/volume_1/chapter_7_introduction_to_acoustics.ipynb)
 
@@ -163,11 +157,7 @@ plt.title('Voss fractal noise power spectrum')
 plt.legend()
 ```
 
-<Image
-  src="./assets/musimathics/volume_1/voss_power_spectrum.png"
-  alt="band limited noise"
-  style={{ maxWidth: '550px' }}
-/>
+<Image src="./assets/musimathics/volume_1/voss_power_spectrum.png" alt="band limited noise" style={{ maxWidth: '550px' }} />
 
 ```python
 render_samples_ipython(AR(0.2, 0.125).apply(voss_noise.copy()[:voss_noise.size // 4]), rate=SAMPLES_PER_SECOND)

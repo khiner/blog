@@ -243,13 +243,12 @@ const runFluidSim = (
         pipeline,
         bindGroup: device.createBindGroup({
           layout: pipeline.getBindGroupLayout(0),
-          entries: [
-            ...buffers.map(({ buffer }) => buffer),
-            ...uniformBuffers.map(({ buffer: gpuBuffer }) => gpuBuffer),
-          ].map((buffer, binding) => ({
-            binding,
-            resource: { buffer },
-          })),
+          entries: [...buffers.map(({ buffer }) => buffer), ...uniformBuffers.map(({ buffer: gpuBuffer }) => gpuBuffer)].map(
+            (buffer, binding) => ({
+              binding,
+              resource: { buffer },
+            }),
+          ),
         }),
         dim: buffers[0].size,
       }
@@ -282,11 +281,7 @@ const runFluidSim = (
         ...(renderMode >= 1 && renderMode <= 3 ? [program([dye], [gridSize, time], shaders.checkerboard)] : []),
         // Add dye and velocity at the mouse position.
         program([dye, dye0], [gridSize, mouse, dyeIntensity, dyeRadius, dyeDiffusion, time, dt], shaders.updateDye),
-        program(
-          [velocity, velocity0],
-          [gridSize, mouse, velocityForce, velocityRadius, velocityDiffusion, dt],
-          shaders.updateVelocity,
-        ),
+        program([velocity, velocity0], [gridSize, mouse, velocityForce, velocityRadius, velocityDiffusion, dt], shaders.updateVelocity),
         // Advect the velocity field through itself.
         program([velocity0, velocity0, velocity], [gridSize, dt], shaders.advect),
         program([velocity, velocity0], [gridSize, containFluid], shaders.boundary),
@@ -409,10 +404,7 @@ const runFluidSim = (
   return { step, reset, onPropChange, onSizeChange, onMouseMove, onMouseStopMoving }
 }
 
-const Control: React.FC<{ label: string; children: React.ReactElement<{ style?: React.CSSProperties }> }> = ({
-  label,
-  children,
-}) => (
+const Control: React.FC<{ label: string; children: React.ReactElement<{ style?: React.CSSProperties }> }> = ({ label, children }) => (
   <div style={{ display: 'flex', alignItems: 'center' }}>
     <label style={{ marginRight: '0.5em', width: '6em', textAlign: 'right' }}>{label}</label>
     {React.cloneElement(children, { style: { ...children.props.style, flex: 1 } })}
@@ -429,14 +421,7 @@ interface SliderProps {
 }
 const Slider: React.FC<SliderProps> = ({ k, l, min, max, v, cb }) => (
   <Control label={l}>
-    <input
-      type="range"
-      min={min}
-      max={max}
-      step={0.0001}
-      value={v}
-      onChange={(e) => cb(k, parseFloat(e.currentTarget.value))}
-    />
+    <input type="range" min={min} max={max} step={0.0001} value={v} onChange={(e) => cb(k, parseFloat(e.currentTarget.value))} />
   </Control>
 )
 
@@ -600,12 +585,7 @@ const ControlPane: React.FC<ControlPaneProps> = ({ props, onChange, reset, style
               <Slider k="shadowIntensity" l="Intensity" v={shadowIntensity} min={0} max={50} cb={onChange} />
             </>
           )}
-          <input
-            type="button"
-            value="Reset sim"
-            style={{ alignSelf: 'center', marginTop: 5, padding: '3px 8px' }}
-            onClick={reset}
-          />
+          <input type="button" value="Reset sim" style={{ alignSelf: 'center', marginTop: 5, padding: '3px 8px' }} onClick={reset} />
         </div>
       )}
     </div>
@@ -735,10 +715,7 @@ export default ({ boundaryRef = null }: FluidSimProps) => {
     <div>
       {!errorMessage && (
         <>
-          <canvas
-            ref={canvasRef}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-          ></canvas>
+          <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}></canvas>
           {simulation && (
             <ControlPane
               props={props}

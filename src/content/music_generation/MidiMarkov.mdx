@@ -71,11 +71,7 @@ In this implementation, there are options to specify many of these choices, like
 
 {<p>As an example, consider this passage from Beethoven's 5th:<br /><Image src={beethovens_5th_image} alt="Beethoven's 5th sheet music" /><br />This would be what its Markov map would look like if <code>match-length</code> were set to 1:</p>}
 
-<pre>
-  {
-    'G => (G, G, E) # since a single G is followed by two Gs and one E in the sequence\nE => (F)\nF => (F, F, D)\nD => ()'
-  }
-</pre>
+<pre>{'G => (G, G, E) # since a single G is followed by two Gs and one E in the sequence\nE => (F)\nF => (F, F, D)\nD => ()'}</pre>
 
 If the last note played in the sequence were an F, for the next note we are twice as likely to choose another F as we are a D.
 

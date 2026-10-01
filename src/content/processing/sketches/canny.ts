@@ -22,9 +22,7 @@ export function cannyEdges(rgba: Uint8ClampedArray, width: number, height: numbe
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const i = y * width + x
-      gray[i] =
-        (horizontal[i - (y > 0 ? width : 0)] + 2 * horizontal[i] + horizontal[i + (y < height - 1 ? width : 0)] + 8) >>
-        4
+      gray[i] = (horizontal[i - (y > 0 ? width : 0)] + 2 * horizontal[i] + horizontal[i + (y < height - 1 ? width : 0)] + 8) >> 4
     }
   }
 

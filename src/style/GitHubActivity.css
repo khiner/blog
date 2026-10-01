@@ -141,8 +141,7 @@
   }
 
   .github-activity-legend-key + .github-activity-legend-key {
-    background: linear-gradient(var(--activity-frame-border), var(--activity-frame-border)) left center / 1px 0.875em
-      no-repeat;
+    background: linear-gradient(var(--activity-frame-border), var(--activity-frame-border)) left center / 1px 0.875em no-repeat;
     margin-left: 0.625em;
     padding-left: 0.625em;
   }
@@ -277,9 +276,16 @@
     opacity: 0.45;
   }
 
-  button:hover {
+  button:active {
     color: var(--activity-hover);
     opacity: 1;
+  }
+
+  @media (hover: hover) {
+    button:hover {
+      color: var(--activity-hover);
+      opacity: 1;
+    }
   }
 
   button:disabled {

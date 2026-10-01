@@ -43,13 +43,7 @@ export default function sketch(p) {
       toggleOffset = 5
     imageToggle = new Toggle(p.width - 200, 0, toggleDim, toggleDim, 'Image').setEnabled(true)
     edgesToggle = new Toggle(p.width - 200, toggleDim + toggleOffset, toggleDim, toggleDim, 'Edges').setEnabled(true)
-    verticesToggle = new Toggle(
-      p.width - 200,
-      (toggleDim + toggleOffset) * 2,
-      toggleDim,
-      toggleDim,
-      'Vertices',
-    ).setEnabled(true)
+    verticesToggle = new Toggle(p.width - 200, (toggleDim + toggleOffset) * 2, toggleDim, toggleDim, 'Vertices').setEnabled(true)
     pauseToggle = new Toggle(p.width - 400, 0, toggleDim, toggleDim, 'Pause').setEnabled(false)
     toggles = [imageToggle, edgesToggle, verticesToggle, pauseToggle]
 
