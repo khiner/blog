@@ -23,6 +23,7 @@ const isVideo = (item: Item) => item.src.endsWith('.mp4')
 
 const MEDIA_HEIGHT = 110 // Preview height in px. Each cell's width follows its media's aspect ratio.
 const HOVER_INSET = 4 // Background revealed on each side of the media on hover.
+const RIGHT_POINTING_TRIANGLE = '\u25B6\uFE0E'
 
 // Equal absolute hover insets on a non-square box need per-axis scale factors. The vars
 // live on the cell so both the media and the label (which tracks it) can read them.
@@ -42,14 +43,18 @@ const Thumbnail = ({ item, onClick }: { item: Item; onClick: () => void }) => {
 
   return (
     <button className="renderItem" title={item.name} onClick={onClick} style={cellStyle(aspect)}>
-      <div className="preview" style={{ height: MEDIA_HEIGHT, aspectRatio: aspect }}>
+      <div className="preview" style={{ height: MEDIA_HEIGHT, width: MEDIA_HEIGHT * aspect }}>
         <img
           src={thumbUrl(item)}
           alt={item.name}
           loading="lazy"
           onLoad={(e) => e.currentTarget.naturalHeight > 0 && setAspect(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight)}
         />
-        {isVideo(item) && <span className="playBadge">▶</span>}
+        {isVideo(item) && (
+          <span className="playBadge" style={{ paddingLeft: 1 }}>
+            {RIGHT_POINTING_TRIANGLE}
+          </span>
+        )}
       </div>
       <div className="itemName">{item.name}</div>
     </button>

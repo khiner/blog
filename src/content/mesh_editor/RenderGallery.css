@@ -56,9 +56,10 @@
         border-radius: 50%;
         width: 22px;
         height: 22px;
+        display: grid;
+        place-items: center;
         font-size: 10px;
-        line-height: 22px;
-        text-align: center;
+        line-height: 1;
       }
     }
 
@@ -78,18 +79,19 @@
       transition: 0.075s ease;
     }
 
-    &:hover {
-      /* Recede the media, revealing an equal inset on all sides. */
-      .preview img,
-      .preview video {
-        transform: scale(var(--hover-scale-x, 1), var(--hover-scale-y, 1));
-      }
-      /* The title tracks the receding media's bottom edge. The hairline stroke thickens
-         the glyphs by less than a font-weight step, without changing their metrics. */
-      .itemName {
-        color: #263e52;
-        -webkit-text-stroke: 0.5px currentColor;
-        transform: translateY(calc(-1 * var(--hover-inset, 0px)));
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        /* Recede the media, revealing an equal inset on all sides. */
+        .preview img,
+        .preview video {
+          transform: scale(var(--hover-scale-x, 1), var(--hover-scale-y, 1));
+        }
+        /* Follow the media inset and thicken the title without changing its metrics. */
+        .itemName {
+          color: #263e52;
+          -webkit-text-stroke: 0.5px currentColor;
+          transform: translateY(calc(-1 * var(--hover-inset, 0px)));
+        }
       }
     }
   }
