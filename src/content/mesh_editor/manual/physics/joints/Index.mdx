@@ -1,0 +1,66 @@
+---
+path: /MeshEditor/manual/physics/joints/
+title: "Rigid body joints"
+navOrder: 3
+---
+
+A joint controls how a rigid body moves relative to another body or to a fixed point in the scene. Limits restrict its movement. Drives move it toward a target.
+
+## Attachment frames
+
+An attachment's position sets its pivot. Its orientation sets the local X, Y and Z axes for limits and drives.
+
+Select a joint node in an imported physics scene and open **Properties → Physics → Joint**.
+
+- **Connected node** supplies the attachment opposite the joint node. Place each node's origin at its intended pivot. Choose a node on a different body, or a node outside a rigid-body hierarchy for a fixed world anchor. Choosing **None** disconnects the joint.
+- **Definition** selects the shared limits and drives. Use **Go to** beside the field to edit them.
+- **Enable Collision** allows contact between the connected bodies when their collision filters also permit it.
+
+## Joint definitions
+
+Choose **Add → Joint definition** in the document network. Assign it under **Definition** on each joint that shares its limits and drives. Editing the definition updates all those joints. Each keeps its own attachments and connected node.
+
+## Limits
+
+Choose **Add limit** on the definition, then select the axes to constrain together. Remove the row to release that limit.
+
+| Property | Effect |
+| --- | --- |
+| **Linear axes** | Restricts translation along the selected local axes. Linear bounds are in meters. |
+| **Angular axes** | Restricts rotation around the selected local axes. Angular bounds are in radians. Use a separate entry for angular and linear motion. |
+| **Min** | Lower bound, in meters for a linear limit or radians for an angular limit. Leave it disabled for no lower bound. |
+| **Max** | Upper bound in the same units. Leave it disabled for no upper bound. Setting both bounds to zero locks the selected axes at the attachment frame. |
+| **Soft limit** | Allows motion beyond the bound against a spring. Enables **Stiffness** and **Damping**. |
+| **Stiffness** | Resistance to motion beyond the bound. A stiffer limit yields less under the same load. |
+| **Damping** | Reduces oscillation as the soft limit returns toward the bound. |
+
+For independent travel bounds on several axes, add a limit entry for each axis. Selecting several axes in one entry with nonzero travel limits their combined motion. To hold one axis at a fixed displacement or angle, set **Min** and **Max** to that same value.
+
+## Drives
+
+A drive acts along or around one local axis. Its targets are measured relative to the other attachment frame.
+
+Choose **Add drive** on the definition. Remove its row to stop driving that axis.
+
+| Property | Effect |
+| --- | --- |
+| **Type** | **Linear** drives translation. **Angular** drives rotation. |
+| **Axis** | Local X, Y or Z axis along which to move or about which to turn. |
+| **Mode** | **Force** gives heavier bodies a slower response to the same drive force. **Acceleration** gives a similar response across bodies of different mass. |
+| **Max force** | Maximum force for a linear drive or torque for an angular drive. A drive can fall short of its target under load. |
+| **Position target** | Desired displacement in meters or angle in radians relative to the other attachment. |
+| **Velocity target** | Desired relative speed in meters or radians per second. A target of zero damps motion when damping is positive. |
+| **Stiffness** | Strength of the drive toward the position target. Zero disables position correction. |
+| **Damping** | Strength of the correction toward the velocity target. Zero disables velocity correction. |
+
+## Examples
+
+### Hinge
+
+Lock all three linear axes at zero in one limit. In a second limit, lock angular X and Y at zero. Leave angular Z free. The bodies can pivot around local Z while the attachment points stay together.
+
+### Slider
+
+Lock all three angular axes at zero. Lock linear X and Z in another limit. On linear Y, set **Min** to −0.5 and **Max** to 0.5. The joint can slide half a meter in either direction from its reference position.
+
+If the physics samples are installed, open the **JointTypes** scene from **File → glTF_Physics Samples** for examples of both. Select a joint node and follow **Definition** to inspect the axes.

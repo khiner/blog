@@ -1,0 +1,32 @@
+---
+path: /MeshEditor/manual/modeling/normals/
+title: "Normals and smooth shading"
+navOrder: 6
+---
+
+The face normal points toward a face's front side. Shading normals control how light varies across the surface. Smooth shading can give a low-sided cylinder a continuous highlight while its silhouette stays polygonal.
+
+## Face orientation
+
+**Face normals** and **Vertex normals** in **Scene controls → Render → Selection overlays** show directions as lines from the face centers or vertices. **Backface Culling** in Solid shading hides surfaces viewed from behind.
+
+In Edit mode, the **Face** menu (**Ctrl+F**) provides two orientation commands.
+
+| Command | Effect |
+| --- | --- |
+| **Flip Normals** | Reverses the selected faces. |
+| **Recalculate Outside** | Orients the faces of a connected shell outward. An open sheet has no enclosed inside. |
+
+## Smooth shading
+
+In **Properties → Selection actions**, enable **Smooth shading** for the selected mesh objects. Clear it for flat shading, where each face has its own lighting direction. To smooth a part up to a sharp rim, set the angle beside **Smooth by angle** and click the button. Edges beyond the threshold keep a crease.
+
+For local control, select elements in **Edit** mode.
+
+| Element type | Control | Effect |
+| --- | --- | --- |
+| Face | **Smooth faces** | Switches the selected faces between smooth and flat shading. |
+| Edge | **Sharp edges** | Creates a crease along the selected edges. |
+| Vertex | **Sharp vertices** | Marks the selected vertices as sharp. |
+
+To round the silhouette itself, bevel the edges or subdivide the surface. [Topology tools](/MeshEditor/manual/modeling/topology/) · [Subdivision and symmetry](/MeshEditor/manual/modeling/surface-refinement/)

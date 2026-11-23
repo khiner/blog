@@ -1,0 +1,46 @@
+---
+path: /MeshEditor/manual/animation/rigging/posing/
+title: "Bone poses"
+navOrder: 2
+---
+
+In Pose mode, moving a bone carries its descendants. A skinned mesh follows according to its joint weights.
+
+## Pose transforms
+
+**Ctrl+Tab** toggles Pose mode on the active armature. Click a bone to select it or **Shift**-click to extend the selection. The **Bones** overlay in **Wireframe** shows bones through the mesh.
+
+**R** rotates a pose bone about its head. With **Local** orientation, X and Z bend the bone and Y twists it. The rest roll determines the local X and Z axes.
+
+When a parent and child are both selected, a viewport transform acts on the parent and the child follows. To pose the child relative to its parent, select the child alone.
+
+The selected pose bone’s **Transform** panel shows its offsets from the rest pose.
+
+| Property | Description |
+| --- | --- |
+| **Position** | Translation from the bone's rest position, in meters. |
+| **Rotation** | Rotation relative to the bone's rest orientation. Zero Euler angles preserve that orientation. |
+| **Scale** | Scale relative to the bone's rest dimensions on each local axis. A factor of 1 preserves the rest dimension. |
+
+## Pose keyframes
+
+Selecting a bone shows its keyframes on the [Timeline ruler](/MeshEditor/manual/editors/timeline/#frame-navigation). With several bones selected, each keyed frame appears once. Press **Up** in the Timeline to jump to the previous marked frame or **Down** to jump to the next.
+
+In the viewport, **I** keys position, rotation and scale for the selected bones at the current frame of the active clip. Descendants follow an animated parent even when they have no keys of their own.
+
+**Alt+I** removes all keys on the selected bones at the current frame in the active clip. To key a single property, use the control beside the field. **Targets** in the Timeline's playback options identifies which joints have keys. [Keyframes and animation clips](/MeshEditor/manual/animation/keyframes/)
+
+## Clear transform
+
+**Properties → Clear transform** resets pose offsets for the selected bones.
+
+| Control | Shortcut | Effect |
+| --- | --- | --- |
+| **Position** | **Alt+G** | Clears the translation offset. |
+| **Rotation** | **Alt+R** | Restores the rest orientation relative to the parent. |
+| **Scale** | **Alt+S** | Restores unit scale on every local axis. |
+| **All** | | Clears all three offsets. |
+
+Key the cleared values to record the reset at the current frame.
+
+A constraint can still move a bone after a reset. Set its **Influence** to 0 to see the underlying pose.

@@ -12,6 +12,8 @@ export function normalizePath(pathname: string) {
   return (pathname.replace(/\/+$/, '') || '/').toLowerCase()
 }
 
+export const withinPath = (path: string, root: string) => path === root || path.startsWith(root + '/')
+
 const subscribe = (onChange: () => void) => {
   window.addEventListener('popstate', onChange)
   window.addEventListener(navigationEvent, onChange)
@@ -23,16 +25,30 @@ const subscribe = (onChange: () => void) => {
 
 export const usePathname = () => normalizePath(useSyncExternalStore(subscribe, () => window.location.pathname))
 
+export function scrollToFragment() {
+  let id = window.location.hash.slice(1)
+  if (!id) return
+  try {
+    id = decodeURIComponent(id)
+  } catch {
+    // A literal percent sign can also be part of an element ID.
+  }
+  document.getElementById(id)?.scrollIntoView({ behavior: 'instant' })
+}
+
 export function navigate(href: string, replace = false) {
   const next = new URL(href, window.location.href)
   const changedPage = normalizePath(next.pathname) !== normalizePath(window.location.pathname)
   if (replace) window.history.replaceState(null, '', href)
   else window.history.pushState(null, '', href)
-  if (changedPage && !next.hash) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  if (!next.hash) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  else if (!changedPage) scrollToFragment()
   window.dispatchEvent(new Event(navigationEvent))
 }
 
-export function InternalLink({ href, onClick, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) {
+type InternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { onNavigate?: () => void }
+
+export function InternalLink({ href, onClick, onNavigate, ...props }: InternalLinkProps) {
   return (
     <a
       {...props}
@@ -54,6 +70,7 @@ export function InternalLink({ href, onClick, ...props }: AnchorHTMLAttributes<H
           return
         const url = new URL(anchor.href)
         if (url.origin !== window.location.origin) return
+        onNavigate?.()
         // Let the browser scroll to anchors within the current page.
         if (url.hash && url.pathname === window.location.pathname && url.search === window.location.search) return
         event.preventDefault()

@@ -1,0 +1,319 @@
+---
+path: /MeshEditor/manual/modeling/nodes/deformation/
+title: "Deformation nodes"
+navTitle: Deformation
+navOrder: 3
+---
+
+Deformation nodes move vertices in the input mesh. **Selection** accepts a `Boolean` field or a stored selection. Where available, **Frame Position**, **Frame Rotation** and **Frame Scale** place the mesh in the coordinate system for the edit.
+
+**Output** · Every node on this page produces the deformed **Geometry**.
+
+<h3 id="smoothvertices">Smooth Vertices</h3>
+
+Smooths the selection by moving each vertex toward the average position of its neighbors.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to smooth. |
+| **Factor** | `Float` field | Fraction of the distance toward the neighbor average to move on each pass. |
+| **Repeat** | `Integer` | Number of smoothing passes. |
+| **X** | `Boolean` | Allows the operation to change the X coordinate. Disable it to preserve that coordinate. |
+| **Y** | `Boolean` | Allows the operation to change the Y coordinate. Disable it to preserve that coordinate. |
+| **Z** | `Boolean` | Allows the operation to change the Z coordinate. Disable it to preserve that coordinate. |
+
+<h3 id="shrinkfatten">Shrink Fatten</h3>
+
+Moves vertices along their normals.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to displace along their normals. |
+| **Distance** | `Float` field | Signed displacement along the normal. Positive values expand an outward-facing surface and negative values shrink it. |
+| **Even** | `Boolean` | Compensates for the angle between adjacent faces to maintain thickness at corners. |
+
+<h3 id="randomize">Randomize</h3>
+
+Displaces selected vertices in a repeatable random pattern.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to displace. |
+| **Amount** | `Float` field | Maximum displacement in mesh-local units. |
+| **Uniform** | `Float` | Controls variation in distance. At 0 the distance varies between vertices. At 1 every vertex moves the full amount. |
+| **Normal** | `Float` | Controls alignment with the vertex normal. At 0 directions are random. At 1 displacement is along the normal in either direction. |
+| **Seed** | `Integer` | Integer that selects the random pattern. |
+
+<h3 id="spaceevenly">Space Evenly</h3>
+
+Redistributes vertices at equal intervals along a path.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Path of vertices to redistribute. |
+| **Factor** | `Float` | Fraction of the correction from the original positions to evenly spaced positions. |
+| **X** | `Boolean` | Allows the operation to change the X coordinate. Disable it to preserve that coordinate. |
+| **Y** | `Boolean` | Allows the operation to change the Y coordinate. Disable it to preserve that coordinate. |
+| **Z** | `Boolean` | Allows the operation to change the Z coordinate. Disable it to preserve that coordinate. |
+
+| Property | Description |
+| --- | --- |
+| **Interpolation** | **Linear** follows straight segments between vertices. **Cubic** follows a smooth curve through them. |
+
+<h3 id="relaxedgeloops">Relax Edge Loops</h3>
+
+Smooths the shape of an edge loop.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Edge loops to smooth. |
+| **Iterations** | `Integer` | Number of smoothing passes. |
+| **Even Spacing** | `Boolean` | Redistributes vertices at equal intervals along the smoothed curve. |
+
+| Property | Description |
+| --- | --- |
+| **Interpolation** | **Linear** follows straight segments between vertices. **Cubic** follows a smooth curve through them. |
+
+<h3 id="curvebetweenselected">Curve Between Selected</h3>
+
+Fits the vertices of a path to a curve through the selected anchor vertices.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Anchor vertices through which the curve passes. |
+| **Factor** | `Float` | Fraction of the displacement from the original positions to the fitted curve. |
+| **Extend** | `Boolean` | Continues the fit beyond the outer selected anchors. |
+| **Regular** | `Boolean` | Spaces the vertices evenly along the curve. |
+| **X** | `Boolean` | Allows the operation to change the X coordinate. Disable it to preserve that coordinate. |
+| **Y** | `Boolean` | Allows the operation to change the Y coordinate. Disable it to preserve that coordinate. |
+| **Z** | `Boolean` | Allows the operation to change the Z coordinate. Disable it to preserve that coordinate. |
+
+| Property | Description |
+| --- | --- |
+| **Interpolation** | **Linear** follows straight segments between vertices. **Cubic** follows a smooth curve through them. |
+| **Elevation** | Restricts motion along the surface normal. **Raise** allows outward motion, **Lower** allows inward motion and **None** allows either direction. |
+
+<h3 id="circularize">Circularize</h3>
+
+Fits an edge loop to a circle. The viewport command is **To Circle**.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Loop to fit to a circle. |
+| **Factor** | `Float` | Fraction of the displacement toward the circle. |
+| **Radius** | `Float` | Radius of the circle. Zero uses the fitted radius. |
+| **Angle** | `Float` | Rotates the vertices around the center of the fitted circle. |
+| **Regular** | `Boolean` | Spaces vertices at equal angles. When disabled, each vertex keeps its original angular position. |
+| **X** | `Boolean` | Allows the operation to change the X coordinate. Disable it to preserve that coordinate. |
+| **Y** | `Boolean` | Allows the operation to change the Y coordinate. Disable it to preserve that coordinate. |
+| **Z** | `Boolean` | Allows the operation to change the Z coordinate. Disable it to preserve that coordinate. |
+
+| Property | Description |
+| --- | --- |
+| **Method** | **Least Squares** fits the circle to the loop vertices. **Contract** takes the radius from the vertex closest to the fitted center. |
+
+<h3 id="makeplanarfaces">Make Planar Faces</h3>
+
+Moves the vertices of each selected face toward a common plane.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Faces to flatten individually. |
+| **Factor** | `Float` | Fraction of the correction toward the plane on each pass. |
+| **Repeat** | `Integer` | Number of flattening passes. |
+
+<h3 id="flatten">Flatten</h3>
+
+Projects each selected region onto a plane.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Regions to project onto a plane. |
+| **Factor** | `Float` | Fraction of the distance each vertex moves toward the plane. |
+| **View Normal** | `Vector` | Direction perpendicular to the plane in **View** mode, expressed in frame coordinates. |
+| **X** | `Boolean` | Allows the operation to change the X coordinate. Disable it to preserve that coordinate. |
+| **Y** | `Boolean` | Allows the operation to change the Y coordinate. Disable it to preserve that coordinate. |
+| **Z** | `Boolean` | Allows the operation to change the Z coordinate. Disable it to preserve that coordinate. |
+| **Frame Position** | `Vector` | Translation from mesh-local coordinates into the space used by this operation. |
+| **Frame Rotation** | `4D Vector` | Rotation from mesh-local coordinates into the space used by this operation. |
+| **Frame Scale** | `Vector` | Scale applied when converting mesh-local positions into the space used by this operation. |
+
+| Property | Description |
+| --- | --- |
+| **Method** | **Least Squares** fits the plane to the vertices. **Face Normals** orients the plane from the selected faces. **View** uses the **View Normal** input. |
+
+<h3 id="tosphere">To Sphere</h3>
+
+Moves vertices onto a sphere.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to move toward the target radius. |
+| **Factor** | `Float` | Fraction of the change from each vertex’s starting distance to the target radius. |
+| **Center** | `Vector` | Center of the sphere in frame coordinates. |
+| **Radius** | `Float` | Target distance from the center. Zero uses the selected vertices’ mean starting distance. |
+| **Frame Position** | `Vector` | Translation from mesh-local coordinates into the space used by this operation. |
+| **Frame Rotation** | `4D Vector` | Rotation from mesh-local coordinates into the space used by this operation. |
+| **Frame Scale** | `Vector` | Scale applied when converting mesh-local positions into the space used by this operation. |
+
+<h3 id="pushpull">Push Pull</h3>
+
+Moves vertices toward or away from a point.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to move toward or away from the center. |
+| **Distance** | `Float` | Positive values move each vertex toward the center. Negative values move it away. |
+| **Center** | `Vector` | Point toward which the vertices move, in frame coordinates. |
+| **Frame Position** | `Vector` | Translation from mesh-local coordinates into the space used by this operation. |
+| **Frame Rotation** | `4D Vector` | Rotation from mesh-local coordinates into the space used by this operation. |
+| **Frame Scale** | `Vector` | Scale applied when converting mesh-local positions into the space used by this operation. |
+
+<h3 id="shear">Shear</h3>
+
+Displaces vertices sideways within the shear plane.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices affected by the shear. |
+| **Angle** | `Float` | Angle of the shear. The displacement increases with distance from the line through **Center** parallel to **Direction**. |
+| **Center** | `Vector` | Point on the line that stays fixed, in frame coordinates. |
+| **Direction** | `Vector` | Direction of displacement, in frame coordinates. |
+| **Normal** | `Vector` | Direction perpendicular to the shear plane, in frame coordinates. |
+| **Frame Position** | `Vector` | Translation from mesh-local coordinates into the space used by this operation. |
+| **Frame Rotation** | `4D Vector` | Rotation from mesh-local coordinates into the space used by this operation. |
+| **Frame Scale** | `Vector` | Scale applied when converting mesh-local positions into the space used by this operation. |
+
+<h3 id="warp">Warp</h3>
+
+Curves the selection around a center.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to curve. Their extent sets the range when **Auto Range** is enabled. |
+| **Angle** | `Float` | Total angle of the warp across its range. |
+| **Offset Angle** | `Float` | Rotates the direction along which the range is measured within the warp plane. |
+| **Center** | `Vector` | Center of the warp in frame coordinates. |
+| **Auto Range** | `Boolean` | Takes the ends of the warp range from the selected vertices. |
+| **Min** | `Float` | Start of the warp along its local axis when **Auto Range** is off. |
+| **Max** | `Float` | End of the warp along its local axis when **Auto Range** is off. |
+| **Orientation** | `4D Vector` | Rotation of the warp plane in frame coordinates. |
+| **Frame Position** | `Vector` | Translation from mesh-local coordinates into the space used by this operation. |
+| **Frame Rotation** | `4D Vector` | Rotation from mesh-local coordinates into the space used by this operation. |
+| **Frame Scale** | `Vector` | Scale applied when converting mesh-local positions into the space used by this operation. |
+
+<h3 id="bend">Bend</h3>
+
+Bends the selection along an axis.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to bend. |
+| **Angle** | `Float` | Total change in direction over the bend distance. |
+| **Radius** | `Float` | Distance along the bend axis over which the full angle is reached. |
+| **Offset Angle** | `Float` | Rotates the bend axis within the bend plane. |
+| **Center** | `Vector` | Starting point of the bend in frame coordinates. |
+| **Clamp** | `Boolean` | Leaves vertices before the start in place and moves vertices beyond the end with the bent end. |
+| **Orientation** | `4D Vector` | Rotation of the bend plane in frame coordinates. |
+| **Frame Position** | `Vector` | Translation from mesh-local coordinates into the space used by this operation. |
+| **Frame Rotation** | `4D Vector` | Rotation from mesh-local coordinates into the space used by this operation. |
+| **Frame Scale** | `Vector` | Scale applied when converting mesh-local positions into the space used by this operation. |
+
+<h3 id="vertexslide">Vertex Slide</h3>
+
+Slides each selected vertex along one of its edges.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to slide along incident edges. |
+| **Factor** | `Float` | Travel along the edge as a fraction of its length. |
+| **Direction** | `Vector` | Direction in frame coordinates used to choose an incident edge. |
+| **Reference** | `Integer` | Vertex whose edge supplies the distance for **Even**. Defaults to the first selected vertex. |
+| **Even** | `Boolean` | Uses the reference edge length to move vertices equal distances along their edges. |
+| **Flipped** | `Boolean` | Measures an even slide from the opposite end. |
+| **Clamp** | `Boolean` | Limits travel to the edge endpoints. |
+| **Frame Position** | `Vector` | Translation from mesh-local coordinates into the space used by this operation. |
+| **Frame Rotation** | `4D Vector` | Rotation from mesh-local coordinates into the space used by this operation. |
+| **Frame Scale** | `Vector` | Scale applied when converting mesh-local positions into the space used by this operation. |
+
+<h3 id="edgeslide">Edge Slide</h3>
+
+Slides an edge loop along adjacent edges.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Edge loop to slide. |
+| **Factor** | `Float` | Fraction of the travel along the neighboring edges. The sign chooses the side. |
+| **Direction** | `Vector` | Direction in frame coordinates that identifies the positive side at the reference vertex. |
+| **Reference** | `Integer` | Vertex used to choose the side and measure an even slide. Defaults to the first selected vertex. |
+| **Even** | `Boolean` | Uses the reference edge length to set a common sliding distance across the loop. |
+| **Flipped** | `Boolean` | Changes the reference side for an even slide. |
+| **Clamp** | `Boolean` | Limits travel to the endpoints of neighboring edges. |
+| **Frame Position** | `Vector` | Translation from mesh-local coordinates into the space used by this operation. |
+| **Frame Rotation** | `4D Vector` | Rotation from mesh-local coordinates into the space used by this operation. |
+| **Frame Scale** | `Vector` | Scale applied when converting mesh-local positions into the space used by this operation. |
+
+<h3 id="snapsymmetry">Snap Symmetry</h3>
+
+Aligns pairs of vertices across a symmetry plane.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to align across the symmetry plane. |
+| **Threshold** | `Float` | Maximum distance from a reflected position at which two vertices can form a pair. |
+| **Factor** | `Float` | At 0 the reference side stays in place. At 1 the opposite side stays in place. At 0.5 both move equally. |
+| **Negative** | `Boolean` | Uses the negative side of the axis as the reference. When disabled, uses the positive side. |
+| **Center** | `Boolean` | Snaps vertices near the symmetry plane onto the plane. |
+
+| Property | Description |
+| --- | --- |
+| **Axis** | Axis perpendicular to the symmetry plane, either **X**, **Y** or **Z**. |
+
+<h3 id="transformelements">Transform Elements</h3>
+
+Translates, rotates and scales the selected vertices in frame coordinates.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to translate, rotate, scale or reflect. |
+| **Delta Position** | `Vector` | Translation applied to the selected vertices. |
+| **Delta Rotation** | `4D Vector` | Rotation applied about the pivot. |
+| **Delta Scale** | `Vector` | Scale along each frame axis about the pivot. |
+| **Pivot** | `Vector` | Center of rotation, scaling and reflection, in frame coordinates. |
+| **Frame Position** | `Vector` | Translation from mesh-local coordinates into the space used by this operation. |
+| **Frame Rotation** | `4D Vector` | Rotation from mesh-local coordinates into the space used by this operation. |
+| **Frame Scale** | `Vector` | Scale applied when converting mesh-local positions into the space used by this operation. |
+| **Mirror** | `Vector` | Normal of the plane through the pivot across which vertices reflect before the transform. A zero vector disables reflection. |
+
+<h3 id="setposition">Set Position</h3>
+
+Sets or offsets the coordinates of selected vertices.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Position** | `Vector` field | Position or displacement vector evaluated for each selected vertex, in mesh-local coordinates. |
+| **Selection** | `Boolean` field | Vertices whose positions can change. Unselected vertices keep their coordinates. |
+| **Offset** | `Boolean` | Adds **Position** to each vertex’s coordinates. When disabled, **Position** replaces the coordinates. |
+
+#### Examples
+
+With **Offset** enabled, a constant **Position** of (0, 1, 0) moves every selected vertex one unit along Y. With **Offset** disabled, the same input places all selected vertices at (0, 1, 0).

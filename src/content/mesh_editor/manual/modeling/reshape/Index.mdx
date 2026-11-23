@@ -1,0 +1,50 @@
+---
+path: /MeshEditor/manual/modeling/reshape/
+title: "Mesh deformation"
+navOrder: 3
+---
+
+Reshape tools move vertices using neighbors, normals or a reference axis. Select the elements in **Edit** mode, then adjust the resulting node in **Nodes**.
+
+## Vertex and edge slide
+
+**Vertex Slide** moves a vertex along a connected edge. **Edge Slide** moves a loop along the edges on either side. **Direction** chooses the edge or side to follow. **Even** uses the reference edge length, **Flipped** measures from the opposite side and **Clamp** keeps vertices on their supporting edges. [Deformation nodes](/MeshEditor/manual/modeling/nodes/deformation/)
+
+## Deformation tools
+
+| Operation | Effect |
+| --- | --- |
+| **Shrink/Fatten** | Moves vertices along their normals. A negative **Distance** shrinks an outward-facing surface. **Even** compensates at corners. |
+| **Push/Pull** | Moves vertices toward or away from a common center by a fixed distance. |
+| **To Sphere** | Moves vertices toward a shared radius. A zero **Radius** uses their mean starting radius. |
+| **Shear** | Offsets vertices in one direction in proportion to their distance from a reference plane. |
+| **Warp** | Curves the selection across an automatic or specified range. |
+| **Bend** | Bends the selection around an axis. **Radius** sets the curvature and **Clamp** limits the curved region. |
+| **Mirror** | Reflects the selection across a plane. |
+| **Snap to Symmetry** | Aligns nearby vertex pairs across an axis. **Threshold** limits the search distance. **Factor** chooses which side moves, and **Center** snaps near-plane vertices onto the plane. |
+
+## Vertex smoothing
+
+**Smooth Vertices** averages neighboring positions. **Factor** sets the strength, **Repeat** sets the number of passes, and the axis switches restrict movement. Repeated smoothing can shrink the mesh.
+
+## Random displacement
+
+**Randomize** displaces vertices in a repeatable pattern determined by **Seed**. **Uniform** blends toward equal offset lengths and **Normal** toward each vertex's normal.
+
+## Planar tools
+
+| Operation | Effect |
+| --- | --- |
+| **Flatten** | Projects each selected region toward a least-squares plane, its face-normal plane or the view plane. Disable axes to limit the projection. |
+| **Make Planar Faces** | Flattens each selected face individually. |
+
+## Edge loop tools
+
+| Operation | Effect |
+| --- | --- |
+| **Space Evenly** | Redistributes vertices along a linear or cubic path. |
+| **Relax Edge Loops** | Smooths a loop over several passes. **Even Spacing** also redistributes its vertices. |
+| **Curve Between Selected** | Fits intermediate vertices between selected anchors. Adjust extension, elevation and spacing. |
+| **To Circle** | Fits a loop to a circle. Choose the fit, radius and angular offset. **Regular** spaces vertices at equal angles. **Factor** and the axis switches limit the correction. Its node is **Circularize**. |
+
+To add vertices while smoothing a surface, use **Subdivision Surface** or **Smooth Surface**. [Subdivision and symmetry](/MeshEditor/manual/modeling/surface-refinement/)

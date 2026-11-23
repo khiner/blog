@@ -1,0 +1,165 @@
+---
+path: /MeshEditor/manual/modeling/nodes/data/
+title: "Shading, attributes and instancing nodes"
+navTitle: Shading and instancing
+navOrder: 4
+---
+
+These nodes change surface data, bake an image or place instances at mesh points. For math, geometry readers and image filters, see the [MaterialX operations](/MeshEditor/manual/modeling/materialx/).
+
+<h3 id="flipnormals">Flip Normals</h3>
+
+Reverses the direction the selected faces point.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Faces whose normals will reverse. |
+
+**Output** · Geometry
+
+<h3 id="recalculatenormals">Recalculate Normals</h3>
+
+Orients neighboring faces consistently toward the outside of a closed shell. On an open sheet, use **Flip Normals** to choose which side faces outward.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Faces to orient consistently. |
+
+**Output** · Geometry
+
+<h3 id="marksharp">Mark Sharp</h3>
+
+Sets or clears sharp marks on the selection. Sharp marks create shading breaks and preserve creases in **Smooth Surface**.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Edges, vertices or faces whose sharp marks or shading will change. |
+| **Sharp** | `Boolean` | Enables a sharp mark or clears it. Acts on selected edges, edges incident to selected vertices, or the flat shading of selected faces. |
+
+**Output** · Geometry
+
+<h3 id="shade">Shade</h3>
+
+Sets the shading of the whole mesh.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Angle** | `Float` | Largest angle between adjacent face normals that remains smooth in **By Angle** mode. |
+
+| Property | Description |
+| --- | --- |
+| **Mode** | **Flat** shades each face separately. **Smooth** shades across edges and clears sharp marks. **By Angle** marks edges sharp when their adjacent faces exceed the angle threshold. |
+
+**Output** · Geometry
+
+<h3 id="cyclecornerattribute">Cycle Corner Attribute</h3>
+
+Rearranges data among the corners of each selected face while keeping the vertices in place.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Faces whose corner values will be rearranged. |
+| **UVSet** | `Integer` | UV coordinate set to edit when **Attribute** is **UVs**. |
+
+| Property | Description |
+| --- | --- |
+| **Attribute** | Face-corner data to rearrange, either UV coordinates or colors. |
+| **Cycle** | **Forward** and **Backward** shift values by one corner. **Reverse** reverses their order. |
+
+**Output** · Geometry
+
+<h3 id="storenamedattribute">Store Named Attribute</h3>
+
+Writes a named mesh attribute. An existing attribute with the same name is replaced.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Value** | field of `Float`, `2D Vector`, `Vector`, `4D Vector`, `Color`, `Color with Alpha`, `Integer` or `Boolean` | Field to evaluate on the chosen domain. |
+
+| Property | Description |
+| --- | --- |
+| **Name** | Name used by subsequent nodes to read the attribute. |
+| **Domain** | **Vertex**, **Edge** and **Face** store one value per element of that kind. **Corner** stores a separate value for each occurrence of a vertex on a face, so adjoining faces can differ at a seam. |
+
+**Output** · Geometry
+
+<h3 id="storeselection">Store Selection</h3>
+
+Stores the selection as a Boolean attribute in its selection or linked field domain.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Selection to write as a named Boolean attribute. |
+
+| Property | Description |
+| --- | --- |
+| **Name** | Name of the Boolean attribute. Replaces any existing attribute with that name. |
+
+**Output** · Geometry
+
+<h3 id="bake">Bake</h3>
+
+Writes a field to an image using the input mesh’s UV layout. [Image baking](/MeshEditor/manual/modeling/fields/#image-baking)
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Value** | field of `Float`, `2D Vector`, `Vector`, `4D Vector`, `Color` or `Color with Alpha` | Value or field sampled at the mesh surface. |
+| **Uv Set** | `Integer` | Texture coordinates that place the faces in the output image. |
+| **Width** | `Integer` | Horizontal size of the image in pixels. |
+| **Height** | `Integer` | Vertical size of the image in pixels. |
+| **Margin** | `Integer` | Distance in pixels to extend values beyond the UV islands. Pixels outside the margin remain zero. |
+
+**Output** · Image
+
+<h3 id="meshtopoints">Mesh To Points</h3>
+
+Creates one point at the position of each mesh vertex.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+
+**Output** · Points (`Geometry`)
+
+<h3 id="instanceonpoints">Instance On Points</h3>
+
+Places an instance at each input point.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Points** | `Geometry` | Geometry whose points supply the instance locations. |
+| **Instance** | `Geometry` | Mesh to place when **Prototype** is empty. |
+| **Scale** | `Vector` field | Size multiplier on each axis, evaluated per point. |
+| **Rotation** | `4D Vector` field | Orientation of the instance, evaluated per point. |
+
+| Property | Description |
+| --- | --- |
+| **Prototype** | Object hierarchy to place at the points. When set, this takes precedence over **Instance**. |
+
+**Output** · Instances
+
+<h3 id="realizeinstances">Realize Instances</h3>
+
+Converts mesh instances into editable geometry. For object hierarchies, **Inspect generated instances** opens the generated objects in the scene network.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Instances** | `Instances` | Instances whose placed meshes are combined into the output. |
+
+**Output** · Geometry
+
+<h3 id="subnet">Subnet</h3>
+
+Groups nodes behind a shared interface. Its definition supplies the input and output sockets. Each instance can override input defaults. [Subnet interfaces](/MeshEditor/manual/interface/nodes/#geometry-subnets)
+
+<h3 id="op">Op</h3>
+
+Evaluates a MaterialX operation. The selected operation determines its input and output sockets. [MaterialX operations](/MeshEditor/manual/modeling/materialx/)

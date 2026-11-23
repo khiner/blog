@@ -1,0 +1,58 @@
+---
+path: /MeshEditor/manual/modeling/fields/
+title: "Fields and attributes"
+navOrder: 9
+---
+
+A field supplies a value for each vertex, edge, face or face corner. The kind of element it uses is its *domain*. A literal supplies the same value everywhere.
+
+## Named attributes
+
+| Node | Use |
+| --- | --- |
+| **Store Named Attribute** | Writes a field on the chosen domain, replacing any attribute with the same name. Use a name of 1–63 bytes beginning with a character other than a period. **Geometric Property** (`geompropvalue`) reads it by name and type or supplies a default if it is missing. |
+| **Store Selection** | Saves the selection as a named Boolean attribute. Read it later with **Geometric Property** set to Boolean and connect it to a **Selection** input. Subdividing a selected face carries the stored face selection onto its child faces. |
+
+## Attribute domains
+
+**Convert Domain** converts a field from its source domain to another. For selections, **Any** requires one selected contributor and **All** requires every contributor. Numeric reductions include mean, minimum and maximum.
+
+A field connected to another domain converts automatically. Numeric values are averaged. A face selection includes every edge and vertex it touches. An edge selection includes every vertex it touches, but includes a face only when all its edges are selected. Use **Convert Domain** to choose a different rule.
+
+Keep UVs on the face-corner domain when faces sharing a vertex need different coordinates along a seam.
+
+## Selection fields
+
+| Field | Value |
+| --- | --- |
+| **Boundary** | Edges bordering fewer than two faces, vertices on those edges, or faces touching them. |
+| **Linked** | Elements in any connected component containing a selected seed. |
+| **Adjacent** | A selection grown or shrunk by the chosen number of neighboring rings. |
+| **Edge Loop** | Edges continuing through four-edge vertices along the direction of a seed edge. |
+| **Edge Ring** | Edges opposite one another across a strip of quads, starting at a seed edge. |
+| **Plane Side** | Positions on the chosen side of a plane or within tolerance of the plane itself. |
+| **Curvature** | Mean or Gaussian surface curvature at each vertex. |
+
+[Geometry field inputs and outputs](/MeshEditor/manual/modeling/materialx/geometry/)
+
+## Element index and scene time
+
+**Element Index** gives the integer index of the current mesh element. **Frame** gives the current frame and **Time** gives elapsed scene time in seconds. Time-dependent fields update during playback and can drive geometry, instances and colliders.
+
+## Image sampling and filtering
+
+**Image** samples a document texture at UV coordinates using its filter and addressing settings. **Blur** smooths an image or a UV-based field. To blur a field that depends on mesh geometry, bake it to an image first. [MaterialX operations](/MeshEditor/manual/modeling/materialx/)
+
+## Image baking
+
+**Bake** turns a field or constant into an image using the mesh’s UV layout. The input mesh must contain the chosen UV set. Select the node in the mesh's procedure to preview the result in **Properties → Image**. Connect its output to an **Image** node to sample it elsewhere in the procedure.
+
+| Setting | Effect |
+| --- | --- |
+| **UV set** | Chooses the mesh coordinates for the bake (0–3). Keep UV islands separate if their faces need different values in the image. Overlapping faces share pixels. |
+| **Width**, **Height** | Image size in pixels. Each dimension accepts 1–16,384 in the inspector. |
+| **Margin** | Distance in pixels to extend the nearest surface value past the island boundary (0–4,096). Leave room between islands for the margin. Pixels outside it stay at zero. |
+
+## Position fields
+
+With **Offset** enabled, **Set Position** adds its vector input to the selected vertex positions. The **Normal** field offsets each vertex along its own normal. Multiplying that field by a scalar controls the displacement distance. The mesh's resolution determines how much detail the displacement can represent.

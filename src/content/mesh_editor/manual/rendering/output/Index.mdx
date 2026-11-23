@@ -1,0 +1,53 @@
+---
+path: /MeshEditor/manual/rendering/output/
+title: "Render output"
+navOrder: 8
+---
+
+## Still images
+
+From the repository root, capture the bundled FallingCube scene in Solid shading.
+
+```sh
+./build/MeshEditor res/examples/FallingCube/FallingCube.gltf --headless --shading solid --screenshot /tmp/falling-cube.png
+```
+
+| Setting | Result |
+| --- | --- |
+| File extension | Selects PNG, JPEG or lossless WebP. Omitting it selects WebP. |
+| Frame | Captures the full working viewport or the camera gate. For an imported scene, `--camera` takes the glTF camera definition's name. [Cameras](/MeshEditor/manual/rendering/cameras/) |
+| `--overlays` | Includes selections, wires and guides, which are normally hidden in a capture. |
+| `--shading` | Sets the shading mode explicitly. With automatic lighting, capture uses the scene environment or scene lights when available, otherwise Material Preview. |
+
+In a project with multiple viewports, command-line screenshots and movies use the first viewport. A default headless viewport capture is 2560 × 1600 pixels. When looking through a camera, the capture includes only the area inside its frame. The image includes the viewport background. Even at zero **World opacity**, empty space is saved with the viewport background color and full alpha.
+
+## Movie recording
+
+**MP4** records the viewport during playback as H.264 video. It requires FFmpeg on `PATH`.
+
+```sh
+./build/MeshEditor res/examples/FallingCube/FallingCube.gltf --headless --record /tmp/falling-cube.mp4 --play 1
+```
+
+| Option | Effect |
+| --- | --- |
+| `--record-audio` | Adds the master mix to a movie. For audio alone, use a `.wav` recording path. A sounding object must be excited during the capture to produce sound. |
+| `--fps` | Sets the interactive recording rate, 60 fps by default. Headless recording uses the Timeline frame rate. |
+| `--play` | Sets the playback duration in seconds. At 24 fps, one second of headless recording contains 24 frames. |
+| `--frames` | Limits the number of rendered frames. |
+| `--timeline-end` | Extends the playback range for a longer capture without looping. |
+| `--screenshot` | Saves the initial frame. With playback or recording, capture continues after the still. Used alone, it exits. |
+
+The recording uses the capture region from its first frame. Resizing the viewport or changing the camera gate enough to change that region stops recording. Camera movement within a fixed gate can be recorded normally.
+
+In Material Preview and Rendered, video capture uses the viewport’s motion blur settings. With no blur configured, capture uses **Fast** with a half-frame shutter. Set **Shutter** to 0 for sharp frames throughout the recording. [Motion blur](/MeshEditor/manual/rendering/lighting/#motion-blur)
+
+## Audio recording
+
+A `.wav` recording path writes the scene’s master audio at the listener position. `AUDIO_SAMPLE_RATE` sets the sample rate. This command uses the ContactDuration scene from the physical-audio sample submodule.
+
+```sh
+AUDIO_SAMPLE_RATE=48000 ./build/MeshEditor glTF_PhysicalAudio/samples/test/ContactDuration/a_5g.gltf --headless --record /tmp/contact.wav --play 1
+```
+
+[Corpus rendering and comparisons](/MeshEditor/manual/advanced/corpus/) covers batch captures of variants, clips and recorded actions. [Render gallery](/MeshEditor/render)

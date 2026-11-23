@@ -1,0 +1,37 @@
+---
+path: /MeshEditor/manual/scenes/hierarchies/
+title: "Parenting, duplicates and instances"
+navOrder: 3
+---
+
+Parenting makes objects move together. Linked copies share geometry. Hierarchy instances repeat an assembly, including its descendants.
+
+## Object parenting
+
+**Ctrl+P** parents selected objects to the active object. The **Object tree** shows the resulting hierarchy.
+
+You can also choose **Parent** in the child's **Properties**. The picker excludes the child and its descendants. Parenting preserves the child's world placement. Its editable transform becomes relative to the parent, so subsequent parent transforms carry it along. If you parent it to an object in another scene, the child takes the new root’s scene memberships.
+
+Press **Alt+P** or choose **None** under **Parent** to detach the child. Its local transform becomes its scene transform, so clearing a translated, rotated or scaled parent can move the child. The detached hierarchy keeps the scene memberships it had under the parent.
+
+## Duplication
+
+| Command | Result |
+| --- | --- |
+| **Duplicate** (**Shift+D**) | Creates a mesh object whose geometry you can edit independently. |
+| **Duplicate linked** (**Alt+D**) | Creates an object with its own transform and the same mesh. Editing that mesh changes every linked copy. |
+| **Instance hierarchy** | Repeats a source object and its descendants, including attached lights or cameras. |
+
+Duplicating a parent includes its descendants, even if only the parent is selected. Selecting a parent and child together makes a single copy of their hierarchy. With **Duplicate linked**, a hierarchy copy follows its source. A linked armature without child objects shares the rest skeleton and has its own pose.
+
+**Instance of** in **Properties** and the geometry references in **Nodes** identify objects that share a mesh.
+
+## Hierarchy instances
+
+**Instance hierarchy** in the scene network creates an instance of the selected object and its descendants. Each instance root has its own placement, name and visibility. Members share their source camera, light, rig and animation settings.
+
+**Reveal source** on a member opens the object that supplies its settings. **Make independent** detaches the occurrence from its source for separate editing.
+
+Deleting an instance root removes that occurrence and its members. Deleting a source root that other instances still use removes it from the scene but preserves their source definition.
+
+To group nodes on the canvas while preserving their object relationships, use a subnet. [Scene and document networks](/MeshEditor/manual/scenes/networks/)

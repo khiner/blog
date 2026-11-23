@@ -1,0 +1,32 @@
+---
+path: /MeshEditor/manual/modeling/uvs/
+title: "UV maps and color attributes"
+navOrder: 7
+---
+
+UV coordinates place an image on a mesh. Each face corner can have its own coordinate, so adjacent faces can use different parts of an image at a shared vertex. Surface colors can also vary across a mesh.
+
+## UV sets
+
+**Properties → glTF metadata → Mesh source layout** lists the imported attribute sets on each primitive, including UV sets such as **UV0** and **UV1** and color sets such as **COL0**. Each material texture slot selects its UV set independently.
+
+In **Material Preview** and **Rendered**, the **Texture Coordinates 0** and **Texture Coordinates 1** debug channels display the corresponding UV set across the surface. **None** restores lit shading.
+
+## Face-corner operations
+
+In **Edit** mode, select faces and open the **Face** menu.
+
+| Command | Effect |
+| --- | --- |
+| **Rotate UVs**, **Reverse UVs** | Shift UV coordinates one corner around each face or reverse their order. Use the resulting **Cycle Corner Attribute** node to choose the UV set. |
+| **Rotate Colors**, **Reverse Colors** | Shift or reverse the corner colors. Vertex positions stay fixed. |
+
+To transform the mapping on every face using a material slot, change the slot's offset, rotation or scale. [Textures and samplers](/MeshEditor/manual/rendering/textures/)
+
+## UV fields
+
+**Texture Coordinate** reads UVs for a MaterialX operation. **Store Named Attribute** can write a field to the face-corner domain so the two sides of a seam can hold different values. [Fields and attributes](/MeshEditor/manual/modeling/fields/)
+
+## Vertex colors
+
+The material’s base color and base color texture are multiplied by the mesh’s vertex colors.

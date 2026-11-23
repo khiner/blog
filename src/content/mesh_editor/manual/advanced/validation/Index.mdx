@@ -1,0 +1,57 @@
+---
+path: /MeshEditor/manual/advanced/validation/
+title: "Builds and validation"
+navOrder: 4
+---
+
+## Build options
+
+`./script/Build` builds MeshEditor with debug symbols, assertions and **History → Validate history**. `./script/Build --release` omits those diagnostics. Both builds use the same compiler optimization levels for MeshEditor’s own code.
+
+Set build options before the command, as in `PROFILE=1 ./script/Build --release`.
+
+| Build option | Effect |
+| --- | --- |
+| `VALIDATE_ACTIONS=1` | Automatically validate the latest committed state once the frame settles. Requires a debug build. |
+| `PROFILE=1` | Enable CPU and GPU timing reports for [viewport benchmarks](/MeshEditor/manual/advanced/benchmarks/#viewport-and-editing-benchmarks). |
+| `SURFACE_AUDIO=1` | Enable sustained-contact sound for [sliding and rolling](/MeshEditor/manual/physical-audio/contact/#sustained-contact). |
+
+## Tests
+
+Run `./script/Build --test`, then `./build/tests/MeshEditorTests`. The glTF round-trip cases use the sample submodules. To run a single case, pass its test name or a quoted name pattern.
+
+To test whether Metal reuses compiled pipelines on a second launch, build the test with `cmake --build build --target MeshEditorPipelineCacheTest`, then run `./script/ValidatePipelineCache`.
+
+## Metal shader validation
+
+Launch `MTL_SHADER_VALIDATION=1 ./build/MeshEditor` and reproduce the rendering problem to check for shader errors. After editing a shader, choose **Scene controls → Render → Recompile shaders** to reload it and redraw the open scene.
+
+## Lighting lookup data
+
+Run `script/ImportEeveeLut BLENDER_SOURCE --verify` to check MeshEditor’s lighting lookup data and equations against a Blender source checkout.
+
+## Replay validation
+
+In a debug build, choose **History → Validate history** to check the current history step. Build with `VALIDATE_ACTIONS=1 ./script/Build` to run the check automatically when the editor settles after a commit. Edits that finish before the same frame settles are checked together at their latest state.
+
+MeshEditor reconstructs the current step twice. It replays the edits leading to that step (`replay`), then opens the stored state directly (`stored`). Each result must match the live document byte for byte. MeshEditor applies the current workspace to both and checks that the two restored workspaces match.
+
+At the same timeline position, MeshEditor compares the restored images with the live session pixel for pixel.
+
+- **Viewport.** The first viewport is checked whenever it uses raster rendering. If it uses ray tracing, MeshEditor skips its pixel comparison.
+- **Application window.** The whole window is checked, including panels and viewports. If any visible viewport uses ray tracing, MeshEditor skips the whole-window pixel comparison.
+
+Ray-traced pixels can change as the view refines after a restore. Image dimensions, document state and workspace are still checked.
+
+### Failure report
+
+A failed check stops MeshEditor. Read the `[validation]` messages in the terminal (standard error), or in the scene’s `.log` file for a corpus render. The `[validation] wrote` lines give the full paths of the files saved in the system temporary directory (usually `$TMPDIR` on macOS).
+
+| Failure | What the report contains |
+| --- | --- |
+| Open or replay error | The reason the document could not be restored. During replay, `Action replay differs in` gives the action error or names the first part of the document that differs. |
+| Document or workspace mismatch | `replay state`, `stored state` or `replay/stored workspace`, followed by the first differing byte and the expected and actual sizes in bytes. |
+| Pixel mismatch | The image name, first differing pixel `(x, y)` and channel (0–3 for blue, green, red and alpha). Two PNGs show the live and restored images. For example, `stored-app` writes `MeshEditor-validation-live-app.png` and `MeshEditor-validation-stored-app.png`. A replay mismatch uses `replay` in the second filename. A viewport mismatch uses `viewport` in both filenames. |
+| Image size mismatch | The image name and the expected and actual dimensions. This check stops before PNGs are written. |
+
+For a restore or replay failure, a document or workspace mismatch, or a pixel mismatch, MeshEditor also saves `MeshEditor-validation.actions`. Open that archive with the same build to replay the edits.

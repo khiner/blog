@@ -1,0 +1,70 @@
+---
+path: /MeshEditor/manual/animation/keyframes/
+title: "Keyframes and animation clips"
+navOrder: 1
+---
+
+A keyframe stores a property value at a particular time. A channel contains keys for one property. A clip plays its channels together.
+
+## Keyframe controls
+
+The control beside an animatable property edits its key at the current Timeline frame in the active clip. Adding the first key to a document creates its first clip.
+
+| Field control | State | Click to |
+| --- | --- | --- |
+| Open circle | No channel in the active clip | Create the channel and its first key |
+| Open diamond | Channel exists, with no key at this frame | Insert a key |
+| Filled diamond | Key at this frame | Delete the key |
+
+An animated field is green between keys and yellow at a key. Orange means its current value differs from the animation at this frame. With auto keying off, key an edited animated transform before changing frames to keep the new pose. Deleting the last key in a channel restores the property's rest value.
+
+In the viewport, **I** keys position, rotation and scale for every selected object or pose bone. **Alt+I** deletes *all* keys on those items at the current frame in the active clip, including keyed lens or light properties on a selected camera or light. Use the filled diamond to delete just one property's key.
+
+## Auto keying
+
+**Auto keying** in the Timeline records edits to properties that already have a channel in the active clip. Finishing an edit inserts or updates a key at the current frame. The first key for each property must be added manually.
+
+## Animation clips
+
+- Choosing a clip in the **Timeline** moves the playhead to the range start and sets the end from the clip’s last key. Properties animated only by the previous clip return to their rest values.
+- After the first clip exists, **Add animation** (**+**) beside the selector creates an empty clip and makes it active. Set **Animation name** in playback options to name it.
+- **Targets** lists animated properties by owner, with key counts. Click an owner's name to reveal it in **Nodes**.
+
+### Animated properties
+
+| Owner | Properties a clip can animate |
+| --- | --- |
+| Object or bone | Position, rotation and scale. Imported clips can also animate object visibility and a mesh object's morph weights, either together or individually. |
+| Camera | Perspective field of view and aspect ratio, orthographic X and Y magnification, near and far clipping distances. |
+| Light | Color, intensity, range and the two spot cone angles. The diamonds beside **Size** and **Blend** key the outer and inner angles respectively. |
+| Scene | Intensity of its image-based light. Imported clips can also rotate that light. |
+| Material | Surface properties and the UV transform of each texture slot. [Animated material properties](#animated-material-properties) |
+
+### Animated material properties
+
+| Material group | Properties a clip can animate |
+| --- | --- |
+| Base surface | Base color (including alpha), metallic, roughness, index of refraction, alpha cutoff, normal scale and occlusion strength. |
+| Emission | Emissive color and strength. |
+| Specular | Factor and color factor. |
+| Clearcoat | Factor, roughness and normal scale. |
+| Sheen | Color and roughness. |
+| Anisotropy | Strength and rotation. |
+| Iridescence | Factor, index of refraction, minimum and maximum film thickness. |
+| Transmission | Transmission factor and dispersion. Diffuse transmission has its own factor and color. |
+| Volume | Thickness, attenuation color and attenuation distance. |
+| Textures | UV offset, scale and rotation for each slot. These animate the placement of the assigned image. Image selection stays fixed. |
+
+[Material properties](/MeshEditor/manual/rendering/materials/)
+
+## Interpolation
+
+A channel holds its first value before the first key and its last value after the last key. Between keys it uses the channel's interpolation.
+
+| Interpolation | Between adjacent keys |
+| --- | --- |
+| **Linear** | Changes numeric values at a constant rate. Rotations turn along the shortest path between orientations. For a full turn, add intermediate rotation keys. New numeric channels use this mode. |
+| **Step** | Holds the earlier value until the next key. Visibility uses steps. |
+| **Cubic spline** | Uses tangents from an imported glTF clip to shape the curve. Inserting a key on a cubic channel gives the new key flat tangents. |
+
+[Timeline controls](/MeshEditor/manual/editors/timeline/)

@@ -1,0 +1,51 @@
+---
+path: /MeshEditor/manual/physical-audio/contact/
+title: "Strikers and contact sound"
+navOrder: 3
+---
+
+A manual strike uses the document's striker. During simulation, a collision can excite a modal object through its collider. Persistent contact can also produce sound as surfaces slide or roll.
+
+## Striker
+
+**Document → Properties → Modal synthesis → Striker** sets the mallet used in **Excite** mode throughout the document.
+
+| Property | Effect |
+| --- | --- |
+| **Material** | The mallet's mechanical material. Its density determines the mass for a given size. A harder material gives the strike a brighter attack. [Material presets](/MeshEditor/manual/physical-audio/solving/#material-presets) |
+| **Tip radius** | Radius of the rounded tip and of the cylindrical part of the mallet, in meters. |
+| **Length** | Length of the cylindrical part between the two rounded ends, in meters. |
+| **Mass** | Calculated mallet mass in kilograms. |
+
+### Impact angle
+
+The **Impact angle** pad is in the selected object's **Audio** properties when **Modal** is active. The center strikes perpendicular to the surface. The edge strikes along the surface. Right-click resets the direction to perpendicular. This setting applies to the striker across all objects.
+
+## Collision sound
+
+A collider on an object with an active modal model can produce sound when struck. Both bodies must belong to the same displayed scene. With no viewport open, MeshEditor uses the active scene. Both objects can ring if each uses a modal model. A child collider on a compound body uses its own model when present, or its parent's model.
+
+| Document property under **Modal synthesis** | Effect |
+| --- | --- |
+| **Min contact speed** | Minimum approach speed in meters per second for a collision to sound. |
+| **Min Contact Excitation** | Smallest peak amplitude a collision must excite in any mode to produce sound. |
+
+A dynamic body's mass, center of mass and inertia affect its response to a strike. For other meshes, mass depends on volume and acoustic material density. [Rigid body dynamics](/MeshEditor/manual/physics/rigid-bodies/#dynamics)
+
+## Sustained contact
+
+With surface audio enabled, sliding and rolling can produce sound for as long as the bodies remain in contact. **Document → Properties → Modal synthesis → Sustained contact** controls all such contacts. Each body's [Surface finish](/MeshEditor/manual/physical-audio/surface-finish/) describes the relief traveled by the contact.
+
+| Control | Effect |
+| --- | --- |
+| **Min slip speed** | Minimum relative sliding speed in meters per second for sustained sound. |
+| **Min sweep speed** | Minimum speed in meters per second at which contact travels across either surface. Rolling can produce sweep even without slip. |
+| **Sustain level** | Level of the sound driven by persistent contact. |
+| **Max Voices** | Maximum number of sustained contacts that can sound at once. |
+| **Acceleration noise** | Level of the noise from rigid-body recoil during contact. Set it to zero to silence that contribution. |
+| **Coupling** | How strongly vibration feeds back into the separation between surfaces. Increasing it can produce chatter. |
+| **Contact Damping** | Scales the energy lost during contact for the pair's restitution. |
+| **Mute Geometric Drive** | Silences vibration driven by surface relief. |
+| **Mute Friction Drive** | Silences vibration driven by friction. |
+
+**Active voices** shows how many sustained contacts are currently sounding. [Contact diagnostics](/MeshEditor/manual/physical-audio/listening/#contact-diagnostics)

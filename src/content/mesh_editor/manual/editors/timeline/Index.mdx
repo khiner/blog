@@ -1,0 +1,36 @@
+---
+path: /MeshEditor/manual/editors/timeline/
+title: "Timeline"
+navOrder: 3
+---
+
+The **Timeline** shows the current frame and playback range. Diamonds below the ruler mark keyframes in the active clip. In Pose mode, the ruler shows keys for the selected bones. In Object mode, selecting an armature includes keys from all its bones. The ruler also shows keys on selected objects, the active mesh’s selected material slot and a selected material node.
+
+## Frame navigation
+
+Click or drag in the frame ruler to scrub. For an exact frame, edit the current frame field beside the transport controls. Frame 1 corresponds to time zero. At the default 24 frames per second, frame 25 is one second into the clip. Scroll vertically over the timeline to zoom around the pointer. Scroll horizontally to pan across frames.
+
+| Action | Shortcut |
+| --- | --- |
+| Step back or forward one frame | **Left** / **Right** |
+| Go to range start or end | **Shift+Left** / **Shift+Right** |
+| Jump by a configured interval | **Ctrl+Left** / **Ctrl+Right** |
+| Jump to the previous or next marked frame | **Up** / **Down** |
+
+### Playback range
+
+| Property | Description |
+| --- | --- |
+| **Start** | First frame in the playback range. |
+| **End** | Last frame in the playback range. |
+| **Jump delta** | Interval used by the two jump buttons beside playback options and by **Ctrl+Left** or **Ctrl+Right**. The playhead lands on the nearest whole frame. |
+| **Jump in seconds** | Interprets **Jump delta** in seconds. With this off the interval is in frames. |
+| **Wrap navigation** | Manual stepping wraps at the playback range. Key jumps stay within that range while wrapping is on. With wrapping off, keys outside the range can be reached. |
+
+## Playback
+
+Use the forward or reverse transport button to begin playback. **Space** toggles playback, **Ctrl+Shift+Space** plays backward and **Esc** returns to the frame where playback began. Pausing with **Space** or the pause button keeps the current frame. Playback loops at the ends of the range in either direction. **Wrap navigation** controls manual stepping and key jumps.
+
+## Clip selector
+
+Choose the animation in the clip selector. Open playback options to rename the clip or inspect **Targets**, which lists each animated property and its key count. Click an owner's name to reveal it in **Nodes**. [Keyframes and animation clips](/MeshEditor/manual/animation/keyframes/)

@@ -1,0 +1,41 @@
+---
+path: /MeshEditor/manual/modeling/selection/
+title: "Mesh selection"
+navOrder: 1
+---
+
+Select a mesh and choose **Properties → Interaction mode → Edit**. To edit several meshes together, select their objects before entering **Edit** mode. **Properties** shows the selected count for the active mesh and element type.
+
+Linked duplicates share their mesh selection and geometry edits. Select the copy whose placement you want to use as the active object when editing several copies of one mesh.
+
+## Selection modes
+
+| Key | Element type | What a click picks |
+| --- | --- | --- |
+| **1** | Vertex | A point on the mesh. |
+| **2** | Edge | The segment joining two vertices. |
+| **3** | Face | A surface bounded by edges. |
+
+Click an element to replace the selection, or click empty space to clear it. Hold **Shift**, **Ctrl** or **Command** and click to add an element and make it active. A modified click on the active element removes it. To remove another selected element this way, click it once with the modifier to make it active, then click it again with the modifier.
+
+Switching element type converts the selection and clears the active element. **A** selects all visible elements of the current type. **Alt+A** clears the selection.
+
+## Box selection
+
+Drag with the box selection tool in the viewport toolbar. Hold **Shift** at the start of the drag to add to the selection. To include elements behind the front surface, enable **X-ray** (**Alt+Z**) in **Solid** or **Wireframe** shading before dragging.
+
+## Element visibility
+
+| Command | Effect in Edit mode |
+| --- | --- |
+| **Hide Selected** (**H**) | Hides the selected elements. |
+| **Hide Unselected** (**Shift+H**) | Leaves only the selected elements visible. |
+| **Reveal** (**Alt+H**) | Shows hidden elements again and selects the revealed elements of the current type. |
+
+To hide the entire object, use **Visible** in **Object** mode.
+
+## Node selections
+
+A geometry node can store its own **Selection**. Choose **Edit selection** and pick elements on the input mesh. **Done** (**Enter**) accepts the new selection and **Cancel** (**Esc**) discards it. [Node selections](/MeshEditor/manual/modeling/geometry-nodes/#node-selections)
+
+To select elements by connectivity, use **Linked** for a connected piece, **Edge Loop** or **Edge Ring** for a path through quad topology, or **Adjacent** to grow or shrink a mask. **Store Selection** gives a mask a name for later stages. [Fields and attributes](/MeshEditor/manual/modeling/fields/)

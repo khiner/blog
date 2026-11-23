@@ -1,0 +1,335 @@
+---
+path: /MeshEditor/manual/modeling/nodes/topology/
+title: "Topology nodes"
+navTitle: Topology
+navOrder: 2
+---
+
+Topology nodes add, remove or reconnect mesh elements. **Selection** accepts a `Boolean` field or a selection stored on the node.
+
+**Output** · Every node on this page produces the edited **Geometry**.
+
+<h3 id="delete">Delete</h3>
+
+Removes elements from the mesh.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Elements to remove with the selected mode. |
+
+| Property | Description |
+| --- | --- |
+| **Mode** | **Vertices**, **Edges** and **Faces** remove elements of that kind and dependent geometry. **Only Faces** preserves edges and vertices. **Only Edges And Faces** preserves vertices. **Loose** removes isolated vertices and wire edges. |
+
+<h3 id="merge">Merge</h3>
+
+Welds selected vertices.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to weld, or connected runs to collapse in **Collapse** mode. |
+| **Distance** | `Float` | Maximum separation in mesh-local units for **By Distance** welding. |
+
+| Property | Description |
+| --- | --- |
+| **Mode** | **Center** merges at the selection center. **First** and **Last** keep the first or last selected vertex in mesh order. Changing the order of clicks leaves the target unchanged. **Collapse** merges each connected run at its center. **By Distance** welds nearby vertices. |
+
+<h3 id="extrude">Extrude</h3>
+
+Extends the selection and connects the new elements to their starting boundary. Multiple steps or rotation require **Region** mode and unlinked offset inputs.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Faces, edges or vertices that form the base of the extrusion. |
+| **Offset** | `Vector` field | Displacement vector before scaling. A linked vector overrides **Along Normals**. |
+| **Offset Scale** | `Float` field | Multiplier on the displacement vector or normal direction. For a unit direction it gives the displacement distance. |
+| **Along Normals** | `Boolean` | Uses the region, face or vertex normal as the direction when **Offset** is unlinked. Turn this off to use the unlinked offset vector. |
+| **Steps** | `Integer` | Number of extrusions over which to distribute the total displacement and rotation. |
+| **Angle** | `Float` | Total angle swept across all steps. |
+| **Axis** | `Vector` | Direction of the rotation axis, in local coordinates. |
+| **Center** | `Vector` | Point on the rotation axis, in local coordinates. |
+
+| Property | Description |
+| --- | --- |
+| **Mode** | **Region** extrudes faces together. **Faces Individual** extrudes each face separately. **Edges** and **Vertices** extend selected edges and points. |
+
+<h3 id="duplicate">Duplicate</h3>
+
+Copies the selection within the same mesh. In the viewport, duplicating and placing the copy form one edit.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Elements to copy into the same mesh. |
+
+<h3 id="split">Split</h3>
+
+Disconnects the selection at its border and keeps it in the mesh. To move it to a new object, use **Separate** in the viewport.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Region to disconnect from the rest of the mesh. |
+
+<h3 id="dissolve">Dissolve</h3>
+
+Removes selected elements and joins surrounding geometry where possible.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Elements eligible to dissolve with the selected mode. |
+| **Angle** | `Float` | Largest angle between faces that **Limited** can join. |
+| **Distance** | `Float` | Length threshold in mesh-local units for **Degenerate**. |
+| **Keep Vertices** | `Boolean` | Retains vertices left between two remaining edges when dissolving edges. |
+| **All Boundaries** | `Boolean` | In **Limited** mode, dissolves selected vertices between two remaining edges regardless of their angle. |
+| **Delimit Materials** | `Boolean` | In **Limited** mode, preserves boundaries between different face materials. |
+| **Delimit Sharp Edges** | `Boolean` | In **Limited** mode, preserves edges marked sharp. |
+| **Delimit UVs** | `Boolean` | In **Limited** mode, preserves edges with different UV coordinates on either side. |
+
+| Property | Description |
+| --- | --- |
+| **Mode** | **Vertices**, **Edges** and **Faces** dissolve elements of that kind. **Limited** joins nearly coplanar faces. **Degenerate** collapses very short edges and small faces. |
+
+<h3 id="subdivide">Subdivide</h3>
+
+Splits selected edges and faces.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Edges to cut and the faces between them. |
+| **Cuts** | `Integer` | Number of cuts along each selected edge when **Max Length** is zero. |
+| **Max Length** | `Float` | Maximum segment length. A positive value takes precedence over **Cuts**. |
+| **New Loops Only** | `Boolean` | Restricts the resulting selection to the new crosswise loops. |
+
+<h3 id="subdivisionsurface">Subdivision Surface</h3>
+
+Rounds and refines the mesh using Catmull–Clark subdivision.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Levels** | `Integer` | Number of successive subdivision passes. Higher levels produce a denser surface. |
+
+<h3 id="smoothsurface">Smooth Surface</h3>
+
+Refines a closed mesh using shading normals. Flat shading and sharp marks preserve creases.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Cuts** | `Integer` | Number of new vertices along each edge. |
+
+<h3 id="splitfaces">Split Faces</h3>
+
+Splits polygons to match a target face shape.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Polygons to split. |
+| **Angle** | `Float` | Tolerance for bending when **Target** is **Planar**. |
+
+| Property | Description |
+| --- | --- |
+| **Target** | **Triangle** triangulates the faces. **Convex** splits concave polygons. **Planar** splits faces that bend beyond the angle tolerance. |
+
+<h3 id="tristoquads">Tris To Quads</h3>
+
+Joins eligible pairs of adjacent triangles into quads.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Adjacent triangles eligible to join. |
+
+<h3 id="poke">Poke</h3>
+
+Connects each face’s corners to a new center vertex.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Faces that receive a center vertex. |
+| **Offset** | `Float` field | Distance to move the new center along the face normal. |
+
+<h3 id="edgesplit">Edge Split</h3>
+
+Disconnects adjacent faces along the selected edges.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Edges along which to disconnect adjoining faces. |
+| **Select Copies** | `Boolean` | Selects the split copies so a subsequent move can pull the separated side away. |
+
+<h3 id="inset">Inset</h3>
+
+Creates a boundary inside the selected face region.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Faces that form the inset region. |
+| **Thickness** | `Float` field | Width of the inset. |
+| **Depth** | `Float` field | Displacement of the inset surface along the normal. |
+| **Individual** | `Boolean` | Insets each face separately. When off, neighboring selected faces share an inset boundary. |
+| **Even** | `Boolean` | Compensates around corners to maintain the inset width. |
+
+<h3 id="solidify">Solidify</h3>
+
+Gives the selected surface a shell.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Faces to give thickness. |
+| **Thickness** | `Float` field | Shell thickness. A field can vary it across the selected faces. |
+
+<h3 id="wireframe">Wireframe</h3>
+
+Builds struts along the edges of selected faces.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Faces whose edges become struts. |
+| **Thickness** | `Float` field | Width of the struts. |
+| **Offset** | `Float` | Depth relative to the faces. −1 places the struts behind them, 0 centers them and 1 places them in front. |
+| **Replace** | `Boolean` | Removes the original selected faces. Turn this off to keep them along with the struts. |
+| **Boundary** | `Boolean` | Includes struts along the border of the selection. |
+| **Even** | `Boolean` | Compensates at corners to maintain even width. |
+| **Relative** | `Boolean` | Scales the strut width according to face size. |
+
+<h3 id="bevel">Bevel</h3>
+
+Cuts back selected edges or corners.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Edges to bevel, or corners when **Vertices** is enabled. |
+| **Width** | `Float` field | Bevel offset. A field can vary it along the selection. |
+| **Segments** | `Integer` | Number of faces across the bevel. |
+| **Vertices** | `Boolean` | Bevels selected vertices. With this off, the bevel follows selected edges. |
+
+<h3 id="bisect">Bisect</h3>
+
+Cuts the mesh with a plane. The [Bisect Fill subnet](/MeshEditor/manual/modeling/geometry-nodes/#built-in-subnets) can cap the cut.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Region to cut with the plane. |
+| **Point** | `Vector` | Point on the cut plane in local coordinates. |
+| **Normal** | `Vector` | Direction perpendicular to the plane. It points toward the outer side. |
+| **Clear Inner** | `Boolean` | Discards geometry on the negative side of the plane. |
+| **Clear Outer** | `Boolean` | Discards geometry on the positive side of the plane. |
+
+<h3 id="convexhull">Convex Hull</h3>
+
+Encloses at least four selected vertices in a convex mesh, spanning any recesses. A planar selection produces a single polygon.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Points the hull must enclose. |
+
+<h3 id="simplify">Simplify</h3>
+
+Reduces the number of faces in the selected region.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Region in which faces may be removed. |
+| **Tolerance** | `Float` | Maximum distance a surviving vertex can depart from the original face planes during the initial simplification. |
+| **Ratio** | `Float` | Fraction of the remaining triangles to keep after the tolerance pass. |
+
+<h3 id="connectvertices">Connect Vertices</h3>
+
+Cuts a path of edges through faces between selected vertices. The viewport command is **Connect Vertex Path**.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices to connect with a path of edges across the mesh. |
+
+<h3 id="fill">Fill</h3>
+
+Joins two vertices with an edge, creates a face from selected vertices, or fills selected boundary loops. On adjacent selected faces it dissolves their shared edges. The **Fill Holes** subnet selects boundary edges automatically.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Vertices, edges or faces used to form the fill. |
+| **Sides** | `Integer` | Largest boundary loop to fill, counted in edges. Zero allows loops of any size. |
+
+<h3 id="bridgeedgeloops">Bridge Edge Loops</h3>
+
+Connects two unbranched chains of boundary or loose edges. Select two open chains to build a strip, or two closed loops to join their rims. Chains with equal edge counts produce quads. Unequal counts produce a mix of triangles and quads.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Two boundary or loose-edge chains to connect. |
+
+<h3 id="gridfill">Grid Fill</h3>
+
+Spans one closed boundary with a quad grid. The boundary must have an even number of edges, at least four.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Closed boundary to span with the grid. |
+| **Span** | `Integer` | Number of boundary edges along the first side. Zero chooses sides as close to equal as the boundary allows. |
+
+<h3 id="edgerotate">Edge Rotate</h3>
+
+Replaces the diagonal between adjacent faces with the other diagonal, keeping the vertices in place.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Diagonals to rotate between adjacent faces. |
+
+<h3 id="beautifyfaces">Beautify Faces</h3>
+
+Improves the shapes of neighboring triangles by changing their shared diagonals.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Region of triangles whose shared diagonals may change. |
+
+<h3 id="unsubdivide">Unsubdivide</h3>
+
+Removes subdivision levels from regular mesh topology.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Selection** | `Boolean` field | Region from which to remove subdivision levels. |
+| **Iterations** | `Integer` | Number of unsubdivision passes. |
+
+<h3 id="knife">Knife</h3>
+
+Cuts edges where they cross a segment projected from the recorded viewport. The cut stays attached to the mesh when the viewport changes.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Frame Position** | `Vector` | Translation from mesh-local coordinates into the space used by this operation. |
+| **Frame Rotation** | `4D Vector` | Rotation from mesh-local coordinates into the space used by this operation. |
+| **Frame Scale** | `Vector` | Scale applied when converting mesh-local positions into the space used by this operation. |
+
+| Property | Description |
+| --- | --- |
+| **Start** | First endpoint of the cut, in view pixels from the top left. |
+| **End** | Second endpoint, in the same coordinates. |
+| **Extent** | Width and height of the recorded view in pixels. |
+| **View Projection** | Matrix that projects positions in the edit frame into the recorded view. |

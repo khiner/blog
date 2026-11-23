@@ -4,6 +4,8 @@ import entries from 'virtual:entries'
 export interface EntryMetadata {
   path: string
   title: string
+  navTitle?: string
+  navOrder?: number
   summaryTitle?: string
   subtitle?: string
   date?: string

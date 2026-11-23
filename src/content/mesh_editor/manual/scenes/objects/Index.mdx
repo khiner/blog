@@ -1,0 +1,43 @@
+---
+path: /MeshEditor/manual/scenes/objects/
+title: "Objects and scene membership"
+navOrder: 1
+---
+
+The **Object tree** in **Scene controls → Scene** lists objects by hierarchy. Expand a parent to reach its children, including objects obscured in the viewport. Select a row to inspect its type, transform, visibility and parent in **Properties**.
+
+## Object types
+
+Choose a type under **Scene controls → Scene → Add object**.
+
+| Object | Use |
+| --- | --- |
+| Mesh primitive | Start with a plane, circle, cube, UV sphere, ico sphere, quad sphere, torus, cylinder or cone. Open its geometry procedure to edit the generator. |
+| Empty | Group other objects under a transform with no surface. |
+| [Armature](/MeshEditor/manual/animation/rigging/) | Add bones in Edit mode and pose them in Pose mode. |
+| [Camera](/MeshEditor/manual/rendering/cameras/) | Define a shot. Choose **Properties → Camera → Look through** to frame it. |
+| [Light](/MeshEditor/manual/rendering/lights/) | Place a light source and set its type, color and brightness. |
+
+In the viewport, **Ctrl+Shift+E** adds an empty, **Ctrl+Shift+A** an armature, **Ctrl+Shift+C** a camera and **Ctrl+Shift+L** a light. On macOS, these shortcuts also accept **Command** in place of **Ctrl**.
+
+## Object selection
+
+Click a row in the **Object tree** to select it. **Shift**-click another row to select the range between them. A dim highlight on a parent marks a selection farther down its branch. The active row has a colored type label. In **Properties**, mesh objects show vertex, edge and face counts. Armature objects show the bone count.
+
+## Visibility
+
+In Object mode, **H** reverses the visibility of each selected object. For a mixed selection, hidden objects become visible and visible objects become hidden. **Visible** in **Properties** sets the visibility of the active object. Its children can stay visible when the parent is hidden. Select a hidden object in the tree to show it again. Under **Selection actions**, it affects the entire selection. A mixed checkbox means only some selected objects are visible.
+
+## Deletion
+
+**Delete** removes the selected objects. Deleting an ordinary parent detaches its surviving children as roots. Their local coordinates become scene coordinates. For hierarchy instances, see [Parenting, duplicates and instances](/MeshEditor/manual/scenes/hierarchies/#hierarchy-instances). Use **Unlink from scene** to remove only a scene membership.
+
+## Scene membership
+
+**Add → Scene** creates a scene in the document network. The **Scene** selector in **Scene controls** chooses the scene shown in the active viewport.
+
+**Link to scene** adds the selected hierarchy to another scene. The scenes share the same objects and their properties. **Properties → Scenes** lists memberships for the hierarchy root, including when a child is selected.
+
+A document can hold up to 64 scenes. To remove a scene, select its node in the document network and delete it. Objects that belong only to that scene are deleted with their descendants. Hierarchies linked to another scene survive there. Viewports showing the deleted scene switch to a remaining scene. The document keeps at least one scene.
+
+**Unlink from scene** removes a hierarchy from one of its scenes. It must keep at least one membership. Duplicate the object if you need to edit its properties independently in another scene. [Parenting and instances](/MeshEditor/manual/scenes/hierarchies/) · [Scene and document networks](/MeshEditor/manual/scenes/networks/)

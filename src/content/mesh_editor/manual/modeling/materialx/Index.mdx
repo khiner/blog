@@ -1,0 +1,53 @@
+---
+path: /MeshEditor/manual/modeling/materialx/
+title: "MaterialX operations"
+navOrder: 12
+---
+
+In a geometry network, choose a MaterialX operation from **Add**. Its output can drive a node input, such as **Position** or **Selection**, or supply an image to a sampler.
+
+## Sockets and supported types
+
+**Inputs** are sockets you can connect. **Properties** are settings in the inspector. **Output** describes the result. Operations that separate channels list each output by name.
+
+Open **Supported types** to see the MaterialX identifier, type combinations and any limits on where the operation can run. Each row shows one supported combination. Socket names grouped in one column share a type. For example, **Clamp** accepts a vector with scalar bounds or with separate bounds for each component.
+
+## Node properties
+
+Use **Node** to switch operations. Sockets that share a name keep compatible connections and values.
+
+| Control | Effect |
+| --- | --- |
+| Unlinked input | Enter a number, vector or color. If the input accepts several types, choose one beside the field to convert its current value. |
+| Geometric input | Some unlinked sockets read a mesh property, such as the first UV set. The inspector names the property. Connect an explicit value to replace it. |
+| Linked input | The wire supplies the value. Disconnect it to use the local value again. |
+| Image input | Choose a document texture or **None** for the node’s default. Inputs that accept images or values offer **Image** when the document contains a texture. |
+| Text and choice properties | Enter text or choose an option in the inspector. |
+| **Output type** | Choose the result type when the same inputs allow several. |
+
+Compatible types can connect directly. Use **Convert** when you want a particular input type.
+
+## Evaluation requirements
+
+| What the operation needs | What to check |
+| --- | --- |
+| One value for the entire operation | Supply a constant to a single-value input. A varying field supplies a different value at each point. |
+| A mesh attribute or selection | Check the name, type and domain on the mesh that reaches the node. On **Convert Domain**, specify the source domain when it is ambiguous. |
+| Texture coordinates or neighboring samples | For a mesh texture, check the UV set. To smooth a pattern that depends on the mesh, bake it to an image before connecting **Blur**. |
+| A coordinate space or view direction | **Position**, **Normal** and **Surface Tangent** read mesh-local values in either **model** or **object** space. Choosing **world** for these reads is unsupported. Use **Transform Matrix** with an explicit matrix to apply a known transformation. **Facing Ratio** needs both a surface normal and a direction from the viewer to the surface. |
+
+## Library coverage
+
+The geometry **Add** menu offers **184 operations in 16 families**, including MeshEditor operations for mesh selections and fields. **Blur** also accepts images.
+
+MaterialX operations unavailable in geometry networks include `bitangent`, `viewdirection`, `geompropvalueuniform`, `gooch_shade`, `surface_unlit`, `surfacematerial` and `volumematerial`. For surface shading and lights, see [Materials](/MeshEditor/manual/rendering/materials/) and [Scene lighting](/MeshEditor/manual/rendering/lighting/).
+
+## In this section
+
+- [Geometry inputs and scene time](/MeshEditor/manual/modeling/materialx/geometry/)
+- [Math, vectors and matrices](/MeshEditor/manual/modeling/materialx/math/)
+- [Logic and channel operations](/MeshEditor/manual/modeling/materialx/logic/)
+- [Color adjustments and conversions](/MeshEditor/manual/modeling/materialx/color/)
+- [Compositing operations](/MeshEditor/manual/modeling/materialx/compositing/)
+- [Patterns and noise](/MeshEditor/manual/modeling/materialx/patterns/)
+- [Texture, filtering and facing operations](/MeshEditor/manual/modeling/materialx/textures/)

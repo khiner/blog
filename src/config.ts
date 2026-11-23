@@ -1,3 +1,6 @@
+export const meshEditorHome = '/MeshEditor/'
+export const manualHome = meshEditorHome + 'manual/'
+
 export default {
   hostname: 'karlhiner.com',
   origin: 'https://karlhiner.com',

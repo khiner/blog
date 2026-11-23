@@ -1,0 +1,23 @@
+---
+path: /MeshEditor/manual/modeling/booleans/
+title: "Boolean modeling"
+navOrder: 4
+---
+
+**Boolean** combines closed solids or regions in the same plane. It starts with **Mesh 1** and applies the shapes on **Mesh 2** in link order. Open sheets that cross in space have no enclosed volume to cut.
+
+| Operation | Result |
+| --- | --- |
+| **Difference** | The part of the starting shape outside the cutters. |
+| **Union** | The combined volume, with interior boundaries removed. |
+| **Intersection** | The volume common to all inputs. |
+
+Both shapes must have compatible placement. A cutter mirrored relative to **Mesh 1**, or scaled to zero along an axis, cannot be used. If a cut fails or produces no geometry, **Boolean** passes through the original **Mesh 1**. Select the node to read the reason in **Properties**.
+
+## Operand placement
+
+**Object Info** supplies another object's geometry as a cutter on **Mesh 2**. **Space** identifies the object whose placement applies to **Mesh 1**. Changes to the cutter’s transform or geometry update the Boolean result. The cutter remains a separate object with its own visibility.
+
+## Split by Solid
+
+**Split by Solid** exposes the **Outside** and **Inside** of the same cut as separate outputs. For a plane cut, **Bisect Fill** can close the new boundary and **Cross Section** extracts the planar section. [Built-in subnets](/MeshEditor/manual/modeling/geometry-nodes/#built-in-subnets)

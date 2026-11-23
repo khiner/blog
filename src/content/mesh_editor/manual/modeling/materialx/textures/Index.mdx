@@ -1,0 +1,247 @@
+---
+path: /MeshEditor/manual/modeling/materialx/textures/
+title: "Texture, filtering and facing operations"
+navTitle: Textures and filtering
+navOrder: 7
+---
+
+import OperationPorts from '../OperationPorts'
+
+<span id="texture2d" />
+
+## Texture 2D
+
+### Hex Tiled Image
+
+Reduce visible tiling by blending randomized, hexagonal image samples.
+
+<OperationPorts
+  identifier="hextiledimage"
+  inputs={{
+    "File": "Document texture or connected image.",
+    "Default": "Fallback sample when the image is missing.",
+    "Texcoord": "UV coordinates to sample.",
+    "Tiling": "Repeats along U and V. Higher counts make smaller tiles.",
+    "Rotation": "Amount of random rotation per tile.",
+    "Rotationrange": "Minimum and maximum tile rotation in degrees.",
+    "Scale": "Amount of random scaling per tile.",
+    "Scalerange": "Minimum and maximum tile scale.",
+    "Offset": "Amount of random translation per tile.",
+    "Offsetrange": "Minimum and maximum tile offset.",
+    "Falloff": "How quickly a tile fades at its edges.",
+    "Falloffcontrast": "How strongly image contrast affects the transition between tiles.",
+    "Lumacoeffs": "RGB luminance weights. Presets include ACEScg, Rec. 709, Rec. 2020 and Rec. 2100.",
+  }}
+  result="The texture sampled across tiles with softened boundaries."
+  fixedTypes={{
+    "File": "image",
+    "Texcoord, Tiling, Rotationrange, Scalerange, Offsetrange": "vector2",
+    "Rotation, Scale, Offset, Falloff, Falloffcontrast": "float",
+    "Lumacoeffs": "color3",
+  }}
+  columns={["Default", "Output"]}
+  rows={[
+    ["color3, color4", {"sameAs": "Default"}],
+  ]}
+/>
+
+### Image
+
+Sample a still image at UV coordinates. Image-sequence settings have no effect on playback.
+
+<OperationPorts
+  identifier="image"
+  inputs={{
+    "Image": "Document texture or connected image.",
+    "Default Color": "Fallback sample when the image is missing.",
+    "Texture Coordinates": "The UV coordinates to sample.",
+    "Frame Offset": "Frame offset for an image sequence.",
+  }}
+  properties={{
+    "Layer": "Layer name. MeshEditor samples the whole image.",
+    "Address Mode U": "How to sample outside the texture horizontally. Choose constant for the fallback color, clamp for the edge color, or repeat with periodic or mirror.",
+    "Address Mode V": "The same addressing choice along the vertical axis.",
+    "Filter Type": "Closest selects one texel. Linear blends adjacent texels. Cubic uses linear filtering in MeshEditor.",
+    "Frame Range": "First and last frames in an image sequence.",
+    "Frame End Action": "Playback behavior at the end of an image sequence.",
+  }}
+  result="The sample from the chosen image at the UV position."
+  fixedTypes={{
+    "Image": "image",
+    "Texture Coordinates": "vector2",
+    "Frame Offset": "integer",
+  }}
+  columns={["Default Color", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "Default Color"}],
+  ]}
+>
+
+Beyond the right edge of an image, clamp repeats the last column of pixels. Periodic addressing repeats the image from its left edge.
+
+</OperationPorts>
+
+### Lat-Long Image
+
+Look up a direction in a latitude–longitude panorama.
+
+<OperationPorts
+  identifier="latlongimage"
+  inputs={{
+    "Image": "A latitude–longitude panorama.",
+    "Default Color": "Fallback sample when the image is missing.",
+    "View Direction": "Unit direction to look up in the panorama. Positive Y points to the upper pole.",
+    "Longitude Offset": "The horizontal rotation of the panorama in degrees.",
+  }}
+  result="The color at the given direction in the panorama."
+  fixedTypes={{
+    "Image": "image",
+    "Default Color": "color3",
+    "View Direction": "vector3",
+    "Longitude Offset": "float",
+    "Output": "color3",
+  }}
+/>
+
+### Tiled Image
+
+Repeat and offset a still image across a surface. Image-sequence settings have no effect on playback.
+
+<OperationPorts
+  identifier="tiledimage"
+  inputs={{
+    "File": "Document texture or connected image.",
+    "Default": "Fallback sample when the image is missing.",
+    "Texcoord": "The UV coordinates to tile.",
+    "Uvtiling": "Repeats along U and V. Higher counts make smaller tiles.",
+    "Uvoffset": "Pattern offset along U and V.",
+    "Realworldimagesize": "The physical width and height represented by the source image.",
+    "Realworldtilesize": "The physical size of one UV tile, in the same units as the image size.",
+    "Frameoffset": "Frame offset for an image sequence.",
+  }}
+  properties={{
+    "Filtertype": "Closest selects one texel. Linear blends adjacent texels. Cubic uses linear filtering in MeshEditor.",
+    "Framerange": "First and last frames in an image sequence.",
+    "Frameendaction": "Playback behavior at the end of an image sequence.",
+  }}
+  result="The image sample after scaling, offsetting and repeating the texture."
+  fixedTypes={{
+    "File": "image",
+    "Texcoord, Uvtiling, Uvoffset, Realworldimagesize, Realworldtilesize": "vector2",
+    "Frameoffset": "integer",
+  }}
+  columns={["Default", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "Default"}],
+  ]}
+/>
+
+<span id="texture3d" />
+
+## Texture 3D
+
+### Triplanar Projection
+
+Project a still image along each axis and blend the three according to surface orientation. Image-sequence settings have no effect on playback.
+
+<OperationPorts
+  identifier="triplanarprojection"
+  inputs={{
+    "Filex": "The texture projected along the X axis.",
+    "Filey": "The texture projected along the Y axis.",
+    "Filez": "The texture projected along the Z axis.",
+    "Default": "Fallback sample when the image is missing.",
+    "Position": "The 3D position to project.",
+    "Normal": "The surface normal that sets the relative weight of each projection.",
+    "Upaxis": "The vertical axis for orienting the projections.",
+    "Blend": "Smaller values sharpen the transition between projections. Larger values blend them more broadly.",
+    "Frameoffset": "Frame offset for an image sequence.",
+  }}
+  properties={{
+    "Layerx": "Layer name. MeshEditor samples the whole image.",
+    "Layery": "Layer name. MeshEditor samples the whole image.",
+    "Layerz": "Layer name. MeshEditor samples the whole image.",
+    "Filtertype": "Closest selects one texel. Linear blends adjacent texels. Cubic uses linear filtering in MeshEditor.",
+    "Framerange": "First and last frames in an image sequence.",
+    "Frameendaction": "Playback behavior at the end of an image sequence.",
+  }}
+  result="A blend of the three projections weighted by surface orientation."
+  fixedTypes={{
+    "Filex, Filey, Filez": "image",
+    "Position, Normal": "vector3",
+    "Upaxis, Frameoffset": "integer",
+    "Blend": "float",
+  }}
+  columns={["Default", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "Default"}],
+  ]}
+/>
+
+<span id="convolution2d" />
+
+## Convolution 2D
+
+### Blur
+
+Soften detail in an image or a field that uses one UV coordinate set. For a field that reads mesh geometry or combines several UV sets, [bake the field to an image](/MeshEditor/manual/modeling/fields/#image-baking) first. A nonzero blur of an image or varying field has a preview in **Properties → Image**.
+
+<OperationPorts
+  identifier="blur"
+  inputs={{
+    "In": "The image or sampled field to blur.",
+    "Size": "Width of the neighborhood in UV units. Zero passes the input through. The largest supported width is 32.",
+  }}
+  properties={{
+    "Filtertype": "Box weights all samples equally. Gaussian gives nearby samples more weight.",
+  }}
+  result="A smoothed image or field. Wider neighborhoods soften broader features."
+  fixedTypes={{
+    "Size": "float",
+  }}
+  columns={["In", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4, image", {"sameAs": "In"}],
+  ]}
+/>
+
+### Height to Normal
+
+Turn a height field into a normal map. The height must be available at neighboring samples.
+
+<OperationPorts
+  identifier="heighttonormal"
+  inputs={{
+    "In": "A height field sampled across the surface.",
+    "Scale": "The strength of the slope in the resulting normal.",
+    "Texcoord": "The UV coordinates that define the tangent directions of the height field.",
+  }}
+  result="A tangent-space normal encoded from 0 to 1. A flat height field gives (0.5, 0.5, 1)."
+  fixedTypes={{
+    "In, Scale": "float",
+    "Texcoord": "vector2",
+    "Output": "vector3",
+  }}
+/>
+
+## NPR
+
+### Facing Ratio
+
+Measure how directly a surface faces the viewer. Supply the view direction and normal in the same coordinate space.
+
+<OperationPorts
+  identifier="facingratio"
+  inputs={{
+    "Viewdirection": "Unit direction from the viewer to the surface.",
+    "Normal": "Unit surface normal.",
+    "Faceforward": "Treat both sides as front-facing. Turn off for negative values on back faces.",
+    "Invert": "Subtracts the facing value from 1.",
+  }}
+  result="Before inversion, 1 on a directly front-facing surface and 0 at a grazing angle."
+  fixedTypes={{
+    "Viewdirection, Normal": "vector3",
+    "Faceforward, Invert": "boolean",
+    "Output": "float",
+  }}
+/>

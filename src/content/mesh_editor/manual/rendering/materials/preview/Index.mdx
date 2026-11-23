@@ -1,0 +1,55 @@
+---
+path: /MeshEditor/manual/rendering/materials/preview/
+title: "Material preview"
+navOrder: 4
+---
+
+Use **Material Preview** to compare finishes under studio lighting and **Rendered** to judge a finish in the shot.
+
+## Preview lighting
+
+The viewport shading popover controls lighting in **Material Preview** and **Rendered**. **Scene lights** includes the light objects. **Scene world** selects the scene's environment. With **Scene world** off, **Environment** selects a studio image, **Rotation** turns it and **Exposure** adjusts the displayed brightness.
+
+Each mode remembers its lighting settings. **Reset** restores the active mode's lighting defaults. [World and environment lighting](/MeshEditor/manual/rendering/world/)
+
+## Debug channels
+
+**Debug → Channel** in the viewport shading popover replaces the lit material with a view of one property. Debug channels are available in **Material Preview** and **Rendered**. Their readouts bypass exposure and tone mapping.
+
+| Property | Description |
+| --- | --- |
+| **None** | Displays the lit material. |
+| **Texture Coordinates 0** | U and V of the first texture coordinate set, displayed as red and green. |
+| **Texture Coordinates 1** | U and V of the second texture coordinate set, displayed as red and green. |
+| **Normal Texture** | Direction sampled from the normal map, in tangent space. |
+| **Geometry Normal** | Surface normal before the normal map is applied. |
+| **Geometry Tangent** | Surface direction along the texture’s U axis. |
+| **Geometry Bitangent** | Surface direction perpendicular to the tangent and normal, along the texture’s V axis. |
+| **Geometry Tangent W** | Handedness of the tangent frame. Opposite signs appear black and white. |
+| **Shading Normal** | Surface normal used for lighting after applying the normal map. |
+| **Alpha** | Coverage after the alpha mode is applied. Opaque surfaces appear white. Masked surfaces show solid white where the mask passes and holes where it fails. Blend shows the combined material, texture and vertex alpha. |
+| **Occlusion** | Ambient occlusion from the material. Darker areas receive less indirect light. |
+| **Emissive** | Color emitted by the surface. |
+| **Base Color** | Base color after combining the material, texture and vertex color, before lighting. |
+| **Metallic** | Metallic factor after texturing. White is fully metallic. |
+| **Roughness** | Surface roughness after texturing. White is the roughest surface. |
+
+### Material extension channels
+
+| Property | Description |
+| --- | --- |
+| **Clearcoat Strength** | Amount of clearcoat at each point on the surface. |
+| **Clearcoat Roughness** | Roughness of the coat. Higher values spread its highlight. |
+| **Clearcoat Normal** | Surface direction used to light the clearcoat layer. |
+| **Sheen Color** | Tint of the sheen reflection. |
+| **Sheen Roughness** | Roughness of the sheen reflection. |
+| **Specular Strength** | Strength of the dielectric reflection. |
+| **Specular Color** | Tint of the dielectric reflection. |
+| **Transmission Strength** | Fraction of light transmitted through the surface. |
+| **Volume Thickness** | Relative thickness across the surface. The green channel of the thickness texture controls the pattern. A positive, untextured thickness appears white. |
+| **Diffuse Transmission Strength** | Fraction of light transmitted diffusely. |
+| **Diffuse Transmission Color** | Tint of diffusely transmitted light. |
+| **Iridescence Strength** | Amount of thin-film interference in the surface reflection. |
+| **Iridescence Thickness** | Film thickness across the surface, shown from black at 0 nm to white at 1200 nm. |
+| **Anisotropic Strength** | Amount of directional stretching in the specular highlight. |
+| **Anisotropic Direction** | Direction of the stretched highlight across the surface. |

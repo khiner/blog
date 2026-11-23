@@ -1,0 +1,87 @@
+.mx-ports {
+  max-inline-size: 44rem;
+  margin-block: 0.75rem 2.25rem;
+
+  > h4 {
+    margin: 1rem 0 0.4rem;
+    font-size: 1.3rem;
+    line-height: 1.25;
+    font-weight: 650;
+  }
+  .mx-definitions {
+    margin: 0;
+  }
+  .mx-definitions div + div {
+    margin-block-start: 0.45rem;
+  }
+  dt {
+    font-weight: 600;
+  }
+  .mx-definitions dd {
+    margin: 0.05rem 0 0 1rem;
+  }
+  > p {
+    margin: 0;
+  }
+  .mx-signatures {
+    margin-top: 0.85rem;
+    font-size: 0.9375rem;
+  }
+  summary {
+    width: fit-content;
+    cursor: pointer;
+  }
+  summary:focus-visible {
+    outline: 2px solid var(--site-link-hover);
+    outline-offset: 3px;
+  }
+  .mx-fixed-types {
+    margin: 0.4rem 0;
+  }
+  .mx-fixed-types div {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.65rem;
+    align-items: baseline;
+  }
+  .mx-fixed-types dd {
+    margin: 0;
+  }
+  table {
+    margin-block: 0.5rem;
+    max-inline-size: 100%;
+    border-collapse: collapse;
+    line-height: 1.45;
+  }
+  th,
+  td {
+    padding: 0.35rem 0.65rem;
+    text-align: start;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+  thead {
+    background: var(--manual-active);
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--manual-rule);
+  }
+  code {
+    font:
+      0.875rem/1.45 SFMono-Regular,
+      Menlo,
+      Consolas,
+      monospace;
+    overflow-wrap: anywhere;
+  }
+  details p {
+    margin: 0.4rem 0;
+    font-size: 0.875rem;
+  }
+  @media (width < 480px) {
+    th,
+    td {
+      padding-inline: 0.35rem;
+    }
+  }
+}

@@ -1,0 +1,21 @@
+---
+path: /MeshEditor/manual/animation/morph-targets/
+title: "Morph targets"
+navOrder: 4
+---
+
+A morph target stores a change in mesh shape, such as the displacement that closes an eyelid. Its weight controls how much of the change appears. These targets are the glTF equivalent of relative shape keys. On a skinned mesh, the morphed shape follows the bones.
+
+## Morph weights
+
+The starting shape uses the object's weights, or the mesh's default weights when the object supplies none. A weight of 0 leaves the shape alone, 0.5 applies half the target displacement and 1 applies it in full. A negative weight moves the vertices in the opposite direction. Values above 1 exaggerate the displacement.
+
+Several targets can contribute at once. Each mesh object has its own weights, so two instances of the same geometry can show different expressions.
+
+## Morph weight animation
+
+An imported clip can animate the weights together or change a single target. If the asset includes changes to the vertex normals, the shading follows those changes with the same weights. [Animated properties](/MeshEditor/manual/animation/keyframes/#animated-properties)
+
+**Timeline → Playback options → Targets** lists a mesh object’s **Morph weights** when the active clip animates them.
+
+On a skinned mesh, the vertices follow the armature after the morph weights are applied. [Skins and bone attachments](/MeshEditor/manual/animation/rigging/skinning/)

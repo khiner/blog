@@ -1,0 +1,167 @@
+---
+path: /MeshEditor/manual/modeling/nodes/sources/
+title: "Geometry sources and composition"
+navTitle: Sources and composition
+navOrder: 1
+---
+
+Generators use object-local dimensions. Enable **Display** to inspect the mesh a node produces.
+
+**Output** · Every node on this page produces **Geometry**.
+
+<h3 id="source">Source</h3>
+
+Supplies the mesh's original vertices, edges and faces before any procedure edits.
+
+<h3 id="plane">Plane</h3>
+
+A rectangular grid of quads centered at the origin in the XZ plane, facing +Y.
+
+| Property | Description |
+| --- | --- |
+| **Half Extents** | Distances from the center to the edges along X and Z. |
+| **Subdivisions** | Number of faces along X and Z. One subdivision in each direction gives a single quad. |
+
+<h3 id="circle">Circle</h3>
+
+Creates a circular rim with optional faces.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Radius** | `Float` | Distance from the center to the rim. |
+| **Segments** | `Integer` | Number of vertices around the rim. |
+
+| Property | Description |
+| --- | --- |
+| **Fill** | **None** leaves the rim open. **Face** adds one polygon. **Fan** creates triangles around a center vertex. |
+
+<h3 id="cube">Cube</h3>
+
+Creates a box centered at the origin.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Half Extents** | `Vector` | Distances from the center to the faces along X, Y and Z. Each full dimension is twice the corresponding half extent. |
+
+<h3 id="icosphere">Ico Sphere</h3>
+
+Creates a sphere by subdividing an icosahedron.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Radius** | `Float` | Distance from the center to each vertex. |
+| **Subdivisions** | `Integer` | Number of subdivision levels. Each level divides every triangle into four. |
+
+<h3 id="uvsphere">UVSphere</h3>
+
+Creates a sphere with rings of latitude and longitude.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Radius** | `Float` | Distance from the center to the surface. |
+| **Slices** | `Integer` | Number of segments around the vertical axis. |
+| **Stacks** | `Integer` | Number of divisions from pole to pole. |
+
+<h3 id="quadsphere">Quad Sphere</h3>
+
+Creates a sphere from six subdivided square patches.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Radius** | `Float` | Distance from the center to the surface. |
+| **Segments** | `Integer` | Number of quads along each patch edge. |
+
+| Property | Description |
+| --- | --- |
+| **Method** | **Even Area** spreads vertices to give faces similar areas. **Even Angle** spaces them at equal angular intervals. |
+
+<h3 id="torus">Torus</h3>
+
+Creates a circular ring with a circular tube.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Major Radius** | `Float` | Distance from the center of the ring to the center of the tube. |
+| **Minor Radius** | `Float` | Radius of the tube cross section. |
+| **Major Segments** | `Integer` | Number of divisions around the ring. |
+| **Minor Segments** | `Integer` | Number of divisions around the tube cross section. |
+
+<h3 id="cylinder">Cylinder</h3>
+
+Creates a cylinder, tapered cylinder or cone.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Radius** | `Float` | Radius of the base. Also sets the upper radius when **Top Radius** is unset. |
+| **Height** | `Float` | Distance between the two ends. |
+| **Slices** | `Integer` | Number of segments around the cylinder. |
+
+| Property | Description |
+| --- | --- |
+| **Top Radius** | Optional radius of the upper end. A value of zero produces a cone. |
+| **Cap** | **None** leaves the ends open. **Face** creates polygon caps. **Fan** caps each end with triangles meeting at its center. |
+
+<h3 id="objectinfo">Object Info</h3>
+
+Outputs the referenced object's mesh in its local coordinates.
+
+| Property | Description |
+| --- | --- |
+| **Object** | Mesh object to read. A missing mesh or one shared with the current procedure gives empty geometry. |
+
+<h3 id="join">Join</h3>
+
+Combines meshes without welding coincident vertices.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` (ordered links) | Meshes to combine, in the order of the links. Disconnected islands stay separate. |
+
+<h3 id="boolean">Boolean</h3>
+
+Combines closed solids or regions lying in one plane.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Mesh 1** | `Geometry` | Starting shape. Its local coordinates are used for the result. |
+| **Mesh 2** | `Geometry` ordered links | Shapes to combine with the starting shape, in link order. A cutter uses its source object's placement. |
+
+| Property | Description |
+| --- | --- |
+| **Operation** | **Union** keeps the combined volume, **Difference** subtracts each cutter and **Intersection** keeps the shared volume. |
+| **Space** | Object whose placement applies to **Mesh 1**. Leave empty to keep **Mesh 1** in place. |
+
+<h3 id="minkowski">Minkowski</h3>
+
+Computes a Minkowski sum or difference of two closed surfaces or planar regions.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Mesh 1** | `Geometry` | Starting solid or planar region. |
+| **Mesh 2** | `Geometry` | Shape swept over or subtracted from the starting shape. For planar inputs its plane must be parallel to the first and pass through the origin. |
+
+| Property | Description |
+| --- | --- |
+| **Operation** | **Sum** sweeps Mesh 2 over Mesh 1. **Difference** erodes Mesh 1 by Mesh 2. |
+
+<h3 id="levelset">Level Set</h3>
+
+Creates a surface where a scalar field crosses a threshold. The surface closes at the sampling bounds.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Value** | `Float` field | Scalar field to sample. Values above **Level** are inside. |
+| **Min** | `Vector` | Minimum X, Y and Z coordinates of the sampling box. |
+| **Max** | `Vector` | Maximum X, Y and Z coordinates of the sampling box. |
+| **Edge Length** | `Float` | Spacing of samples within the box. Smaller spacing resolves finer detail. |
+| **Level** | `Float` | Field value at the surface. With a level of zero, positive values are inside. |
+
+<h3 id="project">Project</h3>
+
+Projects the mesh silhouette onto a plane, producing a face for each outline.
+
+| Input | Type | Description |
+| --- | --- | --- |
+| **Geometry** | `Geometry` | Mesh supplied to this operation. |
+| **Point** | `Vector` | Point on the projection plane in mesh-local coordinates. |
+| **Normal** | `Vector` | Direction of projection and normal to the projection plane. |

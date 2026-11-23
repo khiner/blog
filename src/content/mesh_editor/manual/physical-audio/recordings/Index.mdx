@@ -1,0 +1,37 @@
+---
+path: /MeshEditor/manual/physical-audio/recordings/
+title: "Recorded impacts"
+navOrder: 1
+---
+
+A recorded impact associates an audio sample with a mesh vertex. A RealImpact dataset can supply recordings of the same strike from several microphones.
+
+## Vertex samples
+
+Sample assignments appear in **Properties → Audio**. In Edit mode they apply to the selected vertices. In Excite mode they apply to the active vertex. On an object with both recorded samples and a modal model, choose **Recordings** to see **Sound samples**.
+
+| Property | Description |
+| --- | --- |
+| **Assign sample…** | Assigns a WAV, MP3, FLAC, Ogg or Opus file. With multiple vertices selected, the button shows how many will receive the same sample. The first assignment makes the object playable in **Excite** mode. |
+| **Replace sample…** | Chooses a different audio file for a vertex that already has a sample. |
+| **Remove sample** | Clears the assignments on the selected vertices. The source recordings stay on disk. |
+
+## RealImpact import
+
+Importing RealImpact replaces the document’s existing objects, including cameras and lights, along with its materials and textures. To keep them, save the project and start a new one before importing.
+
+Choose **File → Import → RealImpact** and open the measurement directory, usually `preprocessed/`, inside the numbered object folder. It must contain `transformed.obj`, `vertexXYZ.npy`, `micID.npy`, `angle.npy` and `distance.npy`. The optional `deconvolved_0db.npy` supplies the recordings.
+
+MeshEditor places the five measured strike positions on the mesh and imports 600 listener positions as microphone objects. The measured object's scale is frozen to preserve its dimensions. Recognized objects start with an acoustic material preset.
+
+### Microphones
+
+In **Excite** mode, striking a measured vertex plays the sample captured at the active microphone. The front-center microphone is active initially. Recordings are normalized separately for each microphone.
+
+On the sound object, choose **Properties → Audio → Select microphone entity** to inspect the active microphone’s position and orientation. Imported microphones show the usual mesh controls.
+
+When the microphone’s **Audio** panel shows a microphone index, **Set as active for** switches the sound object to that microphone’s recordings. **Select sound object** returns to the object.
+
+## Matching strike positions
+
+Start with an object that has recordings, then choose **Reuse existing vertices** when solving the modal model. You can audition **Recordings** and **Modal** at the same measured vertex. [Analyze and save the comparison](/MeshEditor/manual/physical-audio/listening/#strike-recording-and-analysis)

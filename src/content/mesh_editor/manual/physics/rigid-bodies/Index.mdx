@@ -1,0 +1,57 @@
+---
+path: /MeshEditor/manual/physics/rigid-bodies/
+title: "Rigid bodies"
+navOrder: 1
+---
+
+A rigid body moves without changing shape. Its motion type determines how it participates in the simulation.
+
+## Motion type
+
+Select the object and choose **Properties → Physics → Motion type**.
+
+| Motion type | Behavior |
+| --- | --- |
+| **Static** | Stays in place and collides with moving bodies |
+| **Dynamic** | Responds to gravity, contact and joints |
+| **Kinematic** | Moves with its animation or velocity and can push dynamic bodies |
+| **None** | Removes rigid-body motion and the collider |
+
+In the active object's properties, hold **Alt** while choosing a **Motion type** to apply it to the selected objects that already have physics. To add physics to an object for the first time, make it active and choose its type.
+
+## Dynamics
+
+The following properties apply to **Dynamic** bodies under **Properties → Physics**.
+
+### Mass and inertia
+
+| Property | Effect |
+| --- | --- |
+| **Mass** | Determines how much an impulse changes the body's velocity. The default is 1 kg. |
+| **Center Of Mass** | The local position about which the body rotates. By default it follows the collider shape. |
+| **Inertia Diagonal** | Resistance to rotation about each principal axis. By default it follows the collider shape and body mass. |
+| **Inertia Orientation** | Orientation of those axes relative to the body when **Inertia Diagonal** is set. |
+
+An imported dynamic body can have zero mass, fixing its translation while leaving it free to rotate. A zero principal moment of inertia fixes rotation about that axis.
+
+### Gravity
+
+**Gravity Factor** multiplies the [simulation gravity](/MeshEditor/manual/physics/#simulation-settings) for this body. At zero, gravity has no effect on the body. It can still respond to contact and joints.
+
+### Damping
+
+| Property | Effect |
+| --- | --- |
+| **Linear Damping** | Fraction of linear velocity lost per second. Higher values slow the body's travel more quickly. |
+| **Angular Damping** | Fraction of angular velocity lost per second. Higher values slow its spin more quickly. |
+
+For friction and bounce when surfaces meet, see [Physics materials](/MeshEditor/manual/physics/collisions/#physics-materials).
+
+## Initial velocity
+
+| Property | Description |
+| --- | --- |
+| **Linear velocity** | Starting velocity along the object's local axes in meters per second. |
+| **Angular velocity** | Starting rotation about the object's local axes in radians per second. |
+
+Once later frames have been simulated, scrubbing back shows the saved poses. To edit the starting velocity again, pause and use **Jump to Start** in the timeline (`Shift+Left Arrow`). This clears the simulated poses so the next playback starts with the new velocity.

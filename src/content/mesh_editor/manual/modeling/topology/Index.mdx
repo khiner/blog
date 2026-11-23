@@ -1,0 +1,82 @@
+---
+path: /MeshEditor/manual/modeling/topology/
+title: "Mesh topology"
+navOrder: 2
+---
+
+Topology tools add, remove or reconnect mesh elements. In **Edit** mode, right-click in the viewport to open the **Mesh** menu. Its **Vertex**, **Edge** and **Face** submenus also open with **Ctrl+V**, **Ctrl+E** and **Ctrl+F**. After an edit, select its node in **Nodes** to adjust the settings.
+
+## Extrusion and revolve
+
+| Command | Result |
+| --- | --- |
+| **Extrude Region**, **Extrude Faces** | Extends selected faces together, with side faces around the region. |
+| **Extrude Individual Faces** | Extrudes each face with its own sides. |
+| **Extrude Edges** | Builds a strip of faces along the selected edges. |
+| **Extrude Vertices** | Joins each selected vertex to its extruded copy with an edge. |
+| **Revolve** | Sweeps the selection around an axis. **Angle** and **Steps** control the sweep. An axial offset produces a screw shape. After a full turn, the first and last sections may overlap. |
+
+Drag after extruding to place the new vertices. [Extrude node settings](/MeshEditor/manual/modeling/nodes/topology/#extrude)
+
+## Duplication and separation
+
+| Command | Result |
+| --- | --- |
+| **Duplicate** | Copies the selection within the mesh and starts placement. |
+| **Split** | Disconnects selected elements from their neighbors. |
+| **Rip**, **Rip Vertices** | Splits the selection and lets you move the separated side. |
+| **Separate** | **Selection** extracts selected faces, or selected vertices on a mesh without faces. **By Loose Parts** and **By Material** split the entire mesh, keeping one part or material group in the original object. Each new object starts at the original placement and can be moved independently. |
+
+## Merge and dissolve
+
+| Command | Result |
+| --- | --- |
+| **Merge**, **Edge Collapse** | Merge at the selection center or at the **First** or **Last** selected vertex in mesh order. Edge Collapse merges each connected run of edges at its center. |
+| **Merge by Distance** | Welds vertices within a tolerance. A tolerance wider than a small feature can weld it shut. |
+| **Delete**, **Delete Loose** | Delete selected vertices, edges or faces. **Only Faces** retains edges and vertices. **Only Edges And Faces** retains vertices. **Edge Loops** removes selected loop edges. Delete Loose removes selected wire edges and isolated vertices. |
+| **Dissolve Vertices**, **Dissolve Edges**, **Dissolve Faces** | Remove the selected elements and join their neighbors where possible. |
+| **Limited Dissolve**, **Degenerate Dissolve** | Limited Dissolve joins nearly coplanar faces with optional material, sharp-edge and UV boundaries. Degenerate Dissolve collapses very short edges and small faces. |
+| **Simplify**, **Un-Subdivide** | Simplify reduces detail by plane tolerance or target triangle ratio. Un-Subdivide removes levels of regular subdivision. |
+
+## Cuts and subdivision
+
+| Command | Result |
+| --- | --- |
+| **Knife** | Orient the view, point to the start of the cut and press **K**. Move to the other end of the segment and click to cut the mesh along its projection. **Esc** cancels. |
+| **Bisect** | Cuts at a plane. **Clear Inner** and **Clear Outer** discard the corresponding sides. The **Bisect Fill** subnet can cap the cut. |
+| **Connect Vertex Path** | Cuts an edge path through faces between selected vertices. The geometry node is **Connect Vertices**. |
+| **Poke Faces** | Connects each face’s corners to a new center vertex. **Offset** moves the center along the normal. |
+| **Subdivide** | Splits selected edges and faces using a cut count or maximum edge length. |
+| **Loop Cut**, **Loop Cut and Slide** | Cut an edge ring. The slide variant also moves the new loop along the ring. |
+| **Edge Split** | Disconnects faces along selected edges. |
+
+## Face tessellation
+
+| Command | Result |
+| --- | --- |
+| **Rotate Edge**, **Beautify Faces** | Rotate Edge changes a shared diagonal. Beautify Faces chooses diagonals that improve triangulation. |
+| **Triangulate Faces**, **Tris to Quads** | Split polygons into triangles or join eligible triangle pairs into quads. |
+| **Split Concave Faces**, **Split Non-Planar Faces** | Split concave polygons into convex faces or split faces that bend beyond the angle tolerance. |
+
+## Face and boundary construction
+
+| Command | Result |
+| --- | --- |
+| **New Edge/Face from Vertices**, **Fill** | Join vertices with an edge or face, or fill a selected boundary. |
+| **Grid Fill**, **Bridge Edge Loops** | Grid Fill spans one closed boundary with quads. **Span** sets the edge count along the first side. Bridge Edge Loops joins two boundaries with a strip of faces. |
+| **Convex Hull** | Encloses the selection with a convex surface spanning its recesses. |
+
+## Inset, bevel and thickness
+
+| Command | Result |
+| --- | --- |
+| **Inset Faces** | Creates an inner boundary per region or face. **Thickness** sets its width, **Depth** moves it along the normal and **Even** maintains width around corners. |
+| **Bevel Edges**, **Bevel Vertices** | Cut back selected edges or corners. Drag to set the width. Before confirming, use the wheel, **−** or **=** to change the segment count. |
+| **Solidify Faces** | Gives the selected surface thickness. |
+| **Wireframe** | Builds struts along face borders. Set their thickness and offset, include boundary edges or keep the original faces. [Wireframe settings](/MeshEditor/manual/modeling/nodes/topology/#wireframe) |
+
+## Normals and face-corner data
+
+**Flip Normals** reverses the direction of the selected face normals. **Recalculate Outside** orients a connected shell outward. Enable the face-normal overlay to see the directions. [Normals and smooth shading](/MeshEditor/manual/modeling/normals/)
+
+Rotate or reverse UVs and colors to rearrange face-corner data while keeping the geometry in place. [UV maps and color attributes](/MeshEditor/manual/modeling/uvs/)

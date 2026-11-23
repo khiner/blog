@@ -1,0 +1,352 @@
+---
+path: /MeshEditor/manual/modeling/materialx/color/
+title: "Color adjustments and conversions"
+navTitle: Color adjustments
+navOrder: 4
+---
+
+import OperationPorts from '../OperationPorts'
+
+Apply a color conversion when a texture’s RGB encoding differs from the working space. Roughness and normal maps carry numeric data and need no color conversion.
+
+## Adjustment
+
+### Color Correct
+
+Adjust a color’s hue, tonal range and exposure.
+
+<OperationPorts
+  identifier="colorcorrect"
+  inputs={{
+    "Input Color": "The color to adjust.",
+    "Hue": "Shifts hues around the color wheel.",
+    "Saturation": "Controls color intensity.",
+    "Gamma": "Shapes the midtones.",
+    "Lift": "Offsets the dark end of the color range.",
+    "Gain": "Scales the color channels.",
+    "Contrast": "Expands or compresses differences around the contrast pivot.",
+    "Contrast Pivot": "The level around which contrast changes.",
+    "Exposure": "Adjusts brightness in stops.",
+  }}
+  result="The corrected color. An alpha channel passes through unchanged."
+  fixedTypes={{
+    "Hue, Saturation, Gamma, Lift, Gain, Contrast, Contrast Pivot, Exposure": "float",
+  }}
+  columns={["Input Color", "Output"]}
+  rows={[
+    ["color3, color4", {"sameAs": "Input Color"}],
+  ]}
+/>
+
+### Contrast
+
+Expand or compress differences around a pivot.
+
+<OperationPorts
+  identifier="contrast"
+  inputs={{
+    "In": "The value or color to adjust.",
+    "Amount": "The contrast multiplier. Values above 1 increase contrast.",
+    "Pivot": "The level that stays fixed as contrast changes.",
+  }}
+  result="The input moved toward or away from the pivot."
+  columns={["In", "Amount, Pivot", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "In"}, {"sameAs": "In"}],
+    ["vector2, vector3, vector4, color3, color4", "float", {"sameAs": "In"}],
+  ]}
+/>
+
+### HSV Adjust
+
+Adjust hue, saturation and brightness together.
+
+<OperationPorts
+  identifier="hsvadjust"
+  inputs={{
+    "In": "The RGB color to adjust.",
+    "Amount": "Hue offset in turns, saturation multiplier and brightness multiplier, in that order.",
+  }}
+  result="The adjusted RGB color. A four-channel output has alpha 1."
+  fixedTypes={{
+    "Amount": "vector3",
+  }}
+  columns={["In", "Output"]}
+  rows={[
+    ["color3, color4", {"sameAs": "In"}],
+  ]}
+/>
+
+### HSV to RGB
+
+Convert hue, saturation and value components to RGB.
+
+<OperationPorts
+  identifier="hsvtorgb"
+  inputs={{
+    "In": "Hue in turns, saturation and brightness in the first three channels.",
+  }}
+  result="The equivalent red, green and blue values. A four-channel output has alpha 1."
+  signature="unaryColor"
+/>
+
+### Luminance
+
+Measure RGB brightness using the weights of a working color space.
+
+<OperationPorts
+  identifier="luminance"
+  inputs={{
+    "In": "The RGB color to measure.",
+    "Lumacoeffs": "RGB luminance weights. Presets include ACEScg, Rec. 709, Rec. 2020 and Rec. 2100.",
+  }}
+  result="The same luminance in all three RGB channels, with alpha preserved."
+  fixedTypes={{
+    "Lumacoeffs": "color3",
+  }}
+  columns={["In", "Output"]}
+  rows={[
+    ["color3, color4", {"sameAs": "In"}],
+  ]}
+/>
+
+### Range
+
+Map values between two ranges. **Gamma** shapes the transition and **Doclamp** limits the result.
+
+<OperationPorts
+  identifier="range"
+  inputs={{
+    "In": "The value to map.",
+    "Inlow": "The source interval’s lower endpoint.",
+    "Inhigh": "The source interval’s upper endpoint.",
+    "Gamma": "Bends the transition between endpoints. With an ascending output range, values above 1 lift the midtones and values below 1 darken them.",
+    "Outlow": "The result at the lower endpoint.",
+    "Outhigh": "The result at the upper endpoint.",
+    "Doclamp": "Enable to keep the result within the output interval.",
+  }}
+  result="The remapped value. With Doclamp off, values can extend beyond the output endpoints."
+  fixedTypes={{
+    "Doclamp": "boolean",
+  }}
+  columns={["In", "Inlow, Inhigh, Gamma, Outlow, Outhigh", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "In"}, {"sameAs": "In"}],
+    ["vector2, vector3, vector4, color3, color4", "float", {"sameAs": "In"}],
+  ]}
+/>
+
+### Remap
+
+Linearly map the input interval onto the output interval.
+
+<OperationPorts
+  identifier="remap"
+  inputs={{
+    "In": "The value to map.",
+    "Inlow": "The source interval’s lower endpoint.",
+    "Inhigh": "The source interval’s upper endpoint.",
+    "Outlow": "The result at the lower endpoint.",
+    "Outhigh": "The result at the upper endpoint.",
+  }}
+  result="The linearly remapped value. Inputs outside the source interval extend beyond the output endpoints."
+  columns={["In", "Inlow, Inhigh, Outlow, Outhigh", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "In"}, {"sameAs": "In"}],
+    ["vector2, vector3, vector4, color3, color4", "float", {"sameAs": "In"}],
+  ]}
+>
+
+Remapping 0–1 to 0.01–0.05 maps 0.5 to 0.03.
+
+</OperationPorts>
+
+### RGB to HSV
+
+Express an RGB color as hue, saturation and value.
+
+<OperationPorts
+  identifier="rgbtohsv"
+  inputs={{
+    "In": "Red, green and blue channels of the source color.",
+  }}
+  result="Hue in turns, saturation and brightness in the first three channels. A four-channel output has alpha 1."
+  signature="unaryColor"
+/>
+
+### Saturate
+
+Adjust color saturation while preserving the gray luminance reference.
+
+<OperationPorts
+  identifier="saturate"
+  inputs={{
+    "In": "The original color.",
+    "Amount": "The saturation multiplier. Use 0 for gray or 1 for the original color.",
+    "Lumacoeffs": "RGB luminance weights. Presets include ACEScg, Rec. 709, Rec. 2020 and Rec. 2100.",
+  }}
+  result="A color blended toward gray or pushed away from it."
+  fixedTypes={{
+    "Amount": "float",
+    "Lumacoeffs": "color3",
+  }}
+  columns={["In", "Output"]}
+  rows={[
+    ["color3, color4", {"sameAs": "In"}],
+  ]}
+/>
+
+### Smooth Step
+
+Soften a threshold over an interval.
+
+<OperationPorts
+  identifier="smoothstep"
+  inputs={{
+    "In": "The value to test against the thresholds.",
+    "Low": "The threshold where the result reaches zero.",
+    "High": "The threshold where the result reaches one.",
+  }}
+  result="0 below the lower threshold, 1 above the upper threshold and a smooth transition in between."
+  columns={["In", "Low, High", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "In"}, {"sameAs": "In"}],
+    ["vector2, vector3, vector4, color3, color4", "float", {"sameAs": "In"}],
+  ]}
+/>
+
+<span id="colortransform" />
+
+## Color transforms
+
+Choose **Add → Colortransform** and select the input color space. Each operation converts the RGB channels to linear Rec. 709 and preserves alpha on four-channel colors.
+
+### ACEScg to Linear Rec. 709
+
+Change from ACEScg’s AP1 primaries to Rec. 709.
+
+<OperationPorts
+  identifier="acescg_to_lin_rec709"
+  inputs={{
+    "In": "Linear ACEScg color.",
+  }}
+  result="Linear Rec. 709 RGB."
+  signature="unaryColor"
+/>
+
+### Adobe RGB to Linear Rec. 709
+
+Linearize an Adobe RGB color and convert its primaries.
+
+<OperationPorts
+  identifier="adobergb_to_lin_rec709"
+  inputs={{
+    "In": "Gamma-encoded Adobe RGB color.",
+  }}
+  result="Linear Rec. 709 RGB."
+  signature="unaryColor"
+/>
+
+### Gamma 1.8 Rec. 709 to Linear Rec. 709
+
+Remove a 1.8 gamma curve from Rec. 709 values.
+
+<OperationPorts
+  identifier="g18_rec709_to_lin_rec709"
+  inputs={{
+    "In": "Rec. 709 color encoded with gamma 1.8.",
+  }}
+  result="Linear Rec. 709 RGB."
+  signature="unaryColor"
+/>
+
+### Gamma 2.2 AP1 to Linear Rec. 709
+
+Remove a 2.2 gamma curve and convert AP1 primaries to Rec. 709.
+
+<OperationPorts
+  identifier="g22_ap1_to_lin_rec709"
+  inputs={{
+    "In": "AP1 color encoded with gamma 2.2.",
+  }}
+  result="Linear Rec. 709 RGB."
+  signature="unaryColor"
+/>
+
+### Gamma 2.2 Rec. 709 to Linear Rec. 709
+
+Remove a 2.2 gamma curve from Rec. 709 values.
+
+<OperationPorts
+  identifier="g22_rec709_to_lin_rec709"
+  inputs={{
+    "In": "Rec. 709 color encoded with gamma 2.2.",
+  }}
+  result="Linear Rec. 709 RGB."
+  signature="unaryColor"
+/>
+
+### Linear Adobe RGB to Linear Rec. 709
+
+Convert linear Adobe RGB primaries to Rec. 709.
+
+<OperationPorts
+  identifier="lin_adobergb_to_lin_rec709"
+  inputs={{
+    "In": "Linear Adobe RGB color.",
+  }}
+  result="Linear Rec. 709 RGB."
+  signature="unaryColor"
+/>
+
+### Linear Display P3 to Linear Rec. 709
+
+Convert linear Display P3 primaries to Rec. 709.
+
+<OperationPorts
+  identifier="lin_displayp3_to_lin_rec709"
+  inputs={{
+    "In": "Linear Display P3 color.",
+  }}
+  result="Linear Rec. 709 RGB."
+  signature="unaryColor"
+/>
+
+### Rec. 709 Display to Linear Rec. 709
+
+Remove the Rec. 709 display encoding.
+
+<OperationPorts
+  identifier="rec709_display_to_lin_rec709"
+  inputs={{
+    "In": "Display-encoded Rec. 709 color.",
+  }}
+  result="Linear Rec. 709 RGB."
+  signature="unaryColor"
+/>
+
+### sRGB Display P3 to Linear Rec. 709
+
+Remove the sRGB transfer curve and convert Display P3 primaries to Rec. 709.
+
+<OperationPorts
+  identifier="srgb_displayp3_to_lin_rec709"
+  inputs={{
+    "In": "Display P3 color encoded with the sRGB curve.",
+  }}
+  result="Linear Rec. 709 RGB."
+  signature="unaryColor"
+/>
+
+### sRGB Texture to Linear Rec. 709
+
+Linearize sRGB texture colors.
+
+<OperationPorts
+  identifier="srgb_texture_to_lin_rec709"
+  inputs={{
+    "In": "sRGB-encoded texture color.",
+  }}
+  result="Linear Rec. 709 RGB."
+  signature="unaryColor"
+/>

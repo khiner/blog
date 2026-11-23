@@ -1,0 +1,302 @@
+---
+path: /MeshEditor/manual/modeling/materialx/compositing/
+title: "Compositing operations"
+navTitle: Compositing
+navOrder: 5
+---
+
+import OperationPorts from '../OperationPorts'
+
+Use **Over** for a premultiplied foreground. For straight-alpha color, use **Matte** or apply **Premultiply** before **Over**.
+
+## Compositing
+
+### Burn
+
+Darken the background with the foreground using color burn.
+
+<OperationPorts
+  identifier="burn"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength between the background and the full effect.",
+  }}
+  result="Each channel darkens according to the foreground. A foreground channel at or very near zero gives zero at any mix."
+  signature="blend"
+/>
+
+### Difference
+
+Measure how much two layers differ in each channel.
+
+<OperationPorts
+  identifier="difference"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="The absolute channel difference at full mix. Identical inputs give zero."
+  signature="blend"
+/>
+
+### Disjoint Over
+
+Composite two layers whose coverage occupies separate parts of a pixel.
+
+<OperationPorts
+  identifier="disjointover"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="The combined color and coverage of the foreground and background."
+  signature="alphaComposite"
+/>
+
+### Dodge
+
+Brighten a layer with color dodge.
+
+<OperationPorts
+  identifier="dodge"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength between the background and the full effect.",
+  }}
+  result="Each channel brightens as the foreground approaches 1. A foreground channel at or very near 1 gives zero at any mix."
+  signature="blend"
+/>
+
+### In
+
+Isolate the foreground inside the background’s alpha coverage.
+
+<OperationPorts
+  identifier="in"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="Foreground multiplied by background alpha at full mix."
+  signature="alphaComposite"
+/>
+
+### Inside
+
+Mask a color or value.
+
+<OperationPorts
+  identifier="inside"
+  inputs={{
+    "In": "The value or color to mask.",
+    "Mask": "The coverage, from 0 outside to 1 inside.",
+  }}
+  result="Each channel multiplied by the mask. A mask of 1 preserves the input."
+  fixedTypes={{
+    "Mask": "float",
+  }}
+  columns={["In", "Output"]}
+  rows={[
+    ["float, color3, color4", {"sameAs": "In"}],
+  ]}
+/>
+
+### Mask
+
+Keep the background in proportion to foreground alpha.
+
+<OperationPorts
+  identifier="mask"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="The background multiplied by the foreground’s alpha."
+  signature="alphaComposite"
+/>
+
+### Matte
+
+Layer a straight-alpha foreground over a background.
+
+<OperationPorts
+  identifier="matte"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="The foreground over the background, blended using foreground alpha."
+  signature="alphaComposite"
+/>
+
+### Minus
+
+Subtract one layer from another.
+
+<OperationPorts
+  identifier="minus"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="Background minus foreground at full mix."
+  signature="blend"
+/>
+
+### Mix
+
+Crossfade between two values.
+
+<OperationPorts
+  identifier="mix"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "The fraction of the foreground to use.",
+  }}
+  result="Background at 0, foreground at 1 and a linear blend in between."
+  columns={["Fg, Bg", "Mix", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "Fg"}, {"sameAs": "Fg"}],
+    ["vector2, vector3, vector4, color3, color4", "float", {"sameAs": "Fg"}],
+  ]}
+>
+
+Set **Mix** to 0.5 to give the foreground and background equal weight.
+
+</OperationPorts>
+
+### Out
+
+Keep the foreground where the background is transparent.
+
+<OperationPorts
+  identifier="out"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="The part of the foreground outside the background’s alpha coverage."
+  signature="alphaComposite"
+/>
+
+### Outside
+
+Keep the part of an input outside an explicit mask.
+
+<OperationPorts
+  identifier="outside"
+  inputs={{
+    "In": "The value or color to mask.",
+    "Mask": "The coverage, from 0 outside to 1 inside.",
+  }}
+  result="The input scaled by the uncovered fraction. Full coverage gives zero."
+  fixedTypes={{
+    "Mask": "float",
+  }}
+  columns={["In", "Output"]}
+  rows={[
+    ["float, color3, color4", {"sameAs": "In"}],
+  ]}
+/>
+
+### Over
+
+Composite premultiplied foreground over background using foreground coverage.
+
+<OperationPorts
+  identifier="over"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="The premultiplied foreground over the visible part of the background."
+  signature="alphaComposite"
+/>
+
+### Overlay
+
+Multiply darker background regions and screen lighter regions.
+
+<OperationPorts
+  identifier="overlay"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="A composite that darkens dark background channels and lightens light ones."
+  signature="blend"
+/>
+
+### Plus
+
+Add the two inputs channel by channel.
+
+<OperationPorts
+  identifier="plus"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="The sum of the foreground and background channels at full mix."
+  signature="blend"
+/>
+
+### Premultiply
+
+Prepare straight-alpha color for compositing.
+
+<OperationPorts
+  identifier="premult"
+  inputs={{
+    "In": "A color with straight RGB and an alpha channel.",
+  }}
+  result="RGB multiplied by alpha, with alpha unchanged."
+  fixedTypes={{
+    "In": "color4",
+    "Output": "color4",
+  }}
+/>
+
+### Screen
+
+Lighten a background with the foreground.
+
+<OperationPorts
+  identifier="screen"
+  inputs={{
+    "Fg": "Foreground layer or value.",
+    "Bg": "Background layer or value.",
+    "Mix": "Blend strength. 0 keeps the background. 1 applies the full effect.",
+  }}
+  result="The complement of the product of the two inverted layers. A black foreground leaves the background unchanged."
+  signature="blend"
+/>
+
+### Unpremultiply
+
+Convert premultiplied color back to straight alpha.
+
+<OperationPorts
+  identifier="unpremult"
+  inputs={{
+    "In": "A color whose RGB channels were multiplied by alpha.",
+  }}
+  result="RGB divided by alpha, with alpha unchanged. Recovery requires nonzero alpha."
+  fixedTypes={{
+    "In": "color4",
+    "Output": "color4",
+  }}
+/>

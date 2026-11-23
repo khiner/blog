@@ -1,0 +1,105 @@
+---
+path: /MeshEditor/manual/physical-audio/solving/
+title: "Modal models"
+navOrder: 2
+---
+
+A modal model determines the frequencies and decay times a mesh produces when struck. The solve uses its dimensions in meters and the mechanical properties of its material.
+
+## Mechanical material
+
+The object’s **Properties → Audio → Material properties** describe the bulk material used by the modal model.
+
+| Property | Effect |
+| --- | --- |
+| **Density** | Mass per unit volume. |
+| **Young's modulus** | Resistance to stretching. Higher stiffness raises the frequencies for a given shape and density. |
+| **Poisson's ratio** | How much the material contracts across one direction when stretched in another. |
+| **Rayleigh alpha** | Mass-proportional damping. Its effect is strongest at low frequencies. |
+| **Rayleigh beta** | Stiffness-proportional damping. Its effect is strongest at high frequencies. |
+
+### Material presets
+
+Each preset sets all five mechanical properties. Young’s modulus is shown here in gigapascals (1 GPa = 10⁹ Pa).
+
+| Preset | Density (kg/m³) | Young’s modulus (GPa) | Poisson’s ratio | Rayleigh alpha (1/s) | Rayleigh beta (s) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **Ceramic** | 2,700 | 72 | 0.19 | 6 | 1 × 10⁻⁷ |
+| **Glass** | 2,600 | 62 | 0.20 | 1 | 1 × 10⁻⁷ |
+| **Wood** | 750 | 11 | 0.25 | 60 | 2 × 10⁻⁶ |
+| **Plastic** | 1,070 | 1.4 | 0.35 | 30 | 1 × 10⁻⁶ |
+| **Iron** | 8,000 | 210 | 0.28 | 5 | 1 × 10⁻⁷ |
+| **Polycarbonate** | 1,190 | 2.4 | 0.37 | 0.5 | 4 × 10⁻⁷ |
+| **Steel** | 7,850 | 200 | 0.29 | 5 | 3 × 10⁻⁸ |
+
+[Surface finish](/MeshEditor/manual/physical-audio/surface-finish/) sets the surface relief for sliding and rolling contact.
+
+## Modes
+
+| Property | Effect |
+| --- | --- |
+| **Min frequency** | Lowest mode frequency in hertz to retain for synthesis. |
+| **Max frequency** | Highest mode frequency in hertz to retain for synthesis. |
+| **FEM eigenpairs** | Number of candidate vibration modes to calculate before applying the frequency band and retention limit. |
+| **Retained modes** | Maximum number of modes within the frequency band to keep for synthesis. |
+| **Residual tolerance** | Accuracy required for a calculated mode to count as converged. Smaller values request a closer solution. |
+| **Restart limit** | Maximum number of eigensolver restarts allowed while seeking converged modes. |
+| **Fundamental override** | Sets the model's lowest frequency and scales the other modes proportionally. When unset, an active recording can supply the estimated fundamental. Hover over a mode in **Modal data charts** to compare the scaled frequency with the original solved frequency. |
+
+## Discretization
+
+### Tet10
+
+**Tet10** fills the interior of a closed mesh with tetrahedra. Its controls appear under **Tet10 mesh**. The **Tet Wireframe** viewport overlay shows the resulting mesh.
+
+| Property | Description |
+| --- | --- |
+| **Refinement** | **None** tetrahedralizes and repairs the mesh. **Quality** also improves tetrahedron shapes. **Quality And Resolution** also subdivides to meet **Target resolution**. |
+| **Surface detail** | Fraction of surface triangles retained before tetrahedralization. A value of 1 keeps the original surface mesh. |
+| **Target resolution** | Target number of divisions along the object's longest dimension. Appears with **Quality And Resolution** refinement. |
+| **Hole seed** | X, Y and Z coordinates of a point inside a cavity that should remain empty, in meters. Each enclosed cavity can have its own seed. |
+| **Add hole seed** | Adds a point to the cavity list. |
+| **Remove** | Deletes the corresponding hole seed. |
+
+### Finite cell
+
+**Finite Cell** places a grid around the surface. **Finite-cell grid** controls how closely the cells follow the mesh boundary.
+
+| Property | Effect |
+| --- | --- |
+| **Target resolution** | Number of grid divisions along the object's longest dimension. Increasing it makes smaller cells. |
+| **Padding** | Number of cells by which to extend the grid beyond the mesh bounds. |
+| **Grid offset** | Shift of the grid along each axis relative to the mesh bounds, in cells. |
+| **Cut Depth** | Subdivide cells crossed by the surface. A greater depth resolves the boundary more closely and takes longer to solve. |
+| **Fictitious Scale** | Scales stiffness and mass in the part of the grid outside the physical object. |
+
+## Excitation vertices
+
+| Property | Description |
+| --- | --- |
+| **Reuse existing vertices** | Keeps the current strike locations when computing a new model. Available when the object already has excitation vertices. |
+| **Vertex count** | Number of strike locations to distribute over the mesh. When reusing vertices, it displays the existing count and cannot be edited. |
+
+## Model creation and updates
+
+**Create modal model** calculates the modes for the current mesh and selects **Modal** when the solve finishes. The viewport shows progress. **Cancel** stops the solve and preserves any previous model. Saving the project retains the model.
+
+### Model updates
+
+Changing density, Young's modulus or Rayleigh damping retunes a solved model immediately when Poisson's ratio stays the same. Uniformly scaling the object also changes its sound during playback. Doubling its size lowers its frequencies by an octave.
+
+**Update modal model** appears when the mesh geometry, solve dimensions, Poisson's ratio, strike locations or solve settings have changed. Use it after stretching the mesh along one axis to calculate the modes for its new shape.
+
+If too few modes fall in the band, increase **FEM eigenpairs** or widen the band before raising **Retained modes**.
+
+## Synthesis
+
+The object's **Properties → Audio → Synthesis** controls playback of its modal model.
+
+| Property | Effect |
+| --- | --- |
+| **Gain** | Level of this object's modal sound. |
+| **Fundamental** | Lowest mode's playback frequency. The other frequencies shift in proportion. |
+| **T60 Scale** | Multiplier on each mode's decay time. A value of 2 doubles the time to decay by 60 dB. |
+
+[Scene mix](/MeshEditor/manual/physical-audio/listening/#scene-mix)

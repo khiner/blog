@@ -1,0 +1,370 @@
+---
+path: /MeshEditor/manual/modeling/materialx/logic/
+title: "Logic and channel operations"
+navTitle: Logic and channels
+navOrder: 3
+---
+
+import OperationPorts from '../OperationPorts'
+
+## Conditional
+
+### And
+
+Combine two conditions that must both hold.
+
+<OperationPorts
+  identifier="and"
+  inputs={{
+    "In1": "The first condition.",
+    "In2": "The second condition.",
+  }}
+  result="True only when both conditions are true."
+  signature="binaryBoolean"
+/>
+
+### Compare
+
+Compare two numbers within a tolerance.
+
+<OperationPorts
+  identifier="compare"
+  inputs={{
+    "In1": "The value to test.",
+    "In2": "The reference value.",
+    "Epsilon": "Maximum difference accepted as equal, with a minimum of about 0.00000012.",
+  }}
+  result="1 when the absolute difference is within the tolerance, or 0 otherwise."
+  fixedTypes={{
+    "In1, In2, Epsilon": "float",
+    "Output": "float",
+  }}
+/>
+
+### If Equal
+
+Test whether two values are equal.
+
+<OperationPorts
+  identifier="ifequal"
+  inputs={{
+    "Value1": "First value to compare.",
+    "Value2": "Second value to compare.",
+    "In1": "Value to select when the test is true.",
+    "In2": "Value to select when the test is false.",
+  }}
+  result="The Boolean result of the test, or the selected value from In1 or In2."
+  columns={["Value1, Value2", "In1, In2", "Output"]}
+  rows={[
+    ["integer, float", {"sameAs": "Value1"}, {"sameAs": "Value1"}],
+    ["boolean, float", "integer", {"sameAs": "In1"}],
+    ["boolean, integer, float", "vector2, vector3, vector4, color3, color4, matrix33, matrix44", {"sameAs": "In1"}],
+    ["integer, float", "—", "boolean"],
+    ["boolean, integer", "float", {"sameAs": "In1"}],
+    ["boolean", "—", {"sameAs": "Value1"}],
+  ]}
+/>
+
+### If Greater
+
+Test whether **Value1** exceeds **Value2**.
+
+<OperationPorts
+  identifier="ifgreater"
+  inputs={{
+    "Value1": "First value to compare.",
+    "Value2": "Second value to compare.",
+    "In1": "Value to select when the test is true.",
+    "In2": "Value to select when the test is false.",
+  }}
+  result="The Boolean result of the test, or the selected value from In1 or In2."
+  columns={["Value1, Value2", "In1, In2", "Output"]}
+  rows={[
+    ["integer, float", {"sameAs": "Value1"}, {"sameAs": "Value1"}],
+    ["float", "integer", {"sameAs": "In1"}],
+    ["integer, float", "vector2, vector3, vector4, color3, color4, matrix33, matrix44", {"sameAs": "In1"}],
+    ["integer, float", "—", "boolean"],
+    ["integer", "float", {"sameAs": "In1"}],
+  ]}
+/>
+
+### If Greater or Equal
+
+Test whether **Value1** equals or exceeds **Value2**.
+
+<OperationPorts
+  identifier="ifgreatereq"
+  inputs={{
+    "Value1": "First value to compare.",
+    "Value2": "Second value to compare.",
+    "In1": "Value to select when the test is true.",
+    "In2": "Value to select when the test is false.",
+  }}
+  result="The Boolean result of the test, or the selected value from In1 or In2."
+  columns={["Value1, Value2", "In1, In2", "Output"]}
+  rows={[
+    ["integer, float", {"sameAs": "Value1"}, {"sameAs": "Value1"}],
+    ["float", "integer", {"sameAs": "In1"}],
+    ["integer, float", "vector2, vector3, vector4, color3, color4, matrix33, matrix44", {"sameAs": "In1"}],
+    ["integer, float", "—", "boolean"],
+    ["integer", "float", {"sameAs": "In1"}],
+  ]}
+/>
+
+### Nearly Equal
+
+Test two numbers for equality within an absolute tolerance.
+
+<OperationPorts
+  identifier="nearlyequal"
+  inputs={{
+    "In1": "The value to test.",
+    "In2": "The reference value.",
+    "Epsilon": "Maximum difference accepted as equal.",
+  }}
+  result="True when the absolute difference is at most the tolerance."
+  fixedTypes={{
+    "In1, In2, Epsilon": "float",
+    "Output": "boolean",
+  }}
+/>
+
+### Not
+
+Reverse a Boolean value.
+
+<OperationPorts
+  identifier="not"
+  inputs={{
+    "In": "The condition to reverse.",
+  }}
+  result="True when the input is false, and false when it is true."
+  signature="unaryBoolean"
+/>
+
+### Or
+
+Accept either Boolean input.
+
+<OperationPorts
+  identifier="or"
+  inputs={{
+    "In1": "The first condition.",
+    "In2": "The second condition.",
+  }}
+  result="True when either or both conditions are true."
+  signature="binaryBoolean"
+/>
+
+### Switch
+
+Select one of ten input values by number.
+
+<OperationPorts
+  identifier="switch"
+  inputs={{
+    "In1–In10": "Candidate values in selector order.",
+    "Which": "Zero-based socket number. For fractional values, the whole-number part selects the socket.",
+  }}
+  result="The selected value. A negative selector gives In1. A selector of 10 or higher gives zero in every component."
+  columns={["In1–In10", "Which", "Output"]}
+  rows={[
+    ["float", {"sameAs": "In1"}, {"sameAs": "In1"}],
+    ["vector2, vector3, vector4, color3, color4, matrix33, matrix44", "float", {"sameAs": "In1"}],
+    ["float, vector2, vector3, vector4, color3, color4, matrix33, matrix44", "integer", {"sameAs": "In1"}],
+  ]}
+/>
+
+### Exclusive Or
+
+Accept precisely one true input.
+
+<OperationPorts
+  identifier="xor"
+  inputs={{
+    "In1": "The first condition.",
+    "In2": "The second condition.",
+  }}
+  result="True when exactly one condition is true."
+  signature="binaryBoolean"
+/>
+
+## Channel
+
+### Combine 2
+
+Pack two inputs into a vector or color.
+
+<OperationPorts
+  identifier="combine2"
+  inputs={{
+    "In1": "First channel or channel group.",
+    "In2": "Second channel or channel group.",
+  }}
+  result="The input channels in socket order."
+  columns={["In1", "In2", "Output"]}
+  rows={[
+    ["float", {"sameAs": "In1"}, "vector2"],
+    ["color3", "float", "color4"],
+    ["vector3", "float", "vector4"],
+    ["vector2", {"sameAs": "In1"}, "vector4"],
+  ]}
+/>
+
+### Combine 3
+
+Pack three inputs into a vector or color.
+
+<OperationPorts
+  identifier="combine3"
+  inputs={{
+    "In1": "First channel or channel group.",
+    "In2": "Second channel or channel group.",
+    "In3": "Third channel or channel group.",
+  }}
+  result="The input channels in socket order."
+  fixedTypes={{
+    "In1, In2, In3": "float",
+  }}
+  columns={["Output"]}
+  rows={[
+    ["vector3, color3"],
+  ]}
+/>
+
+### Combine 4
+
+Pack four inputs into a vector or color.
+
+<OperationPorts
+  identifier="combine4"
+  inputs={{
+    "In1": "First channel or channel group.",
+    "In2": "Second channel or channel group.",
+    "In3": "Third channel or channel group.",
+    "In4": "Fourth channel or channel group.",
+  }}
+  result="The input channels in socket order."
+  fixedTypes={{
+    "In1–In4": "float",
+  }}
+  columns={["Output"]}
+  rows={[
+    ["vector4, color4"],
+  ]}
+/>
+
+### Convert
+
+Convert between supported value types.
+
+<OperationPorts
+  identifier="convert"
+  inputs={{
+    "In": "The value to convert.",
+  }}
+  result="Scalar-to-vector and scalar-to-color conversions repeat the scalar in every channel, including alpha. Vectors and colors keep channels in order, with 0 for a missing third channel and 1 for a missing fourth. Integer zero converts to false and any other integer converts to true."
+  columns={["In", "Output"]}
+  rows={[
+    ["boolean, integer, float, vector2, vector3, vector4, color4", "color3"],
+    ["boolean, integer, float, vector2, vector3, vector4, color3", "color4"],
+    ["boolean, integer, float, vector3, vector4, color3, color4", "vector2"],
+    ["boolean, integer, float, vector2, vector4, color3, color4", "vector3"],
+    ["boolean, integer, float, vector2, vector3, color3, color4", "vector4"],
+    ["boolean, integer", "float"],
+    ["boolean", "integer"],
+    ["integer", "boolean"],
+  ]}
+/>
+
+### Extract
+
+Read one component by its index.
+
+<OperationPorts
+  identifier="extract"
+  inputs={{
+    "In": "The vector or color containing the channel.",
+    "Index": "The channel number, counting from zero. Red and X are both channel 0.",
+  }}
+  result="The value of that single channel."
+  fixedTypes={{
+    "Index": "integer",
+  }}
+  columns={["In", "Output"]}
+  rows={[
+    ["vector2, vector3, vector4, color3, color4", "float"],
+  ]}
+/>
+
+### Separate 2
+
+Split a two-channel value into separate outputs.
+
+<OperationPorts
+  identifier="separate2"
+  inputs={{
+    "In": "Value to split into channels.",
+  }}
+  outputs={{
+    "Outx": "X component of the vector input.",
+    "Outy": "Y component of the vector input.",
+  }}
+  fixedTypes={{
+    "In": "vector2",
+  }}
+  columns={["Output sockets", "Each output"]}
+  rows={[
+    ["outx, outy", "float"],
+  ]}
+/>
+
+### Separate 3
+
+Split a three-channel value into separate outputs.
+
+<OperationPorts
+  identifier="separate3"
+  inputs={{
+    "In": "Value to split into channels.",
+  }}
+  outputs={{
+    "Outr": "Red channel of the color input.",
+    "Outg": "Green channel of the color input.",
+    "Outb": "Blue channel of the color input.",
+    "Outx": "X component of the vector input.",
+    "Outy": "Y component of the vector input.",
+    "Outz": "Z component of the vector input.",
+  }}
+  columns={["In", "Output sockets", "Each output"]}
+  rows={[
+    ["color3", "outr, outg, outb", "float"],
+    ["vector3", "outx, outy, outz", "float"],
+  ]}
+/>
+
+### Separate 4
+
+Split a four-channel value into separate outputs.
+
+<OperationPorts
+  identifier="separate4"
+  inputs={{
+    "In": "Value to split into channels.",
+  }}
+  outputs={{
+    "Outr": "Red channel of the color input.",
+    "Outg": "Green channel of the color input.",
+    "Outb": "Blue channel of the color input.",
+    "Outa": "Alpha channel of the color input.",
+    "Outx": "X component of the vector input.",
+    "Outy": "Y component of the vector input.",
+    "Outz": "Z component of the vector input.",
+    "Outw": "W component of the vector input.",
+  }}
+  columns={["In", "Output sockets", "Each output"]}
+  rows={[
+    ["color4", "outr, outg, outb, outa", "float"],
+    ["vector4", "outx, outy, outz, outw", "float"],
+  ]}
+/>

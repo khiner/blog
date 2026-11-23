@@ -1,0 +1,56 @@
+---
+path: /MeshEditor/manual/rendering/textures/
+title: "Image textures and samplers"
+navOrder: 6
+---
+
+A texture slot connects an image to a material property. Each slot can use its own UV set and transform, including slots that share an image.
+
+## Texture assignment
+
+The document network's **Add** menu accepts PNG, JPEG, WebP and KTX2 files as either **Color texture** (sRGB) or **Data texture** (unmodified channel values). Use **Color texture** for base color, emission, specular color, sheen color and diffuse transmission color. The RGB channels are decoded from sRGB. Use **Data texture** for normal maps, roughness, metallic and other numeric inputs. If an imported glTF uses the same image for both purposes, the texture picker can show separate **(sRGB)** and **(Linear)** entries.
+
+A material's texture slot selects an image. **None** uses the material factor alone. The texture node’s **Properties** show the source and color space. **Used by** lists the assignments. Clicking an owner reveals it in **Nodes**. Deleting a texture disconnects it from every material slot and geometry operation that uses it.
+
+A document texture can also supply an **Image** operation in a geometry procedure. To turn a procedural field into an image for use elsewhere in that procedure, use **Bake**. [Image baking](/MeshEditor/manual/modeling/fields/#image-baking)
+
+## UV coordinates and transforms
+
+Each texture slot has its own mapping, even when slots share an image. Scale is applied first, then rotation, then offset. The keyframe controls beside the transform fields animate the mapping. [UV maps and color attributes](/MeshEditor/manual/modeling/uvs/)
+
+| Property | Description |
+| --- | --- |
+| **Texture** | Document texture used by this slot. **None** leaves the material factor in control. |
+| **UV set** | Mesh texture coordinate set used by this slot, from 0 to 3. |
+| **UV offset** | Translation in U and V, applied after scale and rotation. |
+| **UV scale** | Multiplier on each coordinate. With **Repeat** wrapping, a scale of 4 tiles the image four times along that axis. |
+| **UV rotation** | Counterclockwise angle of the coordinates in degrees, about the UV origin. |
+
+## Channel mapping
+
+Each material slot reads specific channels. A packed texture can supply several properties.
+
+| Slot or property | Image channels |
+| --- | --- |
+| Base color | RGB for color, alpha for coverage |
+| Emissive, specular color, sheen color, diffuse transmission color | RGB for color |
+| Normal, clearcoat normal | RGB for tangent-space normal direction |
+| Metallic roughness | Green for roughness, blue for metallic |
+| Occlusion, clearcoat factor, transmission factor, iridescence factor | Red for the amount |
+| Clearcoat roughness, volume thickness, iridescence thickness | Green for the property |
+| Specular factor, sheen roughness, diffuse transmission factor | Alpha for the property |
+| Anisotropy | Red and green for direction, blue for strength |
+
+An ORM image packs occlusion, roughness and metallic into red, green and blue. The same data texture supplies **Occlusion Texture** and **Metallic Roughness Texture**. Each material factor multiplies its texture channel.
+
+## Sampler settings
+
+Newly loaded images repeat on both axes and use linear filtering between texels and mip levels. For an imported glTF document, open **Properties**. **Texture registry** shows each texture's sampler and image. **Sampler registry** lists its filters and wrapping.
+
+| Sampler setting | Effect |
+| --- | --- |
+| **Mag** | Magnification filter when a texel covers several screen pixels. Nearest preserves texel edges and linear blends neighbors. |
+| **Min** | Minification filter when several texels fit in a screen pixel. Mipmap choices control how smaller versions of the image are sampled. |
+| **Wrap S/T** | Wrapping along each axis. **Repeat** tiles the image, **Mirror** alternates tile direction and **Clamp** extends the edge color. |
+
+**Anisotropic filtering** under the document's **Render** section preserves detail at shallow viewing angles. Choose **Off**, **X2**, **X4**, **X8** or **X16**. Higher levels can retain more detail on receding surfaces.

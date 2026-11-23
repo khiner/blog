@@ -1,0 +1,44 @@
+---
+path: /MeshEditor/manual/rendering/material-assignments/
+title: "Material slots and variants"
+navOrder: 5
+---
+
+A slot assigns a material to part of a mesh. Several slots can share a material, so editing it changes every surface that uses it.
+
+## Material slots
+
+The selected mesh's **Properties → Material** lists its slots. On a glTF mesh each slot corresponds to one primitive.
+
+| Control | Effect |
+| --- | --- |
+| **Assigned material** | Material used by the current slot. **None** uses the default appearance. |
+| **New material** | Creates a material and assigns it to the slot. |
+| **Go to** | Opens the assigned material’s properties. **Used by** on that material lists its assignments. |
+
+## Shared materials
+
+The document network's **Add → Material** creates an unassigned material. Existing materials can be assigned from a mesh's **Assigned material** field or the slot’s socket in **Nodes**. Deleting the material node clears every slot that uses it.
+
+Linked instances share the mesh's slots. For a copy with independent assignments, use **Duplicate** (**Shift+D**), then assign a different material. [Duplicates and linked objects](/MeshEditor/manual/scenes/hierarchies/) · [Scene networks and references](/MeshEditor/manual/scenes/networks/)
+
+## Material features
+
+These checkboxes appear below the material slots in **Properties → Material**. Enabling a feature on any mesh makes it available for rendering throughout the document. Each material supplies its own strength, color and textures.
+
+| Feature | Effect |
+| --- | --- |
+| **Transmission** | Allows light to pass through the surface with refraction. |
+| **Diffuse transmission** | Scatters light through the surface to the opposite side. |
+| **Clearcoat** | Adds a reflective coating over the base material. |
+| **Anisotropy** | Stretches specular highlights along a direction on the surface. |
+| **Sheen** | Adds a soft, tinted reflection most visible at grazing angles. |
+| **Iridescence** | Adds a thin-film reflection whose color changes with the viewing angle. |
+
+[Surface layers](/MeshEditor/manual/rendering/materials/layers/) · [Transmission](/MeshEditor/manual/rendering/materials/transparency/)
+
+## glTF material variants
+
+A glTF variant is a named set of alternate material assignments. Primitives without an alternate keep their base assignments.
+
+If the document contains variants, select **Document** in **Nodes**. In **Properties → Material variants**, choose an **Active variant** or select **Default** for the base assignments. Switching variants changes materials across the document. If you assign a different material to a variant slot by hand, the next switch restores the assignment from the file. Select an affected primitive's slot to inspect its material. [glTF import and export](/MeshEditor/manual/files/gltf/)

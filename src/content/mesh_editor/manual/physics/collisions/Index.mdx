@@ -1,0 +1,127 @@
+---
+path: /MeshEditor/manual/physics/collisions/
+title: "Collisions"
+navOrder: 2
+---
+
+A collider defines an object's boundary for contact with other bodies. The visible mesh and its collider can have different shapes.
+
+## Collision shape
+
+Choose **Properties → Physics → Collider → Shape** on the object. Enable the **Extras** viewport overlay to see the boundary.
+
+### Box
+
+**Size** gives the full width, height and depth along the local X, Y and Z axes, in meters.
+
+### Sphere
+
+**Radius** gives the distance from the center to the collision surface, in meters.
+
+### Capsule
+
+A capsule has rounded ends along local Y.
+
+| Property | Description |
+| --- | --- |
+| **Height** | Distance in meters between the centers of the two rounded ends. |
+| **Radius Top** | Radius in meters of the end sphere toward local +Y. |
+| **Radius Bottom** | Radius in meters of the end sphere toward local −Y. |
+
+### Cylinder
+
+A cylinder has two flat caps. Different radii give it a taper.
+
+| Property | Description |
+| --- | --- |
+| **Height** | Distance in meters between the caps along local Y. |
+| **Radius Top** | Radius in meters of the cap at local +Y. |
+| **Radius Bottom** | Radius in meters of the cap at local −Y. |
+
+### Plane
+
+A plane lies in local XZ.
+
+| Property | Description |
+| --- | --- |
+| **Size X** | Full width in meters along local X. Leave unset for an infinite plane in X. |
+| **Size Z** | Full width in meters along local Z. Leave unset for an infinite plane in Z. |
+| **Double Sided** | Enables contact from either side of the plane. With this off, only the +Y side collides. |
+
+### Convex Hull
+
+The smallest convex shape that encloses the source mesh's vertices. The hull spans recesses and openings.
+
+### Triangle Mesh
+
+The triangles of the source mesh form the collision boundary, including recesses and openings. Both sides of each triangle can collide.
+
+### Size and source
+
+**Auto-fit** follows changes to the source geometry. A new collider on a cube, plane, sphere or cylinder takes the corresponding primitive shape. Other geometry starts with a convex hull. Choosing a **Shape** yourself keeps that shape on subsequent edits. Turn off **Auto-fit** to enter dimensions for a box, sphere, capsule or cylinder.
+
+**Collider geometry** in Nodes selects the source mesh for a convex hull or triangle mesh. The object's own mesh supplies the geometry by default. If a geometry procedure changes shape over time, the simulation uses its geometry at each frame for mesh colliders and auto-fitted dimensions.
+
+### Compound shapes
+
+A compound body has several collision shapes that move together. Give the parent rigid-body motion and place colliders on its children. Each child supplies its own shape, transform, physics material and collision filter. A child with motion of its own forms a separate body. [Rigid bodies](/MeshEditor/manual/physics/rigid-bodies/)
+
+## Physics materials
+
+A **Physics material** sets how colliders slide and bounce. Several colliders can share the same material.
+
+| Property | Effect |
+| --- | --- |
+| **Static Friction** | Resistance to the start of sliding. |
+| **Dynamic Friction** | Resistance while the surfaces slide past one another. |
+| **Restitution** | How strongly the bodies rebound. A combined value of zero gives no bounce. |
+| **Friction Combine** | Rule for combining the two contacting materials’ friction coefficients. |
+| **Restitution Combine** | Rule for combining the two materials’ restitution coefficients to determine the bounce. |
+
+When the materials specify different combine modes, use the highest-priority mode. From highest to lowest, these are **Average** (mean), **Minimum** (smaller value), **Maximum** (larger value), **Multiply** (product).
+
+### Material assignment
+
+**Add → Physics material** creates a material in the document network. The collider’s **Physics material** field assigns it to that collider. Editing the material affects every collider that uses it.
+
+## Collision filters
+
+A collision system names a group of colliders. A document supports up to 32 systems. Bodies must share a scene to collide. Within that scene, a filter controls which groups a collider belongs to and which it can contact.
+
+- **Member of** lists the systems the collider belongs to. A filter with no memberships prevents the collider from contacting any partner. A collider with no filter assigned can match any system.
+- **Collide with** determines which partners the collider accepts, according to the partner's memberships.
+
+| Rule | Partners the filter accepts |
+| --- | --- |
+| **All** | A partner with any membership, including a collider with no filter assigned. |
+| **Allowlist** | Partners belonging to at least one selected system. An empty list accepts none. |
+| **Blocklist** | Partners with at least one membership outside the selected systems. For example, a partner belonging to both *Debris* and *Props* still passes a blocklist that selects only *Debris*. |
+
+### Collision matrix
+
+A pair collides only if both filters accept it. When there are at least two filters, select **Document** and open **Properties → Simulation → Collision Matrix**. Each cell compares its row and column filters.
+
+| Cell | Meaning |
+| --- | --- |
+| Green | Both filters accept the pair. |
+| Half red | Only one filter accepts the pair. |
+| Empty | Both filters reject the pair. |
+
+Hover over a cell for its **Effective** result. To change which groups can collide, edit the filters in Nodes.
+
+### Filter assignment
+
+**Add → Collision system** creates a named group in the document network. **Add → Collision filter** creates its membership and partner rules. An object's **Properties → Physics → Collider → Collision filter** assigns the filter to its collider.
+
+## Triggers
+
+A shape trigger detects overlaps without pushing the other body away. Its collision filter determines which partners it detects. Open **Properties → Physics** on the object.
+
+| Control | Effect |
+| --- | --- |
+| **Convert to Trigger** | Turns the selected collider into a sensor. |
+| **Convert to Collider** | Restores solid contact. |
+| **Add Trigger** | Adds a sensor to an object without a collider. |
+| **Trigger (compound)** | Shows an imported compound trigger's member count and collision filter. Inspect its member references in **Nodes**. **Remove Trigger** removes it from the owner. |
+
+Simulated overlap detection uses shape triggers. A child shape trigger without its own motion follows its rigid-body parent. This lets one body carry a solid collider and a separate detection zone.

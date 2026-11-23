@@ -1,0 +1,47 @@
+---
+path: /MeshEditor/manual/interface/history/
+title: "Undo and history"
+navOrder: 1
+---
+
+## Undo and redo
+
+Select a step in **History** to restore the document to that point. One gesture can form a single undo step even when it makes several changes. Duplicating an object and placing the copy is one example. Cancel during placement to discard the whole gesture.
+
+## History branches
+
+Editing from an earlier step creates a branch and keeps the existing continuation. **History** highlights the current branch. **Undo** goes to the parent step. **Redo** follows the highlighted continuation. Select a step on another branch to switch to it.
+
+Visiting a history step keeps your current view. To restore the saved scene and panel layout together, use [Revert to Saved](/MeshEditor/manual/projects/#revert-to-saved).
+
+## Editing a history step
+
+Expand an editable step, change a value and inspect the preview. Revising the tip of a branch updates that step. Revising a step with later edits creates a new branch.
+
+| Parameter | How to edit it |
+| --- | --- |
+| Object or resource | Choose a named item, or **None** to clear the reference. |
+| Optional value | Enable its checkbox to set a value or clear it to remove the value. |
+| Choice of forms | Select the form, then edit its fields. |
+| List | **Add** appends an entry. **Remove** drops the last entry. |
+
+If you revise the last saved step in place, save the project again to make the revised step its reopening point. To recover the previous save before saving again, open `Saved.project` directly. [Project files](/MeshEditor/manual/projects/#file-formats)
+
+To change a bevel or extrusion while viewing a later stage, edit the [geometry node](/MeshEditor/manual/modeling/geometry-nodes/) in the current procedure.
+
+## History memory
+
+**Memory…** reports how much memory History uses and lets you adjust its budget.
+
+| Readout or setting | Meaning |
+| --- | --- |
+| **Shared node pool** | Memory shared between history states. |
+| **Copied data** | Memory occupied by retained copies of edited data. |
+| **States cached** | Steps available in memory. The adjacent count shows how many require a disk read. Both kinds remain available in History. |
+| **Copied data budget (MiB)** | Memory budget for copied data, initially 64 MiB. Reducing it can make older steps slower to open. The current state and up to 16 preceding steps on its branch stay cached. |
+
+## Clear history
+
+**Clear history** keeps only the current and last saved states. To keep other branches, use **File → Save as…** to make a copy before clearing history.
+
+In debug builds, **Validate history** checks that the current step can be restored. [Replay validation](/MeshEditor/manual/advanced/validation/#replay-validation)

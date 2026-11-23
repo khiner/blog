@@ -1,0 +1,69 @@
+---
+path: /MeshEditor/manual/advanced/benchmarks/
+title: "Performance benchmarks"
+navOrder: 3
+---
+
+## Benchmark tools
+
+| Tool | Use |
+| --- | --- |
+| `script/Bench list`, `script/Bench run` | List available cases, then pass case IDs to `run`. Omitting IDs runs the full manifest. |
+| `MeshEditorEditBench` | Time mesh edits and drags. With no arguments it runs the standard set. Pass a sphere slice count or a scene path to measure a particular mesh. |
+| `MeshEditorProjectBench` | Measure history storage per edit and compare commit, cached restore and disk restore times. |
+| `script/GenerateLocalScalingScene` | Pass a grid size and output `.gltf` path. The selected face keeps the same neighbors as distant grids grow. `--parts` sets the number of primitives per distant grid. |
+| `script/GenerateRenderBenchmarks` | Generate the `standard`, `smoke` or `overlays` dataset with `--profile`. Choose its directory with `--output`. Use `--check` to verify the generated inputs. |
+| `script/SetupTetCorpus` | Prepare RealImpact meshes for tetrahedralization benchmarks. Pass `--thingi10k` to include the Thingi10K corpus or `--force` to rebuild existing datasets. |
+
+To build the two benchmark executables, run `cmake --build build --target MeshEditorEditBench MeshEditorProjectBench`. Both are written to `build/tests/`.
+
+## Viewport profiling
+
+Choose the benchmark action that matches the interaction. `steady` measures a stationary view, `orbit` changes visibility, and `drag` moves objects continuously. Use the box-selection or pick actions to measure selection.
+
+For a profile of an orbit, warm up the viewport, measure 60 frames and capture ten stationary frames to include refinement after motion.
+
+```sh
+PROFILE=1 ./script/Build --release
+./build/MeshEditor --headless --bench-action orbit --bench-warmup 10 \
+  --frames 60 --bench-settle 10 --profile-json /tmp/orbit-profile.json
+```
+
+### Benchmark actions
+
+| `--bench-action` | Workload |
+| --- | --- |
+| `steady` | Renders the current view without moving it. |
+| `orbit` | Orbits the viewport camera each frame. |
+| `transform` | Alternates mesh objects between their original positions and a vertical offset. |
+| `drag` | Moves selected mesh objects in one continuous transform and commits it at the end. |
+| `animation` | Advances through the timeline one frame at a time. |
+| `material` | Varies the roughness of an assigned material. Requires a visible mesh with a material in its first slot. |
+| `visibility` | Alternates between showing and hiding selected mesh objects. |
+| `box-select` | Repeats a box selection in a stationary view. |
+| `box-select-orbit` | Repeats box selection while alternating between two viewpoints. |
+| `pick-cycle` | Repeatedly picks at the same screen location to cycle through overlapping objects. |
+
+## Viewport and editing benchmarks
+
+`script/Bench` requires a scene manifest, including for runs on your own scene. Generate it once with `script/GenerateRenderBenchmarks`, or use an existing manifest with `--scene-root DIR`. To measure the cost of orbiting a scene, record a baseline before changing MeshEditor.
+
+```sh
+./script/Bench run --scene res/examples/RayTracingGlass/RayTracingGlass.gltf --camera Camera --action orbit --output /tmp/before.json
+```
+
+After the change, repeat the same command on the same Mac with `--output /tmp/after.json`. Then run `./script/Bench compare /tmp/before.json /tmp/after.json`.
+
+The report compares median times in milliseconds. **CPU update** measures scene updates, **CPU record** measures preparation of rendering commands, and **GPU** measures their execution. Each row gives the before and after values and the percentage change. The report also compares GPU memory use and flags changed images.
+
+## Ray tracing benchmarks
+
+To time the `glass` case, build the profiling and benchmark tools, then run the native comparison.
+
+```sh
+PROFILE=1 ./script/Build
+cmake --build build --target MeshEditorMslCompileTest MeshEditorProjectTest
+./script/BenchmarkRayTracing /tmp/mesheditor-rays --stage native --cases glass
+```
+
+For a matched EEVEE comparison, pass `--blender PATH` with a Blender build that supports offscreen viewport capture. `--recovery` runs a fixed orbit and measures how the image settles after motion stops. The mixed-glass results include matched images and `mixed-recovery/recovery.json`.

@@ -1,0 +1,58 @@
+---
+path: /MeshEditor/manual/scenes/networks/
+title: "Scene and document networks"
+navTitle: Scene networks
+navOrder: 4
+---
+
+The document network contains scenes and shared resources. Enter a scene to work with objects, an armature to inspect bones or a mesh to edit its geometry procedure. Click a breadcrumb to return to an enclosing network.
+
+Double-click a scene, armature, mesh, subnet or hierarchy instance to open its network. The **Nodes** editor follows the active selection. While viewing a mesh procedure, selecting a different mesh opens that mesh’s procedure. Selecting another instance of the same mesh keeps the procedure open in the context of the new object.
+
+## Resource assignments
+
+The document network’s **Add** menu contains **Scene**, **Material**, **Color texture**, **Data texture**, **Physics material**, **Collision system**, **Collision filter** and **Joint definition**. Inside a scene, **Add** creates mesh primitives, empties, armatures, cameras and lights. Inside a scene subnet it places the new object in that group.
+
+Drag a source node’s output to a compatible input to assign it. To assign an item on another page, right-click the input and choose **Assign**. **Go to** reveals the target on its page, opening the procedure for a geometry target. On a resource, **Used by** lists the owners and sockets that reference it. Click an owner to reveal it.
+
+An assignment between items on the same page appears as a wire. A socket that refers to another page shows the target's name. For objects sharing a mesh, one object represents the geometry in the network. Its own **Geometry** input is empty. Other objects show the representative as their geometry source. All share its material slots. To give one object its own assignments, right-click its **Geometry** input and choose **Clear** to make a local copy of the shared mesh.
+
+## Reference sockets
+
+A socket’s chooser lists compatible items. Assigning a parent or shared geometry that would create a dependency cycle leaves the existing assignment in place.
+
+| Reference | Target |
+| --- | --- |
+| Parent, geometry, skin | A parent object, shared mesh, or armature object compatible with the mesh's existing skin. |
+| Constraint target, instance source | An object to follow or a hierarchy to instance. |
+| Material slot, texture | A material assigned to geometry or an image texture assigned to a material. |
+| Collider geometry, physics material, collision filter | A contact mesh, its surface response or its collision partner rules. Clearing **Collider geometry** restores the object's own mesh. |
+| Joint body, joint definition | A connected attachment or the joint's shared limits and drives. |
+| Trigger filter, trigger member | The collision filter a trigger uses, or an object included in a compound trigger. |
+| Member system, collide system, blocked system | A system the filter belongs to, or a partner system it allows or blocks. |
+
+For a list of references, use its **Add** socket to append a member. Right-click an existing entry and choose **Clear** to remove it. Clearing **Instance source** makes the hierarchy instance independent.
+
+## Subnets
+
+Right-click a scene or document node to open its menu.
+
+| Command | Effect |
+| --- | --- |
+| **Group selected**, **Ungroup** | Put the selection in a subnet or return its contents to the enclosing network. Both preserve object transforms and scene membership. |
+| **Enter subnet** | Open a subnet in the canvas. |
+| **Move selected into subnet**, **Move selected to parent** | Move selected items into the target group or up one level. |
+
+Groups can be nested. Moves stay within the same scene or document network. Deleting a group deletes the items inside it. **Ungroup** keeps those items and selects them on the enclosing page.
+
+References between members are visible inside the group. A reference between a member and a node on the enclosing page appears as a socket on the group, labeled with the member's name.
+
+### Exposed properties
+
+1. Right-click an editable property on a subnet member and choose **Expose on subnet**.
+2. Select the subnet. Its new input edits the original property. Edit **Port name** to change the label.
+3. Use **Move up** to reorder the input or **Remove port** to remove it from the group. In a nested subnet, **Expose on parent** makes the property available one level higher. Moving the owner outside the subnet removes ports that can no longer reach that property.
+
+## Generated hierarchies
+
+**Inspect generated instances** on a generating object opens its hierarchy. On a hierarchy instance, **Enter hierarchy** opens the instance root. [Geometry instances](/MeshEditor/manual/modeling/instances/)

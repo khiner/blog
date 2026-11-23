@@ -1,0 +1,378 @@
+---
+path: /MeshEditor/manual/modeling/materialx/geometry/
+title: "Geometry inputs and scene time"
+navTitle: Geometry and scene time
+navOrder: 1
+---
+
+import OperationPorts from '../OperationPorts'
+
+## Geometric
+
+### Adjacent
+
+Grow or shrink a selection by successive rings of neighbors.
+
+<OperationPorts
+  identifier="adjacent"
+  inputs={{
+    "In": "The selection to grow or shrink.",
+    "Steps": "The number of rings to add or remove.",
+  }}
+  properties={{
+    "Domain": "Select vertices, edges or faces.",
+    "Mode": "Choose more to add neighbors or less to remove boundary elements.",
+  }}
+  result="A selection expanded or contracted by the chosen number of rings."
+  fixedTypes={{
+    "In": "boolean",
+    "Steps": "integer",
+    "Output": "boolean",
+  }}
+  contexts="vertices, edges, faces, face corners"
+/>
+
+### Boundary
+
+Find the open borders of a mesh.
+
+<OperationPorts
+  identifier="boundary"
+  properties={{
+    "Domain": "Select the boundary edges themselves, the vertices on them or the faces touching them.",
+  }}
+  result="Boundary edges or their incident vertices or faces, according to the chosen domain. A closed surface gives an empty selection."
+  fixedTypes={{
+    "Output": "boolean",
+  }}
+  contexts="vertices, edges, faces, face corners"
+/>
+
+### Bump
+
+Tilt a surface normal according to changes in height.
+
+<OperationPorts
+  identifier="bump"
+  inputs={{
+    "Height": "The surface height field. Changes between neighboring samples create the relief.",
+    "Scale": "The strength of the bump effect.",
+    "Normal": "Surface normal before perturbation.",
+    "Tangent": "The surface tangent along the first texture axis.",
+    "Bitangent": "The surface direction along the second texture axis.",
+  }}
+  result="A normal tilted by the local height variation."
+  fixedTypes={{
+    "Height, Scale": "float",
+    "Normal, Tangent, Bitangent": "vector3",
+    "Output": "vector3",
+  }}
+  contexts="face corners, UV bakes, image filters over 0–1 UV coordinates"
+/>
+
+### Convert Domain
+
+Transfer a field between mesh element domains.
+
+<OperationPorts
+  identifier="convertdomain"
+  inputs={{
+    "In": "The field to read on the source elements.",
+  }}
+  properties={{
+    "Source Domain": "The vertex, edge, face or face-corner domain that holds the original values.",
+    "Target Domain": "Element domain that receives the result.",
+    "Mode": "For a selection, Any includes a target when any source element is selected. All requires every source element. Numeric fields offer mean, minimum or maximum.",
+  }}
+  result="One value per target element. A target with no related source elements receives zero."
+  columns={["In", "Output"]}
+  rows={[
+    ["boolean, integer, float, vector2, vector3, vector4, color3, color4", {"sameAs": "In"}],
+  ]}
+  contexts="vertices, edges, faces, face corners"
+>
+
+Set **Source Domain** to face and **Target Domain** to edge. An edge shared by a selected and an unselected face is selected with **Any** and unselected with **All**.
+
+</OperationPorts>
+
+### Curvature
+
+Measure curvature at mesh vertices.
+
+<OperationPorts
+  identifier="curvature"
+  properties={{
+    "Kind": "Mean curvature averages the two principal curvatures. Gaussian curvature multiplies them.",
+  }}
+  result="The selected curvature measure at each vertex."
+  fixedTypes={{
+    "Output": "float",
+  }}
+  contexts="vertices, edges, faces, face corners"
+/>
+
+### Edge Loop
+
+Continue a selection along an edge loop.
+
+<OperationPorts
+  identifier="edgeloop"
+  inputs={{
+    "In": "The seed edges from which to continue the selection.",
+  }}
+  result="Edges reached by following opposite edges through vertices with four incident edges."
+  signature="unaryBoolean"
+  contexts="vertices, edges, faces, face corners"
+/>
+
+### Edge Ring
+
+Continue a selection across a strip of quads.
+
+<OperationPorts
+  identifier="edgering"
+  inputs={{
+    "In": "The seed edges from which to continue the selection.",
+  }}
+  result="Edges reached by crossing each quad to its opposite edge."
+  signature="unaryBoolean"
+  contexts="vertices, edges, faces, face corners"
+/>
+
+### Element Index
+
+Read the index on the chosen element domain. Indices can change when topology changes.
+
+<OperationPorts
+  identifier="elementindex"
+  result="The zero-based index of the current element in its domain."
+  fixedTypes={{
+    "Output": "integer",
+  }}
+  contexts="vertices, edges, faces, face corners"
+>
+
+A vertex keeps the same index until an edit renumbers it. A field based on that index changes when its index changes.
+
+</OperationPorts>
+
+### Geometry Color
+
+Read the mesh’s color. Faces can have different colors on either side of a shared edge. Meshes made entirely of points or edges use vertex colors.
+
+<OperationPorts
+  identifier="geomcolor"
+  inputs={{
+    "Index": "Use 0 for the mesh color set. Other indices return zero.",
+  }}
+  result="The color at the current point. A float output reads its red channel."
+  fixedTypes={{
+    "Index": "integer",
+  }}
+  columns={["Output"]}
+  rows={[
+    ["float, color3, color4"],
+  ]}
+  contexts="face corners, vertices on meshes without faces, UV bakes"
+/>
+
+### Geometric Property
+
+Read a mesh attribute by name.
+
+<OperationPorts
+  identifier="geompropvalue"
+  inputs={{
+    "Default": "The fallback value when the named attribute is absent.",
+  }}
+  properties={{
+    "Geomprop": "The name of the mesh attribute to read.",
+  }}
+  result="The attribute value at the current element, or the supplied fallback."
+  columns={["Default", "Output"]}
+  rows={[
+    ["boolean, integer, float, vector2, vector3, vector4, color3, color4", {"sameAs": "Default"}],
+  ]}
+  contexts="vertices, edges, faces, face corners, UV bakes"
+/>
+
+### Linked
+
+Find the connected components touched by a selection.
+
+<OperationPorts
+  identifier="linked"
+  inputs={{
+    "In": "The elements from which to start.",
+  }}
+  properties={{
+    "Domain": "Select vertices, edges or faces.",
+  }}
+  result="All connected components reached from the starting selection."
+  signature="unaryBoolean"
+  contexts="vertices, edges, faces, face corners"
+/>
+
+### Normal
+
+Read a surface normal.
+
+<OperationPorts
+  identifier="normal"
+  properties={{
+    "Space": "Use object space to read the mesh-local normal.",
+  }}
+  result="The direction perpendicular to the surface."
+  fixedTypes={{
+    "Output": "vector3",
+  }}
+  contexts="vertices, faces, face corners, UV bakes"
+/>
+
+### Plane Side
+
+Classify points relative to a plane defined by a point and normal.
+
+<OperationPorts
+  identifier="planeside"
+  inputs={{
+    "Point": "A point on the plane in mesh-local coordinates.",
+    "Normal": "The direction toward the positive side.",
+    "Side": "Choose the positive side, negative side or plane itself.",
+    "Tolerance": "Width of the on-plane tolerance on each side. Beyond one mesh unit from the origin, MeshEditor multiplies this value by the sample’s distance from the origin.",
+  }}
+  result="A selection of elements on the chosen side or within the on-plane tolerance."
+  fixedTypes={{
+    "Point, Normal": "vector3",
+    "Side": "integer",
+    "Tolerance": "float",
+    "Output": "boolean",
+  }}
+  contexts="vertices, face corners, UV bakes"
+/>
+
+### Position
+
+Read a point’s coordinates on the mesh.
+
+<OperationPorts
+  identifier="position"
+  properties={{
+    "Space": "Use object space to read the mesh-local position.",
+  }}
+  result="The coordinates of the point on the mesh."
+  fixedTypes={{
+    "Output": "vector3",
+  }}
+  contexts="vertices, face corners, UV bakes"
+>
+
+An object-local position stays the same when the whole object moves. A pattern sampled at that position moves with the object.
+
+</OperationPorts>
+
+### Selection Attribute
+
+Use an inline element selection or the Boolean field wired to its input.
+
+<OperationPorts
+  identifier="selection"
+  inputs={{
+    "In": "The picked mesh elements or a connected selection field.",
+  }}
+  result="True on the selected elements and false elsewhere."
+  signature="unaryBoolean"
+  contexts="vertices, edges, faces, face corners"
+/>
+
+### Surface Tangent
+
+Read a surface tangent.
+
+<OperationPorts
+  identifier="tangent"
+  inputs={{
+    "Index": "Texture-coordinate set index. MeshEditor uses the same mesh tangent for all sets.",
+  }}
+  properties={{
+    "Space": "Use object space to read the mesh-local tangent.",
+  }}
+  result="Direction of the surface tangent."
+  fixedTypes={{
+    "Index": "integer",
+    "Output": "vector3",
+  }}
+  contexts="face corners, UV bakes"
+/>
+
+### Texture Coordinate
+
+Read a mesh UV set. Corners that share a vertex can have different UVs at a seam.
+
+<OperationPorts
+  identifier="texcoord"
+  inputs={{
+    "Index": "UV set to read, from 0 to 3. An unavailable set gives zero.",
+  }}
+  result="The UV coordinates at that point. A three-component output adds a zero Z coordinate."
+  fixedTypes={{
+    "Index": "integer",
+  }}
+  columns={["Output"]}
+  rows={[
+    ["vector2, vector3"],
+  ]}
+  contexts="face corners, UV bakes, image filters over 0–1 UV coordinates"
+/>
+
+## Application
+
+### Frame
+
+Use the timeline frame number in a field.
+
+<OperationPorts
+  identifier="frame"
+  result="The current scene frame number."
+  fixedTypes={{
+    "Output": "float",
+  }}
+/>
+
+### Time
+
+Use scene time in a field.
+
+<OperationPorts
+  identifier="time"
+  inputs={{
+    "Fps": "MaterialX frame rate. The scene clock sets the time in MeshEditor.",
+  }}
+  result="Scene time in seconds, measured from frame 1 at the scene frame rate."
+  fixedTypes={{
+    "Fps": "float",
+    "Output": "float",
+  }}
+/>
+
+## Organization
+
+### Dot
+
+Label a connection with a note.
+
+<OperationPorts
+  identifier="dot"
+  inputs={{
+    "In": "The value to route through this point in the graph.",
+  }}
+  properties={{
+    "Note": "Comment describing the connection.",
+  }}
+  result="The incoming value with its type preserved."
+  columns={["In", "Output"]}
+  rows={[
+    ["boolean, integer, float, vector2, vector3, vector4, color3, color4, matrix33, matrix44", {"sameAs": "In"}],
+  ]}
+/>

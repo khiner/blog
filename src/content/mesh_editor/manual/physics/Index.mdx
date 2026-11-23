@@ -1,0 +1,28 @@
+---
+path: /MeshEditor/manual/physics/
+title: "Physics"
+navOrder: 7
+---
+
+Rigid bodies move under gravity and collide at their boundaries. Each body has its own motion settings. The document controls gravity and simulation timing.
+
+## Simulation settings
+
+Select **Document** in **Nodes** and open **Properties → Simulation**. **Bodies** shows how many rigid bodies are in the simulation. The colliders of a compound body count as one body.
+
+| Setting | Effect |
+| --- | --- |
+| **Gravity** | Acceleration of dynamic bodies along the world axes. |
+| **Time Scale** | Simulated time per second of playback. A value of 0 holds the bodies still while the Timeline advances. |
+| **Substeps Per Frame** | Number of simulation steps per frame. More substeps resolve faster motion and shorter contacts. |
+| **Solver Iterations** | Number of passes used to resolve contacts and joints. Higher values reduce overlap and joint drift at greater simulation cost. |
+
+## Simulation playback
+
+Forward playback advances the simulation. The Timeline retains simulated poses for scrubbing. After changing a collider or gravity, playback from the start frame uses the new settings. The **Extras** overlay shows the collision shapes. [Collision sound](/MeshEditor/manual/physical-audio/contact/#collision-sound)
+
+## In this section
+
+- [Rigid bodies](/MeshEditor/manual/physics/rigid-bodies/)
+- [Collisions](/MeshEditor/manual/physics/collisions/)
+- [Rigid body joints](/MeshEditor/manual/physics/joints/)

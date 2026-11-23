@@ -3,8 +3,10 @@ import path from 'node:path'
 import { compileSync } from '@mdx-js/mdx'
 import { parse } from 'yaml'
 import { parseSync } from 'vite'
+import { buildManualSearch, manualDirectory } from './manual-search.mjs'
 
 const catalogId = '\0virtual:entries'
+const searchId = '\0virtual:manual-search'
 const summaryPrefix = '\0virtual:summary:'
 
 export function readContent(source) {
@@ -92,9 +94,17 @@ export default function content() {
     }
     return entry
   }
+  function* publishedEntries(directory, context) {
+    for (const relative of readdirSync(directory, { recursive: true }).filter((file) => file.endsWith('.mdx')).sort()) {
+      const file = path.join(directory, relative)
+      if (!development) context.addWatchFile(file)
+      const entry = readEntry(file)
+      if (!entry.metadata.draft) yield { file, ...entry }
+    }
+  }
   const reloadCatalog = (server) => {
     for (const module of server.moduleGraph.idToModuleMap.values()) {
-      if (module.id === catalogId || module.id?.startsWith(summaryPrefix)) server.moduleGraph.invalidateModule(module)
+      if (module.id === catalogId || module.id === searchId || module.id?.startsWith(summaryPrefix)) server.moduleGraph.invalidateModule(module)
     }
     server.ws.send({ type: 'full-reload' })
   }
@@ -107,9 +117,11 @@ export default function content() {
     },
     resolveId(id) {
       if (id === 'virtual:entries') return catalogId
+      if (id === 'virtual:manual-search') return searchId
       if (id.startsWith('virtual:summary:')) return '\0' + id + '.js'
     },
     load(id) {
+      if (id === searchId) return buildManualSearch(publishedEntries(path.join(contentDir, manualDirectory), this))
       if (id.startsWith(summaryPrefix)) {
         const file = id.slice(summaryPrefix.length, -3)
         if (!development) this.addWatchFile(file)
@@ -129,14 +141,8 @@ export default function content() {
       const imports = []
       const entries = []
       const routes = new Set()
-      for (const relative of readdirSync(contentDir, { recursive: true })
-        .filter((file) => file.endsWith('.mdx'))
-        .sort()) {
-        const file = path.join(contentDir, relative)
-        if (!development) this.addWatchFile(file)
-        const { metadata } = readEntry(file)
+      for (const { file, metadata } of publishedEntries(contentDir, this)) {
         const { summary, draft, ...entry } = metadata
-        if (draft) continue
         const route = entry.path.toLowerCase().replace(/\/+$/, '') || '/'
         if (routes.has(route)) throw new Error(`${file}: duplicate entry path ${entry.path}`)
         routes.add(route)

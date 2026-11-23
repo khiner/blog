@@ -1,0 +1,57 @@
+---
+path: /MeshEditor/manual/files/gltf/extensions/
+title: "glTF extension reference"
+navOrder: 1
+---
+
+MeshEditor reports unsupported required extensions when importing a scene. For an asset that requires Draco compression, choose an uncompressed or Meshopt-compressed version.
+
+## Geometry and images
+
+| Extension | Behavior |
+| --- | --- |
+| `KHR_mesh_quantization` | Reads quantized vertex attributes. An edited mesh can export with a different encoding. |
+| `EXT_mesh_gpu_instancing` | Imports instance translation, rotation and scale on shared mesh data. Custom per-instance attributes are omitted. Eligible instances export with transforms relative to the source node. |
+| `EXT_meshopt_compression`, `KHR_meshopt_compression` | Import Meshopt-compressed geometry and animation. Meshes export uncompressed. |
+| `KHR_texture_transform` | Sets offset, rotation, scale and the UV set per texture slot. Two slots can map the same image differently. |
+| `KHR_texture_basisu` | Reads KTX2/Basis textures. Keep the source image to preserve its original compression. |
+| `EXT_texture_webp` | Reads alternative WebP image sources. Edited WebP textures can be re-encoded as lossless WebP. |
+
+## Materials
+
+Select a material in its slot to inspect the factors, colors and textures used on export. [Editing materials](/MeshEditor/manual/rendering/materials/) · [Material slots and variants](/MeshEditor/manual/rendering/material-assignments/)
+
+| Extension | Material feature |
+| --- | --- |
+| `KHR_materials_unlit` | Base appearance independent of scene lighting. |
+| `KHR_materials_emissive_strength` | Emission intensity beyond the emissive color factor. |
+| `KHR_materials_specular` | Strength and color of dielectric reflection. |
+| `KHR_materials_sheen` | Grazing reflection with its own color and roughness. |
+| `KHR_materials_ior` | Material index of refraction. |
+| `KHR_materials_dispersion` | Wavelength-dependent refraction. |
+| `KHR_materials_transmission` | Light transmitted through a specular surface. Review glass under the intended raster or ray-traced transmission settings. |
+| `KHR_materials_diffuse_transmission` | Amount and color of diffusely transmitted light. |
+| `KHR_materials_volume` | Thickness, attenuation color and attenuation distance. |
+| `KHR_materials_clearcoat` | Coating strength, roughness and normal. |
+| `KHR_materials_anisotropy` | Strength and orientation of directional roughness. |
+| `KHR_materials_iridescence` | Thin-film strength, refractive index and thickness. |
+| `KHR_materials_variants` | Named material assignments per primitive. Select the default assignment to inspect the base appearance. |
+
+## Scene and animation
+
+| Extension | Behavior |
+| --- | --- |
+| `KHR_lights_punctual` | Imports and exports directional, point and spot lights. Rectangle and ellipse area lights require native project storage. |
+| `EXT_lights_image_based` | Each scene retains its light rotation and intensity. For a file with several scene environments, MeshEditor uses the default source scene’s light images for all of them. |
+| `KHR_node_visibility` | Stores node visibility and supports animated visibility. A hidden parent with visible descendants cannot retain that independent visibility on export. |
+| `KHR_animation_pointer` | Animates properties such as a camera’s field of view, a light’s intensity or a texture’s rotation. Channels targeting unsupported property paths are skipped. Open **Targets** in the Timeline playback options to see the channels MeshEditor imported. [Animatable properties](/MeshEditor/manual/animation/keyframes/#animated-properties) |
+
+## Physics and physical audio
+
+| Extension | Behavior |
+| --- | --- |
+| `KHR_physics_rigid_bodies` | Maps motion, mass, inertia, collision materials, filters, colliders, triggers and joint definitions into the physics network. [Rigid bodies](/MeshEditor/manual/physics/rigid-bodies/) · [Collisions](/MeshEditor/manual/physics/collisions/) · [Joints](/MeshEditor/manual/physics/joints/) |
+| `KHR_implicit_shapes` | Exchanges box dimensions, sphere radius, capsule and cylinder height and end radii, and plane extents and sidedness. [Collider shapes](/MeshEditor/manual/physics/collisions/) |
+| `KHR_audio_rigid_bodies` | Stores acoustic materials, modes, excitation surfaces, mass properties and scales. Surface finishes can reference relief textures or sampled height profiles with spacing. |
+
+Playback in another application requires support for the audio extension.

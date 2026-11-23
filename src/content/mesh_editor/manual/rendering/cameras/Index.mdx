@@ -1,0 +1,52 @@
+---
+path: /MeshEditor/manual/rendering/cameras/
+title: "Cameras"
+navOrder: 1
+---
+
+A camera object's transform places and aims the shot. Its projection determines the frame. Each viewport can look through a different camera or show the shot from outside.
+
+## Camera view
+
+**Scene controls → Scene → Add object → Camera** creates a camera. Its object transform determines the position and direction of the shot.
+
+| Property | Description |
+| --- | --- |
+| **Look through** | Switches the active viewport to the selected camera. The camera gate outlines the area included in a capture. |
+| **Exit camera view** | Restores the previous working view. Appears while looking through the selected camera. |
+
+Orbiting or zooming leaves camera view and starts navigation from the shot. The camera keeps its placement. Use **Look through** to return to it or to switch to another selected camera. The **Extras** overlay shows camera outlines from outside. [Render output](/MeshEditor/manual/rendering/output/)
+
+**Scene controls → Camera** sets the lens and orbit target of the working view. To animate a camera object, key its transform or a lens field in **Properties**. [Keyframes and playback](/MeshEditor/manual/animation/)
+
+## Projection
+
+<span id="clipping">**Projection**</span> chooses the camera’s lens model. The available lens and clipping fields depend on that choice.
+
+### Perspective
+
+Perspective makes objects farther from the camera appear smaller.
+
+| Property | Description |
+| --- | --- |
+| **Field of view** | Vertical angle of view in degrees. A wider angle includes more of the scene from the same camera position. |
+| **Near Clip** | Closest visible distance in meters along the camera’s viewing direction. Geometry closer to the camera is clipped. |
+| **Infinite far clip** | Removes the far clipping plane. Turn this off to set a finite far distance. |
+| **Far Clip** | Farthest visible distance in meters. Appears when **Infinite far clip** is off. |
+| **Viewport aspect ratio** | Uses MeshEditor’s default 16:9 camera gate. Turn this off to set the ratio explicitly. |
+| **Aspect Ratio** | Width of the camera frame divided by its height. Appears when **Viewport aspect ratio** is off. A value of 1 gives a square frame. |
+
+### Orthographic
+
+Parallel projection keeps an object the same apparent size as its distance from the camera changes.
+
+| Property | Description |
+| --- | --- |
+| **X Mag** | Half the visible width in meters. Doubling this value doubles the width of the frame. |
+| **Y Mag** | Half the visible height in meters. The ratio of X Mag to Y Mag determines the frame’s aspect ratio. |
+| **Near Clip** | Distance in meters from the camera to the near clipping plane. |
+| **Far Clip** | Distance in meters from the camera to the far clipping plane. |
+
+## Command-line camera selection
+
+The `--camera` option looks up an imported glTF camera definition by name. Its object can have a different name. For a camera created in MeshEditor, choose **Look through** and save the native project to capture that view on reopening.

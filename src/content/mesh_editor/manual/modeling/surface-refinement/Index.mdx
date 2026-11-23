@@ -1,0 +1,33 @@
+---
+path: /MeshEditor/manual/modeling/surface-refinement/
+title: "Subdivision and symmetry"
+navOrder: 5
+---
+
+Subdivision adds detail to a mesh. Symmetry tools either rebuild one side from the other or align existing vertex pairs.
+
+## Subdivision
+
+| Tool | Where it acts | Result |
+| --- | --- | --- |
+| **Subdivide** | Selected edges and faces. | Adds cuts for later edits or displacement and preserves the overall shape. |
+| **Subdivision Surface** | Whole mesh. | Rounds the surface with Catmull–Clark subdivision. **Levels** sets the number of subdivisions. |
+| **Smooth Surface** | Closed mesh. | Refines curved areas using shading normals. **Cuts** sets the new vertices per edge. Flat shading and sharp marks preserve creases. |
+
+Subdivision changes the silhouette. [Smooth shading](/MeshEditor/manual/modeling/normals/) changes how light varies across the existing surface.
+
+## Symmetrize
+
+**Symmetrize** cuts at a plane, reflects the retained half and welds the seam.
+
+In Edit mode, **Mesh → Symmetrize** adds the operation to the geometry procedure. **Point** places the plane and **Normal** sets its orientation. Reversing the normal exchanges the retained and reflected halves. Edits to the retained side upstream of the node appear on both sides.
+
+## Snap to Symmetry
+
+On a mesh with both halves already present, **Snap to Symmetry** aligns near-matching vertices across the selected axis. Choose which side supplies the reference.
+
+- **Threshold** sets the greatest distance between a reflected vertex and its match.
+- **Factor** chooses where each pair aligns. At 0 the reference side stays in place, at 1 the opposite side stays in place, and at 0.5 both move equally.
+- **Center** snaps nearby vertices onto the symmetry plane.
+
+[Topology tools](/MeshEditor/manual/modeling/topology/) · [Deformation nodes](/MeshEditor/manual/modeling/nodes/deformation/)

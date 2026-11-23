@@ -1,0 +1,27 @@
+---
+path: /MeshEditor/manual/animation/rigging/
+title: "Armatures"
+navOrder: 2
+---
+
+An armature is a hierarchy of bones. The **rest pose** defines the bones' positions and axes. A **pose** moves them relative to the rest pose. On a skinned mesh, each vertex follows its bones according to its joint weights.
+
+## Armature modes
+
+| To change | Select | Mode |
+| --- | --- | --- |
+| Placement of the whole skeleton | Armature object | Object |
+| Joint positions, bone roll or number of bones | Bone or endpoint | Edit |
+| Position of a limb in a shot | Pose bone | Pose |
+
+## Rest skeleton
+
+**Scene controls → Scene → Add object → Armature** adds an empty armature. Select it to see the **Bones** count in **Properties**. **Tab** enters Edit mode. The rest skeleton stores the bone hierarchy, endpoints and roll. [Bone editing](/MeshEditor/manual/animation/rigging/editing/)
+
+## Poses
+
+**Ctrl+Tab** enters Pose mode for the active armature. Pose transforms are relative to the rest skeleton and propagate to child bones. They can be keyed in an animation clip. [Bone poses](/MeshEditor/manual/animation/rigging/posing/) · [Skins and bone attachments](/MeshEditor/manual/animation/rigging/skinning/)
+
+## Bone constraints
+
+**Copy Transforms** makes a pose bone follow a target's position and orientation. **Child Of** can keep an offset from the target. [Bone constraints](/MeshEditor/manual/animation/constraints/)

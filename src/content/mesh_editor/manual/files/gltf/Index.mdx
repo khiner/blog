@@ -1,0 +1,68 @@
+---
+path: /MeshEditor/manual/files/gltf/
+title: "glTF import and export"
+navOrder: 1
+---
+
+Choose **File → Import → glTF 2.0 (.glb/.gltf)** to import a JSON `.gltf` file with its buffers and images, or a binary `.glb` file. The file must contain at least one scene. The default source scene joins the active scene. When the file has no default, MeshEditor uses its first scene. Other source scenes become separate scenes and keep their object memberships.
+
+An import error is reported in the terminal where MeshEditor was launched.
+
+The viewport looks through the first camera in the imported default scene, if it has one. Importing animation returns the timeline to its start frame.
+
+| Source data | In MeshEditor |
+| --- | --- |
+| Nodes and hierarchy | Parenting and placement appear in the object tree. Nodes referencing one mesh share its geometry. Nodes referencing one camera or light definition have separate camera or light properties. |
+| Objects with multiple attachments | MeshEditor imports one object type per glTF node. On a node with a mesh and a camera or light, it imports the mesh. On a node with both a camera and a light, it imports the camera. Separate child nodes preserve both attachments. |
+| Mesh primitives | Triangle lists, strips and fans become faces. Lines, line strips, line loops and points can also be imported. If a mesh mixes surfaces, lines and points, additional parts appear as child objects. |
+| Surface attributes | Triangle meshes carry normals, tangents, one color set (`COLOR_0`) and up to four UV sets (`TEXCOORD_0` through `TEXCOORD_3`). Texture slots referencing a higher set use `TEXCOORD_3` and issue a warning. |
+| Skins, morph targets and animation clips | Skins bind vertices to joints. Imported clips can animate joint transforms and morph weights. [Skinning limits](/MeshEditor/manual/animation/rigging/skinning/) · [Morph targets](/MeshEditor/manual/animation/morph-targets/) |
+| Materials and images | Inspect assignments in the mesh’s material slots. The latest glTF import sets the document's list of [material variants](/MeshEditor/manual/rendering/material-assignments/). |
+
+## Sample collections
+
+Choose a file from one of the following **File** submenus to import it into the current document. Each collection appears when its files are available.
+
+| Submenu | Contents |
+| --- | --- |
+| **Examples** | Bundled scenes include **DefaultScene**, **FallingCube** for rigid-body simulation and several ray tracing examples. |
+| **Benchmarks** | Scenes for repeatable rendering comparisons, including **Overlays**. |
+| **glTF Samples** | glTF sample models and their format variants. **Filter extensions** shows files declaring every checked extension. Uncheck an extension to broaden the list. |
+| **glTF_Physics Samples**, **glTF_PhysicalAudio Samples** | Sample scenes for rigid-body physics and physical audio from their respective collections. |
+
+## Source metadata
+
+Select **Document** in **Nodes** and open **Properties**. The **Asset** section shows the source generator, minimum version, copyright, and JSON for `asset.extras` and `asset.extensions` when present. These document-level details describe the most recent glTF import.
+
+| Section | What it shows |
+| --- | --- |
+| **Extensions required** | Extensions needed to interpret the asset. MeshEditor reports unsupported required extensions on import. |
+| **Image registry** | Image name, MIME type and source. Embedded images and data URIs show their size in bytes. External images show their path. Edited images are marked **(dirty)**. Supported formats include PNG, JPEG, WebP and KTX2/Basis Universal. |
+| **Texture registry** | The sampler and source images for each texture, including alternative encodings. |
+| **Sampler registry** | Filtering and addressing for each source sampler. |
+
+Select an imported object and open **Properties → glTF metadata** for its node, mesh, camera or light extras. **Copy** copies the JSON. On a mesh, **Mesh source layout** lists each primitive's original attribute channels and whether it had indices. Use the document's texture and sampler registries to trace image references.
+
+## Custom vertex attributes
+
+To include a procedural field in glTF, store it with **Store Named Attribute**. Use a name beginning with an underscore, such as `_TEMPERATURE`, and choose the **Vertex** domain or, on a triangle surface, the **Corner** domain. A face-corner attribute can have different values on opposite sides of a seam. [Fields and attributes](/MeshEditor/manual/modeling/fields/)
+
+MeshEditor exports these attributes as floating-point scalars or vectors. On import, an unnormalized integer scalar retains its integer type. MeshEditor ignores names longer than 63 bytes with a warning. Import fails if the attribute changes type between primitives or has a different number of values from `POSITION`. An attribute missing from one primitive reads as zero there.
+
+## Export
+
+**File → Save glTF** exports the document's scenes, evaluated geometry and resources. The active scene becomes the file's default scene. A `.gltf` file stores geometry in a companion `.bin` file. A `.glb` includes the buffer in the scene file. A [native project](/MeshEditor/manual/projects/) retains editable procedures and history branches.
+
+### Round-trip limits
+
+| Feature | Export behavior |
+| --- | --- |
+| Mesh compression | Geometry exports uncompressed, including meshes imported with Meshopt compression. |
+| External images | An unmodified external image stays linked to its original file, even in a `.glb`. Keep the image available when exporting or moving the scene. |
+| Embedded and edited images | Unchanged images keep their original form. Edits to PNG, JPEG and WebP images are saved in the exported scene, including edits to external images. For KTX2 or DDS, the export keeps the original image. |
+| Visibility | A hidden parent and its independently visible descendants lose that visibility arrangement in glTF. |
+| Area lights | An area light prevents glTF export. Use a native project to keep rectangle or ellipse lights. |
+
+## In this section
+
+- [glTF extension reference](/MeshEditor/manual/files/gltf/extensions/)

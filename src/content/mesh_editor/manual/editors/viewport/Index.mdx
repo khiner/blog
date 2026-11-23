@@ -1,0 +1,44 @@
+---
+path: /MeshEditor/manual/editors/viewport/
+title: "3D viewport"
+navOrder: 1
+---
+
+Each viewport shows a scene through a working view or a camera object. Move the pointer over the viewport you want to adjust. **Panels → New Viewport** opens another view of the current scene. To show a different scene in that viewport, choose it under **Scene controls → Scene → Scene**.
+
+## View navigation
+
+| Action | Control |
+| --- | --- |
+| Orbit the target | Scroll or drag the orientation gizmo. |
+| Zoom | Pinch or scroll with **Ctrl** or **Command**. |
+| Look along an axis | Click an axis on the orientation gizmo. Click it again to look from the opposite direction. |
+| Set the orbit center | Enter the center’s world coordinates under **Scene controls → Camera → Target**. |
+| Orbit toward the selection | In Edit or Excite mode, enable **Properties → Orbit to active**. Picking a mesh element or exciting a vertex turns the view around its existing center until that point lies on the viewing axis. |
+| Reset the working view | Choose **Scene controls → Camera → Reset**. |
+
+**Projection** sets the working lens. An orthographic view keeps an object's apparent size constant with distance. To look through a camera object, select it and choose **Properties → Camera → Look through**. [Cameras](/MeshEditor/manual/rendering/cameras/)
+
+## Object selection
+
+Choose the click or box selection tool at the upper left of the viewport.
+
+- **Click selection.** Click an object to select it. Click again at the same location to cycle through overlapping objects. **Shift**-click another object to add it and make it active. **Shift**-click the active object to deselect it.
+- **Box selection.** Drag around the objects. The selection updates as the box moves. Hold **Shift** as you start to add to the original selection.
+- **Select all or clear.** **A** selects all objects in this viewport’s scene. **Alt+A** or a click on empty space with the click tool clears the selection.
+- **Object tree.** In **Scene controls → Scene → Object tree**, select by name or expand a hierarchy to reach a child. Range selection follows the visible row order.
+
+The active object supplies the **Local** transform orientation and the parent for **Parent to active**.
+
+## Interaction modes
+
+Choose **Interaction mode** at the top of **Properties**. Edit mode is available for a mesh-only selection or an active armature. Pose mode requires an active armature. Excite mode appears when the document has a mesh with sound vertices.
+
+| Mode | What you can edit |
+| --- | --- |
+| **Object** | Whole objects. |
+| **Edit** | Vertices, edges or faces of selected meshes, or the rest bones of the active armature. |
+| **Pose** | The pose of the active armature. |
+| **Excite** | Click a sounding mesh to strike it at that point. |
+
+[Mesh selection](/MeshEditor/manual/modeling/selection/) · [Armatures](/MeshEditor/manual/animation/rigging/) · [Physical audio](/MeshEditor/manual/physical-audio/)

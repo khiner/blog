@@ -1,0 +1,23 @@
+---
+path: /MeshEditor/manual/modeling/instances/
+title: "Geometry instances"
+navOrder: 10
+---
+
+An instance places a copy of a mesh or an object hierarchy at a point. Each point can supply its own rotation and scale.
+
+## Instances on points
+
+Connect a mesh to **Points** on **Instance On Points** to place one copy at each vertex. Faces and edges on this input are ignored. **Mesh To Points** exposes those vertex positions as a point mesh for use elsewhere in the network.
+
+Connect the mesh to copy to **Instance**. To place a hierarchy instead, choose its root in **Prototype**. **Scale** and **Rotation** accept fields evaluated at each point.
+
+[Instance On Points inputs and properties](/MeshEditor/manual/modeling/nodes/data/#instanceonpoints)
+
+## Realize Instances
+
+Connect **Realize Instances** to turn mesh instances into one editable mesh. Realization requires a mesh on **Instance** with **Prototype** left empty. A hierarchy prototype stays a set of generated objects.
+
+## Generated hierarchies
+
+For a hierarchy prototype, select the generating object in the scene network and choose **Inspect generated instances**. Its generated objects include the prototype’s child lights, rigs and sound sources. [Hierarchy instances](/MeshEditor/manual/scenes/hierarchies/#hierarchy-instances)

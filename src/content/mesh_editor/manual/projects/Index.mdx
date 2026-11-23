@@ -1,0 +1,37 @@
+---
+path: /MeshEditor/manual/projects/
+title: "Projects"
+navOrder: 11
+---
+
+## New projects
+
+Choose **File → New → Default** to start with the default scene or **File → New → Empty** to start with an empty scene.
+
+## Saving
+
+**File → Save** (**Command+S**) saves the scene, edit history and panel layout. On the first save, choose a name and location for the project folder. Later saves use the same folder.
+
+**File → Save as…** (**Command+Shift+S**) makes a copy and switches to it. Choose a new folder, an empty folder or an existing MeshEditor project to replace. The copy must be outside the current project and cannot replace one of its enclosing folders. Choosing the current project folder saves in place.
+
+## Opening a project
+
+Choose **File → Open** and select the project folder to return to the last saved scene and panel layout. To recover edits made after that save, select the step you want in **History** and choose **File → Save**.
+
+To open the same project folder in a second MeshEditor instance, first close it in the original instance.
+
+## Revert to Saved
+
+Choose **File → Revert to Saved** to restore the open project's scene and panel layout to the last save. Later edits remain available in **History**.
+
+## Unsaved project recovery
+
+If you closed a project before its first save, open **File → Restore** and select the date and time you started it. MeshEditor lists the most recent sessions first. Starting a new unsaved session retains the five most recent closed sessions by default. Sessions still open in another instance are omitted from the list. Choose **File → Save** to keep the recovered project.
+
+## File formats
+
+| Format | Use |
+| --- | --- |
+| `.project` | Opening `Saved.project` directly opens a copy of the saved scene and its history. **File → Save** asks where to save the copy. |
+| `.actions` | Opens a project by replaying its recorded edits and restoring its history branches. A corpus render writes this archive beside its captures. |
+| `.gltf`, `.glb` | Exchange the evaluated scene with another application. Use a native project to keep editable procedures, alternate history branches and panel layout. |

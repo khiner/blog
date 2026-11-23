@@ -1,0 +1,36 @@
+---
+path: /MeshEditor/manual/getting-started/
+title: "Getting started"
+navOrder: 1
+---
+
+MeshEditor runs on Apple Silicon Macs with macOS 27 or later. The ground grid lies in the XZ plane, with Y up. One scene unit is one meter.
+
+## Installation
+
+1. Install the Xcode command-line tools with `xcode-select --install`.
+2. With Homebrew installed, run the following commands in Terminal. You need access to the submodule repositories for the recursive clone.
+
+   ```sh
+   brew install cmake ninja llvm
+   git clone --recurse-submodules https://github.com/khiner/MeshEditor.git
+   cd MeshEditor
+   ./script/Build
+   ./build/MeshEditor
+   ```
+
+   For an existing checkout, run `git submodule update --init --recursive` before building.
+
+The default build is Debug. Use `./script/Build --release` for rendering or benchmarks. H.264 video output requires FFmpeg (`brew install ffmpeg`). [Build options](/MeshEditor/manual/advanced/validation/)
+
+## First mesh edit
+
+The default scene contains a cube, a camera and a light.
+
+1. Select the cube in the viewport. In **Properties → Interaction mode**, choose **Edit**. Press **3** over the viewport for face selection.
+2. Click a face, press **E**, move the pointer and confirm the extrusion. New side faces connect the displaced face to the cube.
+3. Open **Panels → Nodes** and double-click the mesh object in the scene network. The cube generator feeds the extrusion. Select the extrusion to inspect its offset in **Properties**.
+4. In **History**, undo the extrusion to restore the cube. Redo it to restore the new faces and their placement.
+5. Choose **File → Save** and give the project a name and location. Reopen the project directory to restore the scene and panel layout.
+
+To start another scene, choose **File → New → Empty** or launch with `--empty`. **File → Open** reopens a project. **File → Import** loads a model. For an animated example, open **File → Examples → FallingCube.gltf** and press **Space**. [Viewport navigation](/MeshEditor/manual/editors/viewport/) · [Find examples by glTF extension](/MeshEditor/manual/files/gltf/#sample-collections)

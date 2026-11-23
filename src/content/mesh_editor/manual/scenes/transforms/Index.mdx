@@ -1,0 +1,60 @@
+---
+path: /MeshEditor/manual/scenes/transforms/
+title: "Object transforms"
+navOrder: 2
+---
+
+Object mode transforms the whole object, including its origin. Edit mode moves selected mesh elements relative to that origin. Editing a linked mesh changes its shape in every object that uses it.
+
+## Translation, rotation and scale
+
+**G** starts translation, **R** rotation and **S** scale. The corresponding viewport gizmos perform the same operations. **X**, **Y** or **Z** constrains a keyboard transform to that axis. Pressing the same axis key again releases the constraint.
+
+Pointer movement or a typed value sets the amount. For translation, type a distance in meters. Without an axis constraint, a typed distance moves along X in the current orientation. Rotation takes an angle in degrees, and scale takes a multiplier. Release the left mouse button or press **Enter** to confirm. **Esc** cancels.
+
+During a transform, **G**, **R** or **S** switches operation from the gesture's starting pose. When entering a value, the period key adds a decimal point, the minus key toggles the sign and **Backspace** removes the last digit.
+
+Multiple selected objects rotate and scale around the average of their origins. When a parent and child are both selected, the parent contributes to the pivot and the child follows it once. Enable the **Origins** overlay to see their individual origins.
+
+## Gizmo handles
+
+Choose a gizmo in the viewport. Drag a handle to transform the selection.
+
+| Gizmo | Handles |
+| --- | --- |
+| **Translate** | An arrow moves along one axis. A square between two axes moves in their plane. The center moves parallel to the screen. |
+| **Rotate** | A colored ring rotates around its axis. The outer ring rotates around the viewing direction. Drag inside the rings for free trackball rotation. |
+| **Scale** | An axis handle scales along one axis. A square scales along its two axes. Drag the ring around the center to scale uniformly. |
+| **Universal** | Drag an arrow to move, a short axis handle to scale, or a ring to rotate. The center moves parallel to the screen. |
+
+## Orientation and snapping
+
+The gizmo settings appear under **Properties → Transform**.
+
+| Property | Description |
+| --- | --- |
+| **Mode** | **World** aligns the gizmo with the scene axes. **Local** aligns it with the active object's rotation. |
+| **Snap** | Moves the gizmo in increments as you drag. |
+| **Snap Value** | Step size on each axis. Translation uses a distance, scaling uses a factor and rotation uses the X value in degrees. |
+| **Debug** | Shows which gizmo handle is under the pointer or being dragged. |
+
+## Transform properties
+
+The **Transform** panel shows a parented object's transform relative to its parent.
+
+| Property | Description |
+| --- | --- |
+| **Position** | Location of the object's origin in meters. |
+| **Rotation** | Orientation of the object's local axes. The selector beside the field changes how the orientation is entered. |
+| **Scale** | Multiplier along each local axis. **Scale (frozen)** marks a locked value, as on a measured RealImpact object. A selection containing a scale-locked object can still be moved or rotated together. |
+| **World transform** | Read-only position, rotation and scale after the parent transform has been applied. |
+
+### Rotation modes
+
+| Mode | Components |
+| --- | --- |
+| **XYZ Euler** | Angles around X, Y and Z, in degrees. |
+| **Quaternion** | Four quaternion components in X, Y, Z, W order. |
+| **Axis Angle** | Axis direction in the first three fields and rotation about it in degrees in the fourth. |
+
+[Parenting and instances](/MeshEditor/manual/scenes/hierarchies/)

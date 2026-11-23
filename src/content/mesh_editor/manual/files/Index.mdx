@@ -1,0 +1,44 @@
+---
+path: /MeshEditor/manual/files/
+title: "Assets and interchange"
+navOrder: 10
+---
+
+Use **File → Import** for meshes, scenes and measured sound datasets. **File → Open** opens a native project folder or archive.
+
+You can also drop files from Finder onto the MeshEditor window. Dropping an OBJ, PLY, glTF or GLB imports it into the current document. Dropping a project folder, `.project` or `.actions` opens that project in place of the current one. For a RealImpact measurement directory, use **File → Import → RealImpact**.
+
+| Format | Contents |
+| --- | --- |
+| OBJ, PLY | A mesh with the material or color data supplied by the file. |
+| glTF, GLB | A scene with objects and resources. **File → Save glTF** exports the evaluated scene. |
+| RealImpact | Measured geometry, strike locations and available microphone recordings. |
+| Native project | Modeling procedures, workspace and edit history. |
+
+## External files
+
+Imported meshes, samples and textures use repository-relative or absolute paths. An `asset:/` path refers to generated data stored in the project.
+
+In the document network, **Used by** lists the owners of a resource. Click an owner to find the assignment. [Scene and document networks](/MeshEditor/manual/scenes/networks/)
+
+## Wavefront OBJ and MTL
+
+Choose **File → Import → Wavefront (.obj)**. The file's face groups become one mesh object, named after the file. Faces are triangulated. The importer retains the first UV map and supplied normals. A position with different UVs or normals on either side of a seam becomes separate vertices. Standalone OBJ lines and points are skipped.
+
+Face material groups become material slots. The MTL library supplies diffuse and specular colors, shininess and opacity. A diffuse image supplies base color. A normal map, or a bump image when no normal map is named, supplies the normal texture. A separate opacity map enables alpha blending, but its image is not sampled as an opacity mask.
+
+Relative image paths start at the OBJ's directory. Import stops if MeshEditor cannot read a referenced MTL library or a texture used for base color or normals.
+
+## Stanford PLY
+
+Choose **File → Import → Stanford PLY (.ply)**. The importer reads floating-point vertex positions (`x`, `y`, `z`) and polygon faces from the `vertex_indices` or `vertex_index` list. A point cloud without a face element needs a point-capable format such as glTF.
+
+Optional `red`, `green`, `blue` or `r`, `g`, `b` properties are averaged into one material color. Use glTF to retain distinct colors at individual vertices.
+
+## Measured datasets
+
+Import a RealImpact object directory to associate measured vertices with their microphone recordings. Importing a dataset replaces objects across the document, including cameras and lights, as well as the materials and textures. [Directory layout and playback](/MeshEditor/manual/physical-audio/recordings/)
+
+## In this section
+
+- [glTF import and export](/MeshEditor/manual/files/gltf/)

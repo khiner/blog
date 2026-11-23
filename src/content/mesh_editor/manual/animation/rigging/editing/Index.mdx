@@ -1,0 +1,50 @@
+---
+path: /MeshEditor/manual/animation/rigging/editing/
+title: "Bone editing"
+navOrder: 1
+---
+
+Edit mode changes the rest skeleton. Move endpoints to place joints, adjust roll to orient a bone's axes, or extrude to extend a chain. Use [Pose mode](/MeshEditor/manual/animation/rigging/posing/) to bend the skeleton for an animation.
+
+## Root bones
+
+A new armature is empty. In armature Edit mode, **Shift+A** adds a root bone at the world origin and selects its tail.
+
+## Bone selection
+
+Click the **head** (root) or **tail** (tip) to select one end. Click the body to select the whole bone. Selecting both ends also selects the body. **Shift**-click extends the selection. Box selection can cover several bones. **A** selects all bones in the active armature and **Alt+A** clears the selection.
+
+To see bones through a mesh, switch to **Wireframe** and enable the **Bones** overlay. To find a bone by name, expand its parents in the **Object tree** or double-click the armature in **Nodes**.
+
+## Bone transforms
+
+Select a bone or an endpoint in Edit mode to see its numeric controls in **Properties → Transform**.
+
+| Control | Effect |
+| --- | --- |
+| **Head** | World position of the bone's root, in meters. |
+| **Tail** | World position of its tip, in meters. |
+| **G** | Moves a selected endpoint while the other stays in place. Moving the body moves both ends. |
+| **Length** | Moves the tail along the bone's local Y axis, which points from head to tail. |
+| **Roll** | Rotation in degrees of the local X and Z axes around local Y. Adjust it to change the plane of a local-axis bend in Pose mode. |
+
+The Edit mode pivot is the average position of the selected endpoints. A whole bone contributes both its head and tail.
+
+Editing a parent's rest placement leaves unedited child joints in place. Rotate the parent in Pose mode to swing the chain.
+
+## Extrusion and duplication
+
+| Selection and command | Result |
+| --- | --- |
+| **Shift+A** | Adds a separate root at the world origin, even with another bone selected. |
+| Tail or body, **E** | Adds a child at the tail and selects its tip for placement. |
+| Head alone, **E** | Creates a sibling at the head. Extruding a root's head creates another root. |
+| Selected bones, **Shift+D** | Copies the bones and starts placement. A copied child follows its copied parent. If its parent was outside the selection, it keeps that parent. |
+
+Extruding several bones at once creates one extrusion where a selected parent tail meets a selected child head. To fork a chain, extrude from the same tail twice.
+
+A duplicate starts with the original bone's rest placement and length. Its pose, animation keys and constraints are independent. Existing skin weights still refer to the original bone.
+
+## Bone deletion
+
+In Edit mode, press **X**, **Delete** or **Backspace**. Selecting even one endpoint deletes that bone. A surviving child keeps its rest placement and takes the deleted bone's parent. If its parent was the root, it becomes a root. Select every bone in a branch to delete the whole branch.

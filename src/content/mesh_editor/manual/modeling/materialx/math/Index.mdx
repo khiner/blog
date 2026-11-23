@@ -1,0 +1,1150 @@
+---
+path: /MeshEditor/manual/modeling/materialx/math/
+title: "Math, vectors and matrices"
+navOrder: 2
+---
+
+import OperationPorts from '../OperationPorts'
+
+## Math
+
+### Absolute
+
+Measure the magnitude of a signed value.
+
+<OperationPorts
+  identifier="absval"
+  inputs={{
+    "In": "The signed value to measure.",
+  }}
+  result="The absolute value of each component."
+  signature="componentwiseUnary"
+/>
+
+### Arccosine
+
+Find an angle from its cosine.
+
+<OperationPorts
+  identifier="acos"
+  inputs={{
+    "In": "Cosine of the angle, from −1 to 1.",
+  }}
+  result="The angle in radians between 0 and π."
+  signature="unaryFloatOrVector"
+/>
+
+### Add
+
+Add numbers, vectors, colors or matrices.
+
+<OperationPorts
+  identifier="add"
+  inputs={{
+    "In1": "The starting value.",
+    "In2": "The value to add.",
+  }}
+  result="The sum of corresponding components."
+  columns={["In1", "In2", "Output"]}
+  rows={[
+    ["integer, float, vector2, vector3, vector4, color3, color4, matrix33, matrix44", {"sameAs": "In1"}, {"sameAs": "In1"}],
+    ["vector2, vector3, vector4, color3, color4, matrix33, matrix44", "float", {"sameAs": "In1"}],
+  ]}
+/>
+
+### Arcsine
+
+Find an angle from its sine.
+
+<OperationPorts
+  identifier="asin"
+  inputs={{
+    "In": "Sine of the angle, from −1 to 1.",
+  }}
+  result="The angle in radians between −π/2 and π/2."
+  signature="unaryFloatOrVector"
+/>
+
+### Arctangent 2
+
+Find a direction’s angle while preserving its quadrant.
+
+<OperationPorts
+  identifier="atan2"
+  inputs={{
+    "Iny": "The vertical component of the direction.",
+    "Inx": "The horizontal component of the direction.",
+  }}
+  result="The signed angle in radians from the positive X axis to that direction."
+  columns={["Iny, Inx", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4", {"sameAs": "Iny"}],
+  ]}
+/>
+
+### Ceiling
+
+Round toward positive infinity.
+
+<OperationPorts
+  identifier="ceil"
+  inputs={{
+    "In": "The value to round up.",
+  }}
+  result="The smallest whole number greater than or equal to the input."
+  signature="rounding"
+/>
+
+### Clamp
+
+Limit each component to a range. Vectors and colors accept scalar bounds or separate bounds per component.
+
+<OperationPorts
+  identifier="clamp"
+  inputs={{
+    "In": "The value to limit.",
+    "Low": "The smallest allowed value.",
+    "High": "The largest allowed value.",
+  }}
+  result="The nearest bound for values outside the interval. Values within the interval pass through."
+  columns={["In", "Low, High", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "In"}, {"sameAs": "In"}],
+    ["vector2, vector3, vector4, color3, color4", "float", {"sameAs": "In"}],
+  ]}
+>
+
+Set **Low** to 0 and **High** to 1. An input of −0.2 gives 0, 0.6 passes through, and 1.4 gives 1.
+
+</OperationPorts>
+
+### Cosine
+
+Compute the cosine of an angle in radians.
+
+<OperationPorts
+  identifier="cos"
+  inputs={{
+    "In": "The angle in radians.",
+  }}
+  result="The cosine of the input angle."
+  signature="unaryFloatOrVector"
+/>
+
+### Hyperbolic Cosine
+
+Compute the hyperbolic cosine.
+
+<OperationPorts
+  identifier="cosh"
+  inputs={{
+    "In": "Value to evaluate.",
+  }}
+  result="The hyperbolic cosine of each component."
+  signature="unaryFloat"
+/>
+
+### Create Matrix
+
+Assemble a matrix from the supplied component vectors.
+
+<OperationPorts
+  identifier="creatematrix"
+  inputs={{
+    "In1": "The first row.",
+    "In2": "The second row.",
+    "In3": "The third row.",
+    "In4": "The fourth row of a 4×4 matrix. With four three-component inputs, this row supplies the translation.",
+  }}
+  result="A matrix with the supplied rows in order. When four three-component rows form a 4×4 matrix, their final components are 0, 0, 0 and 1."
+  columns={["In1, In2, In3", "In4", "Output"]}
+  rows={[
+    ["vector3", "—", "matrix33"],
+    ["vector3, vector4", {"sameAs": "In1"}, "matrix44"],
+  ]}
+/>
+
+### Cross Product
+
+Find a vector perpendicular to two directions.
+
+<OperationPorts
+  identifier="crossproduct"
+  inputs={{
+    "In1": "The first direction.",
+    "In2": "Second direction.",
+  }}
+  result="A perpendicular vector whose length is the area of the parallelogram spanned by the inputs. Swapping the inputs reverses its direction. Parallel inputs give zero."
+  fixedTypes={{
+    "In1, In2": "vector3",
+    "Output": "vector3",
+  }}
+/>
+
+### To Degrees
+
+Convert radians to degrees.
+
+<OperationPorts
+  identifier="degrees"
+  inputs={{
+    "In": "The angle in radians.",
+  }}
+  result="The angle in degrees."
+  signature="unaryFloat"
+/>
+
+### Determinant
+
+Find the determinant of a matrix.
+
+<OperationPorts
+  identifier="determinant"
+  inputs={{
+    "In": "The matrix to test.",
+  }}
+  result="A signed number. A zero determinant means the matrix has no inverse."
+  columns={["In", "Output"]}
+  rows={[
+    ["matrix33, matrix44", "float"],
+  ]}
+/>
+
+### Distance
+
+Measure the separation between two values or positions.
+
+<OperationPorts
+  identifier="distance"
+  inputs={{
+    "in1": "The first position or value.",
+    "in2": "The second position or value.",
+  }}
+  result="The distance between the inputs, measured in their coordinate units."
+  columns={["in1, in2", "Output"]}
+  rows={[
+    ["vector2, vector3, vector4", "float"],
+  ]}
+/>
+
+### Divide
+
+Divide the first input by the second.
+
+<OperationPorts
+  identifier="divide"
+  inputs={{
+    "In1": "The quantity to divide.",
+    "In2": "The divisor.",
+  }}
+  result="The component-wise quotient for numbers, vectors and colors. For matrices, the transform applies In1 followed by the inverse of In2."
+  columns={["In1", "In2", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4, matrix33, matrix44", {"sameAs": "In1"}, {"sameAs": "In1"}],
+    ["vector2, vector3, vector4, color3, color4", "float", {"sameAs": "In1"}],
+  ]}
+/>
+
+### Dot Product
+
+Measure how closely two vectors align.
+
+<OperationPorts
+  identifier="dotproduct"
+  inputs={{
+    "In1": "The first vector.",
+    "In2": "The vector to compare with the first.",
+  }}
+  result="The sum of the products of corresponding components. For unit vectors, this is the cosine of the angle between them."
+  columns={["In1, In2", "Output"]}
+  rows={[
+    ["vector2, vector3, vector4", "float"],
+  ]}
+>
+
+For unit vectors, the output is 1 for matching directions, 0 for perpendicular directions and −1 for opposite directions.
+
+</OperationPorts>
+
+### Exponent
+
+Raise the natural base e to the input power.
+
+<OperationPorts
+  identifier="exp"
+  inputs={{
+    "In": "The exponent.",
+  }}
+  result="The natural exponential of each input component."
+  signature="unaryFloatOrVector"
+/>
+
+### Floor
+
+Round toward negative infinity.
+
+<OperationPorts
+  identifier="floor"
+  inputs={{
+    "In": "The value to round down.",
+  }}
+  result="The largest whole number less than or equal to the input."
+  signature="rounding"
+/>
+
+### Fraction
+
+Discard the whole-number part using the floor of the input.
+
+<OperationPorts
+  identifier="fract"
+  inputs={{
+    "In": "The value to split at a whole-number boundary.",
+  }}
+  result="The input minus its floor, from 0 inclusive to 1 exclusive."
+  signature="componentwiseUnary"
+>
+
+The inputs 2.25 and −0.75 both give 0.25. The latter lies a quarter of the way from −1 to 0.
+
+</OperationPorts>
+
+### Hex Tiled Normal Map
+
+Break up visible tiling in a normal map.
+
+<OperationPorts
+  identifier="hextilednormalmap"
+  inputs={{
+    "File": "Document texture or connected image.",
+    "Default": "Fallback sample when the image is missing.",
+    "Texcoord": "UV coordinates to sample.",
+    "Tiling": "Repeats along U and V. Higher counts make smaller tiles.",
+    "Rotation": "Amount of random rotation per tile.",
+    "Rotationrange": "Minimum and maximum tile rotation in degrees.",
+    "Scale": "Amount of random scaling per tile.",
+    "Scalerange": "Minimum and maximum tile scale.",
+    "Offset": "Amount of random translation per tile.",
+    "Offsetrange": "Minimum and maximum tile offset.",
+    "Falloff": "How quickly a tile fades at its edges.",
+    "Strength": "The strength of the normal-map relief.",
+    "Flip G": "Reverses the green channel for the opposite normal-map convention.",
+    "Normal": "Surface normal before perturbation.",
+    "Tangent": "The tangent along the first texture axis.",
+    "Bitangent": "The direction along the second texture axis.",
+  }}
+  result="A surface normal blended across the randomized tiles."
+  fixedTypes={{
+    "File": "image",
+    "Default, Normal, Tangent, Bitangent": "vector3",
+    "Texcoord, Tiling, Rotationrange, Scalerange, Offsetrange": "vector2",
+    "Rotation, Scale, Offset, Falloff, Strength": "float",
+    "Flip G": "boolean",
+    "Output": "vector3",
+  }}
+/>
+
+### Inverse Square Root
+
+Find the reciprocal square root of a number.
+
+<OperationPorts
+  identifier="inversesqrt"
+  inputs={{
+    "In": "The value whose reciprocal square root you need.",
+  }}
+  result="One divided by the square root for positive inputs. Zero for all other inputs."
+  signature="unaryFloat"
+/>
+
+### Invert
+
+Reverse a value relative to an upper reference.
+
+<OperationPorts
+  identifier="invert"
+  inputs={{
+    "In": "The original value.",
+    "Amount": "Upper reference value.",
+  }}
+  result="The reference value minus the input, component by component."
+  columns={["In", "Amount", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "In"}, {"sameAs": "In"}],
+    ["vector2, vector3, vector4, color3, color4", "float", {"sameAs": "In"}],
+  ]}
+>
+
+To reverse a mask in the range 0 to 1, set **Amount** to 1. A mask value of 0.2 becomes 0.8.
+
+</OperationPorts>
+
+### Invert Matrix
+
+Reverse an invertible matrix transform.
+
+<OperationPorts
+  identifier="invertmatrix"
+  inputs={{
+    "In": "The matrix whose transform you want to reverse.",
+  }}
+  result="The matrix that undoes the input transform."
+  columns={["In", "Output"]}
+  rows={[
+    ["matrix33, matrix44", {"sameAs": "In"}],
+  ]}
+/>
+
+### Natural Logarithm
+
+Take the natural logarithm.
+
+<OperationPorts
+  identifier="ln"
+  inputs={{
+    "In": "A positive value.",
+  }}
+  result="The exponent to which e must be raised to obtain the input."
+  signature="unaryFloatOrVector"
+/>
+
+### Logarithm
+
+Find a logarithm in a given base.
+
+<OperationPorts
+  identifier="logarithm"
+  inputs={{
+    "In1": "The value whose logarithm you need.",
+    "In2": "The base of the logarithm.",
+  }}
+  result="The exponent that raises the base to the input value. A nonpositive input or base, or a base of 1, gives zero."
+  signature="binaryFloat"
+>
+
+Set **In1** to 8 and **In2** to 2. The output is 3 because 2³ is 8.
+
+</OperationPorts>
+
+### Magnitude
+
+Measure vector length or absolute scalar magnitude.
+
+<OperationPorts
+  identifier="magnitude"
+  inputs={{
+    "In": "The vector to measure, or a signed scalar.",
+  }}
+  result="The vector’s length, or the absolute value of a scalar."
+  columns={["In", "Output"]}
+  rows={[
+    ["vector2, vector3, vector4", "float"],
+  ]}
+/>
+
+### Maximum
+
+Choose the larger of two values.
+
+<OperationPorts
+  identifier="max"
+  inputs={{
+    "In1": "The first candidate.",
+    "In2": "The second candidate.",
+  }}
+  result="The greater value for each component."
+  signature="componentwiseBinary"
+/>
+
+### Minimum
+
+Choose the smaller of two values.
+
+<OperationPorts
+  identifier="min"
+  inputs={{
+    "In1": "The first candidate.",
+    "In2": "The second candidate.",
+  }}
+  result="The lesser value for each component."
+  signature="componentwiseBinary"
+/>
+
+### Modulo
+
+Find the remainder using floor division.
+
+<OperationPorts
+  identifier="modulo"
+  inputs={{
+    "In1": "The dividend.",
+    "In2": "The divisor that sets the repeat interval.",
+  }}
+  result="The remainder has the sign of the divisor unless it is zero."
+  signature="componentwiseBinary"
+>
+
+With **In1** set to −5 and **In2** to 3, the output is 1. With the same inputs, **Truncated Modulo** gives −2.
+
+</OperationPorts>
+
+### Multiply
+
+Multiply numbers, vectors, colors or matrices.
+
+<OperationPorts
+  identifier="multiply"
+  inputs={{
+    "In1": "The value or matrix to multiply.",
+    "In2": "The multiplier.",
+  }}
+  result="The component-wise product for numbers, vectors and colors. For matrices, the composed transform applies In1 first, then In2."
+  columns={["In1", "In2", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4, matrix33, matrix44", {"sameAs": "In1"}, {"sameAs": "In1"}],
+    ["vector2, vector3, vector4, color3, color4", "float", {"sameAs": "In1"}],
+  ]}
+/>
+
+### Multiply Add
+
+Multiply the first two inputs and add the third.
+
+<OperationPorts
+  identifier="multiplyadd"
+  inputs={{
+    "In1": "The value to scale.",
+    "In2": "The multiplier.",
+    "In3": "The offset to add after multiplication.",
+  }}
+  result="The product of the first two inputs plus the offset."
+  fixedTypes={{
+    "In1, In2, In3": "float",
+    "Output": "float",
+  }}
+/>
+
+### Normalize
+
+Give a nonzero vector unit length.
+
+<OperationPorts
+  identifier="normalize"
+  inputs={{
+    "In": "The vector whose direction you want to keep.",
+  }}
+  result="A unit vector pointing in the input direction for nonzero inputs."
+  columns={["In", "Output"]}
+  rows={[
+    ["vector2, vector3, vector4", {"sameAs": "In"}],
+  ]}
+/>
+
+### Normal Map
+
+Convert a normal-map sample to a surface normal.
+
+<OperationPorts
+  identifier="normalmap"
+  inputs={{
+    "In": "The tangent-space normal encoded from 0 to 1 in each channel.",
+    "Scale": "Scales the tangent and bitangent components together, or separately with a two-component input.",
+    "Normal": "Surface normal before perturbation.",
+    "Tangent": "The tangent along the surface’s first texture axis.",
+    "Bitangent": "The direction along the second texture axis.",
+  }}
+  result="A unit normal in the coordinate space of the supplied normal, tangent and bitangent."
+  fixedTypes={{
+    "In, Normal, Tangent, Bitangent": "vector3",
+  }}
+  columns={["Scale", "Output"]}
+  rows={[
+    ["float, vector2", "vector3"],
+  ]}
+/>
+
+### Ping-Pong
+
+Fold a repeating input into a triangular wave.
+
+<OperationPorts
+  identifier="pingpong"
+  inputs={{
+    "In": "The position along the repeating pattern.",
+    "Scale": "Its magnitude sets the peak and the length of each rising or falling segment. Zero gives a constant zero.",
+  }}
+  result="A value that rises from zero to the peak, then falls back to zero before repeating."
+  fixedTypes={{
+    "In, Scale": "float",
+    "Output": "float",
+  }}
+/>
+
+### Place 2D
+
+Position a texture by transforming its UV coordinates.
+
+<OperationPorts
+  identifier="place2d"
+  inputs={{
+    "Texcoord": "The UV coordinates to transform.",
+    "Pivot": "The center of rotation and scaling in UV space.",
+    "Scale": "Divides U and V by these factors. Values above 1 enlarge the texture and negative values mirror it.",
+    "Rotate": "The rotation angle in degrees.",
+    "Offset": "Amount to subtract from the sample coordinates along U and V.",
+    "Operationorder": "SRT scales, rotates and then translates the coordinates. TRS translates, rotates and then scales them.",
+  }}
+  result="The UV coordinates after scaling, rotation and translation."
+  fixedTypes={{
+    "Texcoord, Pivot, Scale, Offset": "vector2",
+    "Rotate": "float",
+    "Operationorder": "integer",
+    "Output": "vector2",
+  }}
+/>
+
+### Power
+
+Raise one input to the power of the other.
+
+<OperationPorts
+  identifier="power"
+  inputs={{
+    "In1": "The base.",
+    "In2": "The exponent.",
+  }}
+  result="The base raised to the exponent."
+  signature="componentwiseBinary"
+/>
+
+### To Radians
+
+Convert degrees to radians.
+
+<OperationPorts
+  identifier="radians"
+  inputs={{
+    "In": "The angle in degrees.",
+  }}
+  result="The angle in radians."
+  signature="unaryFloat"
+>
+
+To supply a quarter turn to **Sine**, pass 90 degrees through **To Radians**. Its output is π/2 radians.
+
+</OperationPorts>
+
+### Real Power
+
+Raise a signed base to a real exponent.
+
+<OperationPorts
+  identifier="realpower"
+  inputs={{
+    "In1": "The base.",
+    "In2": "The exponent.",
+  }}
+  result="The base raised to the exponent. A negative base with a noninteger exponent gives zero."
+  signature="binaryFloat"
+/>
+
+### Reflect
+
+Reflect an incident direction about the supplied normal.
+
+<OperationPorts
+  identifier="reflect"
+  inputs={{
+    "In": "The incoming direction toward the surface.",
+    "Normal": "The unit normal to the reflecting surface.",
+  }}
+  result="The direction the incoming vector takes after reflection."
+  fixedTypes={{
+    "In, Normal": "vector3",
+    "Output": "vector3",
+  }}
+/>
+
+### Refract
+
+Find the direction of a ray as it crosses a surface between two media.
+
+<OperationPorts
+  identifier="refract"
+  inputs={{
+    "In": "Unit direction of the incoming ray.",
+    "Normal": "Unit surface normal at the boundary.",
+    "Ior": "The ratio of the incident medium’s refractive index to the transmitted medium’s index.",
+  }}
+  result="The transmitted direction, or a zero vector for total internal reflection."
+  fixedTypes={{
+    "In, Normal": "vector3",
+    "Ior": "float",
+    "Output": "vector3",
+  }}
+/>
+
+### Rotate 2D
+
+Rotate a two-component vector about the origin.
+
+<OperationPorts
+  identifier="rotate2d"
+  inputs={{
+    "In": "The vector to rotate.",
+    "Amount": "Angle in degrees, clockwise for positive values when Y points up.",
+  }}
+  result="The rotated vector, with its length preserved."
+  fixedTypes={{
+    "In": "vector2",
+    "Amount": "float",
+    "Output": "vector2",
+  }}
+/>
+
+### Rotate 3D
+
+Rotate a vector about a specified axis.
+
+<OperationPorts
+  identifier="rotate3d"
+  inputs={{
+    "In": "The vector to rotate.",
+    "Amount": "Angle in degrees, clockwise when viewed from the positive end of the axis toward the origin.",
+    "Axis": "A nonzero vector along the axis of rotation.",
+  }}
+  result="The vector after rotating about the chosen axis."
+  fixedTypes={{
+    "In, Axis": "vector3",
+    "Amount": "float",
+    "Output": "vector3",
+  }}
+/>
+
+### Round
+
+Round to the nearest integer value.
+
+<OperationPorts
+  identifier="round"
+  inputs={{
+    "In": "The value to round.",
+  }}
+  result="The nearest whole number for each component."
+  signature="rounding"
+/>
+
+### Round Half Up
+
+Round to the nearest integer, rounding halfway values up.
+
+<OperationPorts
+  identifier="roundhalfup"
+  inputs={{
+    "In": "The value to round.",
+  }}
+  result="The nearest whole number, with ties rounded toward positive infinity."
+  signature="unaryFloat"
+>
+
+The inputs −1.5 and 1.5 round to −1 and 2, respectively.
+
+</OperationPorts>
+
+### Safe Arccosine
+
+Clamp the input to −1 through 1 before taking the inverse cosine.
+
+<OperationPorts
+  identifier="safeacos"
+  inputs={{
+    "In": "The cosine of the angle to recover.",
+  }}
+  result="The angle in radians between 0 and π."
+  signature="unaryFloat"
+/>
+
+### Safe Arcsine
+
+Clamp the input to −1 through 1 before taking the inverse sine.
+
+<OperationPorts
+  identifier="safeasin"
+  inputs={{
+    "In": "The sine of the angle to recover.",
+  }}
+  result="The angle in radians between −π/2 and π/2."
+  signature="unaryFloat"
+/>
+
+### Safe Divide
+
+Divide values when the divisor can be zero.
+
+<OperationPorts
+  identifier="safedivide"
+  inputs={{
+    "In1": "The quantity to divide.",
+    "In2": "The divisor.",
+  }}
+  result="The quotient, or zero wherever the divisor is zero."
+  signature="binaryFloat"
+/>
+
+### Safe Modulo
+
+Find a floor-based remainder when the divisor can be zero.
+
+<OperationPorts
+  identifier="safemodulo"
+  inputs={{
+    "In1": "The dividend.",
+    "In2": "The divisor that sets the repeat interval.",
+  }}
+  result="A remainder with the sign of the divisor, or zero when the divisor is zero."
+  signature="binaryFloat"
+/>
+
+### Safe Normalize
+
+Normalize a direction that may have zero length.
+
+<OperationPorts
+  identifier="safenormalize"
+  inputs={{
+    "In": "The vector whose direction you want to keep.",
+  }}
+  result="A unit direction for a nonzero vector. A zero vector stays zero."
+  signature="unaryVector3"
+/>
+
+### Safe Power
+
+Raise a magnitude to a power while preserving the sign of the input.
+
+<OperationPorts
+  identifier="safepower"
+  inputs={{
+    "In1": "The base.",
+    "In2": "The exponent.",
+  }}
+  result="The magnitude raised to the exponent, with the sign of the base restored."
+  signature="componentwiseBinary"
+/>
+
+### Safe Square Root
+
+Take the square root of the nonnegative part of a value.
+
+<OperationPorts
+  identifier="safesqrt"
+  inputs={{
+    "In": "Value to take the square root of.",
+  }}
+  result="The square root, with negative inputs mapped to zero."
+  signature="unaryFloat"
+/>
+
+### Sign
+
+Return the sign of each incoming component.
+
+<OperationPorts
+  identifier="sign"
+  inputs={{
+    "In": "The signed value to test.",
+  }}
+  result="−1 for negative values, 0 for zero, and 1 for positive values."
+  signature="componentwiseUnary"
+/>
+
+### Sine
+
+Compute the sine of an angle in radians.
+
+<OperationPorts
+  identifier="sin"
+  inputs={{
+    "In": "The angle in radians.",
+  }}
+  result="The sine of the input angle."
+  signature="unaryFloatOrVector"
+/>
+
+### Hyperbolic Sine
+
+Compute the hyperbolic sine.
+
+<OperationPorts
+  identifier="sinh"
+  inputs={{
+    "In": "Value to evaluate.",
+  }}
+  result="The hyperbolic sine of each component."
+  signature="unaryFloat"
+/>
+
+### Smooth Maximum
+
+Round the junction where the larger input changes.
+
+<OperationPorts
+  identifier="smoothmax"
+  inputs={{
+    "In1": "The first candidate value.",
+    "In2": "The second candidate value.",
+    "Distance": "Difference below which the two values blend.",
+  }}
+  result="The larger value away from the transition, with a rounded blend near the crossover."
+  fixedTypes={{
+    "In1, In2, Distance": "float",
+    "Output": "float",
+  }}
+/>
+
+### Smooth Minimum
+
+Round the junction where the smaller input changes.
+
+<OperationPorts
+  identifier="smoothmin"
+  inputs={{
+    "In1": "The first candidate value.",
+    "In2": "The second candidate value.",
+    "Distance": "Difference below which the two values blend.",
+  }}
+  result="The smaller value away from the transition, with a rounded blend near the crossover."
+  fixedTypes={{
+    "In1, In2, Distance": "float",
+    "Output": "float",
+  }}
+/>
+
+### Snap
+
+Snap a number down to a multiple of the increment.
+
+<OperationPorts
+  identifier="snap"
+  inputs={{
+    "In": "The value to place on a step.",
+    "Increment": "The spacing between steps.",
+  }}
+  result="For positive spacing, the nearest multiple at or below the input. A zero increment gives zero."
+  fixedTypes={{
+    "In, Increment": "float",
+    "Output": "float",
+  }}
+/>
+
+### Square Root
+
+Take the principal square root.
+
+<OperationPorts
+  identifier="sqrt"
+  inputs={{
+    "In": "Value to take the square root of.",
+  }}
+  result="The nonnegative square root of each nonnegative component."
+  signature="unaryFloatOrVector"
+/>
+
+### Subtract
+
+Subtract two values component by component.
+
+<OperationPorts
+  identifier="subtract"
+  inputs={{
+    "In1": "The starting value.",
+    "In2": "The amount to subtract.",
+  }}
+  result="In1 minus In2, component by component."
+  columns={["In1", "In2", "Output"]}
+  rows={[
+    ["integer, float, vector2, vector3, vector4, color3, color4, matrix33, matrix44", {"sameAs": "In1"}, {"sameAs": "In1"}],
+    ["vector2, vector3, vector4, color3, color4, matrix33, matrix44", "float", {"sameAs": "In1"}],
+  ]}
+/>
+
+### Tangent
+
+Compute the tangent of an angle in radians.
+
+<OperationPorts
+  identifier="tan"
+  inputs={{
+    "In": "The angle in radians.",
+  }}
+  result="The tangent of the angle, equal to sine divided by cosine where defined."
+  signature="unaryFloatOrVector"
+/>
+
+### Hyperbolic Tangent
+
+Compute the hyperbolic tangent.
+
+<OperationPorts
+  identifier="tanh"
+  inputs={{
+    "In": "Value to evaluate.",
+  }}
+  result="A smooth S-shaped response that approaches −1 and 1 at its extremes."
+  signature="unaryFloat"
+/>
+
+### Transform Matrix
+
+Apply the supplied matrix to the input vector.
+
+<OperationPorts
+  identifier="transformmatrix"
+  inputs={{
+    "In": "The vector to transform.",
+    "Mat": "The transformation matrix.",
+  }}
+  result="The transformed vector. A 3×3 matrix can translate a two-component position, and a 4×4 matrix can translate a three-component position."
+  columns={["In", "Mat", "Output"]}
+  rows={[
+    ["vector2, vector3", "matrix33", {"sameAs": "In"}],
+    ["vector3, vector4", "matrix44", {"sameAs": "In"}],
+  ]}
+/>
+
+### Transform Normal
+
+Normalize a surface normal within one coordinate space. Mesh fields cannot convert between object and world space.
+
+<OperationPorts
+  identifier="transformnormal"
+  inputs={{
+    "In": "Surface normal to transform.",
+  }}
+  properties={{
+    "Fromspace": "Input coordinate system.",
+    "Tospace": "Output coordinate system.",
+  }}
+  result="A unit vector pointing in the input direction."
+  signature="unaryVector3"
+/>
+
+### Transform Point
+
+Pass a position through within one coordinate space. To translate a position or convert it between object and world coordinates, supply the appropriate matrix to **Transform Matrix**.
+
+<OperationPorts
+  identifier="transformpoint"
+  inputs={{
+    "In": "Position to transform.",
+  }}
+  properties={{
+    "Fromspace": "Input coordinate system.",
+    "Tospace": "Output coordinate system.",
+  }}
+  result="The input position when both space settings match."
+  signature="unaryVector3"
+/>
+
+### Transform Vector
+
+Pass a direction through within one coordinate space. To rotate or scale it, use **Transform Matrix** with the desired linear transformation.
+
+<OperationPorts
+  identifier="transformvector"
+  inputs={{
+    "In": "Direction to transform.",
+  }}
+  properties={{
+    "Fromspace": "Input coordinate system.",
+    "Tospace": "Output coordinate system.",
+  }}
+  result="The input direction when both space settings match."
+  signature="unaryVector3"
+/>
+
+### Transpose
+
+Exchange the rows and columns of a matrix.
+
+<OperationPorts
+  identifier="transpose"
+  inputs={{
+    "In": "The matrix to transpose.",
+  }}
+  result="A matrix whose rows are the columns of the input."
+  columns={["In", "Output"]}
+  rows={[
+    ["matrix33, matrix44", {"sameAs": "In"}],
+  ]}
+/>
+
+### Triangle Wave
+
+Generate a repeating triangular waveform.
+
+<OperationPorts
+  identifier="trianglewave"
+  inputs={{
+    "In": "The position along the repeating waveform.",
+  }}
+  result="A linear rise from 0 to 0.5 and a fall back to 0 over each unit of the input."
+  signature="unaryFloat"
+/>
+
+### Truncate
+
+Drop the fractional part, moving toward zero.
+
+<OperationPorts
+  identifier="truncate"
+  inputs={{
+    "In": "Value to truncate.",
+  }}
+  result="The whole-number part of each component, rounded toward zero."
+  signature="unaryFloat"
+>
+
+Inputs of 1.8 and −1.8 give 1 and −1. **Floor** gives −2 for the negative input.
+
+</OperationPorts>
+
+### Truncated Modulo
+
+Find the remainder using division rounded toward zero.
+
+<OperationPorts
+  identifier="truncatedmodulo"
+  inputs={{
+    "In1": "The dividend.",
+    "In2": "The divisor that sets the repeat interval.",
+  }}
+  result="A nonzero remainder has the sign of the dividend. A zero divisor gives zero."
+  signature="binaryFloat"
+>
+
+With **In1** set to −5 and **In2** to 3, the truncated quotient is −1 and the remainder is −2.
+
+</OperationPorts>
+
+### Wrap
+
+Repeat a value over an interval.
+
+<OperationPorts
+  identifier="wrap"
+  inputs={{
+    "In": "The value to repeat.",
+    "Low": "The start of the repeating interval.",
+    "High": "The end of the repeating interval.",
+  }}
+  result="A value between the endpoints, including Low and excluding High. This also works with reversed endpoints. Equal endpoints give their common value."
+  fixedTypes={{
+    "In, Low, High": "float",
+    "Output": "float",
+  }}
+>
+
+With **Low** at 0 and **High** at 1, an input of 1.25 wraps to 0.25.
+
+</OperationPorts>

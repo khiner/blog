@@ -1,0 +1,53 @@
+---
+path: /MeshEditor/manual/rendering/lighting/
+title: "Render settings"
+navOrder: 7
+---
+
+In **Material Preview** or **Rendered**, open the viewport shading options to choose how reflections, transmission and indirect lighting sample the scene.
+
+## Lighting methods
+
+| Control | Effect |
+| --- | --- |
+| **Real transmission** | In raster shading, glass samples the visible scene behind it. With this off, glass shows the environment. |
+| **Ray tracing** | Uses hardware rays for shadows, reflections and transmission, including geometry outside the viewport. |
+| **Reflections** | Enables traced reflections on opaque surfaces. Glass still traces reflection and transmission with this option off. |
+| **Reflection roughness** | Roughness above which opaque reflections fade toward environment lighting. At 1, reflections are traced across the full roughness range. |
+| **Indirect lighting** | **Environment** uses environment lighting. **Fast GI** samples nearby surfaces visible on screen. **Ray Traced** can pick up diffuse light from an offscreen surface. |
+| **Transmitted shadows** | Glass casts a tinted shadow when enabled and an opaque shadow when disabled. Focused caustics are unsupported. |
+
+MeshEditor’s hardware ray tracing requires an M5 or newer GPU. On an unsupported device the shading options report that raster rendering is active. A material debug channel also displays without ray tracing. Choose **Debug → Channel → None** to view the lit result.
+
+### Fast GI
+
+These controls appear when **Indirect lighting** is set to **Fast GI**.
+
+- **Fast GI distance** sets how far nearby surfaces can contribute light, in scene units.
+- **Fast GI thickness** sets the minimum thickness of a screen-space occluder in scene units.
+- **Fast GI resolution** sets the detail of Fast GI independently of glass and reflections.
+
+## Ray tracing quality
+
+| Setting | Effect |
+| --- | --- |
+| **Samples** | Indirect and glass samples per pixel. More samples reduce noise and increase render time. |
+| **Shadow samples** | Rays per area light. More rays smooth noisy shadows. |
+| **Resolution** | Detail of indirect lighting and refraction. The choices are **Full**, **Half** and **Quarter**. Higher settings show finer detail through glass. Direct lighting, polished opaque reflections and geometry edges keep full resolution. |
+| **Denoise** | Reduces grain in the image. Turn it off to inspect the unfiltered result. |
+| **Refinement frames** | How long a stationary view continues to clear up with denoising enabled, measured in frames. Moving the camera or editing the scene can restart refinement. |
+
+## Level of detail
+
+For geometry detail, pass `--lod-error PIXELS` on the command line. Zero requests the original geometry. Higher values allow coarser geometry, particularly in the distance. [Command-line options](/MeshEditor/manual/advanced/cli/)
+
+## Motion blur
+
+**Scene controls → Render → Motion blur** applies in **Material Preview** and **Rendered** during playback and scrubbing. Overlays stay sharp.
+
+| Control | Effect |
+| --- | --- |
+| **Enabled** | Applies motion blur in the active viewport and shows the shutter controls. |
+| **Shutter** | Exposure duration in frames, centered on the current frame and limited to the playback range. Zero gives a sharp frame. |
+| **Method** | **Fast** blurs one frame using motion vectors. **Full Sampling** renders at multiple times during the exposure and captures changes in visibility, reflections and lighting. |
+| **Samples** | Number of renders across the shutter interval with **Full Sampling** (1–64). More samples smooth the result and take longer to render. |

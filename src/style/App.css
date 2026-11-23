@@ -101,8 +101,13 @@ blockquote {
 }
 
 .content {
-  padding-top: 57px;
+  --site-header-height: 57px;
+  padding-top: var(--site-header-height);
   min-height: 100vh;
+
+  .entry :is(h2, h3, h4)[id] {
+    scroll-margin-top: var(--heading-offset, var(--site-header-height));
+  }
 
   img:not(:last-child) {
     margin-top: 28px;
@@ -116,7 +121,7 @@ body {
 }
 
 .home-views,
-.post-views {
+.section-views {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 20px;
@@ -130,16 +135,16 @@ body {
     white-space: nowrap;
 
     &:hover,
-    &.active {
+    &[aria-current] {
       color: var(--site-link-hover);
     }
-    &.active {
+    &[aria-current] {
       border-bottom-color: currentColor;
     }
   }
 }
 
-.post-views {
+.section-views {
   font-size: 0.875rem;
   gap: 2px 16px;
   padding-top: 2px;

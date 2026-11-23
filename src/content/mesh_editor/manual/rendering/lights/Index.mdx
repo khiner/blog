@@ -1,0 +1,62 @@
+---
+path: /MeshEditor/manual/rendering/lights/
+title: "Lights"
+navOrder: 2
+---
+
+A light object illuminates the scene in **Material Preview** and **Rendered** when **Scene lights** is enabled. Add one with **Scene controls → Scene → Add object → Light**. Select the light to edit **Properties → Light**.
+
+## Light types
+
+**Type** selects the emitter. Changing type keeps the color, numeric brightness and area dimensions. It resets the range and spot cone to the new type's defaults. The unit of brightness depends on the type.
+
+[Directional](#directional-light) · [Point](#point-light) · [Spot](#spot-light) · [Rectangle and Ellipse](#area-lights)
+
+## Directional light
+
+A directional light emits parallel rays along the object's local negative Z axis. Rotation aims the light. Its position has no effect.
+
+| Property | Description |
+| --- | --- |
+| **Color** | Color of the emitted light. White illuminates surfaces without adding a color cast. |
+| **Intensity** | Illuminance in lux on a surface facing the light. It is independent of distance. |
+
+## Point light
+
+A point light emits in every direction from the object's origin. Its position determines where the light comes from. Rotating it has no effect.
+
+| Property | Description |
+| --- | --- |
+| **Color** | Color of the emitted light. White illuminates surfaces without adding a color cast. |
+| **Intensity** | Luminous intensity in candela (cd), equal in all directions. At infinite range, doubling the distance reduces illumination to one quarter on a surface facing the light. |
+| **Infinite range** | Removes the distance cutoff. The light still weakens with distance. Turning this off sets **Range** to 100 m. |
+| **Range** | Distance in meters at which illumination fades to zero. Shown when **Infinite range** is off. Setting it to zero turns **Infinite range** back on. |
+
+## Spot light
+
+<span id="spot-cone">A spot light</span> emits from the object's origin within a cone along its local negative Z axis. Rotation aims the cone.
+
+| Property | Description |
+| --- | --- |
+| **Color** | Color of the emitted light. White illuminates surfaces without adding a color cast. |
+| **Intensity** | Luminous intensity in candela (cd) along the cone axis. Illumination decreases with distance and toward the edge of the cone. |
+| **Infinite range** | Removes the distance cutoff. The light still weakens with distance. Turning this off sets **Range** to 100 m. |
+| **Range** | Distance in meters at which illumination fades to zero. Shown when **Infinite range** is off. Setting it to zero turns **Infinite range** back on. |
+| **Size** | Angle in degrees from the central axis to the outer edge, from 0° to 90°. The cone’s full opening angle is twice this value. |
+| **Blend** | Fraction of the cone angle over which light fades to zero. At 0 the cone has a hard edge. At 1 the fade extends from the axis to the outer edge. |
+
+The keyframe control beside **Size** keys the outer cone angle. The one beside **Blend** keys the inner angle at which the fade begins. [Animated properties](/MeshEditor/manual/animation/keyframes/#animated-properties)
+
+## Area lights
+
+<span id="area-light-dimensions">**Rectangle** and **Ellipse**</span> emit from a surface in the object's local XY plane. With positive scale the emitting side faces local negative Z. Equal width and height give a square for **Rectangle** and a disk for **Ellipse**. Both types have the following fields.
+
+| Property | Description |
+| --- | --- |
+| **Color** | Color of the emitted light. White illuminates surfaces without adding a color cast. |
+| **Flux (lm)** | Total light emitted by the surface in lumens. Increasing the emitting area at the same flux spreads that output over a larger surface. |
+| **Size** | Full local width (X) and height (Y), in meters. For an ellipse these are its two diameters. Object scale also changes the emitting area. Larger emitters broaden highlights and soften ray-traced shadows. |
+| **Infinite range** | Removes the distance cutoff. The light still weakens with distance. Turning this off sets **Range** to 100 m. |
+| **Range** | Distance in meters at which illumination fades to zero. Shown when **Infinite range** is off. Setting it to zero turns **Infinite range** back on. |
+
+Native projects can store both area light types. glTF export reports an error if the scene contains an area light. [glTF import and export](/MeshEditor/manual/files/gltf/)

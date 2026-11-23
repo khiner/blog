@@ -1,0 +1,102 @@
+---
+path: /MeshEditor/manual/physical-audio/listening/
+title: "Audio playback and recording"
+navOrder: 5
+---
+
+The active viewport camera sets the listening position for synthesized sound. Moving away from the object reduces its level. For a measured strike, you hear the recording captured at the active microphone. Moving the viewport leaves that recording's level unchanged.
+
+## Strike recording and analysis
+
+| Property | Description |
+| --- | --- |
+| **Recordings** | Plays the sample assigned to the selected vertex. This source selector appears when the object also has a modal model. |
+| **Modal** | Synthesizes the strike from the object's modal model. Appears beside **Recordings** when both sources are available. |
+| **Vertex** | Mesh vertex at which the object is struck. The list contains the object's excitation vertices. |
+| **Excite** | Strikes the selected vertex using the active source. |
+| **Impact angle** | Direction of a modal strike relative to the surface. [Impact angle](/MeshEditor/manual/physical-audio/contact/#impact-angle) |
+| **Waveform** | Amplitude of the assigned sample over time. During playback a marker follows the current frame. |
+| **Spectrum** | Level of the assigned sample by frequency, in decibels. |
+| **Record strike** | Captures a synthesized strike at the selected vertex while the audio device is running. At 48 kHz the capture lasts about four seconds and includes other objects still ringing. The object's **Excite** and **Record strike** buttons become available again when the capture finishes. |
+| **Modal impact waveform** | Amplitude over time in the completed strike recording. |
+| **Modal impact spectrum** | Level by frequency in the completed strike recording. |
+
+### Modal data charts
+
+Hovering over a bar highlights the same mode across the charts and its frequency in the modal impact spectrum.
+
+| Property | Description |
+| --- | --- |
+| **Mode frequencies** | Frequency of each mode in the model, in hertz, including any **Fundamental override** applied during the solve. The hover readout also gives the original solved frequency. |
+| **Mode T60s** | Time in seconds for each mode in the model to decay by 60 dB. |
+| **Mode gains** | Strength with which a strike at the selected vertex and angle excites each mode. |
+
+Retuning **Fundamental** or **T60 Scale** under **Synthesis** changes the sound of a recorded strike. The charts continue to show the model's frequencies and decay times.
+
+### WAV export
+
+On an object with recorded samples, **Save wav files** appears when the modal strike capture finishes. It writes the comparison to `audio_samples/` in the user-data directory. The file names use the object name followed by `-modal` or `-impact`. The impact file uses the sample assigned to the selected vertex. Saving another comparison for the same object replaces the previous files.
+
+For an entire scene or a moving listener, [record the scene's master audio](/MeshEditor/manual/rendering/output/#audio-recording). A WAV capture stores sound pressure in pascals at the listening position. A movie soundtrack uses playback levels with peak limiting.
+
+### Iron skillet recordings
+
+The first clip is a measured strike on an iron skillet. The second is a synthesized strike on its modal model.
+
+**Measured iron skillet**
+
+<audio controls preload="none" aria-label="Measured iron skillet impact" src="../../../../mesh_audio_editor/assets/audio/impact/IronSkilletImpact.wav" />
+
+**Synthesized iron skillet**
+
+<audio controls preload="none" aria-label="Synthesized iron skillet impact" src="../../../../mesh_audio_editor/assets/audio/impact/IronSkilletModal.wav" />
+
+The [physical audio project article](/mesh_audio_editor) includes comparisons for additional objects.
+
+## Playback and mixing
+
+### Playback device
+
+Open **Scene controls → Audio**.
+
+| Control | Effect |
+| --- | --- |
+| **On** | Starts the audio device and shows its device and sample-rate controls. |
+| **Output device** | Playback destination. **System default** follows the system’s selected output. |
+| **Sample rate** | Number of audio samples per second for playback. An asterisk marks a rate native to the device. |
+| **Muted** | Silences playback while the audio device keeps running. |
+| **Volume** | Monitor level. Disabled while muted. Offline WAV levels are independent of this setting. |
+
+### Scene mix
+
+Select **Document** in **Nodes** and open **Properties**. **Modal synthesis** appears when the scene has a modal model. **Samples** appears when an object has recorded vertex samples.
+
+| Control | Effect |
+| --- | --- |
+| **Modal gain** | Level of synthesized modal ringing across all sounding objects. |
+| **Click** | Level of the short impact click mixed with the modal ringing. |
+| **Sample Gain** | Sets the level of recorded sample playback. |
+| **Render Threads** | Number of threads used for audio playback. Increasing it can help when many objects sound at once. |
+| **Max Impacts** | Maximum number of simultaneous contact pulses. |
+
+## Audio diagnostics
+
+Open **Panels → Debug → Audio** while a scene is sounding.
+
+| Readout | Meaning |
+| --- | --- |
+| **Device** | Active output device and sample rate. |
+| **Modal bank** | **Objects** counts loaded modal objects and **modes** counts their vibration modes. **Impacts** shows how many impact pulses are active against the limit. **Energy** shows current and peak mechanical energy in joules. A rising peak between mallet strikes indicates another source of excitation. |
+| **Render** | **Block** gives the render time of the latest audio block in milliseconds and as a share of its playback duration. **Worst** shows the largest share recorded. Above 100%, a block missed its playback deadline. |
+| **Event queue** | **Queued** counts strike and contact events awaiting playback. **Dropped** counts events lost when the queue fills. |
+
+### Contact diagnostics
+
+With surface audio enabled, the **Audio** debug panel also reports sustained contacts.
+
+| Readout | Meaning |
+| --- | --- |
+| **Voices** | Number of sounding sustained contacts against the voice limit. |
+| **Refused** | Number of contacts left silent because the voice limit was reached. |
+| **Surface tracks** | **Slots** shows occupied tracks, capacity and memory. Surfaces with the same finish can share a track. **Named by voices** counts tracks that sounding contacts are using. **Refused** here counts surfaces that could not obtain a track and therefore sound smooth. |
+| **Contact meter** | With `CONTACT_REPORT=1`, **Shocks** counts renewed contacts per second. **Free** is the fraction of samples with the surfaces apart. **bearing** is the fraction of surface samples carrying load. The meter reads **Off** when there are no shocks to report. |

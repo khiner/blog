@@ -1,0 +1,90 @@
+---
+path: /MeshEditor/manual/advanced/cli/
+title: "Command-line options"
+navOrder: 1
+---
+
+Run `./build/MeshEditor [scene] [options]`. The optional path accepts a model (`.gltf`, `.glb`, `.obj` or `.ply`), a native project directory or a `.project` or `.actions` archive. A model opens in an empty scene. With no path, the default scene opens. Use `./build/MeshEditor --help` to list the options available in your build.
+
+## Startup
+
+For playback and captures, MeshEditor can frame the view automatically. A scene with lights or an authored image light uses **Rendered** shading. A scene with neither uses **Material Preview**.
+
+| Option | Effect |
+| --- | --- |
+| `--help`, `-h` | Print usage and exit. |
+| `--empty` | Start a scene without the default objects. |
+| `--headless` | Render in an offscreen viewport of fixed size. |
+
+## Playback
+
+| Option | Effect |
+| --- | --- |
+| `--play [SECONDS]` | Start animation and simulation. Supply a duration to limit playback. Headless playback without a duration exits after one loop. |
+| `--timeline-end SECONDS` | Set the timeline endpoint in seconds. Extend it to capture motion beyond the original range. |
+| `--frames N` | Render a fixed number of frames and exit. |
+| `--fps N` | Set the interactive video recording rate in frames per second. The default is 60. Headless recording uses the timeline frame rate. |
+
+## Viewport
+
+| Option | Effect |
+| --- | --- |
+| `--camera NAME` | Choose a camera by its glTF camera definition name. Quote names containing spaces. [Command-line camera selection](/MeshEditor/manual/rendering/cameras/#command-line-camera-selection) |
+| `--shading MODE` | Choose `wireframe`, `solid`, `preview` or `rendered`. |
+| `--xray` | Enable X-ray in the chosen shading mode. |
+| `--overlays`, `--no-overlays` | Show or hide editor guides and selection markings, including during benchmarks. |
+| `--display LIST` | Show the selected overlays. Use a comma-separated list of `vertex-normals`, `face-normals`, `bounds` and `tet-wireframe`. Enable overlays to see them. |
+| `--edit ELEMENT` | Select all mesh objects in the document and enter Edit mode with `vertex`, `edge` or `face` selection. |
+| `--select-all` | Select all objects in Object mode or all elements in Edit mode. |
+| `--lod-error PIXELS` | Set the screen-space error budget for geometry simplification. Use 0 for original geometry. |
+
+## Lighting and sampling
+
+Include `--ray-tracing N` for the other `--ray-*` options to take effect.
+
+| Option | Effect |
+| --- | --- |
+| `--ray-tracing N` | Enable hardware ray tracing with 1–64 indirect samples. |
+| `--ray-shadow-samples N` | Cast 1–64 shadow rays per area light. The default is 1. |
+| `--ray-resolution MODE` | Set the indirect ray grid to `full`, `half` (default) or `quarter` resolution. |
+| `--ray-gi-resolution MODE` | Set the separate Fast GI grid to `full`, `half` (default) or `quarter` resolution. |
+| `--ray-refinement-frames N` | Allow 1–4096 frames of stationary refinement with noise filtering enabled. The default is 64. |
+| `--ray-roughness N` | Set the reflection roughness cutoff from 0 to 1. The default is 0.5. Use 1 to trace reflections at every roughness. |
+| `--ray-fast-gi` | Use screen-space diffuse and rough lighting. |
+| `--ray-gi-distance N` | Set the Fast GI search radius in scene units, from 0.01 to 1000. The default is 10. |
+| `--ray-gi-thickness N` | Set the minimum thickness for the Fast GI search, from 0 to 10 scene units. The default is 0.1. |
+| `--ray-diffuse` | Trace one diffuse bounce. When both diffuse modes are requested, this takes precedence over `--ray-fast-gi`. |
+| `--ray-opaque-shadows` | Give glass an opaque shadow. By default glass casts a tinted shadow. |
+| `--ray-raw` | Disable noise filtering to see the grain in the image. |
+
+## Motion blur
+
+`--motion-blur MODE` takes `off`, `fast` or a sample count from 1 to 64. [Motion blur](/MeshEditor/manual/rendering/lighting/#motion-blur)
+
+## Capture and batch output
+
+| Option | Effect |
+| --- | --- |
+| `--screenshot PATH` | Save a PNG, WebP or JPEG still. A name without an extension produces a `.webp` file. Combine with a timed playback or a recording to continue after capture. |
+| `--record PATH` | Play the scene and save video as MP4 or master audio as WAV. Video requires FFmpeg. |
+| `--record-audio` | Include master audio in a recorded movie. |
+| `--render BASENAME` | Write all corpus outputs for one scene under the given basename. Use this option separately from `--screenshot` and `--record`. |
+| `--render-queue DIR` | Claim headless render jobs from the directory until it is empty. |
+
+For a batch, give each job a numbered filename such as `0001.job`. The first line sets the basename for its console log. The following lines are individual arguments, including the scene path and an output option such as `--render` followed by its basename on the next line. Paths with spaces occupy one line without shell quotes.
+
+Start a worker with `./build/MeshEditor --render-queue DIR`. Put the scene path and output paths in the job file. The queue command takes neither a scene path nor a screenshot, recording or render basename. Workers can share a directory. Each writes a log per job and prints a status of `ok`, `unsupported` or `failed`. [Render corpus tools](/MeshEditor/manual/advanced/corpus/)
+
+## Measurement
+
+For warm-up or settling, use `--headless` with a positive `--frames` count. Warm-up and recovery logging require a benchmark run without playback or recording.
+
+| Option | Effect |
+| --- | --- |
+| `--profile`, `--profile-json PATH` | Print the frame report on exit or write it as JSON. Build with `PROFILE=1`. |
+| `--bench-action ACTION` | Interaction to repeat each frame. The default is `steady`. [Benchmark actions](/MeshEditor/manual/advanced/benchmarks/#benchmark-actions) |
+| `--bench-action-count N` | Maximum number of visible mesh objects used for `transform`, `drag` and `visibility`. For `material`, limits the search for an assigned material. The default is 64. |
+| `--bench-warmup N` | Render N stationary frames before measurement. |
+| `--bench-settle N` | Render N stationary frames after the moving phase. |
+| `--bench-recovery FILE` | With `--bench-settle`, log elapsed milliseconds from the last moving frame as refinement resumes. Add `--screenshot PATH` to write numbered recovery images. |
+| `--bench-cameras PATH` | Export benchmark camera matrices as JSON lines for comparisons using the same camera sequence. |

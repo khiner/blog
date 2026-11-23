@@ -1,0 +1,677 @@
+---
+path: /MeshEditor/manual/modeling/materialx/patterns/
+title: "Patterns and noise"
+navOrder: 6
+---
+
+import OperationPorts from '../OperationPorts'
+
+Use UV coordinates for a pattern that follows an unwrapped surface. For a pattern that runs through the object, connect object-local **Position** to a 3D noise node.
+
+## Procedural
+
+### Constant
+
+Use a fixed value of the selected type.
+
+<OperationPorts
+  identifier="constant"
+  inputs={{
+    "Value": "The value to send to connected nodes.",
+  }}
+  result="The same value at every evaluation point."
+  columns={["Value", "Output"]}
+  rows={[
+    ["boolean, integer, float, vector2, vector3, vector4, color3, color4, matrix33, matrix44", {"sameAs": "Value"}],
+  ]}
+/>
+
+### Random Float
+
+Generate a repeatable random number.
+
+<OperationPorts
+  identifier="randomfloat"
+  inputs={{
+    "Input": "Value that identifies each sample.",
+    "Minimum": "The lower end of the output range.",
+    "Maximum": "The upper end of the output range.",
+    "Seed": "Change the seed for a different sequence with the same input.",
+  }}
+  result="A number between the chosen limits. The same input and seed give the same result."
+  fixedTypes={{
+    "Minimum, Maximum": "float",
+    "Seed": "integer",
+  }}
+  columns={["Input", "Output"]}
+  rows={[
+    ["float", {"sameAs": "Input"}],
+    ["integer", "float"],
+  ]}
+/>
+
+<span id="procedural2d" />
+
+## Procedural 2D
+
+### Cell Noise 2D
+
+Generate noise with one value per 2D grid cell.
+
+<OperationPorts
+  identifier="cellnoise2d"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+  }}
+  result="A value that stays constant within a lattice cell and changes at its boundary."
+  fixedTypes={{
+    "Texcoord": "vector2",
+    "Output": "float",
+  }}
+/>
+
+### Checkerboard
+
+Alternate two colors in a rectangular checker pattern.
+
+<OperationPorts
+  identifier="checkerboard"
+  inputs={{
+    "Color 1": "The color of alternating squares.",
+    "Color 2": "The color of the squares between them.",
+    "UV Tiling": "Repeats along U and V. Higher counts make smaller tiles.",
+    "UV Offset": "Pattern offset along U and V.",
+    "Texture Coordinates": "UV coordinates to sample.",
+  }}
+  result="The first or second color according to the tile at the sample position."
+  fixedTypes={{
+    "Color 1, Color 2": "color3",
+    "UV Tiling, UV Offset, Texture Coordinates": "vector2",
+    "Output": "color3",
+  }}
+/>
+
+### Circle
+
+Draw a disk in UV space.
+
+<OperationPorts
+  identifier="circle"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Center": "Center in UV coordinates.",
+    "Radius": "The distance from the center to the edge.",
+  }}
+  result="1 inside the disk and 0 outside."
+  signature="radialShape"
+/>
+
+### Cloverleaf
+
+Draw a cloverleaf in UV space.
+
+<OperationPorts
+  identifier="cloverleaf"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Center": "Center in UV coordinates.",
+    "Radius": "The overall radius of the shape.",
+  }}
+  result="1 inside the cloverleaf and 0 outside."
+  signature="radialShape"
+/>
+
+### Crosshatch
+
+Build a crossed-line pattern in texture space.
+
+<OperationPorts
+  identifier="crosshatch"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Uvtiling": "Repeats along U and V. Higher counts make smaller tiles.",
+    "Uvoffset": "Pattern offset along U and V.",
+    "Thickness": "Line width within each tile.",
+    "Staggered": "Offsets alternate rows.",
+  }}
+  result="A repeating black-and-white crosshatch pattern."
+  fixedTypes={{
+    "Texcoord, Uvtiling, Uvoffset": "vector2",
+    "Thickness": "float",
+    "Staggered": "boolean",
+    "Output": "color3",
+  }}
+/>
+
+### Fractal 2D
+
+Combine noise octaves at increasing frequencies using 2D coordinates.
+
+<OperationPorts
+  identifier="fractal2d"
+  inputs={{
+    "Amplitude": "Overall noise amplitude.",
+    "Octaves": "Number of noise layers.",
+    "Lacunarity": "Frequency multiplier per layer.",
+    "Diminish": "Amplitude multiplier per layer.",
+    "Texcoord": "UV coordinates to sample.",
+  }}
+  result="Noise with progressively finer detail from each additional layer."
+  fixedTypes={{
+    "Octaves": "integer",
+    "Lacunarity, Diminish": "float",
+    "Texcoord": "vector2",
+  }}
+  columns={["Amplitude", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4", {"sameAs": "Amplitude"}],
+    ["float, vector3", "color3"],
+    ["float, vector4", "color4"],
+    ["float", "vector2, vector3, vector4"],
+  ]}
+/>
+
+### Grid
+
+Draw a rectangular grid in UV space.
+
+<OperationPorts
+  identifier="grid"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Uvtiling": "Repeats along U and V. Higher counts make smaller tiles.",
+    "Uvoffset": "Pattern offset along U and V.",
+    "Thickness": "Line width within each tile.",
+    "Staggered": "Offsets alternate rows.",
+  }}
+  result="A repeating black-and-white grid pattern."
+  fixedTypes={{
+    "Texcoord, Uvtiling, Uvoffset": "vector2",
+    "Thickness": "float",
+    "Staggered": "boolean",
+    "Output": "color3",
+  }}
+/>
+
+### Hexagon
+
+Draw a hexagon in UV space.
+
+<OperationPorts
+  identifier="hexagon"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Center": "Center in UV coordinates.",
+    "Radius": "The distance from the center to the midpoint of a side.",
+  }}
+  result="1 inside the hexagon and 0 outside."
+  signature="radialShape"
+/>
+
+### Line
+
+Draw a line segment in UV space.
+
+<OperationPorts
+  identifier="line"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Center": "A UV offset applied to both endpoints.",
+    "Radius": "Half the width of the line.",
+    "Point1": "The first endpoint in UV space.",
+    "Point2": "The second endpoint in UV space.",
+  }}
+  result="1 inside the thickened segment and 0 outside."
+  fixedTypes={{
+    "Texcoord, Center, Point1, Point2": "vector2",
+    "Radius": "float",
+    "Output": "float",
+  }}
+/>
+
+### Noise 2D
+
+Sample a continuous noise field using 2D coordinates.
+
+<OperationPorts
+  identifier="noise2d"
+  inputs={{
+    "Amplitude": "Size of the variation around the pivot.",
+    "Pivot": "Center of the noise range.",
+    "Texcoord": "UV coordinates to sample.",
+  }}
+  result="A smoothly varying noise sample centered on the pivot."
+  fixedTypes={{
+    "Pivot": "float",
+    "Texcoord": "vector2",
+  }}
+  columns={["Amplitude", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4", {"sameAs": "Amplitude"}],
+    ["float, vector3", "color3"],
+    ["float, vector4", "color4"],
+    ["float", "vector2, vector3, vector4"],
+  ]}
+/>
+
+### Ramp
+
+Build a gradient from color stops.
+
+<OperationPorts
+  identifier="ramp"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Type": "Standard follows U. Radial follows the angle around the center. Circular follows distance from the center. Box follows square contours.",
+    "Interpolation": "Blend linearly, ease smoothly or step directly between stop colors.",
+    "Num Intervals": "Number of active stops.",
+    "Interval1–Interval10": "The positions of successive stops along the gradient.",
+    "Color1–Color10": "The color at each corresponding stop.",
+  }}
+  result="The gradient color at the sample position."
+  fixedTypes={{
+    "Texcoord": "vector2",
+    "Type, Interpolation, Num Intervals": "integer",
+    "Interval1–Interval10": "float",
+    "Color1–Color10": "color4",
+    "Output": "color4",
+  }}
+/>
+
+### Ramp 4
+
+Blend four corner values across the unit square.
+
+<OperationPorts
+  identifier="ramp4"
+  inputs={{
+    "Valuetl": "The top-left value.",
+    "Valuetr": "The top-right value.",
+    "Valuebl": "The bottom-left value.",
+    "Valuebr": "The bottom-right value.",
+    "Texcoord": "UV position within the unit square. V = 0 takes the top pair, V = 1 the bottom pair. Coordinates outside the square clamp to its edges.",
+  }}
+  result="A bilinear blend of the four corners."
+  fixedTypes={{
+    "Texcoord": "vector2",
+  }}
+  columns={["Valuetl, Valuetr, Valuebl, Valuebr", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "Valuetl"}],
+  ]}
+/>
+
+### Ramp Gradient
+
+Interpolate one segment of a multistop ramp.
+
+<OperationPorts
+  identifier="ramp_gradient"
+  inputs={{
+    "X": "The position to sample along the gradient.",
+    "Interval1": "The start of this segment.",
+    "Interval2": "The end of this segment.",
+    "Color1": "The color at the start.",
+    "Color2": "The color at the end.",
+    "Interpolation": "Blend linearly, ease smoothly or step directly between stop colors.",
+    "Prev Color": "The color carried forward from the preceding segment.",
+    "Interval Num": "The number of this segment.",
+    "Num Intervals": "The number of active ramp intervals.",
+  }}
+  result="The color after this segment of the ramp has been applied."
+  fixedTypes={{
+    "X, Interval1, Interval2": "float",
+    "Color1, Color2, Prev Color": "color4",
+    "Interpolation, Interval Num, Num Intervals": "integer",
+    "Output": "color4",
+  }}
+/>
+
+### Ramp Left Right
+
+Blend from left to right across texture space.
+
+<OperationPorts
+  identifier="ramplr"
+  inputs={{
+    "Valuel": "The value on the left.",
+    "Valuer": "The value on the right.",
+    "Texcoord": "The UV position to sample. U sets the horizontal position.",
+  }}
+  result="A gradual blend from the left value to the right value."
+  fixedTypes={{
+    "Texcoord": "vector2",
+  }}
+  columns={["Valuel, Valuer", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "Valuel"}],
+  ]}
+/>
+
+### Ramp Top Bottom
+
+Blend from top to bottom across texture space.
+
+<OperationPorts
+  identifier="ramptb"
+  inputs={{
+    "Valuet": "The value at the top.",
+    "Valueb": "The value at the bottom.",
+    "Texcoord": "V = 0 takes the top value and V = 1 takes the bottom. Values outside this range clamp to the nearest endpoint.",
+  }}
+  result="A gradual blend from the top value to the bottom value."
+  fixedTypes={{
+    "Texcoord": "vector2",
+  }}
+  columns={["Valuet, Valueb", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "Valuet"}],
+  ]}
+/>
+
+### Split Left Right
+
+Switch between the left and right values at a horizontal coordinate.
+
+<OperationPorts
+  identifier="splitlr"
+  inputs={{
+    "Left": "The value on the left.",
+    "Right": "The value on the right.",
+    "Center": "The U coordinate of the dividing line.",
+    "Texcoord": "The UV position to sample. U sets the horizontal position.",
+  }}
+  result="Left below Center and Right above it, with a filtered transition along the dividing line."
+  fixedTypes={{
+    "Center": "float",
+    "Texcoord": "vector2",
+  }}
+  columns={["Left, Right", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "Left"}],
+  ]}
+/>
+
+### Split Top Bottom
+
+Switch between the top and bottom values at a vertical coordinate.
+
+<OperationPorts
+  identifier="splittb"
+  inputs={{
+    "Top": "The value at the top.",
+    "Bottom": "The value at the bottom.",
+    "Center": "The V coordinate of the dividing line.",
+    "Texcoord": "The UV position to sample. V sets the vertical position.",
+  }}
+  result="Top below Center and Bottom above it, with a filtered transition along the dividing line."
+  fixedTypes={{
+    "Center": "float",
+    "Texcoord": "vector2",
+  }}
+  columns={["Top, Bottom", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4, color3, color4", {"sameAs": "Top"}],
+  ]}
+/>
+
+### Tiled Circles
+
+Repeat a disk across UV tiles.
+
+<OperationPorts
+  identifier="tiledcircles"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Uvtiling": "Repeats along U and V. Higher counts make smaller tiles.",
+    "Uvoffset": "Pattern offset along U and V.",
+    "Size": "Shape diameter within a tile.",
+    "Staggered": "Offsets alternate rows.",
+  }}
+  result="A repeating black-and-white circle pattern."
+  signature="tiledShape"
+/>
+
+### Tiled Cloverleafs
+
+Repeat a cloverleaf across UV tiles.
+
+<OperationPorts
+  identifier="tiledcloverleafs"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Uvtiling": "Repeats along U and V. Higher counts make smaller tiles.",
+    "Uvoffset": "Pattern offset along U and V.",
+    "Size": "Shape diameter within a tile.",
+    "Staggered": "Offsets alternate rows.",
+  }}
+  result="A repeating black-and-white cloverleaf pattern."
+  signature="tiledShape"
+/>
+
+### Tiled Hexagons
+
+Repeat a hexagon across UV tiles.
+
+<OperationPorts
+  identifier="tiledhexagons"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Uvtiling": "Repeats along U and V. Higher counts make smaller tiles.",
+    "Uvoffset": "Pattern offset along U and V.",
+    "Size": "Shape diameter within a tile.",
+    "Staggered": "Offsets alternate rows.",
+  }}
+  result="A repeating black-and-white hexagon pattern."
+  signature="tiledShape"
+/>
+
+### Unified Noise 2D
+
+Choose and shape a 2D noise pattern.
+
+<OperationPorts
+  identifier="unifiednoise2d"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Frequency": "Frequency per axis. Higher values make smaller features.",
+    "Offset": "Shifts the sample position through the noise.",
+    "Jitter": "Irregularity of the Worley feature points.",
+    "Output Min": "Lower bound of the remapped range.",
+    "Output Max": "Upper bound of the remapped range.",
+    "Clamp Output": "Restricts samples to the output range.",
+    "Octaves": "Number of noise layers.",
+    "Lacunarity": "Frequency multiplier per layer.",
+    "Diminish": "Amplitude multiplier per layer.",
+    "Noise Type": "Select Perlin, cell, Worley or fractal noise.",
+    "Worley Cell Style": "Distance pattern or solid cells for Worley noise.",
+  }}
+  result="A noise sample shaped to the chosen output range."
+  fixedTypes={{
+    "Texcoord, Frequency, Offset": "vector2",
+    "Jitter, Output Min, Output Max, Lacunarity, Diminish": "float",
+    "Clamp Output": "boolean",
+    "Octaves, Noise Type, Worley Cell Style": "integer",
+    "Output": "float",
+  }}
+/>
+
+### Worley Noise 2D
+
+Generate a cellular pattern from nearby points on a plane.
+
+<OperationPorts
+  identifier="worleynoise2d"
+  inputs={{
+    "Texcoord": "UV coordinates to sample.",
+    "Jitter": "How far feature points move from their grid positions.",
+    "Cell Style": "Choose a distance pattern or solid cells.",
+  }}
+  result="Distance gives the distance to the nearest feature point. Vector outputs also give the second and, with three components, third nearest distances. Solid gives a constant value per cell."
+  fixedTypes={{
+    "Texcoord": "vector2",
+    "Jitter": "float",
+    "Cell Style": "integer",
+  }}
+  columns={["Output"]}
+  rows={[
+    ["float, vector2, vector3"],
+  ]}
+/>
+
+<span id="procedural3d" />
+
+## Procedural 3D
+
+### Cell Noise 3D
+
+Generate noise with one value per 3D grid cell.
+
+<OperationPorts
+  identifier="cellnoise3d"
+  inputs={{
+    "Position": "Position to sample in 3D.",
+  }}
+  result="A value that stays constant within a lattice cell and changes at its boundary."
+  fixedTypes={{
+    "Position": "vector3",
+    "Output": "float",
+  }}
+/>
+
+### Fractal 3D
+
+Combine noise octaves at increasing frequencies using 3D coordinates.
+
+<OperationPorts
+  identifier="fractal3d"
+  inputs={{
+    "Amplitude": "Overall noise amplitude.",
+    "Octaves": "Number of noise layers.",
+    "Lacunarity": "Frequency multiplier per layer.",
+    "Diminish": "Amplitude multiplier per layer.",
+    "Position": "Position to sample in 3D.",
+  }}
+  result="Noise with progressively finer detail from each additional layer."
+  fixedTypes={{
+    "Octaves": "integer",
+    "Lacunarity, Diminish": "float",
+    "Position": "vector3",
+  }}
+  columns={["Amplitude", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4", {"sameAs": "Amplitude"}],
+    ["float, vector3", "color3"],
+    ["float, vector4", "color4"],
+    ["float", "vector2, vector3, vector4"],
+  ]}
+/>
+
+### Noise 3D
+
+Sample a continuous noise field using 3D coordinates.
+
+<OperationPorts
+  identifier="noise3d"
+  inputs={{
+    "Amplitude": "Size of the variation around the pivot.",
+    "Pivot": "Center of the noise range.",
+    "Position": "Position to sample in 3D.",
+  }}
+  result="A smoothly varying noise sample centered on the pivot."
+  fixedTypes={{
+    "Pivot": "float",
+    "Position": "vector3",
+  }}
+  columns={["Amplitude", "Output"]}
+  rows={[
+    ["float, vector2, vector3, vector4", {"sameAs": "Amplitude"}],
+    ["float, vector3", "color3"],
+    ["float, vector4", "color4"],
+    ["float", "vector2, vector3, vector4"],
+  ]}
+/>
+
+### Random Color
+
+Produce a repeatable random RGB color from the input and seed.
+
+<OperationPorts
+  identifier="randomcolor"
+  inputs={{
+    "Input": "Value that identifies each sample.",
+    "Hue Low": "Start of the hue range.",
+    "Hue High": "End of the hue range.",
+    "Saturation Low": "Minimum saturation.",
+    "Saturation High": "Maximum saturation.",
+    "Brightness Low": "Minimum brightness.",
+    "Brightness High": "Maximum brightness.",
+    "Seed": "Change the seed for a different color sequence.",
+  }}
+  result="An RGB color chosen within the hue, saturation and brightness limits."
+  fixedTypes={{
+    "Hue Low, Hue High, Saturation Low, Saturation High, Brightness Low, Brightness High": "float",
+    "Seed": "integer",
+  }}
+  columns={["Input", "Output"]}
+  rows={[
+    ["integer, float", "color3"],
+  ]}
+>
+
+For a given element index and seed, the node produces the same color. Changing the seed changes the color sequence.
+
+</OperationPorts>
+
+### Unified Noise 3D
+
+Choose and shape a 3D noise pattern.
+
+<OperationPorts
+  identifier="unifiednoise3d"
+  inputs={{
+    "Position": "Position to sample in 3D.",
+    "Frequency": "Frequency per axis. Higher values make smaller features.",
+    "Offset": "Shifts the sample position through the noise.",
+    "Jitter": "Irregularity of the Worley feature points.",
+    "Output Min": "Lower bound of the remapped range.",
+    "Output Max": "Upper bound of the remapped range.",
+    "Clamp Output": "Restricts samples to the output range.",
+    "Octaves": "Number of noise layers.",
+    "Lacunarity": "Frequency multiplier per layer.",
+    "Diminish": "Amplitude multiplier per layer.",
+    "Noise Type": "Select Perlin, cell, Worley or fractal noise.",
+    "Worley Cell Style": "Distance pattern or solid cells for Worley noise.",
+  }}
+  result="A noise sample shaped to the chosen output range."
+  fixedTypes={{
+    "Position, Frequency, Offset": "vector3",
+    "Jitter, Output Min, Output Max, Lacunarity, Diminish": "float",
+    "Clamp Output": "boolean",
+    "Octaves, Noise Type, Worley Cell Style": "integer",
+    "Output": "float",
+  }}
+/>
+
+### Worley Noise 3D
+
+Generate a cellular pattern from nearby points in a volume.
+
+<OperationPorts
+  identifier="worleynoise3d"
+  inputs={{
+    "Position": "Position to sample in 3D.",
+    "Jitter": "How far feature points move from their grid positions.",
+    "Cell Style": "Choose a distance pattern or solid cells.",
+  }}
+  result="Distance gives the distance to the nearest feature point. Vector outputs also give the second and, with three components, third nearest distances. Solid gives a constant value per cell."
+  fixedTypes={{
+    "Position": "vector3",
+    "Jitter": "float",
+    "Cell Style": "integer",
+  }}
+  columns={["Output"]}
+  rows={[
+    ["float, vector2, vector3"],
+  ]}
+/>

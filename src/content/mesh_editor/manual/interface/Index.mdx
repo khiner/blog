@@ -1,0 +1,71 @@
+---
+path: /MeshEditor/manual/interface/
+title: "User interface"
+navOrder: 2
+---
+
+## Panel layout
+
+Open a panel from **Panels**. Drag its tab to a docking region to place it beside another panel or stack their tabs.
+
+**Panels → New Viewport** creates another view of the current scene. Each viewport has its own scene selection, lens, shading and overlays. Move the pointer over a viewport to make it active. Its settings stay selected when you move into **Scene controls**. Toggle its name in **Panels** to hide it and keep its settings. Close its tab to remove it. The document keeps at least one viewport.
+
+## Panels
+
+| Panel | What it shows |
+| --- | --- |
+| **Scene controls** | Object tree, object creation, viewport settings and audio device. |
+| **Properties** | Fields and actions for the active item. |
+| **Nodes** | Connections between objects, resources or geometry operations. |
+| **Timeline** | Scene time, playback and animation keys. |
+| **History** | Recorded edits and alternate branches. |
+| **Info** | Description of the control under the pointer. |
+| **Style** | Colors and dimensions for the viewport, nodes, Timeline and interface. |
+| **Debug** | **ImGui** shows UI frame time and geometry. The **Metal**, **Engine** and **Audio** tabs show graphics and playback diagnostics. [Debug panel](#debug-panel) |
+| **Dear ImGui Demo**, **ImSpinner Demo**, **ImPlot Demo** | Interactive examples of the interface widgets, activity indicators and plots. |
+
+## Debug panel
+
+Open **Panels → Debug** to view these readouts.
+
+| Tab | Readouts |
+| --- | --- |
+| **ImGui** | Average frame time and frame rate for the application, along with the vertices, triangles, visible windows and allocations used by the interface. |
+| **Metal** | **Device** identifies the GPU, unified memory support, argument buffer tier, BC texture compression support and maximum size of a single buffer. **Window surface** gives the drawing size in pixels and whether frames synchronize to the display. |
+| **Engine** | **Buffer memory** compares the device’s current allocation with the maximum working set recommended by Metal. |
+| **Audio** | Audio device, synthesis load, pending events and contact voices. [Audio diagnostics](/MeshEditor/manual/physical-audio/listening/#audio-diagnostics) |
+
+## Property fields
+
+**Properties** shows the active item's settings. Open **Info** and hover over a field to see its property path, type, units and allowed range where available. For an animated field, **Info** distinguishes a key on the current frame from a value between keys and indicates changes since the key.
+
+| Field | How to edit it |
+| --- | --- |
+| Numeric | Drag to adjust. Hold **Shift** for a finer drag. Double-click a drag field or **Command**-click a slider to type a value. Where a slider has a soft range, typed values can extend to the limits shown in **Info**. |
+| Vector and matrix | Edit components separately. A matrix shows one row per line. |
+| Rotation | The selector switches between Euler angles, a quaternion and an axis with an angle. [Rotation modes](/MeshEditor/manual/scenes/transforms/#rotation-modes) |
+| Color | Edit the color components or click the swatch to open the picker. A four-component color also includes alpha. |
+| Optional | Use the checkbox to enable or clear an override. |
+| Multiple selected objects | On supported fields, hold **Alt** as you begin. Type to give all selected objects the same value. Drag to offset their values together, preserving differences. |
+| Animated | Use the control beside the field to insert or remove a key at the current frame. [Key a property](/MeshEditor/manual/animation/keyframes/) |
+| Subnet member | With its group open in **Nodes**, right-click a supported property and choose **Expose on subnet** to edit it from the group. [Subnet properties](/MeshEditor/manual/scenes/networks/#exposed-properties) |
+
+## Keyboard focus
+
+Point at the editor where you want the shortcut to act. **G** moves the viewport selection or grabs nodes on the node canvas. **I** insets selected faces in mesh Edit mode or inserts transform keys on selected objects in Object mode. Finish editing a text field before using shortcuts.
+
+| Where | Shortcuts |
+| --- | --- |
+| [Viewport](/MeshEditor/manual/interface/shortcuts/) | **A** selects all. **Alt+A** clears the selection. **G**, **R** and **S** move, rotate and scale. In mesh Edit mode, **1**, **2** and **3** select vertices, edges and faces. |
+| [Nodes](/MeshEditor/manual/interface/nodes/) | **Shift+A** opens **Add**, **Shift+D** duplicates geometry nodes and **L** arranges the network. |
+| [Timeline](/MeshEditor/manual/editors/timeline/) | **Left** and **Right** step one frame. Add **Shift** to jump to the start or end. **Up** and **Down** visit the previous or next key for the selection. |
+| Document | **Command+S** saves, **Command+Shift+S** opens **Save as…**, **Command+Z** undoes and **Command+Shift+Z** redoes. |
+
+Some viewport and Timeline shortcuts labeled **Ctrl** also accept **Command** on macOS.
+
+## In this section
+
+- [Undo and history](/MeshEditor/manual/interface/history/)
+- [Nodes panel](/MeshEditor/manual/interface/nodes/)
+- [Viewport keyboard shortcuts](/MeshEditor/manual/interface/shortcuts/)
+- [Interface appearance](/MeshEditor/manual/interface/style/)

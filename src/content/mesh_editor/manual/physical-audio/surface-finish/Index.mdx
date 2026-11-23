@@ -1,0 +1,52 @@
+---
+path: /MeshEditor/manual/physical-audio/surface-finish/
+title: "Surface finish"
+navOrder: 4
+---
+
+The surface finish describes the small ridges and depressions that produce sound as another body slides or rolls across a mesh. Its dimensions are independent of the mesh's scale and its visual material. The controls are in the object's **Properties → Audio → Surface finish** in builds with surface audio enabled.
+
+## Presets
+
+**Presets** sets the four roughness parameters below. **Machined** is the default. The inspector uses meters. The table gives lengths in micrometers (µm).
+
+| Preset | Roughness (µm) | Correlation length (µm) | Spectral slope | Short wavelength (µm) |
+| --- | ---: | ---: | ---: | ---: |
+| **Polished** | 0.1 | 10 | −2.8 | 0.625 |
+| **Machined** | 2 | 50 | −2.4 | 3.125 |
+| **Sandblasted** | 10 | 100 | −2.2 | 6.25 |
+| **Cast** | 100 | 1,000 | −2.0 | 62.5 |
+
+## Roughness
+
+| Property | Meaning |
+| --- | --- |
+| **Roughness** | Root-mean-square height of the fine surface relief. |
+| **Correlation length** | Characteristic lateral spacing of that relief. At the same height, more closely spaced features make steeper slopes. |
+| **Spectral Slope** | Distribution of roughness across wavelengths. More negative values give less weight to fine detail and sound smoother. |
+| **Short wavelength** | Smallest wavelength in the synthesized relief. |
+
+## Waviness
+
+Changing the finish preset preserves the waviness settings.
+
+| Property | Description |
+| --- | --- |
+| **Waviness** | Root-mean-square height of broad surface undulations, in meters. Zero disables them. |
+| **Waviness length** | Lateral scale of those undulations, in meters. |
+
+## Imported surface data
+
+A finish can supply a measured height profile and the distance between samples, or a surface normal map. A finish preset preserves an imported profile and map. When the finish has no normal map, MeshEditor can use the visual material's normal map.
+
+Each child collider in a compound body can have a different finish. A child without its own finish inherits one from its rigid-body hierarchy.
+
+## Contact estimates
+
+These readouts estimate contact with an identical material under the object's own weight.
+
+| Readout | Description |
+| --- | --- |
+| **Stiffness** | Resistance to compression at the point of contact, in N/m¹·⁵. |
+| **patch radius** | Estimated radius of the contact area, in micrometers. |
+| **Contact filter** | Cutoff frequency in hertz for a sweep speed of 0.1 m/s. A wider patch smooths out finer surface relief and lowers this frequency. |

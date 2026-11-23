@@ -1,0 +1,35 @@
+---
+path: /MeshEditor/manual/rendering/world/
+title: "World and environment lighting"
+navOrder: 3
+---
+
+An environment image lights the scene from all directions and supplies the backdrop. Bright features in the image show up as highlights on polished surfaces.
+
+## Lighting environment
+
+Open the arrow beside the viewport shading buttons. **Material Preview** and **Rendered** each remember their lighting settings. The studio environment image is shared by both modes in the same viewport. Each mode keeps its own rotation, intensity, blur, opacity and exposure.
+
+| Control | Effect |
+| --- | --- |
+| **Scene world** | Uses the scene's image-based light when available. A scene without one has flat gray ambient lighting. To edit its **Intensity**, select the scene node in the document network. |
+| **Environment** | Studio environment image for this viewport. The image picker appears when **Scene world** is off. |
+| **Rotation** | Turns the studio environment around the vertical axis, moving its illumination and reflections around the subject. |
+| **Intensity** | Brightness multiplier for studio environment lighting. |
+| **Scene lights** | Includes light objects from the scene in addition to environment lighting. Available separately in Material Preview and Rendered. |
+| **Reset** | Restores the lighting settings of the current shading mode. |
+
+### Custom studio environments
+
+For a local build, place a Radiance HDR image with the `.hdr` extension in `res/images/studiolights/world/` and restart MeshEditor. With **Scene world** off, choose its filename from **Environment**. This image is available to the local studio-light picker across documents. To convert Blender studio lights from EXR to HDR, run `script/ConvertBlenderWorldsToHdr SOURCE_DIR [OUTPUT_DIR]` from the MeshEditor checkout with FFmpeg installed.
+
+## Background
+
+| Property | Description |
+| --- | --- |
+| **Blur** | Softens the visible environment image behind objects. The environment still illuminates the scene. |
+| **World opacity** | Blends the environment image over the viewport background color. At zero, the background color fills empty space and the environment still contributes light and reflections. |
+
+## Exposure
+
+**Exposure** adjusts brightness in stops before PBR Neutral tone mapping and sRGB display. An increase of one stop doubles the linear light values. [Materials](/MeshEditor/manual/rendering/materials/)

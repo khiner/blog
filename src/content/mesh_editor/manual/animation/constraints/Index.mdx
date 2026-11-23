@@ -1,0 +1,34 @@
+---
+path: /MeshEditor/manual/animation/constraints/
+title: "Bone constraints"
+navOrder: 3
+---
+
+A bone constraint makes a pose bone follow an object.
+
+## Constraint types
+
+In Pose mode, select a bone and open **Properties → Bone Constraints**. Choose **Add Copy Transforms** or **Add Child Of**, then choose a scene object under **Target**. Select **None** to disconnect it while keeping the constraint settings.
+
+| Constraint | Effect at full influence |
+| --- | --- |
+| **Copy Transforms** | Matches the target's world position and orientation. The bone retains its scale. |
+| **Child Of** | Follows the target's position and orientation, optionally with an offset. The constrained bone keeps its own scale. |
+
+## Constraint properties
+
+Constraints run from top to bottom. Each receives the pose produced by the entry above it.
+
+| Property | Description |
+| --- | --- |
+| **Target** | Object the bone follows. The bone's numbered **Constraint target** inputs in **Nodes** show the same assignments. Select **None** in Properties or clear the input in Nodes to disconnect the target. |
+| **Set Inverse** | Stores the current offset for **Child Of**. Setting **Influence** to 0 before storing the offset preserves the unconstrained placement when influence returns to 1. |
+| **Clear Inverse** | Removes the stored **Child Of** offset. At full influence the bone then matches the target's position and orientation. |
+| **Influence** | Blends between the pose entering this constraint (0) and its fully constrained result (1). |
+| **X** | Removes this constraint from the bone. |
+
+## glTF constraints
+
+Imported glTF joints with a physics body on the joint or an ancestor receive a **Child Of** constraint targeting the nearest such body. Its offset preserves the joint’s rest placement as the body moves.
+
+Native projects preserve the editable constraint stack. glTF supports joint animation channels and has no equivalent bone constraint stack. [Armatures](/MeshEditor/manual/animation/rigging/) · [Object parenting](/MeshEditor/manual/scenes/hierarchies/)

@@ -1,0 +1,76 @@
+---
+path: /MeshEditor/manual/interface/nodes/
+title: "Nodes panel"
+navOrder: 2
+---
+
+In **Nodes**, inputs are on the left and outputs are on the right. Socket colors indicate data types. Round sockets carry a single value or item. Diamond inputs accept a constant or a field that varies across the mesh. A varying output needs a field input. A tall, rounded input accepts several wires.
+
+Double-click a mesh object in the scene network to open its geometry procedure. Selecting another mesh in the viewport switches the canvas to its procedure. The breadcrumb shows the current network or subnet instance. Click a parent to return to it. Each network remembers its pan and zoom.
+
+## Adding nodes
+
+1. In a geometry network, press **Shift+A** or right-click the canvas. Browse the categories or search by title, MaterialX identifier or operation. Searching for **Union**, for example, offers a **Boolean** node with **Union** already selected. Choose a result with the arrow keys and **Enter**.
+2. Click to place the node on the grid. Drag between sockets to connect them. Incompatible sockets dim while you drag. Hover over the triangle at the bottom of a node to reveal its parameter sockets.
+3. Select the node to edit unlinked inputs in **Properties**. A connected input takes its value from the wire. With **Info** open, hover over a socket to see its type and purpose.
+
+## Connections
+
+| Action | How |
+| --- | --- |
+| Find a socket on a node | Drop a wire on the node. A single compatible socket connects immediately. If several match, choose one from the list. Drop on the triangle to choose among parameter sockets. |
+| Add a node at the end of a wire | Drag from an output or an empty input to empty canvas. Choose a node and socket from the compatible results to add and connect it. |
+| Insert a node in a connection | Drop a compatible node on the wire. |
+| Connect nodes by moving one | Drag the node over the socket side of another node to preview connections. Release over a socket to target it. The canvas arranges the node by its new connections. |
+| Reconnect or remove a wire | Drag from the connected input. Drop on another compatible input to reconnect, or on empty canvas to disconnect. **Esc** restores the connection while dragging. |
+| Connect selected geometry nodes | Arrange the nodes from left to right, then press **J**. Each adjacent pair connects through the first compatible free input. **Shift+J** also allows existing links to be replaced. |
+
+An input that accepts several wires reads them from top to bottom. Drag a wire along the input socket to change its order. To insert a new wire between two others, drop it in the gap.
+
+## Selection and layout
+
+| Action | How |
+| --- | --- |
+| Select | Click or box-select. **Shift** extends the selection. **Shift**-click the active node to remove it. Press **A** to select all or **Alt+A** to clear. |
+| Move or duplicate | **G** moves selected nodes. **Shift+D** duplicates geometry nodes. |
+| Arrange | Nodes follow their connections until you move them by hand. **L** runs **Auto-layout** on an editable canvas and clears the manually placed positions on that page. |
+| Delete | **X**, **Delete** or **Backspace** removes selected items. Bones require armature Edit mode. |
+| Pan | Drag with the middle mouse button or scroll with two fingers. |
+| Zoom around the pointer | Use the mouse wheel, pinch, or scroll with **Ctrl** or **Command**. |
+
+Deleting a geometry operation with one matching input reconnects its downstream wires to that input.
+
+Set a node's **Display** flag to show its output in the viewport. [Display and selection](/MeshEditor/manual/modeling/geometry-nodes/#display-and-branching)
+
+## Geometry subnets
+
+**Ctrl+G** groups the selected geometry nodes. Wires crossing the boundary become input and output ports. **Add → Subnets** places another instance of the same definition. Inside a definition, the menu omits that definition and any that already contain it.
+
+### Ports
+
+| Property | Description |
+| --- | --- |
+| **Expose socket** | Adds an input or output of the selected internal node to the subnet interface. |
+| **Input** | Name shown on instances for an exposed input. |
+| **Output** | Name shown on instances for an exposed output. |
+| **Move up** | Moves the port one place earlier in its list. |
+| **Move down** | Moves the port one place later in its list. |
+| **Remove** | Deletes the port from the subnet interface on every instance. |
+| **Default** | Value supplied to an unconnected value input unless the instance overrides it. |
+| **Clear** | Removes the port default and restores the exposed socket’s value. |
+| **Display output** | Geometry output shown in the viewport for a subnet with multiple geometry outputs. |
+
+### Instances and definitions
+
+Instances share one definition. Removing a port changes every instance's interface.
+
+| Control | Effect |
+| --- | --- |
+| Unlinked value input | Edit the value to override it on this instance. **Reset** restores the definition's default. A wire takes precedence while connected. |
+| Selection input | Each node that reads the port can use its own selection. **Edit selection…** sets one for this instance. **Done** accepts the edit, **Cancel** discards it and **Clear** restores each node's selection. |
+| **Make unique** | Gives the instance an independent copy of its definition. This also works for built-in subnets. |
+| **Ungroup** | Moves the operations back into the enclosing network. |
+| **Open** | Opens the definition’s network. Double-clicking the subnet instance also opens it. Built-in definitions can be inspected here. Choose **Make unique** to edit a copy. |
+| **Delete** | Removes the definition and its nodes. Available when no instances use it. |
+
+For groups of objects and resources, see [Scene networks](/MeshEditor/manual/scenes/networks/).

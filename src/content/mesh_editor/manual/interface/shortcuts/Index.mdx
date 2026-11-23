@@ -1,0 +1,61 @@
+---
+path: /MeshEditor/manual/interface/shortcuts/
+title: "Viewport keyboard shortcuts"
+navTitle: Viewport shortcuts
+navOrder: 3
+---
+
+Point at the viewport before using these shortcuts. Text fields and other editors can take the same keys. Where a shortcut uses the platform modifier, **Command** also works in place of **Ctrl** on macOS.
+
+## Objects and poses
+
+| Action | Shortcut |
+| --- | --- |
+| Add a camera, light, empty or armature | **Ctrl+Shift+C** (camera), **Ctrl+Shift+L** (light), **Ctrl+Shift+E** (empty), **Ctrl+Shift+A** (armature) |
+| Change interaction mode | **Tab** cycles available modes. For an active armature, **Tab** toggles Object and Edit modes, and **Ctrl+Tab** toggles Object and Pose modes. |
+| Move, rotate or scale | **G**, **R**, **S**. Press **X**, **Y** or **Z** to constrain the axis. Type a signed value for an exact transform. |
+| Duplicate and place | **Shift+D** for a copy, **Alt+D** for a linked copy |
+| Delete selected objects | **Delete** or **Backspace** |
+| Parent to the active object or clear parenting | **Ctrl+P** to parent, **Alt+P** to clear |
+| Toggle visibility | **H** |
+| Key selected objects or pose bones | **I** inserts transform keys. **Alt+I** removes all keys on the selected items at the current frame in the active clip. [Per-property keys](/MeshEditor/manual/animation/keyframes/) |
+| Clear pose offsets | **Alt+G** for position, **Alt+R** for rotation, **Alt+S** for scale |
+
+In [armature Edit mode](/MeshEditor/manual/animation/rigging/editing/), **Shift+A** adds a bone, **E** extrudes and **Shift+D** duplicates. **X**, **Delete** or **Backspace** deletes selected bones.
+
+## Mesh Edit mode
+
+| Action | Shortcut |
+| --- | --- |
+| Choose selection domain | **1** for vertices, **2** for edges, **3** for faces |
+| Select all or deselect all | **A** or **Alt+A** |
+| Hide or reveal elements | **H** hides selected elements, **Shift+H** hides unselected elements and **Alt+H** reveals hidden elements. |
+| Open a mesh menu | **Ctrl+V** for **Vertex**, **Ctrl+E** for **Edge**, **Ctrl+F** for **Face**, **M** for **Merge** |
+| Open **Delete** | **X**, **Delete** or **Backspace** |
+| Dissolve the selected vertices, edges or faces | **Ctrl+X** uses the current selection domain. |
+| Loop Cut and Slide | **Ctrl+R** over an edge cuts the ring and starts sliding the new loop. |
+| Extrude | **E** extrudes edges in Edge mode and a region otherwise. For individual vertices, choose **Vertex → Extrude Vertices**. |
+| Duplicate or rip and place | **Shift+D** duplicates. **V** rips. |
+| Split or separate | **Y** disconnects the selection within the mesh. **P** moves it into a new object. |
+| Fill | **F** creates an edge or face from the selection or fills a boundary. |
+| Triangulate or join triangles into quads | **Ctrl+T** to triangulate, **Alt+J** to join eligible pairs |
+| Inset | **I** starts the drag. Press **I** again to toggle individual faces. |
+| Bevel | **Ctrl+B** bevels edges, **Ctrl+Shift+B** bevels vertices. Use the wheel, **−** or **=** to change the segment count. |
+| Knife | **K** starts a cut. |
+| Confirm or cancel an upstream selection edit | **Enter** or **Esc**. [Edit a stage's selection](/MeshEditor/manual/modeling/geometry-nodes/#node-selections) |
+
+Right-click over the mesh to open the Edit mode context menu. During a tool gesture, right-click or press **Esc** to cancel a bevel, inset or knife cut. Canceling the slide in **Loop Cut and Slide** leaves the cut centered.
+
+## View and transport
+
+| Action | Shortcut |
+| --- | --- |
+| Orbit or zoom | Scroll to orbit. Pinch or scroll with **Ctrl** or **Command** to zoom. |
+| Cycle Solid → Material Preview → Rendered | **Z**. From Wireframe, **Z** selects Solid. |
+| Toggle Wireframe and the previous filled mode | **Shift+Z** |
+| Toggle X-ray | **Alt+Z** |
+| Play or pause | **Space** |
+| Play backward from the current frame | **Ctrl+Shift+Space** |
+| Stop and return to the frame where playback began | **Esc** |
+
+[Timeline navigation](/MeshEditor/manual/editors/timeline/)

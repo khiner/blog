@@ -1,0 +1,66 @@
+---
+path: /MeshEditor/manual/modeling/geometry-nodes/
+title: "Geometry procedures"
+navOrder: 8
+---
+
+A mesh's geometry procedure records edits as connected nodes. Editing the mesh in the viewport adds a node at the displayed stage.
+
+## Display and branching
+
+Select a node to edit its properties. **Display** shows its geometry or instances in the viewport. Turn off **Display** on the displayed node to show no result. A subnet with several geometry outputs has a **Display output** control for each one.
+
+A viewport edit extends the displayed node's output. If that node already feeds a later operation, the new edit starts a separate branch. Both branches remain in the network. When the displayed node is inside a shared subnet, a viewport edit changes its definition for every instance. Choose **Make unique** first to edit just this instance.
+
+## Node selections
+
+An operation’s **Selection** input can use all elements, no elements, an explicit selection, an upstream selection or a linked Boolean field. In a shared subnet, selection editing applies to the chosen instance and input.
+
+**Edit selection** shows the operation's input mesh in the viewport overlay. Elements replaced by the operation are still available there. **Done** or **Enter** commits the selection as one edit. **Cancel** or **Esc** restores the previous selection.
+
+**All** replaces an explicit selection with every element in its domain. For a linked selection, **Domain** chooses vertices, edges or faces. A field from another domain is converted to that domain. A field such as **Boundary** follows new edges that meet its condition after topology changes. An explicit selection refers to the original picks.
+
+## Viewport handles
+
+Select the operation and open **Properties → Viewport handle**. Choose the transform, extrusion offset or scale, bevel width, or inset thickness or depth to adjust on the mesh. A linked parameter takes its value from the wire and has no editable handle. Click **Stop handle** to finish using the handle.
+
+Dragging a new extrusion changes that **Extrude** node. After confirming the extrusion, moving its cap adds a **Transform Elements** node.
+
+## Bypass
+
+**Bypass** passes a node's input to the next stage. Toggle it to compare the effect while displaying the finished branch. A subnet can be bypassed when each output has exactly one matching input. If an edit leaves the mesh unchanged and the node has a warning or error outline, select it to read the message in **Properties**.
+
+## Geometry sources and composition
+
+| Node | Result |
+| --- | --- |
+| **Source** | The mesh's original geometry. A primitive generator supplies a mesh with editable dimensions. |
+| **Object Info** | Another object's mesh in its local coordinates. A missing mesh or one shared with the current procedure gives empty geometry. |
+| **Join** | Meshes combined in link order. Use **Merge** to weld coincident vertices. |
+| **Boolean** | A union, difference or intersection of closed solids or coplanar regions. Use **Space** to place the starting mesh and connect cutters to **Mesh 2** in the order they should act. |
+| **Minkowski** | The sum or difference of two solids or planar regions. A sum sweeps one shape over the other. |
+| **Project** | Silhouette regions projected onto a plane along its normal. |
+| **Level Set** | A surface where a scalar field crosses a threshold inside a box. Decrease **Edge Length** for finer detail or enlarge the box if it clips the surface. |
+
+An object reference cannot form a dependency cycle. [Boolean operands](/MeshEditor/manual/modeling/booleans/#operand-placement)
+
+## Element transforms
+
+**Transform Elements** moves, rotates, scales or mirrors the selection around a pivot. **Set Position** takes a vector field. Turn **Offset** on to add it to the current position or off to supply new coordinates.
+
+## Built-in subnets
+
+Choose these nodes from **Add → Subnets** in a geometry network.
+
+| Subnet | Inputs and result |
+| --- | --- |
+| **Loop Cut** | Expands the **Edges** selection into rings on the input **Mesh**. **Cuts** sets the number of new loops. The output mesh has those loops selected. |
+| **Loop Cut and Slide** | Adds the same loops, then slides them along the intersected edges. A **Factor** of zero leaves the cuts centered. **Direction** sets the positive side at the **Reference** vertex. |
+| **Fill Holes** | Fills boundary loops on the input **Mesh** with up to **Sides** edges. The initial limit is four. Zero allows loops of any size. |
+| **Split by Solid** | Connect the shape to divide to **Solid** and the other shape to **Cutter**. **Outside** gives their difference and **Inside** their intersection. |
+| **Hull of Objects** | **Hull** gives the convex envelope of **Mesh 1** and **Mesh 2** together. |
+| **Bisect Fill** | Cuts **Mesh** at the plane through **Point** perpendicular to **Normal**. **Clear Inner** removes the side opposite the normal. **Clear Outer** removes the side it points toward. Closed openings on the cut plane are capped. |
+| **Cross Section** | **Section** gives the filled planar region where **Mesh** crosses the plane set by **Point** and **Normal**. |
+| **Symmetrize** | Keeps the side of **Mesh** toward **Normal**, reflects it across the plane through **Point** and welds the seam. |
+
+Open a subnet to inspect its internal nodes. Choose **Make unique** before editing a definition for just one instance.

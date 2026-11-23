@@ -1,0 +1,26 @@
+---
+path: /MeshEditor/manual/advanced/
+title: "Advanced"
+navOrder: 12
+---
+
+## Command line
+
+Run `./build/MeshEditor [scene] [options]` from a built checkout. For `scene`, supply a model, project directory, `.project` archive or `.actions` recording. Omit it to open the default scene. `--headless` renders offscreen in an isolated workspace. With no playback, frame count or capture options, it renders one frame and exits.
+
+## Headless image capture
+
+Capture the selected face normals in the FallingCube scene using **Solid** shading.
+
+```sh
+./build/MeshEditor res/examples/FallingCube/FallingCube.gltf --headless \
+  --shading solid --edit face --select-all --overlays --display face-normals \
+  --screenshot /tmp/falling-cube-normals.png
+```
+
+## In this section
+
+- [Command-line options](/MeshEditor/manual/advanced/cli/)
+- [Render and audio comparisons](/MeshEditor/manual/advanced/corpus/)
+- [Performance benchmarks](/MeshEditor/manual/advanced/benchmarks/)
+- [Builds and validation](/MeshEditor/manual/advanced/validation/)

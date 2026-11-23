@@ -1,0 +1,52 @@
+---
+path: /MeshEditor/manual/advanced/corpus/
+title: "Render and audio comparisons"
+navOrder: 2
+---
+
+The render corpus captures built-in scenes, examples, physical-audio scenes and glTF samples. Regular scene captures include a still or movie, a replayable action archive, a console log and a launcher. Overlay benchmarks produce a still, log and launcher. Each material variant can have its own still and each clip its own movie. Run the launcher from the checkout root to reopen the source scene with its recorded view options. [Render gallery](/MeshEditor/render)
+
+## Render comparison
+
+From the MeshEditor checkout, render a candidate into a separate directory, then compare it with the committed corpus. The full corpus requires the sample submodules and FFmpeg. To apply the same settings to every scene, pass `--app-args` to `script/Render`, for example `--app-args "--ray-tracing 4 --ray-resolution half"`. Use `--no-build` to capture with an existing executable.
+
+```sh
+./script/Render --out /tmp/mesheditor-candidate
+./script/CompareRenders /tmp/mesheditor-candidate --json /tmp/mesheditor-comparison.json
+```
+
+### Comparison options
+
+| Setting | Effect |
+| --- | --- |
+| Reference | `script/CompareRenders` uses the committed corpus by default. Pass a second directory or use `--ref REVISION` to compare against another tree or Git revision. |
+| Video frames | The comparison samples 16 frames per movie by default. `--video-frames 0` compares every frame. |
+| Tolerance | Exact cases require identical pixels. Other cases have per-scene tolerances. Use `--budgets PATH` for custom tolerances. The JSON report includes missing and extra outputs. `--limit` limits the rows printed in the terminal. |
+| Named candidate | `script/RenderFidelity --name NAME` renders a candidate and checks its per-scene budgets. Use `--compare-only` with an existing candidate. |
+
+### Movie comparison
+
+For a single pair of movies, run `script/VideosEquivalent before.mp4 after.mp4`. It checks decoded audio, dimensions and frame counts, then checks pixel differences. It accepts up to two differing frames within its pixel tolerance. Exit status 0 means the files pass.
+
+### Overlay and selection captures
+
+`script/Render --overlays-only` captures overlays, box selections and repeated picks. Box selections cover vertices, edges, faces and X-ray from several angles. Repeated picks record selection order for overlapping objects.
+
+Set `JOBS` to choose the number of capture workers. Match the camera, shading, build, shutter and output dimensions across runs.
+
+## Audio comparison
+
+1. Run `script/AudioCorpus /tmp/mesheditor-audio` to render a WAV and log per isolated sound scene. The command reports silence, nonfinite samples and failed captures.
+2. With NumPy and FFmpeg installed, run `script/AudioDescribe before.wav after.wav` to compare level, onset rate, decay time (T60), spectral centroid and tonal peaks. Match the sample rate and excitation across captures.
+
+### Sustained-contact measurements
+
+Use a [surface-audio build](/MeshEditor/manual/advanced/validation/), the physical-audio sample collection and a built `FastFEMModalSolve` executable. Set `MODAL_SOLVE` to the executable’s path, then run `script/surface/ContactLadder CASE`. Scenes and WAVs are written to `contact_ladder/` in the temporary directory.
+
+| Case | Measurement |
+| --- | --- |
+| `grid`, `sweep`, `sphere` | How sound level changes with speed or surface roughness. |
+| `spectrum`, `gradient` | Octave-band levels or the effect of changing surface spacing at a fixed slope. |
+| `damping`, `modes`, `rate` | The effect of damping, agreement between measured spectral peaks and the expected modal frequencies, or the rate of contact shocks. |
+
+`LADDER_PLAY` sets the duration in seconds and `LADDER_JOBS` the number of parallel captures. For `grid` and `rate`, set `LADDER_SPEEDS` to a comma-separated list of speeds in meters per second. `LADDER_SEED` changes the surface realization, `LADDER_WAVINESS` scales waviness, and a positive `LADDER_ZETA` sets the default modal damping ratio. The `damping` case sweeps its own ratios.
